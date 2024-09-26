@@ -6,6 +6,35 @@ const MainPage = () => {
   const [selectBarangay, setSelectBarangay] = useState("");
   const [selectStreet, setSelectStreet] = useState("");
 
+  const box = ["Box1", "Box2", "Box3", "Box4", "Box2", "Box3", "Box4"];
+  const busCard = [
+    {
+      profile: "P",
+      name: "SAMANTHA BAKES",
+      address: "Purok 3C, Liboon, Ampayon",
+    },
+    {
+      profile: "P",
+      name: "SAMANTHA BAKES",
+      address: "Purok 3C, Liboon, Ampayon",
+    },
+    {
+      profile: "P",
+      name: "SAMANTHA BAKES",
+      address: "Purok 3C, Liboon, Ampayon",
+    },
+    {
+      profile: "P",
+      name: "SAMANTHA BAKES",
+      address: "Purok 3C, Liboon, Ampayon",
+    },
+    {
+      profile: "P",
+      name: "SAMANTHA BAKES",
+      address: "Purok 3C, Liboon, Ampayon",
+    },
+  ];
+
   const handleBarangayOption = (event) => {
     setSelectBarangay(event.target.value);
   };
@@ -16,7 +45,7 @@ const MainPage = () => {
 
   return (
     <>
-      <section className="bg-[url('http://127.0.0.1:5173/src/assets/Cake_BG.png')] bg-cover bg-center w-screen h-screen">
+      <section className="bg-[url('http://127.0.0.1:5173/src/assets/Cake_BG.png')] bg-cover bg-center  h-screen">
         <div className="border flex flex-col justify-center items-center h-full font-['poppins'] relative">
           <div className="absolute top-0 w-full grid grid-cols-2 text-white py-15">
             {/* Brand Name  */}
@@ -90,7 +119,84 @@ const MainPage = () => {
           </div>
         </div>
       </section>
-      <section></section>
+      <section className="h-screen bg-[#F5F5F5] ">
+        {/* Header Content  */}
+        <div className="border text-center flex flex-col items-center h-[30%]">
+          <h2 className="mt-5 text-[34px] font-bold">Find Cake Near You</h2>
+          <h3 className="w-[300px] text-[16px]">
+            Discover Delicious Cakes for Every Occasion, Birthdays, Parties, and
+            More, Right Near You!
+          </h3>
+          <div className="h-4 w-[173px] bg-primary flex items-center relative my-5">
+            <div className=" absolute h-1 w-[347px] bg-primary left-[-50%]"></div>
+          </div>
+        </div>
+        {/* Body of the content  */}
+        <div className="border border-red-500 my-6 h-[65%]">
+          <div className="grid grid-cols-3 mx-[7%] py-2 gap-10 h-full">
+            <div className="border border-green-400 overflow-auto ">
+              <div className="px-10 py-3 gap-5 flex flex-col">
+                {busCard.map((obj, index) => (
+                  <div
+                    className="border h-[100px]  bg-[#FFFFFF] text-black hover:shadow-lg px-3 py-2 flex gap-3 justify-center items-center"
+                    key={index}
+                  >
+                    <Icon
+                      icon="iconamoon:profile-circle-fill"
+                      className="text-[68px]"
+                    />
+                    <div>
+                      <h3 className="text-[20px] font-[oswald] font-semibold">
+                        {obj.name}
+                      </h3>
+                      <div className="flex gap-1 items-center">
+                        <p className="text-[11px]">{obj.address}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="border border-gray-400 col-span-2  px-[5%] bg-[#FFFFFF] py-5 h-full">
+              <div className="relative">
+                <div className="text-[20px] font-bold font-[Oswald]">
+                  SAMANTHA BAKES
+                </div>
+                <div className="flex items-center">
+                  <Icon
+                    icon="humbleicons:location"
+                    style={{ fontSize: "20px", color: "black" }}
+                  />
+                  <div className="font-[Noto-Serif]">
+                    Purok 3C, Liboon, Ampayon.
+                  </div>
+                </div>
+                {/* Carousel */}
+                <div className="border h-[200px] mt-2"></div>
+                <h2 className="text-[26px] font-semibold font-[oswald]">
+                  Flourish Cake Near You!
+                </h2>
+                <h3 className="text-[16px] font-[poppins]">
+                  Best selling in ampayon.
+                </h3>
+                <div className="border py-2">RATING--------</div>
+                <button className="absolute border right-0 py-2 px-7 text-white bg-primary hover:bg-[#EFB571]">
+                  Visit Shop
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="h-[5%]"></div>
+      </section>
+      {/* Footer of the content  */}
+      <footer className="border ">
+        <div className="h-[100px] bg-[#242324] mt-4 flex justify-center items-center">
+          <p className="text-center text-[20px] text-white font-[poppins]">
+            ⓒCake Area. All Right Reserved. Created By Group 6
+          </p>
+        </div>
+      </footer>
     </>
   );
 };
