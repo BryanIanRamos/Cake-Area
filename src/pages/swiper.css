@@ -1,0 +1,15 @@
+/* Change the color of the default navigation buttons */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #ff0000; /* Change this to your desired color */
+  background: rgba(255, 255, 255, 0.5); /* Optional: background color */
+  border-radius: 50%; /* Optional: round shape */
+  padding: 10px; /* Optional: padding */
+}
+
+/* Optional: Change hover effects */
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  color: #000; /* Change hover color */
+  background: rgba(255, 255, 255, 0.8); /* Change hover background */
+}
