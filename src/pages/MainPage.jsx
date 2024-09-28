@@ -12,6 +12,7 @@ import "swiper/css/navigation";
 const MainPage = () => {
   const [selectBarangay, setSelectBarangay] = useState("");
   const [selectStreet, setSelectStreet] = useState("");
+  const [rating, setRating] = useState(0);
 
   const box = ["Box1", "Box2", "Box3", "Box4", "Box2", "Box3", "Box4"];
   const busCard = [
@@ -31,6 +32,10 @@ const MainPage = () => {
 
   const handleStreetOption = (event) => {
     setSelectStreet(event.target.value);
+  };
+
+  const handleClick = (index) => {
+    setRating(index + 1); // Set rating when an icon is clicked
   };
 
   return (
@@ -150,21 +155,20 @@ const MainPage = () => {
           </div>
 
           {/* Right Side Content */}
-          <div className="border border-gray-400 col-span-2 px-[5%] bg-[#FFFFFF] py-5 md:block h-full hidden md:block">
-            <div className="relative h-full">
-              <div className="text-[20px] font-bold font-[Oswald]">
+          <div className="border border-gray-400 col-span-2 p-[3%]  md:block h-full hidden ">
+            <div className="relative h-full border bg-white p-5">
+              <div className="text-[15px] font-bold font-[Oswald]">
                 SAMANTHA BAKES
               </div>
               <div className="flex items-center">
                 <Icon
                   icon="humbleicons:location"
-                  style={{ fontSize: "20px", color: "black" }}
+                  style={{ fontSize: "15px", color: "black" }}
                 />
-                <div className="font-[Noto-Serif]">
+                <div className="font-[Noto-Serif] text-[12px]">
                   Purok 3C, Liboon, Ampayon.
                 </div>
               </div>
-
               {/* Carousel */}
               <div className="border border-red-600 h-[100px] mt-2 flex justify-start items-center p-4 gap-4">
                 <Swiper
@@ -184,17 +188,30 @@ const MainPage = () => {
                   </SwiperSlide>
                 </Swiper>
               </div>
-
-              <h2 className="text-[26px] font-semibold font-[Oswald]">
+              <h2 className="text-[20px] font-semibold font-[Oswald]">
                 Flourish Cake Near You!
               </h2>
-              <h3 className="text-[16px] font-[poppins]">
+              <h3 className="text-[12px] font-[poppins]">
                 Best selling in Ampayon.
               </h3>
-              <div className="border py-2">RATING--------</div>
-              <button className="absolute right-0 py-2 px-7 text-white bg-primary hover:bg-[#EFB571]">
-                Visit Shop
-              </button>
+              {/* Rating Component */}
+              <div className="border py-2 flex gap-1">
+                {[...Array(5)].map((_, index) => (
+                  <Icon
+                    key={index}
+                    icon="ri:cake-3-fill"
+                    className={`cursor-pointer text-[20px] ${
+                      index < rating ? "text-orange-500" : "text-gray-400"
+                    }`}
+                    onClick={() => handleClick(index)}
+                  />
+                ))}
+              </div>
+              <div className="relative">
+                <button className="absolute right-5 py-1 px-4 text-white bg-primary hover:bg-[#EFB571] text-[12px]">
+                  Visit Shop
+                </button>
+              </div>
             </div>
           </div>
         </div>
