@@ -126,9 +126,9 @@ const MainPage = () => {
           </div>
         </div>
         {/* Body of the content  */}
-        <div className="border border-red-500 my-6 overflow-hidden grid grid-cols-3 h-[60vh] w-full bg-gray-600 px-10">
+        <div className="border border-red-500 my-6 overflow-hidden grid grid-cols-3 md:h-[450px] lg:h-[470px] w-full bg-gray-600 px-10">
           {/* Left Side Content */}
-          <div className="border border-green-400 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-3 col-span-3 sm:col-span-3 md:col-span-1 py-5 px-5 lg:px-7 xl:px-[50px] 2xl:px-[80px] md:px-2 overflow-y-auto">
+          <div className="border border-green-400 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-3 col-span-3 sm:col-span-3 md:col-span-1 px-5 lg:px-7 xl:px-[50px] 2xl:px-[80px] md:px-2 overflow-y-auto">
             {busCard.map((card) => (
               <div
                 key={card.id}
@@ -155,17 +155,14 @@ const MainPage = () => {
           </div>
 
           {/* Right Side Content */}
-          <div className="border border-gray-400 col-span-2 p-[3%]  md:block h-full hidden ">
-            <div className="relative h-full border bg-white p-5">
-              <div className="text-[15px] font-bold font-[Oswald]">
+          <div className="border border-gray-400 col-span-2  md:block h-full hidden md:px-3 2xl:px-[70px] gap-5">
+            <div className="relative h-fit border bg-white p-5 lg:mx-6">
+              <div className="text-[15px] lg:text-[20px] font-bold font-[Oswald]">
                 SAMANTHA BAKES
               </div>
-              <div className="flex items-center">
-                <Icon
-                  icon="humbleicons:location"
-                  style={{ fontSize: "15px", color: "black" }}
-                />
-                <div className="font-[Noto-Serif] text-[12px]">
+              <div className="flex items-center text-[12px] lg:text-[14px]">
+                <Icon icon="humbleicons:location" s />
+                <div className="font-[Noto-Serif] ">
                   Purok 3C, Liboon, Ampayon.
                 </div>
               </div>
@@ -191,27 +188,30 @@ const MainPage = () => {
               <h2 className="text-[20px] font-semibold font-[Oswald]">
                 Flourish Cake Near You!
               </h2>
-              <h3 className="text-[12px] font-[poppins]">
+              <h3 className="text-[12px] lg:text-[14px] font-[poppins]">
                 Best selling in Ampayon.
               </h3>
               {/* Rating Component */}
-              <div className="border py-2 flex gap-1">
+              <div className="border py-2 flex gap-1 ">
                 {[...Array(5)].map((_, index) => (
                   <Icon
                     key={index}
                     icon="ri:cake-3-fill"
-                    className={`cursor-pointer text-[20px] ${
+                    className={`cursor-pointer text-[20px] lg:-text-[90px] ${
                       index < rating ? "text-orange-500" : "text-gray-400"
                     }`}
                     onClick={() => handleClick(index)}
                   />
                 ))}
               </div>
-              <div className="relative">
-                <button className="absolute right-5 py-1 px-4 text-white bg-primary hover:bg-[#EFB571] text-[12px]">
+              <div className="flex border h-fit justify-end pr-5">
+                <button className=" py-1 px-4 text-white bg-primary hover:bg-[#EFB571] text-[12px]">
                   Visit Shop
                 </button>
               </div>
+            </div>
+            <div className="mt-5 h-[120px] border bg-white p-5 lg:mx-6">
+              asdsa
             </div>
           </div>
         </div>
