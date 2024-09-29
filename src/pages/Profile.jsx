@@ -2,8 +2,10 @@ import React from "react";
 import Buttom from "../components/Button";
 import Button from "../components/Button";
 import HideContact from "../components/HideContact";
+import RadioOption from "../components/RadioOption";
 
 const Profile = () => {
+  const gender = ["Male", "Female", "Others"];
   return (
     <div className="grid grid-cols-5">
       <div className="col-span-1 border border-red-500">Margin</div>
@@ -13,26 +15,26 @@ const Profile = () => {
           <Button label="Back" paddingX={10} paddingY={2} />
         </div>
         <div className="border bg-white p-7">
-          <div className="border border-green-600 ">
+          <div className=" border-green-600 ">
             <div className="font-[oswald]">
-              <div className="border  font-semibold text-[20px]">Profile</div>
-              <div className="border text-[15px] text-gray-400">
+              <div className="font-semibold text-[20px]">Profile</div>
+              <div className="text-[15px] text-gray-400">
                 Manage and protect your account.
               </div>
             </div>
             {/* Line  */}
-            <div className="border-2 border-gray-600 my-5"></div>
-            <div className="border border-yellow-500 text-gray-400 font-[poppins] flex flex-col gap-4 text-[16px]">
-              <div className="border flex gap-4 items-center">
-                <p className="w-[160px] border text-end">Name</p>
+            <div className="border-2 border-gray-400 my-5"></div>
+            <div className=" border-yellow-500 text-gray-400 font-[poppins] flex flex-col gap-4 text-[16px]">
+              <div className=" flex gap-4 items-center">
+                <p className="w-[160px]  text-end">Name</p>
                 <input
                   type="text"
                   placeholder="Type something..."
                   className="border bg-gray-100 p-1"
                 />
               </div>
-              <div className="border flex gap-4 items-center">
-                <p className="w-[160px] border text-end">Email</p>
+              <div className=" flex gap-4 items-center">
+                <p className="w-[160px]  text-end">Email</p>
                 <div className="text-[14px] text-gray-800 ">
                   <HideContact
                     contact={"ianramos3367@gmail.com"}
@@ -43,8 +45,8 @@ const Profile = () => {
                   Change
                 </button>
               </div>
-              <div className="border flex gap-4 items-center">
-                <p className="w-[160px] border text-end">Phone Number</p>
+              <div className="flex gap-4 items-center">
+                <p className="w-[160px] text-end">Phone Number</p>
                 <div>
                   <HideContact contact={"0987654321"} type={"phone"} />
                 </div>
@@ -52,21 +54,17 @@ const Profile = () => {
                   Change
                 </button>
               </div>
-              <div className="border flex gap-4 items-center">
-                <p className="w-[160px] border text-end">Gender</p>
-                <input
-                  type="text"
-                  placeholder="Type something..."
-                  className="border bg-gray-100"
-                />
+              <div className="flex gap-4 items-center">
+                <p className="w-[160px] text-end">Gender</p>
+
+                <RadioOption options={gender} />
               </div>
-              <div className="border flex gap-4 items-center">
-                <p className="w-[160px] border text-end">Date of Birth</p>
-                <input
-                  type="text"
-                  placeholder="Type something..."
-                  className="border bg-gray-100"
-                />
+              <div className="flex gap-4 items-center">
+                <p className="w-[160px] text-end">Date of Birth</p>
+                <p>10/20/2001</p>
+                <button className="text-[13px] underline text-blue-500 hover:text-blue-300">
+                  Change
+                </button>
               </div>
               <div className="flex gap-4 items-center h-fit mb-5">
                 <div className="w-[160px] text-end"></div>
