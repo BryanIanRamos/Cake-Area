@@ -5,7 +5,6 @@ import BakerBusinessCard from "../components/BakerBusinessCard";
 const MainPage = () => {
   const [selectBarangay, setSelectBarangay] = useState("");
   const [selectStreet, setSelectStreet] = useState("");
-  const [rating, setRating] = useState(0);
 
   const handleBarangayOption = (event) => {
     setSelectBarangay(event.target.value);
@@ -14,13 +13,6 @@ const MainPage = () => {
   const handleStreetOption = (event) => {
     setSelectStreet(event.target.value);
   };
-
-  const baker = Array.from({ length: 20 }, (_, i) => ({
-    id: i + 1,
-    name: `User ${i + 1}`,
-  }));
-
-  const displayBakers = baker.slice(0, 5);
 
   return (
     <div className="h-screen">
@@ -112,7 +104,7 @@ const MainPage = () => {
         {/* Content Header */}
         <div className="text-secondary ">
           <h2 className="font-[oswald] text-[3vw]">Find Cake Near You</h2>
-          <h3 className="font-[poppins]">
+          <h3 className="font-[poppins] ">
             Discover Delicious Cakes for Every Occasion, Birthdays, Parties, and
             More, Right Near You!
           </h3>
