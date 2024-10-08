@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Cake_BG from "../assets/Cake_BG.png";
 import Cake_area_logo from "../assets/cake_area_logo.png";
+import BakerBusinessCard from "../components/BakerBusinessCard";
 const MainPage = () => {
   const [selectBarangay, setSelectBarangay] = useState("");
   const [selectStreet, setSelectStreet] = useState("");
@@ -14,9 +15,16 @@ const MainPage = () => {
     setSelectStreet(event.target.value);
   };
 
+  const baker = Array.from({ length: 20 }, (_, i) => ({
+    id: i + 1,
+    name: `User ${i + 1}`,
+  }));
+
+  const displayBakers = baker.slice(0, 5);
+
   return (
     <div className="h-screen">
-      <div
+      <section
         className="h-full flex flex-col"
         style={{
           backgroundImage: `url(${Cake_BG})`,
@@ -76,7 +84,7 @@ const MainPage = () => {
                 </div>
                 <div className="border bg-white flex flex-col justify-center items-start px-5 gap-1">
                   <h3 className="text-primary font-semibold text-[1vw] ml-1">
-                    Municipality
+                    Barangay
                   </h3>
                   <select
                     value={selectStreet}
@@ -99,7 +107,23 @@ const MainPage = () => {
             </div>
           </div>
         </div>
-      </div>
+      </section>
+      <section className="px-[15vw] py-[2vw]">
+        {/* Content Header */}
+        <div className="text-secondary ">
+          <h2 className="font-[oswald] text-[3vw]">Find Cake Near You</h2>
+          <h3 className="font-[poppins]">
+            Discover Delicious Cakes for Every Occasion, Birthdays, Parties, and
+            More, Right Near You!
+          </h3>
+        </div>
+        <div className=" border-green-500 flex justify-end my-5">
+          <div className=" border border-gray-400 w-[200px] h-[50px] "></div>
+        </div>
+        <div className="w-full border border-gray-400 "></div>
+        {/* Baker Business Card  */}
+        <BakerBusinessCard />
+      </section>
     </div>
   );
 };
