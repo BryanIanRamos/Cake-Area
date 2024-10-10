@@ -3,6 +3,7 @@ import Cake_BG from "../assets/Cake_BG.png";
 import Cake_area_logo from "../assets/cake_area_logo.png";
 import BakerBusinessCard from "../components/BakerBusinessCard";
 const MainPage = () => {
+  const [selectedFilter, setSelectedFilter] = useState(null);
   const [selectBarangay, setSelectBarangay] = useState("");
   const [selectStreet, setSelectStreet] = useState("");
 
@@ -12,6 +13,11 @@ const MainPage = () => {
 
   const handleStreetOption = (event) => {
     setSelectStreet(event.target.value);
+  };
+
+  // Handler function for selecting a filter
+  const handleFilterClick = (filter) => {
+    setSelectedFilter(filter);
   };
 
   return (
@@ -109,9 +115,48 @@ const MainPage = () => {
             More, Right Near You!
           </h3>
         </div>
-        <div className=" border-green-500 flex justify-end my-5">
-          <div className=" border border-gray-400 w-[200px] h-[50px] "></div>
+        {/* Filter option  */}
+        <div className="flex justify-end my-5">
+          <div className="flex items-center gap-6 border border-gray-300 rounded-lg px-[10px] py-[5px] w-fit text-secondary font-poppins shadow-sm">
+            <button
+              className={`px-4 py-2 rounded-md transition-colors duration-300 ${
+                selectedFilter === "rate" ? "bg-[#D9D9D9]" : "hover:bg-gray-200"
+              }`}
+              onClick={() => handleFilterClick("rate")}
+            >
+              Rate
+            </button>
+            <button
+              className={`px-4 py-2 rounded-md transition-colors duration-300 ${
+                selectedFilter === "service"
+                  ? "bg-[#D9D9D9]"
+                  : "hover:bg-gray-200"
+              }`}
+              onClick={() => handleFilterClick("service")}
+            >
+              Service
+            </button>
+            <button
+              className={`px-4 py-2 rounded-md transition-colors duration-300 ${
+                selectedFilter === "sold" ? "bg-[#D9D9D9]" : "hover:bg-gray-200"
+              }`}
+              onClick={() => handleFilterClick("sold")}
+            >
+              Sold
+            </button>
+            <button
+              className={`px-4 py-2 rounded-md transition-colors duration-300 ${
+                selectedFilter === "goods"
+                  ? "bg-[#D9D9D9]"
+                  : "hover:bg-gray-200"
+              }`}
+              onClick={() => handleFilterClick("goods")}
+            >
+              Goods
+            </button>
+          </div>
         </div>
+
         <div className="w-full border border-gray-400 "></div>
         {/* Baker Business Card  */}
         <BakerBusinessCard />
