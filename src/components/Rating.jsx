@@ -35,12 +35,12 @@ const Rating = ({
 
   return (
     <div>
-      <div className="border py-2 flex gap-1">
+      <div className="border flex gap-1">
         {[...Array(5)].map((_, index) => (
           <Icon
             key={index}
             icon={icon} // Use the specified icon
-            className={`cursor-pointer text-[20px] transition duration-300 ease-in-out transform ${
+            className={`cursor-pointer transition duration-300 ease-in-out transform ${
               index < (hoverRating || rating)
                 ? "text-orange-500 scale-110"
                 : "text-gray-400"

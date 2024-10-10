@@ -47,15 +47,15 @@ const BakerBusinessCard = () => {
         {currentBaker.map((baker) => (
           <div
             key={baker.id}
-            className="p-4 bg-gray-100 shadow-md text-lg text-gray-800 h-[13vw] grid grid-cols-12 items-center"
+            className="p-4 bg-gray-100 shadow-md text-lg text-gray-800  grid grid-cols-12 items-start gap-5"
           >
             {/* Profile image  */}
-            <div className="border col-span-2 flex justify-center items-center p-6">
+            <div className="border col-span-2 hidden sm:flex justify-center items-center  lg:p-3 ">
               <img src={baker.image} alt="profile" />
             </div>
             {/* Information  */}
-            <div className="border col-span-9 flex flex-col justify-start items-start text-left">
-              <div className="grid grid-cols-2 w-full">
+            <div className="border col-span-12 sm:col-span-9 flex flex-col justify-start items-start text-left">
+              <div className="grid grid-cols-2 w-full  sm:text-[1.5vw] md:text-[1.5vw] xl:text-[1.4vw]">
                 <div className="border font-[oswald] font-semibold">
                   {baker.name}
                 </div>
@@ -64,33 +64,34 @@ const BakerBusinessCard = () => {
                   <p>{baker.location}</p>
                 </div>
               </div>
-              <div>
-                <div className="font-[NotoSerif]">{baker.StoreDescription}</div>
-                <div className="grid grid-cols-2 w-full border border-yellow-500">
-                  {/* Sold and store rate  */}
-                  <div className="border flex font-[oswald] items-center gap-2">
-                    <div>{baker.sold} Sold | </div>
-                    <Rating
-                      icon="ph:star-fill"
-                      clickable={false}
-                      initialRating={baker.StoreRate}
-                    />
-                    <span>({baker.StoreRate} Rate)</span>
-                  </div>
-                  <div className="border flex font-[oswald] items-center gap-2">
-                    <div>{baker.available} Available | </div>
-                    <Rating
-                      clickable={false}
-                      initialRating={baker.productRate}
-                    />
-                    <span>({baker.productRate} Service)</span>
-                  </div>{" "}
-                </div>
+              {/* Description  */}
+              <div className="font-[NotoSerif] sm:h-[6vw] lg:h-[5vw] xl:h-[6vw] w-full overflow-hidden text-ellipsis sm:text-[1.5vw] md:text-[1.3vw] lg:text-[1.3vw] xl:text-[1.4vw] 2xl:text-[1.5vw] sm:leading-[12px] md:leading-[13px] lg:leading-[15px] xl:leading-[22px] 2xl:leading-[25px]">
+                <p className="m-0 overflow-hidden text-ellipsis line-clamp-3">
+                  {baker.StoreDescription}
+                </p>
               </div>
-              <div className="grid grid-cols-2 w-full border"></div>
+
+              {/* Ratings  */}
+              <div className="grid grid-cols-2 w-full border border-yellow-500 sm:text-[0.8vw] md:text-[1vw] xl:text-[1vw] ">
+                {/* Sold and store rate  */}
+                <div className="border flex font-[oswald] items-center gap-2">
+                  <div>{baker.sold} Sold | </div>
+                  <Rating
+                    icon="ph:star-fill"
+                    clickable={false}
+                    initialRating={baker.StoreRate}
+                  />
+                  <span>({baker.StoreRate} Rate)</span>
+                </div>
+                {/* Product and Service Rate  */}
+                <div className="border flex font-[oswald] items-center gap-2">
+                  <div>{baker.available} Available | </div>
+                  <Rating clickable={false} initialRating={baker.productRate} />
+                  <span>({baker.productRate} Service)</span>
+                </div>{" "}
+              </div>
             </div>
 
-            <div className="border"></div>
             {/* <p>{user.name}</p> */}
           </div>
         ))}

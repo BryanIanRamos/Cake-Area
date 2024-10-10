@@ -109,7 +109,7 @@ const MainPage = () => {
           </div>
         </div>
       </section>
-      <section className="px-[15vw] py-[2vw]">
+      <section className="px-[5vw] md:px-[15vw] py-[2vw]">
         {/* Content Header */}
         <div className="text-secondary ">
           <h2 className="font-[oswald] text-[3vw]">Find Cake Near You</h2>
