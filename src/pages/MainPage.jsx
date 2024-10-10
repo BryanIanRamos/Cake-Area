@@ -5,14 +5,17 @@ import BakerBusinessCard from "../components/BakerBusinessCard";
 const MainPage = () => {
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [selectBarangay, setSelectBarangay] = useState("");
-  const [selectStreet, setSelectStreet] = useState("");
+  const [selectMunicipality, setSelectMunicipality] = useState("");
+
+  console.log("selectBarangay: ", selectBarangay);
+  console.log("selectStreet: ", selectMunicipality);
 
   const handleBarangayOption = (event) => {
     setSelectBarangay(event.target.value);
   };
 
-  const handleStreetOption = (event) => {
-    setSelectStreet(event.target.value);
+  const handleMunicipalityOption = (event) => {
+    setSelectMunicipality(event.target.value);
   };
 
   // Handler function for selecting a filter
@@ -23,7 +26,7 @@ const MainPage = () => {
   return (
     <div className="h-screen">
       <section
-        className="h-full flex flex-col"
+        className="h-[60%] sm:h-full flex flex-col border border-blue-700"
         style={{
           backgroundImage: `url(${Cake_BG})`,
           backgroundSize: "cover",
@@ -31,20 +34,20 @@ const MainPage = () => {
         }}
       >
         {/* Top Bar */}
-        <div className="grid grid-cols-2 border-red-500 h-[4vw] text-white pt-5">
+        <div className="grid grid-cols-2 border-red-500 h-fit text-white mt-5 ">
           {/* Logo Section */}
           <div className="w-full flex items-center gap-[2vw] border-green-600 pl-[10vw]">
             <img
               src={Cake_area_logo}
               alt="Cake Area Logo"
-              className="h-[3vw]"
+              className=" h-[7vw] sm:max-h-[5vw] xl:h-[3vw]"
             />
-            <h1 className="font-[Oswald] text-[2vw] font-semibold">
+            <h1 className="font-[Oswald] text-[3vw] sm:text-[2vw] font-semibold">
               Cake Area
             </h1>
           </div>
           {/* Account Section */}
-          <div className="flex justify-end items-center right-0 border-blue-600 pr-[10vw] gap-[2vw] font-[poppins] text-[1vw]">
+          <div className="flex justify-end items-center right-0 border-blue-600 pr-[10vw] gap-[2vw] font-[poppins] text-[2.4vw] md:text-[2vw] lg:text-[1.6vw] xl:text-[1.3vw] 2xl:text-[1vw]">
             <h2>Log in</h2>
             <h2>Sign up</h2>
           </div>
@@ -52,24 +55,42 @@ const MainPage = () => {
         {/* Body Content */}
         <div className="flex-grow flex justify-center items-center ">
           <div className="text-white font-[poppins] text-center  border-green-400">
-            <h2 className="text-[3vw]">
+            <h2 className="text-[4.5vw] sm:text-[3.5vw] 2xl:text-[3vw] ">
               Order Online From Bakeries Around You
             </h2>
-            <h3 className="text-[1vw]">
+            <h3 className="text-[2vw] sm:text-[1.5vw] 2xl:text-[1vw] px-3  sm:px-0">
               Get Fresh Cakes Delivered for Your Celebrations—Order Online from
               Local Bakeries!
             </h3>
             {/* Location Section  */}
-            <div className="flex justify-center">
-              <div className="border h-[4vw] mt-[7vh] grid grid-cols-3 w-fit">
-                <div className="border bg-white flex flex-col justify-center items-start px-5 gap-1">
-                  <h3 className="text-primary font-semibold text-[1vw] ml-1">
-                    Municipality
+            <div className="flex flex-col justify-center items-center border-green-700 mt-[30px] sm:mt-[7vh]">
+              <div className=" border-red-400 h-[8vw] sm:h-[4vw] grid sm:grid-cols-3 w-[200px] sm:w-fit">
+                <div className="border bg-white grid grid-cols-3 sm:grid grid-rows-3-col justify-center items-center px-2 sm:px-5 gap-1 max-sm:py-2 ">
+                  <h3 className="text-primary font-semibold text-[9px] sm:text-[1vw] ml-1 col-span-1">
+                    {"  "}Municipality{"  "}
+                  </h3>
+                  <select
+                    value={selectMunicipality}
+                    onChange={handleMunicipalityOption}
+                    className="text-tertiary text-[1.7vw] sm:text-[1vw] col-span-2"
+                  >
+                    <option value={""} disabled>
+                      -- Choose an option --
+                    </option>
+                    <option value={"Barangay Ambago"}>Barangay Ambago</option>
+                    <option value={"Barangay Tiniwisan"}>
+                      Barangay Tiniwisan
+                    </option>
+                  </select>
+                </div>
+                <div className="border bg-white grid grid-cols-3 sm:grid grid-rows-3-col justify-center items-center px-2 sm:px-5 gap-1 max-sm:py-2 ">
+                  <h3 className="text-primary font-semibold text-[9px] sm:text-[1vw] ml-1 col-span-1">
+                    {"  "}Barangay{"  "}
                   </h3>
                   <select
                     value={selectBarangay}
                     onChange={handleBarangayOption}
-                    className="text-tertiary text-[1vw]"
+                    className="text-tertiary text-[1.7vw] sm:text-[1vw] col-span-2"
                   >
                     <option value={""} disabled>
                       -- Choose an option --
@@ -80,25 +101,7 @@ const MainPage = () => {
                     </option>
                   </select>
                 </div>
-                <div className="border bg-white flex flex-col justify-center items-start px-5 gap-1">
-                  <h3 className="text-primary font-semibold text-[1vw] ml-1">
-                    Barangay
-                  </h3>
-                  <select
-                    value={selectStreet}
-                    onChange={handleStreetOption}
-                    className="text-tertiary text-[1vw]"
-                  >
-                    <option value={""} disabled>
-                      -- Choose an option --
-                    </option>
-                    <option value={"Barangay Ambago"}>Barangay Ambago</option>
-                    <option value={"Barangay Tiniwisan"}>
-                      Barangay Tiniwisan
-                    </option>
-                  </select>
-                </div>
-                <button className="bg-primary  text-[1.5vw] font-semibold text-white hover:text-primary hover:bg-white hover:border-l-2">
+                <button className="bg-primary  text-[2vw] sm:text-[1.5vw] font-semibold text-white hover:text-primary hover:bg-white hover:border-l-2   max-sm:h-8">
                   Search
                 </button>
               </div>
