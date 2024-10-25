@@ -26,7 +26,7 @@ const MainPage = () => {
   return (
     <div className="h-screen">
       <section
-        className="h-[60%] sm:h-full flex flex-col border border-blue-700"
+        className="h-[60%] sm:h-full flex flex-col"
         style={{
           backgroundImage: `url(${Cake_BG})`,
           backgroundSize: "cover",

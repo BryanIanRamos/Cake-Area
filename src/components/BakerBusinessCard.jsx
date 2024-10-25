@@ -50,31 +50,32 @@ const BakerBusinessCard = () => {
             className="p-4 bg-gray-100 shadow-md text-lg text-gray-800  grid grid-cols-12 items-start gap-5"
           >
             {/* Profile image  */}
-            <div className="border col-span-2 hidden sm:flex justify-center items-center  lg:p-3 ">
+            <div className=" col-span-2 hidden sm:flex justify-center items-center  lg:p-3 ">
               <img src={baker.image} alt="profile" />
             </div>
             {/* Information  */}
-            <div className="border col-span-12 sm:col-span-9 flex flex-col justify-start items-start text-left">
-              <div className="grid grid-cols-2 w-full  sm:text-[1.5vw] md:text-[1.5vw] xl:text-[1.4vw]">
-                <div className="border font-[oswald] font-semibold">
+            <div className=" col-span-12 sm:col-span-9 flex flex-col justify-start items-start text-left">
+              <div className="grid grid-cols-2 w-full text-[12px] sm:text-[1.5vw] md:text-[1.5vw] xl:text-[1.4vw]">
+                <div className=" font-[oswald] font-semibold md:pb-2">
                   {baker.name}
                 </div>
-                <div className="border ont-[NotoSerif] flex items-center gap-1">
+                <div className=" ont-[NotoSerif] flex items-center gap-1 text-[8px] sm:text-[1.5vw] md:text-[1.5vw] xl:text-[1.4vw]">
                   <Icon icon="lsicon:location-outline" />{" "}
                   <p>{baker.location}</p>
                 </div>
               </div>
               {/* Description  */}
-              <div className="font-[NotoSerif] sm:h-[6vw] lg:h-[5vw] xl:h-[6vw] w-full overflow-hidden text-ellipsis sm:text-[1.5vw] md:text-[1.3vw] lg:text-[1.3vw] xl:text-[1.4vw] 2xl:text-[1.5vw] sm:leading-[12px] md:leading-[13px] lg:leading-[15px] xl:leading-[22px] 2xl:leading-[25px]">
+              <div className="font-[NotoSerif] sm:h-[6vw] lg:h-[5vw] xl:h-[6vw] w-full overflow-hidden text-ellipsis text-[10px] sm:text-[1.5vw] md:text-[1.3vw] lg:text-[1.3vw] xl:text-[1.4vw] 2xl:text-[1.5vw] leading-[15px] sm:leading-[12px] md:leading-[13px] lg:leading-[15px] xl:leading-[22px] 2xl:leading-[25px]">
                 <p className="m-0 overflow-hidden text-ellipsis line-clamp-3">
                   {baker.StoreDescription}
                 </p>
               </div>
 
               {/* Ratings  */}
-              <div className="grid grid-cols-2 w-full border border-yellow-500 sm:text-[0.8vw] md:text-[1vw] xl:text-[1vw] ">
+              <div className="grid grid-cols-2 w-full  -yellow-500 text-[6px] h-fit sm:text-[0.8vw] md:text-[1vw] xl:text-[1vw] ">
+                {" "}
                 {/* Sold and store rate  */}
-                <div className="border flex font-[oswald] items-center gap-2">
+                <div className="flex font-[oswald] items-center gap-1 sm-gap-2">
                   <div>{baker.sold} Sold | </div>
                   <Rating
                     icon="ph:star-fill"
@@ -84,7 +85,7 @@ const BakerBusinessCard = () => {
                   <span>({baker.StoreRate} Rate)</span>
                 </div>
                 {/* Product and Service Rate  */}
-                <div className="border flex font-[oswald] items-center gap-2">
+                <div className=" flex font-[oswald] items-center gap-1 sm-gap-2">
                   <div>{baker.available} Available | </div>
                   <Rating clickable={false} initialRating={baker.productRate} />
                   <span>({baker.productRate} Service)</span>
