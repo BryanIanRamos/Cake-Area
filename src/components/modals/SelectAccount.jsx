@@ -3,15 +3,14 @@ import { Icon } from "@iconify/react";
 import CreateAccount from "./CreateAccount";
 
 const SelectAccount = ({ isOpen, closeModal }) => {
-  // State to track the modal content view
-  const [modalView, setModalView] = useState("select"); // "select" or "customer"
+  const [modalView, setModalView] = useState("select"); // Track which view is open
 
   // Function to switch to the Customer view
   const openCustomerView = () => {
     setModalView("customer");
   };
 
-  // Function to reset to the Select Account view
+  // Reset to the Select Account view
   const goBackToSelect = () => {
     setModalView("select");
   };
@@ -29,24 +28,50 @@ const SelectAccount = ({ isOpen, closeModal }) => {
           </button>
 
           {modalView === "select" ? (
-            // Initial "Select Account" Content
-            <CreateAccount openCustomerView={openCustomerView} />
-          ) : (
-            // Customer Account Details Content
+            // Account type selection view
             <div className="text-center">
-              <h2 className="text-primary font-bold text-lg">
-                Customer Details
+              <h2 className="w-full text-[3.6vw] sm:text-[2.5vw] md:text-[2.1vw] lg:text-[1.6vw] font-semibold text-primary">
+                Create Account
               </h2>
-              <p className="text-gray-600 mt-2">
-                This is a different view for the Customer account creation.
-              </p>
-              <button
-                onClick={goBackToSelect} // Goes back to main view
-                className="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark"
-              >
-                Back
-              </button>
+              <h3 className="text-[1.9vw] sm:text-[1.3vw] md:text-[1vw] lg:text-[0.7vw] px-4 lg:px-8 text-gray-600">
+                Let’s get started! Select the type of account that matches your
+                goals.
+              </h3>
+              <div className="grid grid-rows-2 mt-3 sm:mt-2 md:mt-1 lg:mt-3 border mx-5 md:mx-8 md:py-2 lg:py-3">
+                <div className="grid grid-cols-2 items-center justify-center">
+                  <div className="flex justify-center items-center">
+                    <Icon
+                      icon="fluent:person-48-filled"
+                      className="text-[8.5vw] sm:text-[6vw] md:text-[7vw] lg:text-[5vw] text-primary"
+                    />
+                  </div>
+                  <div className="flex justify-center items-center">
+                    <Icon
+                      icon="ph:chef-hat-fill"
+                      className="text-[8.5vw] sm:text-[6vw] md:text-[5vw] lg:text-[5vw] text-primary"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 items-center justify-center sm:gap-3">
+                  <div className="border flex flex-col items-center justify-center">
+                    <button
+                      onClick={openCustomerView} // Switch to customer details view
+                      className="hover:bg-primary w-[17vw] sm:w-[12vw] md:w-[10vw] lg:w-[8vw] py-1 text-[2vw] sm:text-[1vw] hover:text-white text-primary border-2 border-primary"
+                    >
+                      Customer
+                    </button>
+                  </div>
+                  <div className="border flex flex-col items-center justify-center">
+                    <button className="hover:bg-primary w-[17vw] sm:w-[12vw] md:w-[10vw] lg:w-[8vw] py-1 text-[2vw] sm:text-[1vw] hover:text-white text-primary border-2 border-primary">
+                      Baker
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
+          ) : (
+            // Display customer account details when "Customer" is selected
+            <CreateAccount goBackToSelect={goBackToSelect} />
           )}
         </div>
       </div>
