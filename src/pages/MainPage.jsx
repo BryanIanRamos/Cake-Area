@@ -2,10 +2,24 @@ import React, { useState } from "react";
 import Cake_BG from "../assets/Cake_BG.png";
 import Cake_area_logo from "../assets/cake_area_logo.png";
 import BakerBusinessCard from "../components/BakerBusinessCard";
+import SelectAccount from "../components/modals/SelectAccount";
+
 const MainPage = () => {
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [selectBarangay, setSelectBarangay] = useState("");
   const [selectMunicipality, setSelectMunicipality] = useState("");
+
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  // Function to open the modal
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  // Function to close the modal
+  const closeModal = () => {
+    setModalOpen(false);
+  };
 
   console.log("selectBarangay: ", selectBarangay);
   console.log("selectStreet: ", selectMunicipality);
@@ -25,6 +39,10 @@ const MainPage = () => {
 
   return (
     <div className="h-screen">
+      {/* Render the modal if it's open */}
+      {isModalOpen && (
+        <SelectAccount isOpen={isModalOpen} closeModal={closeModal} />
+      )}
       <section
         className="h-[60%] sm:h-full flex flex-col"
         style={{
@@ -43,13 +61,13 @@ const MainPage = () => {
               className=" h-[7vw] sm:max-h-[5vw] xl:h-[3vw]"
             />
             <h1 className="font-[Oswald] text-[3vw] sm:text-[2vw] font-semibold">
-              Cake Area
+              Bakers Area
             </h1>
           </div>
           {/* Account Section */}
           <div className="flex justify-end items-center right-0 border-blue-600 pr-[10vw] gap-[2vw] font-[poppins] text-[2.4vw] md:text-[2vw] lg:text-[1.6vw] xl:text-[1.3vw] 2xl:text-[1vw]">
-            <h2>Log in</h2>
-            <h2>Sign up</h2>
+            <button>Log in</button>
+            <button onClick={openModal}>Sign up</button>
           </div>
         </div>
         {/* Body Content */}
