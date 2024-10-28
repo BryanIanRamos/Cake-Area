@@ -5,8 +5,8 @@ const Button = ({
   onClick,
   type = "button",
   disabled = false,
-  paddingX,
-  paddingY,
+  paddingX = "3",
+  paddingY = "1",
 }) => {
   return (
     <button
