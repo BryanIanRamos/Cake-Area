@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Icon } from "@iconify/react"; // Assuming you still need this for icons
 import TextInput from "../TextInput";
 import dayjs from "dayjs";
 import DatePicker from "react-datepicker"; // Import react-datepicker
 import "react-datepicker/dist/react-datepicker.css"; // Import the CSS file for styling
+import OrangeCheckbox from "../OrangeCheckbox";
 
 const CreateAccount = ({ goBackToSelect }) => {
   const [fname, setFname] = React.useState("");
@@ -11,6 +12,11 @@ const CreateAccount = ({ goBackToSelect }) => {
 
   const handleFnameChange = (event) => {
     setFname(event.target.value);
+  };
+
+  const [isChecked, setIsChecked] = useState(false);
+  const handleCheckboxChange = (event) => {
+    setIsChecked(event.target.checked);
   };
 
   return (
@@ -88,22 +94,41 @@ const CreateAccount = ({ goBackToSelect }) => {
                   className="lg:text-[3vw] xl:text-[2vw] text-primary mx-2"
                 />
               </div>
-              <div className="flex gap-4 mt-3 justify-center">
-                <button
-                  onClick={null}
-                  className="mt-4 px-8 py-2 bg-primary text-white rounded hover:bg-primary-dark"
-                >
-                  Next
-                </button>
-                <button
-                  onClick={goBackToSelect}
-                  className="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark"
-                >
-                  Back
-                </button>
+              <div className="flex gap-1 mt-4 items-start text-[10px] text-start px-5">
+                <div className="mt-[0.5px]">
+                  <OrangeCheckbox
+                    label="Option 1"
+                    isChecked={isChecked}
+                    onChange={handleCheckboxChange}
+                  />
+                </div>
+                <p className="text-gray-600 font-[poppins]  ">
+                  By creating this account, you agree to our{" "}
+                  <a href="#" className="text-primary font-medium">
+                    Terms of Service
+                  </a>{" "}
+                  and{" "}
+                  <a href="" className="text-primary font-medium">
+                    Privacy Policy.
+                  </a>
+                </p>
               </div>
             </div>
           </div>
+        </div>
+        <div className="flex gap-3 sm:gap-10 justify-center items-center  w-full mt-2">
+          <button
+            onClick={null}
+            className="mt-4 px-8 py-2 border border-primary  text-primary  rounded hover:bg-primary hover:text-white"
+          >
+            Proceed
+          </button>
+          <button
+            onClick={goBackToSelect}
+            className="mt-4 px-8 py-2 border border-primary  text-primary  rounded hover:bg-primary hover:text-white"
+          >
+            Back
+          </button>
         </div>
       </div>
     </div>
