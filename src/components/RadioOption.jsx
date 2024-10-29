@@ -8,7 +8,7 @@ function RadioOption({ options }) {
   };
 
   return (
-    <div className="flex gap-3 text-[0.8vw]">
+    <div className="flex gap-3">
       {options.map((option, index) => (
         <div key={index} className="flex gap-1">
           <input

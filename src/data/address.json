@@ -1,0 +1,29 @@
+[
+  {
+    "name": "Bryan Ramos",
+    "phone": "(+63) 0987654321",
+    "address": {
+      "line1": "P-3C Rigners Boarding House",
+      "line2": "Lemon, Butuan City, Agusan del Norte, Mindanao",
+      "postalCode": "8600"
+    }
+  },
+  {
+    "name": "Anna Santos",
+    "phone": "(+63) 0912345678",
+    "address": {
+      "line1": "Blk 10 Lot 5, Riverside Village",
+      "line2": "Ampayon, Butuan City, Agusan del Norte, Mindanao",
+      "postalCode": "8600"
+    }
+  },
+  {
+    "name": "Carlos Dela Cruz",
+    "phone": "(+63) 0918765432",
+    "address": {
+      "line1": "Zone 2, Poblacion",
+      "line2": "Cabadbaran City, Agusan del Norte, Mindanao",
+      "postalCode": "8605"
+    }
+  }
+]
