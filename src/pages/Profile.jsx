@@ -22,7 +22,7 @@ const Profile = () => {
   return (
     <div className="grid grid-cols-12">
       <div className="max-lg:hidden col-span-1 xl:col-span-2"></div>
-      {/* Main Content  */}
+      {/* Main Content of profile */}
       <div className="col-span-12 lg:col-span-10 xl:col-span-8 bg-trinary flex flex-col gap-4 px-10 pt-5">
         <div className="flex justify-end">
           <Button label="Back" paddingX={10} paddingY={2} />
