@@ -43,7 +43,7 @@ const SelectAccount = ({ isOpen, closeModal }) => {
                 Let’s get started! Select the type of account that matches your
                 goals.
               </h3>
-              <div className="grid grid-rows-2 mt-3 sm:mt-2 md:mt-1 lg:mt-3 border mx-5 md:mx-8 md:py-2 lg:py-3">
+              <div className="grid grid-rows-2 mt-3 sm:mt-2 md:mt-1 lg:mt-3  mx-5 md:mx-8 md:py-2 lg:py-3">
                 <div className="grid grid-cols-2 items-center justify-center">
                   <div className="flex justify-center items-center">
                     <Icon
@@ -59,7 +59,7 @@ const SelectAccount = ({ isOpen, closeModal }) => {
                   </div>
                 </div>
                 <div className="grid grid-cols-2 items-center justify-center sm:gap-3">
-                  <div className="border flex flex-col items-center justify-center">
+                  <div className="flex flex-col items-center justify-center">
                     <button
                       onClick={openCustomerView} // Switch to customer details view
                       className="hover:bg-primary w-[17vw] sm:w-[12vw] md:w-[10vw] lg:w-[8vw] py-1 text-[2vw] sm:text-[1vw] hover:text-white text-primary border-2 border-primary"
@@ -68,7 +68,7 @@ const SelectAccount = ({ isOpen, closeModal }) => {
                       Customer
                     </button>
                   </div>
-                  <div className="border flex flex-col items-center justify-center">
+                  <div className=" flex flex-col items-center justify-center">
                     <button
                       onClick={openBakerView} // Switch to baker details view
                       className="hover:bg-primary w-[17vw] sm:w-[12vw] md:w-[10vw] lg:w-[8vw] py-1 text-[2vw] sm:text-[1vw] hover:text-white text-primary border-2 border-primary"

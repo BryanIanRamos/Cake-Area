@@ -3,6 +3,7 @@ import Cake_BG from "../assets/Cake_BG.png";
 import Cake_area_logo from "../assets/cake_area_logo.png";
 import BakerBusinessCard from "../components/BakerBusinessCard";
 import SelectAccount from "../components/modals/SelectAccount";
+import LoginModal from "../components/modals/LoginModal";
 
 const MainPage = () => {
   const [selectedFilter, setSelectedFilter] = useState(null);
@@ -10,6 +11,7 @@ const MainPage = () => {
   const [selectMunicipality, setSelectMunicipality] = useState("");
 
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isLoginModalOpen, setLoginModalOpen] = useState(false);
 
   // Function to open the modal
   const openModal = () => {
@@ -19,6 +21,15 @@ const MainPage = () => {
   // Function to close the modal
   const closeModal = () => {
     setModalOpen(false);
+  };
+
+  // Functions for login modal
+  const openLoginModal = () => {
+    setLoginModalOpen(true);
+  };
+
+  const closeLoginModal = () => {
+    setLoginModalOpen(false);
   };
 
   console.log("selectBarangay: ", selectBarangay);
@@ -34,14 +45,21 @@ const MainPage = () => {
 
   // Handler function for selecting a filter
   const handleFilterClick = (filter) => {
-    setSelectedFilter(filter);
+    if (selectedFilter === filter) {
+      setSelectedFilter(null);
+    } else {
+      setSelectedFilter(filter);
+    }
   };
 
   return (
     <div className="h-screen">
-      {/* Render the modal if it's open */}
+      {/* Render both modals */}
       {isModalOpen && (
         <SelectAccount isOpen={isModalOpen} closeModal={closeModal} />
+      )}
+      {isLoginModalOpen && (
+        <LoginModal isOpen={isLoginModalOpen} closeModal={closeLoginModal} />
       )}
       <section
         className="h-[60%] sm:h-full flex flex-col"
@@ -66,8 +84,18 @@ const MainPage = () => {
           </div>
           {/* Account Section */}
           <div className="flex justify-end items-center right-0 border-blue-600 pr-[10vw] gap-[2vw] font-[poppins] text-[2.4vw] md:text-[2vw] lg:text-[1.6vw] xl:text-[1.3vw] 2xl:text-[1vw]">
-            <button>Log in</button>
-            <button onClick={openModal}>Sign up</button>
+            <button 
+              onClick={openLoginModal}
+              className="hover:text-primary hover:bg-white px-4 py-1 rounded-md transition-all duration-300"
+            >
+              Login
+            </button>
+            <button 
+              onClick={openModal}
+              className="hover:text-primary hover:bg-white px-4 py-1 rounded-md transition-all duration-300"
+            >
+              Sign up
+            </button>
           </div>
         </div>
         {/* Body Content */}
@@ -138,19 +166,21 @@ const MainPage = () => {
         </div>
         {/* Filter option  */}
         <div className="flex justify-end my-5">
-          <div className="flex items-center gap-6 border border-gray-300 rounded-lg px-[10px] py-[5px] w-fit text-secondary font-poppins shadow-sm">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4 md:gap-6 border border-gray-300 rounded-lg px-[6px] sm:px-[8px] md:px-[10px] py-[3px] sm:py-[4px] md:py-[5px] w-fit text-secondary font-poppins shadow-sm">
             <button
-              className={`px-4 py-2 rounded-md transition-colors duration-300 ${
-                selectedFilter === "rate" ? "bg-[#D9D9D9]" : "hover:bg-gray-200"
+              className={`px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-md transition-colors duration-300 text-[10px] sm:text-[12px] md:text-[14px] lg:text-[16px] ${
+                selectedFilter === "rate" 
+                  ? "bg-[#D9D9D9] text-primary font-medium" 
+                  : "hover:bg-gray-200"
               }`}
               onClick={() => handleFilterClick("rate")}
             >
               Rate
             </button>
             <button
-              className={`px-4 py-2 rounded-md transition-colors duration-300 ${
+              className={`px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-md transition-colors duration-300 text-[10px] sm:text-[12px] md:text-[14px] lg:text-[16px] ${
                 selectedFilter === "service"
-                  ? "bg-[#D9D9D9]"
+                  ? "bg-[#D9D9D9] text-primary font-medium"
                   : "hover:bg-gray-200"
               }`}
               onClick={() => handleFilterClick("service")}
@@ -158,17 +188,19 @@ const MainPage = () => {
               Service
             </button>
             <button
-              className={`px-4 py-2 rounded-md transition-colors duration-300 ${
-                selectedFilter === "sold" ? "bg-[#D9D9D9]" : "hover:bg-gray-200"
+              className={`px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-md transition-colors duration-300 text-[10px] sm:text-[12px] md:text-[14px] lg:text-[16px] ${
+                selectedFilter === "sold" 
+                  ? "bg-[#D9D9D9] text-primary font-medium" 
+                  : "hover:bg-gray-200"
               }`}
               onClick={() => handleFilterClick("sold")}
             >
               Sold
             </button>
             <button
-              className={`px-4 py-2 rounded-md transition-colors duration-300 ${
+              className={`px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-md transition-colors duration-300 text-[10px] sm:text-[12px] md:text-[14px] lg:text-[16px] ${
                 selectedFilter === "goods"
-                  ? "bg-[#D9D9D9]"
+                  ? "bg-[#D9D9D9] text-primary font-medium"
                   : "hover:bg-gray-200"
               }`}
               onClick={() => handleFilterClick("goods")}
@@ -180,7 +212,7 @@ const MainPage = () => {
 
         <div className="w-full border border-gray-400 "></div>
         {/* Baker Business Card  */}
-        <BakerBusinessCard />
+        <BakerBusinessCard selectedFilter={selectedFilter} />
       </section>
     </div>
   );

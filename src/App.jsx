@@ -9,6 +9,7 @@ import Profile from "./pages/Profile.jsx";
 import Test from "./pages/test.jsx";
 
 import "./App.css";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         {/* Cake Area Landing Page */}
         <Route path="/" element={<MainPage />} />
         <Route path="/test" element={<Test />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* Customer's Route */}
         <Route path="/Store/:name/:id" element={<Store />} />

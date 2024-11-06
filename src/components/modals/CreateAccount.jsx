@@ -1,136 +1,222 @@
 import React, { useState } from "react";
-import { Icon } from "@iconify/react"; // Assuming you still need this for icons
+import { Icon } from "@iconify/react";
 import TextInput from "../TextInput";
-import dayjs from "dayjs";
-import DatePicker from "react-datepicker"; // Import react-datepicker
-import "react-datepicker/dist/react-datepicker.css"; // Import the CSS file for styling
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import OrangeCheckbox from "../OrangeCheckbox";
+import AddressModal from "./AddressModal";
 
 const CreateAccount = ({ goBackToSelect }) => {
-  const [fname, setFname] = React.useState("");
-  const [birthDate, setBirthDate] = React.useState(null); // Initialize birthDate as null
+  // Form state
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    birthDate: null,
+  });
+  const [isChecked, setIsChecked] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [showAddressModal, setShowAddressModal] = useState(false);
 
-  const handleFnameChange = (event) => {
-    setFname(event.target.value);
+  // Handle input changes
+  const handleInputChange = (field) => (event) => {
+    setFormData({ ...formData, [field]: event.target.value });
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors({ ...errors, [field]: null });
+    }
   };
 
-  const [isChecked, setIsChecked] = useState(false);
-  const handleCheckboxChange = (event) => {
-    setIsChecked(event.target.checked);
+  // Validate form
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    // Password validation
+    if (formData.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    }
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    // Required fields
+    if (!formData.firstName.trim())
+      newErrors.firstName = "First name is required";
+    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+    if (!formData.birthDate) newErrors.birthDate = "Birth date is required";
+    if (!isChecked) newErrors.terms = "You must agree to the terms";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Handle form submission
+  const handleSubmit = () => {
+    console.log("Next button clicked");
+    setShowAddressModal(true);
+    console.log("showAddressModal set to:", true);
+  };
+
+  // Handle address submission
+  const handleAddressSubmit = (addressData) => {
+    console.log("Address submitted:", addressData);
+    setShowAddressModal(false);
   };
 
   return (
     <div className="border h-fit p-3 sm:p-6 lg:p-7 bg-white w-[85vw] sm:w-[88vw] md:w-[75vw] lg:w-[55vw] xl:w-[48vw] 2xl:w-[40vw]">
       <div className="text-center w-full border-[3px] border-primary h-full p-5">
-        <p className="text-primary font-bold text-[18px] sm:text-[1.6rem] 2xl:text-[2rem] ">
-          Create Account
-        </p>
-        <p className="text-gray-600 mb-3 mx-3 max-sm:text-[10px]">
-          Let’s set up your account! Please fill in your information to get
-          started.
-        </p>
+        {/* Header */}
+        <div className="mb-6">
+          <h2 className="text-primary font-bold text-[18px] sm:text-[1.6rem] 2xl:text-[2rem]">
+            Create Account
+          </h2>
+          <p className="text-gray-600 text-[12px] sm:text-[14px] lg:text-[16px]">
+            Let's set up your account! Please fill in your information to get
+            started.
+          </p>
+        </div>
 
-        {/* Set parent height */}
-        <div className="sm:grid grid-cols-2 sm:w-fit gap-3">
-          {/* TextField  */}
-          <div className="">
-            <div className="sm:flex gap-3 ">
+        {/* Form Grid */}
+        <div className="sm:grid grid-cols-2 gap-6">
+          {/* Left Column - Personal Info */}
+          <div className="space-y-4">
+            <div className="sm:flex gap-3">
               <TextInput
-                label={"First Name"}
-                value={fname}
-                onChange={handleFnameChange}
-                placeholder={"Ex. Bryan"}
+                label="First Name"
+                value={formData.firstName}
+                onChange={handleInputChange("firstName")}
+                placeholder="Ex. Bryan"
+                error={errors.firstName}
               />
               <TextInput
-                label={"Last Name"}
-                value={fname}
-                onChange={handleFnameChange}
-                placeholder={"Ex. Ramos"}
+                label="Last Name"
+                value={formData.lastName}
+                onChange={handleInputChange("lastName")}
+                placeholder="Ex. Ramos"
+                error={errors.lastName}
               />
             </div>
             <TextInput
-              label={"Email"}
-              value={fname}
-              onChange={handleFnameChange}
-              placeholder={"Ex. Sample@gmail.com"}
+              label="Email"
+              value={formData.email}
+              onChange={handleInputChange("email")}
+              placeholder="Ex. Sample@gmail.com"
+              error={errors.email}
             />
             <TextInput
-              label={"Password"}
-              value={fname}
+              label="Password"
               type="password"
-              onChange={handleFnameChange}
+              value={formData.password}
+              onChange={handleInputChange("password")}
+              error={errors.password}
             />
             <TextInput
-              label={"Retype Password"}
-              value={fname}
+              label="Confirm Password"
               type="password"
-              onChange={handleFnameChange}
+              value={formData.confirmPassword}
+              onChange={handleInputChange("confirmPassword")}
+              error={errors.confirmPassword}
             />
           </div>
-          <div className=" flex flex-col items-start sm:items-center justify-center max-sm:mt-2">
-            <div className="flex justify-center items-center text-primary  font-semibold font-[poppins]">
-              <Icon
-                icon="ri:cake-3-line"
-                className="sm:text-[5vw] md:text-[4vw] lg:text-[3vw] xl:text-[2.5vw]"
-              />
-              <p className="sm:text-[2.8vw] md:text-[2.6vw] lg:text-[2.1vw] xl:text-[1.7vw] 2xl:text-[1.4vw]">
-                Birth date
-              </p>
-            </div>
-            <p className="text-primary text-[10px] sm:text-[2vw] md:text-[1.7vw] lg:text-[1.4vw] xl:text-[1vw] 2xl:text-[0.8vw] text-center">
-              Tell us about your birthday.
-            </p>
-            <div className="w-full flex flex-col justify-center items-start sm:items-center">
-              <div className="sm:w-[25vw] md:w-[20vw] lg:w-[17vw] xl:w-[13vw] 2xl:w-[10vw] max-w-xs border border-primary flex items-center justify-center text-[14px]">
-                <DatePicker
-                  selected={birthDate}
-                  onChange={(date) => setBirthDate(date)}
-                  dateFormat="MM/d/yyyy" // Customize date format
-                  placeholderText="October 18, 2001" // Placeholder text
-                  className="w-full text-primary rounded p-2 focus:outline-none focus:shadow-none" // Add styling
-                />
-                <Icon
-                  icon="heroicons:calendar-date-range-16-solid"
-                  className="lg:text-[3vw] xl:text-[2vw] text-primary mx-2"
-                />
+
+          {/* Right Column - Birth Date & Terms */}
+          <div className="flex flex-col items-start sm:items-center justify-center space-y-4 mt-4 sm:mt-0">
+            {/* Birth Date Section */}
+            <div className="w-full space-y-3 flex flex-col items-start p-4">
+              {/* DatePicker Container with Header */}
+              <div className="relative w-full space-y-3 flex flex-col items-start">
+                {/* Birthday Header */}
+                <div className="flex items-center gap-2 text-primary  self-start w-fit px-2">
+                  <Icon
+                    icon="ri:cake-3-line"
+                    className="text-[20px] sm:text-[24px] lg:text-[28px]"
+                  />
+                  <h3 className="font-semibold text-[14px] sm:text-[16px] lg:text-[18px]">
+                    Birth date
+                  </h3>
+                </div>
+
+                {/* DatePicker Input */}
+                <div className="w-full flex flex-col items-start">
+                  <DatePicker
+                    selected={formData.birthDate}
+                    onChange={(date) =>
+                      setFormData({ ...formData, birthDate: date })
+                    }
+                    dateFormat="MM/d/yyyy"
+                    placeholderText="Select your birth date"
+                    className="w-full border border-primary rounded py-1.5 px-3 text-[12px] sm:text-[14px] lg:text-[16px] text-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                    showYearDropdown
+                    yearDropdownItemNumber={100}
+                    scrollableYearDropdown
+                  />
+                  {errors.birthDate && (
+                    <p className="text-red-500 text-[10px] sm:text-[12px] mt-1 self-start">
+                      {errors.birthDate}
+                    </p>
+                  )}
+                </div>
               </div>
-              <div className="flex gap-1 mt-4 items-start text-[10px] text-start px-5">
-                <div className="mt-[0.5px]">
+            </div>
+
+            {/* Terms and Conditions */}
+            <div className="w-full px-4">
+              <div className="flex items-start gap-1">
+                <div className="mt-1">
                   <OrangeCheckbox
-                    label="Option 1"
                     isChecked={isChecked}
-                    onChange={handleCheckboxChange}
+                    onChange={(e) => setIsChecked(e.target.checked)}
                   />
                 </div>
-                <p className="text-gray-600 font-[poppins]  ">
+                <p className="text-gray-600 text-sm">
                   By creating this account, you agree to our{" "}
-                  <a href="#" className="text-primary font-medium">
+                  <a href="#" className="text-primary hover:underline">
                     Terms of Service
                   </a>{" "}
                   and{" "}
-                  <a href="" className="text-primary font-medium">
-                    Privacy Policy.
+                  <a href="#" className="text-primary hover:underline">
+                    Privacy Policy
                   </a>
+                  .
                 </p>
               </div>
+              {errors.terms && (
+                <p className="text-red-500 text-xs mt-1">{errors.terms}</p>
+              )}
             </div>
           </div>
         </div>
-        <div className="flex gap-3 sm:gap-10 justify-center items-center  w-full mt-2">
+
+        {/* Action Buttons */}
+        <div className="flex justify-center gap-4 mt-6">
           <button
-            onClick={null}
-            className="mt-4 px-8 py-2 border border-primary  text-primary  rounded hover:bg-primary hover:text-white"
+            onClick={handleSubmit}
+            className="px-8 py-2 bg-primary text-white rounded hover:bg-primary/90 transition-colors"
           >
-            Proceed
+            Next
           </button>
           <button
             onClick={goBackToSelect}
-            className="mt-4 px-8 py-2 border border-primary  text-primary  rounded hover:bg-primary hover:text-white"
+            className="px-8 py-2 border border-primary text-primary rounded hover:bg-primary hover:text-white transition-colors"
           >
             Back
           </button>
         </div>
       </div>
+      <AddressModal
+        isOpen={showAddressModal}
+        onClose={() => setShowAddressModal(false)}
+        onSubmit={handleAddressSubmit}
+      />
     </div>
   );
 };

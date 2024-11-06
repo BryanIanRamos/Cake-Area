@@ -1,11 +1,15 @@
 import React, { useState } from "react";
-import Buttom from "../components/Button";
+import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import HideContact from "../components/HideContact";
 import RadioOption from "../components/RadioOption";
 
 import DummyProfile from "../assets/Dummy_Profile.png";
 import dataAddress from "../data/address.json";
+
+const handleBack = (navigate) => {
+  navigate('/');
+};
 
 const handleImageUpload = (event) => {
   const file = event.target.files[0];
@@ -16,6 +20,7 @@ const handleImageUpload = (event) => {
 };
 
 const Profile = () => {
+  const navigate = useNavigate();
   const [image, setImage] = useState(null);
   const gender = ["Male", "Female", "Prefer not to say"];
 
@@ -25,7 +30,7 @@ const Profile = () => {
       {/* Main Content of profile */}
       <div className="col-span-12 lg:col-span-10 xl:col-span-8 bg-trinary flex flex-col gap-4 px-10 pt-5">
         <div className="flex justify-end">
-          <Button label="Back" paddingX={10} paddingY={2} />
+          <Button label="Back" paddingX={10} paddingY={2} onClick={() => handleBack(navigate)} />
         </div>
         <div className="border bg-white p-7 ">
           <div className=" border-green-600">

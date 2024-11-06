@@ -1,37 +1,54 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BakerProf from "../data/bakerProf.json";
 import DumProfile from "../assets/Dummy_Profile.png";
 import { Icon } from "@iconify/react";
 import Rating from "./Rating";
 
-const BakerBusinessCard = () => {
-  // Sample user data with 20 entries
-  // const baker = Array.from({ length: 40 }, (_, i) => ({
-  //   id: i + 1,
-  //   name: `User ${i + 1}`,
-  // }));
-
-  const baker = BakerProf.bakersProfile;
-
-  // State to track the current page and page group
+const BakerBusinessCard = ({ selectedFilter }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const baker = BakerProf.bakersProfile;
+  
+  // Add filtering logic
+  const getFilteredBakers = () => {
+    if (!selectedFilter) return baker;
+    
+    return [...baker].sort((a, b) => {
+      switch (selectedFilter) {
+        case 'rate':
+          return b.StoreRate - a.StoreRate;
+        case 'service':
+          return b.productRate - a.productRate;
+        case 'sold':
+          return b.sold - a.sold;
+        case 'goods':
+          return b.available - a.available;
+        default:
+          return 0;
+      }
+    });
+  };
 
-  // Number of pagination buttons to display at a time
+  // Get filtered bakers
+  const filteredBakers = getFilteredBakers();
+  
+  // Reset to first page when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedFilter]);
+
+  const itemsPerPage = 5;
   const buttonsPerPage = 5;
 
-  // Calculate the start and end index of Baker to be displayed
+  // Use filtered bakers for pagination
   const indexOfLastUser = currentPage * itemsPerPage;
   const indexOfFirstUser = indexOfLastUser - itemsPerPage;
-  const currentBaker = baker.slice(indexOfFirstUser, indexOfLastUser);
+  const currentBakers = filteredBakers.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(filteredBakers.length / itemsPerPage);
 
   // Function to change page
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-
-  // Generate page numbers based on the number of Baker
-  const totalPages = Math.ceil(baker.length / itemsPerPage);
 
   // Calculate the start and end page numbers for the current group of buttons
   const startPage =
@@ -44,7 +61,7 @@ const BakerBusinessCard = () => {
         User List (Page {currentPage})
       </h2> */}
       <div className="space-y-4">
-        {currentBaker.map((baker) => (
+        {currentBakers.map((baker) => (
           <div
             key={baker.id}
             className="p-4 bg-gray-100 shadow-md text-lg text-gray-800  grid grid-cols-12 items-start gap-5"
