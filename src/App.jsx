@@ -21,7 +21,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* Customer's Route */}
-        <Route path="/Store/:name/:id" element={<Store />} />
+        <Route path="/Store" element={<Store />} />
         <Route path="/Product" element={<Product />} />
         <Route path="/Cart" element={<Cart />} />
         <Route path="/Profile" element={<Profile />} />
