@@ -3,13 +3,22 @@ import { Icon } from "@iconify/react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
-const LoginModal = ({ isOpen, closeModal }) => {
+const LoginModal = ({ isOpen, closeModal, onLogin }) => {
   const navigate = useNavigate();
 
   const handleForgotPassword = (e) => {
     e.preventDefault();
     closeModal();
     navigate('/forgot-password');
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Your login logic here
+    
+    // After successful login
+    onLogin(); // This will update the header
+    closeModal();
   };
 
   return (
@@ -29,7 +38,7 @@ const LoginModal = ({ isOpen, closeModal }) => {
             <h2 className="w-full text-[3.6vw] sm:text-[2.5vw] md:text-[2.1vw] lg:text-[1.6vw] font-semibold text-primary">
               Login to Your Account
             </h2>
-            <form className="mt-4 space-y-4 px-4" onSubmit={(e) => e.preventDefault()}>
+            <form className="mt-4 space-y-4 px-4" onSubmit={handleSubmit}>
               <div className="flex flex-col gap-2">
                 <input
                   type="email"
@@ -81,6 +90,7 @@ const LoginModal = ({ isOpen, closeModal }) => {
 LoginModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
+  onLogin: PropTypes.func.isRequired,
 };
 
 export default LoginModal; 

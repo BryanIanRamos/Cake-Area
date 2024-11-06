@@ -1,10 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import CartHeader from "../components/CartHeader";
-import CartTabs from "../components/CartTabs";
-import OrderCard from "../components/OrderCard";
+import CartHeader from "../../components/buyer/CartHeader";
+import CartTabs from "../../components/buyer/CartTabs";
+import OrderCard from "../../components/buyer/OrderCard";
 import { LuArrowUpDown } from "react-icons/lu";
-import CartSummary from "../components/CartSummary";
+import CartSummary from "../../components/buyer/CartSummary";
 
 const orders = [
   {
@@ -89,7 +89,7 @@ const Cart = () => {
               <h1>My Orders</h1>
               <h1 className="bg-gray-300 px-3 rounded-md">2</h1>
             </div>
-            <button 
+            <button
               onClick={handleBack}
               className="bg-primary py-2 px-10 text-white rounded-lg font-semibold mt-4 md:mt-0 hover:bg-primary/90 transition-colors"
             >

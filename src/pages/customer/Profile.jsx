@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "../components/Button";
-import HideContact from "../components/HideContact";
-import RadioOption from "../components/RadioOption";
+import Button from "../../components/buyer/Button";
+import HideContact from "../../components/buyer/HideContact";
+import RadioOption from "../../components/buyer/RadioOption";
 
-import DummyProfile from "../assets/Dummy_Profile.png";
-import dataAddress from "../data/address.json";
+import DummyProfile from "../../assets/Dummy_Profile.png";
+import dataAddress from "../../data/address.json";
 
 const handleBack = (navigate) => {
-  navigate('/');
+  navigate("/");
 };
 
 const handleImageUpload = (event) => {
@@ -30,7 +30,12 @@ const Profile = () => {
       {/* Main Content of profile */}
       <div className="col-span-12 lg:col-span-10 xl:col-span-8 bg-trinary flex flex-col gap-4 px-10 pt-5">
         <div className="flex justify-end">
-          <Button label="Back" paddingX={10} paddingY={2} onClick={() => handleBack(navigate)} />
+          <Button
+            label="Back"
+            paddingX={10}
+            paddingY={2}
+            onClick={() => handleBack(navigate)}
+          />
         </div>
         <div className="border bg-white p-7 ">
           <div className=" border-green-600">

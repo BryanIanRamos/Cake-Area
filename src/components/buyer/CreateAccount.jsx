@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify/react";
-import TextInput from "../TextInput";
+import TextInput from "./TextInput";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import OrangeCheckbox from "../OrangeCheckbox";
+import OrangeCheckbox from "./OrangeCheckbox";
 import AddressModal from "./AddressModal";
 
 const CreateAccount = ({ goBackToSelect }) => {

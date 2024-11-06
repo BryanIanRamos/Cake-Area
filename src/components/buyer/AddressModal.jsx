@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import TextInput from "../TextInput";
+import TextInput from "./TextInput";
 
 const AddressModal = ({ isOpen, onClose, onSubmit }) => {
   const [addressData, setAddressData] = useState({
@@ -21,14 +21,20 @@ const AddressModal = ({ isOpen, onClose, onSubmit }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    
-    if (!addressData.fullName.trim()) newErrors.fullName = "Full name is required";
-    if (!addressData.phoneNumber.trim()) newErrors.phoneNumber = "Phone number is required";
+
+    if (!addressData.fullName.trim())
+      newErrors.fullName = "Full name is required";
+    if (!addressData.phoneNumber.trim())
+      newErrors.phoneNumber = "Phone number is required";
     if (!addressData.city.trim()) newErrors.city = "City is required";
-    if (!addressData.barangay.trim()) newErrors.barangay = "Barangay is required";
-    if (!addressData.postalCode.trim()) newErrors.postalCode = "Postal code is required";
-    if (!/^\d{11}$/.test(addressData.phoneNumber.trim())) newErrors.phoneNumber = "Please enter a valid 11-digit phone number";
-    if (!/^\d{4}$/.test(addressData.postalCode.trim())) newErrors.postalCode = "Please enter a valid 4-digit postal code";
+    if (!addressData.barangay.trim())
+      newErrors.barangay = "Barangay is required";
+    if (!addressData.postalCode.trim())
+      newErrors.postalCode = "Postal code is required";
+    if (!/^\d{11}$/.test(addressData.phoneNumber.trim()))
+      newErrors.phoneNumber = "Please enter a valid 11-digit phone number";
+    if (!/^\d{4}$/.test(addressData.postalCode.trim()))
+      newErrors.postalCode = "Please enter a valid 4-digit postal code";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -134,4 +140,4 @@ const AddressModal = ({ isOpen, onClose, onSubmit }) => {
   );
 };
 
-export default AddressModal; 
+export default AddressModal;

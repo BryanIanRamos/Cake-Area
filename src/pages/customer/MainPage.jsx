@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import Cake_BG from "../assets/Cake_BG.png";
-import Cake_area_logo from "../assets/cake_area_logo.png";
-import BakerBusinessCard from "../components/BakerBusinessCard";
-import SelectAccount from "../components/modals/SelectAccount";
-import LoginModal from "../components/modals/LoginModal";
+import Cake_BG from "../../assets/Cake_BG.png";
+import BakerBusinessCard from "../../components/buyer/BakerBusinessCard";
+import SelectAccount from "../../components/buyer/SelectAccount";
+import LoginModal from "../../components/buyer/LoginModal";
+import Header from "../../components/buyer/Header";
+import FeedbackPopup from "../../components/buyer/FeedbackPopup";
 
 const MainPage = () => {
   const [selectedFilter, setSelectedFilter] = useState(null);
@@ -12,6 +13,13 @@ const MainPage = () => {
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState("");
+
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [feedbackType, setFeedbackType] = useState("success");
 
   // Function to open the modal
   const openModal = () => {
@@ -30,6 +38,34 @@ const MainPage = () => {
 
   const closeLoginModal = () => {
     setLoginModalOpen(false);
+  };
+
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+    setUserName("John Doe"); // Replace with actual user name from your auth system
+    closeLoginModal();
+
+    // Show feedback
+    setFeedbackMessage("Successfully logged in!");
+    setFeedbackType("success");
+    setShowFeedback(true);
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setUserName("");
+
+    // Show feedback
+    setFeedbackMessage("Successfully logged out!");
+    setFeedbackType("info");
+    setShowFeedback(true);
+  };
+
+  const handleCloseFeedback = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setShowFeedback(false);
   };
 
   console.log("selectBarangay: ", selectBarangay);
@@ -54,12 +90,24 @@ const MainPage = () => {
 
   return (
     <div className="h-screen">
+      {/* Feedback Popup */}
+      <FeedbackPopup
+        message={feedbackMessage}
+        type={feedbackType}
+        open={showFeedback}
+        onClose={handleCloseFeedback}
+      />
+
       {/* Render both modals */}
       {isModalOpen && (
         <SelectAccount isOpen={isModalOpen} closeModal={closeModal} />
       )}
       {isLoginModalOpen && (
-        <LoginModal isOpen={isLoginModalOpen} closeModal={closeLoginModal} />
+        <LoginModal
+          isOpen={isLoginModalOpen}
+          closeModal={closeLoginModal}
+          onLogin={handleLogin}
+        />
       )}
       <section
         className="h-[60%] sm:h-full flex flex-col"
@@ -69,35 +117,13 @@ const MainPage = () => {
           backgroundPosition: "center",
         }}
       >
-        {/* Top Bar */}
-        <div className="grid grid-cols-2 border-red-500 h-fit text-white mt-5 ">
-          {/* Logo Section */}
-          <div className="w-full flex items-center gap-[2vw] border-green-600 pl-[10vw]">
-            <img
-              src={Cake_area_logo}
-              alt="Cake Area Logo"
-              className=" h-[7vw] sm:max-h-[5vw] xl:h-[3vw]"
-            />
-            <h1 className="font-[Oswald] text-[3vw] sm:text-[2vw] font-semibold">
-              Bakers Area
-            </h1>
-          </div>
-          {/* Account Section */}
-          <div className="flex justify-end items-center right-0 border-blue-600 pr-[10vw] gap-[2vw] font-[poppins] text-[2.4vw] md:text-[2vw] lg:text-[1.6vw] xl:text-[1.3vw] 2xl:text-[1vw]">
-            <button 
-              onClick={openLoginModal}
-              className="hover:text-primary hover:bg-white px-4 py-1 rounded-md transition-all duration-300"
-            >
-              Login
-            </button>
-            <button 
-              onClick={openModal}
-              className="hover:text-primary hover:bg-white px-4 py-1 rounded-md transition-all duration-300"
-            >
-              Sign up
-            </button>
-          </div>
-        </div>
+        <Header
+          isLoggedIn={isLoggedIn}
+          userName={userName}
+          openLoginModal={openLoginModal}
+          openModal={openModal}
+          onLogout={handleLogout}
+        />
         {/* Body Content */}
         <div className="flex-grow flex justify-center items-center ">
           <div className="text-white font-[poppins] text-center  border-green-400">
@@ -169,8 +195,8 @@ const MainPage = () => {
           <div className="flex flex-wrap items-center gap-2 sm:gap-4 md:gap-6 border border-gray-300 rounded-lg px-[6px] sm:px-[8px] md:px-[10px] py-[3px] sm:py-[4px] md:py-[5px] w-fit text-secondary font-poppins shadow-sm">
             <button
               className={`px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-md transition-colors duration-300 text-[10px] sm:text-[12px] md:text-[14px] lg:text-[16px] ${
-                selectedFilter === "rate" 
-                  ? "bg-[#D9D9D9] text-primary font-medium" 
+                selectedFilter === "rate"
+                  ? "bg-[#D9D9D9] text-primary font-medium"
                   : "hover:bg-gray-200"
               }`}
               onClick={() => handleFilterClick("rate")}
@@ -189,8 +215,8 @@ const MainPage = () => {
             </button>
             <button
               className={`px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-md transition-colors duration-300 text-[10px] sm:text-[12px] md:text-[14px] lg:text-[16px] ${
-                selectedFilter === "sold" 
-                  ? "bg-[#D9D9D9] text-primary font-medium" 
+                selectedFilter === "sold"
+                  ? "bg-[#D9D9D9] text-primary font-medium"
                   : "hover:bg-gray-200"
               }`}
               onClick={() => handleFilterClick("sold")}

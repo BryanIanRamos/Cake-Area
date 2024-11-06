@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify/react";
-import OTPInput from "../components/OTPinput";
+import OTPInput from "../../components/buyer/OTPInput";
 import { useNavigate } from "react-router-dom";
 
 const Content = ({ icon = "", title, description }) => {
