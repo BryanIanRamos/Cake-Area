@@ -12,6 +12,7 @@ import Refund from "../components/Refund";
 import CartData from "../data/CartData.json"
 import InProcessData from "../data/InProcessData.json"
 import InProcess from "../components/InProcess";
+import ToReceiveData from "../data/ToReceiveData.json"
 
 
 const Cart = () => {
@@ -72,7 +73,19 @@ const Cart = () => {
                 </div>
               </div>
             } />
-            <Route path="/to-receive" element={<ToReceive />} />
+            <Route path="/to-receive" element={
+              <div className="overflow-y-auto flex-1">
+                <div className="flex flex-col gap-4 pb-36">
+                  {ToReceiveData.data.map((data, index) => (
+                    <OrderCard 
+                      key={index} 
+                      data={data} 
+                      type="to-receive" 
+                    />
+                  ))}
+                </div>
+              </div>
+            } />
             <Route path="/completed" element={<Completed />} />
             <Route path="/cancelled" element={<Cancelled />} />
             <Route path="/return-refund" element={<Refund />} />
