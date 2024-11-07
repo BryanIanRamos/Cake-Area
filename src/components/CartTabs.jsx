@@ -10,7 +10,7 @@ const CartTabs = () => {
     { name: 'To Receive', path: '/cart/to-receive' },
     { name: 'Completed', path: '/cart/completed' },
     { name: 'Cancelled', path: '/cart/cancelled' },
-    { name: 'Return/Refund', path: '/cart/return-refund' },
+    { name: 'Refund', path: '/cart/refund' },
   ];
 
   // Updated function to check if the tab is active

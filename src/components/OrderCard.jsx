@@ -6,6 +6,7 @@ import InProcess from './InProcess';
 import ToReceive from './ToReceive';
 import Completed from './Completed';
 import Cancelled from './Cancelled';
+import Refund from './Refund';
 
 const OrderCard = ({ data, type }) => {
   // Helper function to render the order content based on type
@@ -165,6 +166,78 @@ const OrderCard = ({ data, type }) => {
                     Visit Shop
                   </button>
                 </div>
+            </div>
+          </div>
+        );
+      case 'cancelled':
+        return (
+          <div className="flex justify-between">
+            {/* Products */}
+            <div>
+              {data.products.map((product, index) => (
+                <Cancelled 
+                  key={index} 
+                  data={{
+                    ...data,
+                    products: product
+                  }} 
+                />
+              ))}
+            </div>
+            <div className="flex flex-col justify-between my-8">
+              {/* Order Dates */}
+              <div className="flex justify-end gap-8 px-8 pt-4 font-semibold">
+                <div>
+                  <p className="text-orange-400 text-base">Order Placed</p>
+                  <p className="text-sm">{data.orderDate}</p>
+                </div>
+                <div>
+                  <p className="text-orange-400 text-base">To Receive</p>
+                  <p className="text-sm">{data.receiveDate}</p>
+                </div>
+              </div>
+              {/* Cancel Button - Only show for in-process */}
+                <div className="flex justify-end px-8 pb-4 gap-4">
+                  <button className="bg-gray-300 text-black px-8 py-2 rounded">
+                    Visit Shop
+                  </button>
+                </div>
+            </div>
+          </div>
+        );
+        case 'refund':
+        return (
+          <div className="flex justify-between">
+            {/* Products */}
+            <div>
+              {data.products.map((product, index) => (
+                <Refund 
+                  key={index} 
+                  data={{
+                    ...data,
+                    products: product
+                  }} 
+                />
+              ))}
+            </div>
+            <div className="flex flex-col justify-between my-8">
+              {/* Order Dates */}
+              <div className="flex justify-end gap-8 px-8 pt-4 font-semibold">
+                <div>
+                  <p className="text-orange-400 text-base">Request at</p>
+                  <p className="text-sm">{data.requestDate}</p>
+                </div>
+                <div>
+                  <p className="text-[#00B517] text-base">Approved at</p>
+                  <p className="text-sm">{data.completeDate}</p>
+                </div>
+              </div>
+              {/* Details Button */}
+              <div className="flex justify-end px-8 pb-4">
+                <button className="bg-gray-300 text-black px-8 py-2 rounded">
+                  Details
+                </button>
+              </div>
             </div>
           </div>
         );

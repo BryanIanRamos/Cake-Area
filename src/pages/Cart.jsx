@@ -15,6 +15,7 @@ import InProcess from "../components/InProcess";
 import ToReceiveData from "../data/ToReceiveData.json"
 import CompletedData from "../data/CompletedData.json"
 import CancelledData from "../data/CancelledData.json"
+import RefundData from "../data/RefundData.json"
 
 
 const Cart = () => {
@@ -114,7 +115,19 @@ const Cart = () => {
                 </div>
               </div>
             } />
-            <Route path="/return-refund" element={<Refund />} />
+            <Route path="/refund" element={
+              <div className="overflow-y-auto flex-1">
+                <div className="flex flex-col gap-4 pb-36">
+                  {RefundData.data.map((data, index) => (
+                    <OrderCard 
+                      key={index} 
+                      data={data} 
+                      type="refund" 
+                    />
+                  ))}
+                </div>
+              </div>
+            } />
           </Routes>
         </div>
       </div>
