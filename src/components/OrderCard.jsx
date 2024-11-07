@@ -5,6 +5,7 @@ import CardProducts from './CardProducts';
 import InProcess from './InProcess';
 import ToReceive from './ToReceive';
 import Completed from './Completed';
+import Cancelled from './Cancelled';
 
 const OrderCard = ({ data, type }) => {
   // Helper function to render the order content based on type
@@ -130,7 +131,43 @@ const OrderCard = ({ data, type }) => {
                 </div>
             </div>
           </div>
-        )
+        );
+      case 'cancelled':
+        return (
+          <div className="flex justify-between">
+            {/* Products */}
+            <div>
+              {data.products.map((product, index) => (
+                <Cancelled 
+                  key={index} 
+                  data={{
+                    ...data,
+                    products: product
+                  }} 
+                />
+              ))}
+            </div>
+            <div className="flex flex-col justify-between my-8">
+              {/* Order Dates */}
+              <div className="flex justify-end gap-8 px-8 pt-4 font-semibold">
+                <div>
+                  <p className="text-orange-400 text-base">Order Placed</p>
+                  <p className="text-sm">{data.orderDate}</p>
+                </div>
+                <div>
+                  <p className="text-orange-400 text-base">To Receive</p>
+                  <p className="text-sm">{data.receiveDate}</p>
+                </div>
+              </div>
+              {/* Cancel Button - Only show for in-process */}
+                <div className="flex justify-end px-8 pb-4 gap-4">
+                  <button className="bg-gray-300 text-black px-8 py-2 rounded">
+                    Visit Shop
+                  </button>
+                </div>
+            </div>
+          </div>
+        );
       default:
         return null;
     }
@@ -170,6 +207,11 @@ const OrderCard = ({ data, type }) => {
             </div>
           )}
           {type === 'completed' && data.status && (
+            <div className={`px-4 py-1 rounded-md text-sm ${getStatusColor(data.status)}`}>
+              {data.status}
+            </div>
+          )}
+          {type === 'cancelled' && data.status && (
             <div className={`px-4 py-1 rounded-md text-sm ${getStatusColor(data.status)}`}>
               {data.status}
             </div>

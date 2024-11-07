@@ -14,6 +14,7 @@ import InProcessData from "../data/InProcessData.json"
 import InProcess from "../components/InProcess";
 import ToReceiveData from "../data/ToReceiveData.json"
 import CompletedData from "../data/CompletedData.json"
+import CancelledData from "../data/CancelledData.json"
 
 
 const Cart = () => {
@@ -100,7 +101,19 @@ const Cart = () => {
                 </div>
               </div>
             } />
-            <Route path="/cancelled" element={<Cancelled />} />
+            <Route path="/cancelled" element={
+              <div className="overflow-y-auto flex-1">
+                <div className="flex flex-col gap-4 pb-36">
+                  {CancelledData.data.map((data, index) => (
+                    <OrderCard 
+                      key={index} 
+                      data={data} 
+                      type="cancelled" 
+                    />
+                  ))}
+                </div>
+              </div>
+            } />
             <Route path="/return-refund" element={<Refund />} />
           </Routes>
         </div>
