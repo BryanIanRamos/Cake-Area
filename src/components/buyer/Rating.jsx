@@ -35,7 +35,7 @@ const Rating = ({
 
   return (
     <div>
-      <div className="border flex gap-1">
+      <div className="flex gap-1">
         {[...Array(5)].map((_, index) => (
           <Icon
             key={index}

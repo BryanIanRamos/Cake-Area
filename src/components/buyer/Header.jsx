@@ -13,6 +13,12 @@ const Header = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
+  const handleLogout = () => {
+    onLogout();
+    navigate('/');
+    setIsDropdownOpen(false);
+  };
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -86,7 +92,7 @@ const Header = ({
                     Profile
                   </button>
                   <button
-                    onClick={onLogout}
+                    onClick={handleLogout}
                     className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition-colors"
                   >
                     Logout

@@ -7,7 +7,7 @@ import RadioOption from "../../components/buyer/RadioOption";
 import DummyProfile from "../../assets/Dummy_Profile.png";
 import dataAddress from "../../data/address.json";
 
-const Profile = ({ isLoggedIn, setIsLoggedIn }) => {
+const Profile = ({ isLoggedIn, userName }) => {
   const navigate = useNavigate();
   const [image, setImage] = useState(null);
   const gender = ["Male", "Female", "Prefer not to say"];

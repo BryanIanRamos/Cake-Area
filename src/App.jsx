@@ -7,6 +7,7 @@ import Product from "./pages/buyer/Product.jsx";
 import Cart from "./pages/buyer/Cart.jsx";
 import Profile from "./pages/buyer/Profile.jsx";
 import Test from "./pages/buyer/test.jsx";
+import Register from "./pages/baker/Register.jsx";
 
 import "./App.css";
 import ForgotPassword from "./pages/buyer/ForgotPassword.jsx";
@@ -35,6 +36,7 @@ function App() {
         />
         {/* Baker's Route */}
         {/* <Route path="/dashboard" element={<Store />} /> */}
+        <Route path="/register" element={<Register />} />
       </Routes>
     </Router>
   );

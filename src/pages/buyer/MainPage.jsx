@@ -7,7 +7,7 @@ import Header from "../../components/buyer/Header";
 import FeedbackPopup from "../../components/buyer/FeedbackPopup";
 
 const MainPage = () => {
-  const [selectedFilter, setSelectedFilter] = useState(null);
+  const [selectedFilter, setSelectedFilter] = useState("rate");
   const [selectBarangay, setSelectBarangay] = useState("");
   const [selectMunicipality, setSelectMunicipality] = useState("");
 

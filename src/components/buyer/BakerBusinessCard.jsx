@@ -66,12 +66,13 @@ const BakerBusinessCard = ({ selectedFilter }) => {
             cursor-pointer rounded-lg border border-transparent hover:border-gray-200"
           >
             {/* Profile image */}
-            <div className="col-span-2 hidden sm:flex justify-center items-center lg:p-3 
+            <div
+              className="col-span-2 hidden sm:flex justify-center items-center lg:p-3 
               transition-transform duration-300 hover:scale-105"
             >
-              <img 
-                src={baker.image} 
-                alt="profile" 
+              <img
+                src={baker.image}
+                alt="profile"
                 className="rounded-lg hover:shadow-md transition-all duration-300"
               />
             </div>
@@ -79,16 +80,15 @@ const BakerBusinessCard = ({ selectedFilter }) => {
             {/* Information */}
             <div className="col-span-12 sm:col-span-9 flex flex-col justify-start items-start text-left">
               <div className="grid grid-cols-2 w-full text-[12px] sm:text-[1.5vw] md:text-[1.5vw] xl:text-[1.4vw]">
-                <div className="font-[oswald] font-semibold md:pb-2 
-                  transition-colors duration-300 hover:text-primary"
+                <div
+                  className="font-[oswald] font-semibold md:pb-2 
+                 "
                 >
                   {baker.name}
                 </div>
-                <div className="ont-[NotoSerif] flex items-center gap-1 text-[8px] sm:text-[1.5vw] md:text-[1.5vw] xl:text-[1.4vw]
-                  group hover:text-primary transition-colors duration-300"
-                >
-                  <Icon 
-                    icon="lsicon:location-outline" 
+                <div className="ont-[NotoSerif] flex items-center gap-1 text-[8px] sm:text-[1.5vw] md:text-[1.5vw] xl:text-[1.4vw]">
+                  <Icon
+                    icon="lsicon:location-outline"
                     className="group-hover:scale-110 transition-transform duration-300"
                   />
                   <p>{baker.location}</p>
@@ -96,7 +96,8 @@ const BakerBusinessCard = ({ selectedFilter }) => {
               </div>
 
               {/* Description */}
-              <div className="font-[NotoSerif] sm:h-[6vw] lg:h-[5vw] xl:h-[6vw] w-full overflow-hidden 
+              <div
+                className="font-[NotoSerif] sm:h-[6vw] lg:h-[5vw] xl:h-[6vw] w-full overflow-hidden 
                 text-ellipsis text-[10px] sm:text-[1.5vw] md:text-[1.3vw] lg:text-[1.3vw] xl:text-[1.4vw] 2xl:text-[1.5vw] 
                 leading-[15px] sm:leading-[12px] md:leading-[13px] lg:leading-[15px] xl:leading-[22px] 2xl:leading-[25px]
                 hover:text-gray-700 transition-colors duration-300"
@@ -107,8 +108,9 @@ const BakerBusinessCard = ({ selectedFilter }) => {
               </div>
 
               {/* Ratings */}
-              <div className="grid grid-cols-2 w-full text-[6px] h-fit sm:text-[0.8vw] md:text-[1vw] xl:text-[1vw]
-                group hover:text-primary transition-colors duration-300"
+              <div
+                className="grid grid-cols-2 w-full text-[6px] h-fit sm:text-[0.8vw] md:text-[1vw] xl:text-[1vw]
+                "
               >
                 {/* Sold and store rate */}
                 <div className="flex font-[oswald] items-center gap-1 sm-gap-2">
@@ -120,18 +122,19 @@ const BakerBusinessCard = ({ selectedFilter }) => {
                     clickable={false}
                     initialRating={baker.StoreRate}
                   />
-                  <span className="group-hover:font-semibold">({baker.StoreRate} Rate)</span>
+                  <span className="group-hover:font-semibold">
+                    ({baker.StoreRate} Rate)
+                  </span>
                 </div>
                 {/* Product and Service Rate */}
                 <div className="flex font-[oswald] items-center gap-1 sm-gap-2">
                   <div className="group-hover:font-semibold transition-all duration-300">
                     {baker.available} Available |
                   </div>
-                  <Rating 
-                    clickable={false} 
-                    initialRating={baker.productRate}
-                  />
-                  <span className="group-hover:font-semibold">({baker.productRate} Service)</span>
+                  <Rating clickable={false} initialRating={baker.productRate} />
+                  <span className="group-hover:font-semibold">
+                    ({baker.productRate} Service)
+                  </span>
                 </div>
               </div>
             </div>
