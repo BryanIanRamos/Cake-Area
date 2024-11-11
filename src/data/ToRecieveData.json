@@ -1,0 +1,61 @@
+{
+  "data": [
+    {
+      "id": "0123456",
+      "bakerName": "Angelo Galope",
+      "products": [
+        {
+          "productName": "Choco-Berry Surprise Cake",
+          "description": "We all have that one friend who only wants the most unique, creative gifts (or cakes). For that friend, there is this textured and delicious chocolate meringue cake. Its as beautiful as it is different.",
+          "price": 718.0,
+          "image": "/src/assets/Cake_BG.png"
+        },
+        {
+          "productName": "Choco-Berry Surprise Cake",
+          "description": "We all have that one friend who only wants the most unique, creative gifts (or cakes). For that friend, there is this textured and delicious chocolate meringue cake. Its as beautiful as it is different.",
+          "price": 718.0,
+          "image": "/src/assets/Cake_BG.png"
+        }
+      ],
+      "orderDate": "June 2, 2023",
+      "receiveDate": "June 6, 2023",
+      "status": "On Delivery"
+    },
+    {
+      "id": "0123456",
+      "bakerName": "Aubriel Bolotaolo",
+      "products": [
+        {
+          "productName": "Choco-Berry Surprise Cake",
+          "description": "We all have that one friend who only wants the most unique, creative gifts (or cakes). For that friend, there is this textured and delicious chocolate meringue cake. Its as beautiful as it is different.",
+          "price": 718.0,
+          "image": "/src/assets/Cake_BG.png"
+        },
+        {
+          "productName": "Choco-Berry Surprise Cake",
+          "description": "We all have that one friend who only wants the most unique, creative gifts (or cakes). For that friend, there is this textured and delicious chocolate meringue cake. Its as beautiful as it is different.",
+          "price": 718.0,
+          "image": "/src/assets/Cake_BG.png"
+        }
+      ],
+      "orderDate": "June 2, 2023",
+      "receiveDate": "June 6, 2023",
+      "status": "Pending"
+    },
+    {
+      "id": "0123456",
+      "bakerName": "Angelo Galope",
+      "products": [
+        {
+          "productName": "Choco-Berry Surprise Cake",
+          "description": "We all have that one friend who only wants the most unique, creative gifts (or cakes). For that friend, there is this textured and delicious chocolate meringue cake. Its as beautiful as it is different.",
+          "price": 718.0,
+          "image": "/src/assets/Cake_BG.png"
+        }
+      ],
+      "orderDate": "June 2, 2023",
+      "receiveDate": "June 6, 2023",
+      "status": "On Delivery"
+    }
+  ]
+}

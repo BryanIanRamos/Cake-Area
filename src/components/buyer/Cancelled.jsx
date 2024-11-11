@@ -1,9 +1,10 @@
 import React from "react";
 
-export default function CardProducts({ data }) {
+export default function Cancelled({ data }) {
   return (
-    <div className="flex flex-row items-start py-4 md:py-6 px-4 md:px-8 justify-between gap-4 md:gap-0">
-      <div className="flex flex-row items-center gap-4 md:gap-8 w-full">
+    <div className="flex flex-row items-start py-4 md:py-6 px-4 md:px-8">
+      {/*Product Container*/}
+      <div className="flex flex-row items-center gap-4">
         <div>
           <input
             type="checkbox"
@@ -16,24 +17,24 @@ export default function CardProducts({ data }) {
         {/* Product Image Container */}
         <div className="flex flex-col items-center w-24 md:w-32">
           <img
-            src={data.image}
+            src={data.products.image}
             alt="cake"
             className="w-24 md:w-32 h-24 md:h-32 object-cover rounded-t-lg"
           />
-          <p className="font-bold text-sm md:text-base lg:text-lg rounded-b-lg bg-primary w-full text-white text-center py-1">
-            ₱{data.price}
+          <p className="font-bold text-xs md:text-sm lg:text-lg rounded-b-lg bg-primary w-full text-white text-center py-1">
+            ₱{data.products.price}
           </p>
         </div>
 
         {/* Product Details */}
         <div className="flex flex-col justify-start items-start gap-2 max-w-xl">
           <h3 className="font-bold text-base md:text-xl lg:text-2xl line-clamp-2">
-            {data.productName}
+            {data.products.productName}
           </h3>
 
           {/* Description - Hidden on mobile */}
           <p className="hidden md:block text-xs lg:text-sm text-gray-500">
-            {data.description}
+            {data.products.description}
           </p>
 
           {/* Quantity Controls */}
@@ -94,18 +95,6 @@ export default function CardProducts({ data }) {
           </form>
         </div>
       </div>
-
-      {/* Order Details */}
-      {/* <div className="flex flex-col gap-2 md:gap-8 font-semibold w-auto">
-        <div className="gap-1 md:gap-2">
-          <p className="text-xs md:text-sm text-primary font-bold">Order Placed: </p>
-          <p className="text-xs md:text-sm">{data.orderDate}</p>
-        </div>
-        <div className="gap-1 md:gap-2">
-          <p className="text-xs md:text-sm text-primary font-bold">To Receive: </p>
-          <p className="text-xs md:text-sm">{data.receiveDate}</p>
-        </div>
-      </div> */}
     </div>
   );
 }
