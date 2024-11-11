@@ -7,22 +7,23 @@ import RadioOption from "../../components/buyer/RadioOption";
 import DummyProfile from "../../assets/Dummy_Profile.png";
 import dataAddress from "../../data/address.json";
 
-const handleBack = (navigate) => {
-  navigate("/");
-};
-
-const handleImageUpload = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    const imageUrl = URL.createObjectURL(file);
-    setImage(imageUrl);
-  }
-};
-
-const Profile = () => {
+const Profile = ({ isLoggedIn, setIsLoggedIn }) => {
   const navigate = useNavigate();
   const [image, setImage] = useState(null);
   const gender = ["Male", "Female", "Prefer not to say"];
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setImage(imageUrl);
+    }
+  };
+
+  const handleBack = () => {
+    navigate(-1);
+    // The isLoggedIn state will be maintained because we're not changing it
+  };
 
   return (
     <div className="grid grid-cols-12">
@@ -34,7 +35,7 @@ const Profile = () => {
             label="Back"
             paddingX={10}
             paddingY={2}
-            onClick={() => handleBack(navigate)}
+            onClick={handleBack}
           />
         </div>
         <div className="border bg-white p-7 ">

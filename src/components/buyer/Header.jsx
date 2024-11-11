@@ -2,7 +2,13 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Cake_area_logo from "../../assets/cake_area_logo.png";
 
-const Header = ({ isLoggedIn, userName, openLoginModal, openModal, onLogout }) => {
+const Header = ({
+  isLoggedIn,
+  userName,
+  openLoginModal,
+  openModal,
+  onLogout,
+}) => {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -24,7 +30,7 @@ const Header = ({ isLoggedIn, userName, openLoginModal, openModal, onLogout }) =
   };
 
   const handleSettingsClick = () => {
-    navigate("/settings");
+    navigate("/Profile");
     setIsDropdownOpen(false);
   };
 
@@ -55,7 +61,7 @@ const Header = ({ isLoggedIn, userName, openLoginModal, openModal, onLogout }) =
                 {userName}
                 <svg
                   className={`w-4 h-4 transition-transform duration-200 ${
-                    isDropdownOpen ? 'rotate-180' : ''
+                    isDropdownOpen ? "rotate-180" : ""
                   }`}
                   fill="none"
                   stroke="currentColor"
@@ -77,7 +83,7 @@ const Header = ({ isLoggedIn, userName, openLoginModal, openModal, onLogout }) =
                     onClick={handleSettingsClick}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                   >
-                    Settings
+                    Profile
                   </button>
                   <button
                     onClick={onLogout}
