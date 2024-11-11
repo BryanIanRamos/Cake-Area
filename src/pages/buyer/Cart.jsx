@@ -34,7 +34,7 @@ const Cart = () => {
               <h1 className="bg-gray-300 px-3 rounded-md">2</h1>
             </div>
             <button
-              onClick={() => navigate(-1)}
+              onClick={() => navigate('/')}
               className="bg-primary py-2 px-10 text-white rounded-lg font-semibold mt-4 md:mt-0"
             >
               Back

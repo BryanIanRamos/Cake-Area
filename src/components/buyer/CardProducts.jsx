@@ -3,7 +3,7 @@ import React from "react";
 export default function CardProducts({ data }) {
   return (
     <div className="flex flex-row items-start py-4 md:py-6 px-4 md:px-8 justify-between gap-4 md:gap-0">
-      <div className="flex flex-row items-center gap-4 md:gap-8 w-full">
+      <div className="flex flex-row items-center gap-4">
         <div>
           <input
             type="checkbox"
