@@ -45,12 +45,10 @@ const Product = () => {
   };
 
   const handleAddToCart = () => {
-    // Add to cart logic here
     toast.success("Added to cart successfully!");
   };
 
   const handleOrderNow = () => {
-    // Order now logic here
     navigate("/checkout", {
       state: {
         product: {
@@ -65,7 +63,6 @@ const Product = () => {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    // Scroll to comments section
     document
       .getElementById("comments-section")
       .scrollIntoView({ behavior: "smooth" });
@@ -77,12 +74,12 @@ const Product = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start h-full w-full px-[10%] py-[6%] ">
+    <div className="flex flex-col items-center justify-start h-full w-full px-4 py-6 md:px-10 md:py-8">
       <Navbar />
 
-      <div className="w-full h-fit max-w-6xl mx-auto flex flex-col gap-2">
+      <div className="w-full h-fit max-w-6xl mx-auto flex flex-col gap-2 mt-[4%]">
         {/* Top Content  */}
-        <div className="bg-white grid grid-cols-3 w-full gap-4 p-4">
+        <div className="bg-white grid grid-cols-1 md:grid-cols-3 w-full gap-4 p-4 rounded-lg shadow-md ">
           {/* Image Section - Left Column */}
           <div className="w-full h-[400px]">
             <div className="w-full h-full">
@@ -91,27 +88,20 @@ const Product = () => {
                 <img
                   src={neapolitanBrownie}
                   alt="Main Product Image"
-                  className="w-full h-full object-cover rounded-lg"
+                  className="w-full h-full object-cover rounded-lg transition-transform transform hover:scale-105"
                 />
               </div>
 
               {/* Thumbnail Images Container */}
               <div className="grid grid-cols-3 h-[23%] gap-2">
-                <img
-                  src={neapolitanBrownie}
-                  alt="Thumbnail 1"
-                  className="w-full h-full object-cover rounded-md cursor-pointer hover:opacity-80 transition-opacity"
-                />
-                <img
-                  src={neapolitanBrownie}
-                  alt="Thumbnail 2"
-                  className="w-full h-full object-cover rounded-md cursor-pointer hover:opacity-80 transition-opacity"
-                />
-                <img
-                  src={neapolitanBrownie}
-                  alt="Thumbnail 3"
-                  className="w-full h-full object-cover rounded-md cursor-pointer hover:opacity-80 transition-opacity"
-                />
+                {[...Array(3)].map((_, index) => (
+                  <img
+                    key={index}
+                    src={neapolitanBrownie}
+                    alt={`Thumbnail ${index + 1}`}
+                    className="w-full h-full object-cover rounded-md cursor-pointer hover:opacity-80 transition-opacity"
+                  />
+                ))}
               </div>
             </div>
           </div>
@@ -165,7 +155,7 @@ const Product = () => {
                 <span className="text-gray-600 text-sm">Quantity</span>
                 <div className="flex items-center gap-2">
                   <button
-                    className="w-7 h-7 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-100"
+                    className="w-7 h-7 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-100 transition-colors"
                     onClick={() => handleQuantityChange(quantity - 1)}
                   >
                     −
@@ -181,7 +171,7 @@ const Product = () => {
                     max="99"
                   />
                   <button
-                    className="w-7 h-7 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-100"
+                    className="w-7 h-7 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-100 transition-colors"
                     onClick={() => handleQuantityChange(quantity + 1)}
                   >
                     +
@@ -208,8 +198,9 @@ const Product = () => {
             </div>
           </div>
         </div>
+
         {/* Mid Content  */}
-        <div className="w-full bg-white max-w-6xl h-[210px] mx-auto p-4">
+        <div className="w-full bg-white max-w-6xl h-[210px] mx-auto p-4 rounded-lg shadow-md">
           <h3 className="text-xl font-semibold mb-4">Recommend</h3>
           <div className="flex gap-4 overflow-x-auto pb-4">
             {[669, 669, 669, 669, 669].map((price, index) => (
@@ -221,13 +212,14 @@ const Product = () => {
             ))}
           </div>
         </div>
+
         {/* Bottom Content  */}
         <div className="flex justify-center items-center w-full bg-white max-w-6xl mx-auto p-4">
           <div className="w-full">
             <h2 className="text-xl font-semibold">Product Rating</h2>
-            <div className="items-center gap-2 bg-[#FAF3EB]  w-full h-[180px] mt-3 p-5 grid grid-cols-4">
+            <div className="items-center gap-2 bg-[#FAF3EB] w-full h-[180px] mt-3 p-5 grid grid-cols-4 rounded-lg shadow-md">
               {/* Rating Section  */}
-              <div className=" w-full h-fullcol-span-1 font-[Oswald] flex justify-center items-center">
+              <div className="w-full h-full col-span-1 font-[Oswald] flex justify-center items-center">
                 <div>
                   <div className="flex items-center gap-1">
                     <span className="text-[34px] font-semibold">3.4</span>
@@ -238,13 +230,13 @@ const Product = () => {
                       icon="ph:star-fill"
                       clickable={false}
                       initialRating={3.4}
-                      className="text-[#F4A340] text-[20%]]"
+                      className="text-[#F4A340] text-[20%]"
                     />
                   </div>
                 </div>
               </div>
-              <div className=" w-full h-full col-span-3">
-                <div className="font-[Oswald] grid grid-cols-4 gap-4  p-5">
+              <div className="w-full h-full col-span-3">
+                <div className="font-[Oswald] grid grid-cols-4 gap-4 p-5">
                   <div className="flex justify-center items-center px-4">
                     <button
                       className={`border py-2 px-4 rounded-md w-full h-fit text-center transition-colors ${
