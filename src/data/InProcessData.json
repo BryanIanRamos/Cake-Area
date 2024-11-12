@@ -8,12 +8,14 @@
           "productName": "Choco-Berry Surprise Cake",
           "description": "We all have that one friend who only wants the most unique, creative gifts (or cakes). For that friend, there is this textured and delicious chocolate meringue cake. Its as beautiful as it is different.",
           "price": 718.0,
+          "quantity": 2,
           "image": "/src/assets/Cake_BG.png"
         },
         {
           "productName": "Choco-Berry Surprise Cake",
           "description": "We all have that one friend who only wants the most unique, creative gifts (or cakes). For that friend, there is this textured and delicious chocolate meringue cake. Its as beautiful as it is different.",
           "price": 718.0,
+          "quantity": 1,
           "image": "/src/assets/Cake_BG.png"
         }
       ],
@@ -28,18 +30,21 @@
           "productName": "Choco-Berry Surprise Cake",
           "description": "We all have that one friend who only wants the most unique, creative gifts (or cakes). For that friend, there is this textured and delicious chocolate meringue cake. Its as beautiful as it is different.",
           "price": 718.0,
+          "quantity": 3,
           "image": "/src/assets/Cake_BG.png"
         },
         {
           "productName": "Choco-Berry Surprise Cake",
           "description": "We all have that one friend who only wants the most unique, creative gifts (or cakes). For that friend, there is this textured and delicious chocolate meringue cake. Its as beautiful as it is different.",
           "price": 718.0,
+          "quantity": 1,
           "image": "/src/assets/Cake_BG.png"
         },
         {
           "productName": "Choco-Berry Surprise Cake",
           "description": "We all have that one friend who only wants the most unique, creative gifts (or cakes). For that friend, there is this textured and delicious chocolate meringue cake. Its as beautiful as it is different.",
           "price": 718.0,
+          "quantity": 4,
           "image": "/src/assets/Cake_BG.png"
         }
       ],

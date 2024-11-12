@@ -15,11 +15,11 @@ export default function InProcess({ data }) {
         </div>
 
         {/* Product Image Container */}
-        <div className="flex flex-col items-center w-24 md:w-32">
+        <div className="flex flex-col items-center w-24 md:w-40">
           <img
             src={data.products.image}
             alt="cake"
-            className="w-24 md:w-32 h-24 md:h-32 object-cover rounded-t-lg"
+            className="object-cover rounded-t-lg"
           />
           <p className="font-bold text-xs md:text-sm lg:text-lg rounded-b-lg bg-primary w-full text-white text-center py-1">
             ₱{data.products.price}
@@ -38,7 +38,10 @@ export default function InProcess({ data }) {
           </p>
 
           {/* Quantity Controls */}
-          <form>
+          <div className="relative flex items-center max-w-[8rem]">
+            <h1 className="text-gray-500 font-semibold">Quantity: {data.products.quantity}</h1>
+          </div>
+          {/* <form>
             <div className="relative flex items-center max-w-[8rem]">
               <button
                 type="button"
@@ -92,7 +95,7 @@ export default function InProcess({ data }) {
                 </svg>
               </button>
             </div>
-          </form>
+          </form> */}
         </div>
       </div>
     </div>

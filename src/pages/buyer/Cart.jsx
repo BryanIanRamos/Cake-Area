@@ -26,7 +26,7 @@ const Cart = () => {
   return (
     <div className="flex flex-col justify-center gap-8">
       <CartHeader />
-      <div className="flex flex-col px-4 md:px-8 lg:px-72 justify-between gap-4">
+      <div className="flex flex-col px-4 md:px-8 lg:px-12 xl:px-32 2xl:px-72 justify-between gap-4">
         <div className="flex flex-col gap-2">
           <div className="flex justify-between pt-24 md:pt-36">
             <div className="flex gap-2 items-center text-xl md:text-3xl font-semibold">
