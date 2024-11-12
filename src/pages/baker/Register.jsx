@@ -43,6 +43,8 @@ const Register = () => {
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isEmailFocused, setIsEmailFocused] = useState(false);
 
+  const RequiredIndicator = () => <span className="text-red-500 ml-1">*</span>;
+
   const validateForm = () => {
     const newErrors = {};
 
@@ -134,7 +136,10 @@ const Register = () => {
   const renderStep1 = () => (
     <div className="grid grid-cols-2 gap-2 mt-4">
       <div className="col-span-2 sm:col-span-1 flex flex-col gap-1">
-        <label htmlFor="firstName">First Name</label>
+        <label htmlFor="firstName">
+          First Name
+          <RequiredIndicator />
+        </label>
         <input
           type="text"
           id="firstName"
@@ -149,7 +154,10 @@ const Register = () => {
         )}
       </div>
       <div className="col-span-2 sm:col-span-1 flex flex-col gap-1">
-        <label htmlFor="lastName">Last Name</label>
+        <label htmlFor="lastName">
+          Last Name
+          <RequiredIndicator />
+        </label>
         <input
           type="text"
           id="lastName"
@@ -159,7 +167,10 @@ const Register = () => {
         />
       </div>
       <div className="col-span-2 flex flex-col gap-1 relative">
-        <label htmlFor="email">Email</label>
+        <label htmlFor="email">
+          Email
+          <RequiredIndicator />
+        </label>
         <div className="relative">
           <input
             type="email"
@@ -198,7 +209,10 @@ const Register = () => {
         )}
       </div>
       <div className="col-span-2 flex flex-col gap-1 relative">
-        <label htmlFor="password">Password</label>
+        <label htmlFor="password">
+          Password
+          <RequiredIndicator />
+        </label>
         <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
@@ -271,7 +285,10 @@ const Register = () => {
       </div>
 
       <div className="col-span-2 flex flex-col gap-1">
-        <label htmlFor="confirmPassword">Confirm Password</label>
+        <label htmlFor="confirmPassword">
+          Confirm Password
+          <RequiredIndicator />
+        </label>
         <div className="relative">
           <input
             type={showConfirmPassword ? "text" : "password"}
@@ -305,7 +322,10 @@ const Register = () => {
   const renderStep2 = () => (
     <div className="grid grid-cols-2 gap-2 mt-4">
       <div className="col-span-2 flex flex-col gap-1">
-        <label htmlFor="phone">Phone Number</label>
+        <label htmlFor="phone">
+          Phone Number
+          <RequiredIndicator />
+        </label>
         <input
           type="tel"
           id="phone"
@@ -327,7 +347,10 @@ const Register = () => {
         )}
       </div>
       <div className="col-span-2 flex flex-col gap-1">
-        <label htmlFor="birthDate">Birth Date</label>
+        <label htmlFor="birthDate">
+          Birth Date
+          <RequiredIndicator />
+        </label>
         <input
           type="date"
           id="birthDate"
@@ -337,12 +360,24 @@ const Register = () => {
         />
       </div>
       <div className="col-span-2 flex flex-col gap-1">
-        <label>Gender</label>
+        <label>
+          Gender
+          <RequiredIndicator />
+        </label>
         <RadioOption
           options={["Male", "Female", "Prefer not to say"]}
           selected={formData.gender}
-          onChange={(value) => setFormData({ ...formData, gender: value })}
+          onChange={(value) => {
+            console.log("Selected Gender:", value);
+            setFormData((prev) => ({
+              ...prev,
+              gender: value,
+            }));
+          }}
         />
+        {errors.gender && (
+          <p className="text-red-500 text-sm mt-1">{errors.gender}</p>
+        )}
       </div>
     </div>
   );
@@ -351,7 +386,10 @@ const Register = () => {
   const renderStep3 = () => (
     <div className="grid grid-cols-2 gap-2 mt-4">
       <div className="col-span-2 flex flex-col gap-1">
-        <label htmlFor="businessName">Business Name</label>
+        <label htmlFor="businessName">
+          Business Name
+          <RequiredIndicator />
+        </label>
         <input
           type="text"
           id="businessName"
@@ -362,7 +400,10 @@ const Register = () => {
         />
       </div>
       <div className="col-span-2 flex flex-col gap-1">
-        <label htmlFor="registrationNumber">Registration Number</label>
+        <label htmlFor="registrationNumber">
+          Registration Number
+          <RequiredIndicator />
+        </label>
         <input
           type="text"
           id="registrationNumber"
@@ -373,7 +414,10 @@ const Register = () => {
         />
       </div>
       <div className="col-span-2 flex flex-col gap-1">
-        <label htmlFor="businessEmail">Business Email</label>
+        <label htmlFor="businessEmail">
+          Business Email
+          <RequiredIndicator />
+        </label>
         <input
           type="email"
           id="businessEmail"
@@ -401,7 +445,10 @@ const Register = () => {
   const renderStep4 = () => (
     <div className="grid grid-cols-2 gap-2 mt-4">
       <div className="col-span-2 flex flex-col gap-1">
-        <label htmlFor="cityBarangay">City, Barangay</label>
+        <label htmlFor="cityBarangay">
+          City, Barangay
+          <RequiredIndicator />
+        </label>
         <input
           type="text"
           id="cityBarangay"
@@ -412,7 +459,10 @@ const Register = () => {
         />
       </div>
       <div className="col-span-2 flex flex-col gap-1">
-        <label htmlFor="postalCode">Postal Code</label>
+        <label htmlFor="postalCode">
+          Postal Code
+          <RequiredIndicator />
+        </label>
         <input
           type="text"
           id="postalCode"
@@ -423,7 +473,10 @@ const Register = () => {
         />
       </div>
       <div className="col-span-2 flex flex-col gap-1">
-        <label htmlFor="streetBuilding">Street name, Building name</label>
+        <label htmlFor="streetBuilding">
+          Street name, Building name
+          <RequiredIndicator />
+        </label>
         <input
           type="text"
           id="streetBuilding"
@@ -434,7 +487,10 @@ const Register = () => {
         />
       </div>
       <div className="col-span-2 flex flex-col gap-1 mt-2">
-        <label className="mb-1">Business Location Type</label>
+        <label className="mb-1">
+          Business Location Type
+          <RequiredIndicator />
+        </label>
         <div className="flex gap-4">
           <button
             type="button"
@@ -540,6 +596,9 @@ const Register = () => {
         );
       case 2:
         return (
+          // console.log("formData.phone:", formData.phone),
+          // console.log("formData.birthDate:", formData.birthDate),
+          // console.log("formData.gender:", formData.gender),
           validatePhoneNumber(formData.phone) &&
           formData.birthDate !== "" &&
           formData.gender !== ""
