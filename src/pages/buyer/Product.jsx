@@ -77,7 +77,7 @@ const Product = () => {
     <div className="flex flex-col items-center justify-start h-full w-full px-4 py-6 md:px-10 md:py-8">
       <Navbar />
 
-      <div className="w-full h-fit max-w-6xl mx-auto flex flex-col gap-2 mt-[4%]">
+      <div className="w-full h-fit max-w-6xl mx-auto flex flex-col gap-2 mt-[5%]">
         {/* Top Content  */}
         <div className="bg-white grid grid-cols-1 md:grid-cols-3 w-full gap-4 p-4 rounded-lg shadow-md ">
           {/* Image Section - Left Column */}
@@ -120,7 +120,6 @@ const Product = () => {
             </div>
 
             <div className="space-y-3">
-              {/* Price Section */}
               <div className="flex items-center gap-4 py-2 border-y border-gray-200 w-fit">
                 <div className="flex items-center gap-1">
                   <span className="text-gray-500 text-sm">₱</span>
@@ -217,7 +216,7 @@ const Product = () => {
         <div className="flex justify-center items-center w-full bg-white max-w-6xl mx-auto p-4">
           <div className="w-full">
             <h2 className="text-xl font-semibold">Product Rating</h2>
-            <div className="items-center gap-2 bg-[#FAF3EB] w-full h-[180px] mt-3 p-5 grid grid-cols-4 rounded-lg shadow-md">
+            <div className="items-center gap-2 bg-[#FAF3EB] w-full h-[180px] mt-3 p-5 grid grid-cols-1 md:grid-cols-4 rounded-lg shadow-md">
               {/* Rating Section  */}
               <div className="w-full h-full col-span-1 font-[Oswald] flex justify-center items-center">
                 <div>
@@ -236,7 +235,7 @@ const Product = () => {
                 </div>
               </div>
               <div className="w-full h-full col-span-3">
-                <div className="font-[Oswald] grid grid-cols-4 gap-4 p-5">
+                <div className="font-[Oswald] grid grid-cols-2 md:grid-cols-4 gap-4 p-5">
                   <div className="flex justify-center items-center px-4">
                     <button
                       className={`border py-2 px-4 rounded-md w-full h-fit text-center transition-colors ${
