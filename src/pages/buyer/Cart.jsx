@@ -1,5 +1,5 @@
-import React from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { LuArrowUpDown } from "react-icons/lu";
 
 // To be Cleaned
@@ -22,19 +22,71 @@ import RefundData from "../../data/RefundData.json";
 
 const Cart = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [totalQuantity, setTotalQuantity] = useState(0);
+  const [selectedProducts, setSelectedProducts] = useState([]);
+
+  const handleTotalChange = ({ amount, quantity }) => {
+    console.log("Total Amount:", amount, "Total Quantity:", quantity);
+    setTotalAmount(amount);
+    setTotalQuantity(quantity);
+  };
+
+  useEffect(() => {
+    console.log("Selected Products:", selectedProducts);
+    console.log("Total Amount:", totalAmount, "Total Quantity:", totalQuantity);
+    const calculatedTotalAmount = selectedProducts.reduce((sum, product) => {
+      return sum + (product.price * product.quantity);
+    }, 0);
+
+    const calculatedTotalQuantity = selectedProducts.reduce((sum, product) => {
+      return sum + product.quantity;
+    }, 0);
+
+    handleTotalChange({
+      amount: calculatedTotalAmount,
+      quantity: calculatedTotalQuantity
+    });
+  }, [selectedProducts]);
+
+  useEffect(() => {
+    setTotalAmount(0);
+    setSelectedProducts([]);
+  }, [location.pathname]);
+
+  const getOrderCount = () => {
+    switch(location.pathname) {
+      case '/cart':
+      case '/':
+        return CartData.data.length;
+      case '/cart/in-process':
+        return InProcessData.data.length;
+      case '/cart/to-receive':
+        return ToReceiveData.data.length;
+      case '/cart/completed':
+        return CompletedData.data.length;
+      case '/cart/cancelled':
+        return CancelledData.data.length;
+      case '/cart/refund':
+        return RefundData.data.length;
+      default:
+        return 0;
+    }
+  };
 
   return (
     <div className="flex flex-col justify-center gap-8">
       <CartHeader />
-      <div className="flex flex-col px-4 md:px-8 lg:px-72 justify-between gap-4">
+      <div className="flex flex-col px-4 md:px-8 lg:px-12 xl:px-32 2xl:px-72 justify-between gap-4">
         <div className="flex flex-col gap-2">
           <div className="flex justify-between pt-24 md:pt-36">
             <div className="flex gap-2 items-center text-xl md:text-3xl font-semibold">
               <h1>My Orders</h1>
-              <h1 className="bg-gray-300 px-3 rounded-md">2</h1>
+              <h1 className="bg-gray-300 px-3 rounded-md">{getOrderCount()}</h1>
             </div>
             <button
-              onClick={() => navigate(-1)}
+              onClick={() => navigate('/')}
               className="bg-primary py-2 px-10 text-white rounded-lg font-semibold mt-4 md:mt-0"
             >
               Back
@@ -58,7 +110,12 @@ const Cart = () => {
                 <div className="overflow-y-auto flex-1">
                   <div className="flex flex-col gap-4 pb-36">
                     {CartData.data.map((data, index) => (
-                      <OrderCard key={index} data={data} type="cart" />
+                      <OrderCard 
+                        key={index} 
+                        data={data} 
+                        type="cart" 
+                        onTotalChange={handleTotalChange}
+                      />
                     ))}
                   </div>
                 </div>
@@ -127,7 +184,10 @@ const Cart = () => {
           </Routes>
         </div>
       </div>
-      <CartSummary totalAmount={356.5} />
+      <CartSummary 
+        totalAmount={totalAmount} 
+        totalQuantity={totalQuantity}
+      />
     </div>
   );
 };
