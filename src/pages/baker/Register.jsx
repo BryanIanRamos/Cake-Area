@@ -29,14 +29,108 @@ const Register = () => {
     locationType: "", // 'home' or 'work'
   });
 
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.value,
-    });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [passwordErrors, setPasswordErrors] = useState({
+    length: false,
+    number: false,
+    upper: false,
+    lower: false,
+    symbol: false,
+    match: false,
+  });
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [isEmailFocused, setIsEmailFocused] = useState(false);
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (step === 1) {
+      if (!formData.firstName.trim())
+        newErrors.firstName = "First name is required";
+      if (!formData.lastName.trim())
+        newErrors.lastName = "Last name is required";
+      if (!formData.email.trim()) {
+        newErrors.email = "Email is required";
+      } else if (!formData.email.endsWith("@gmail.com")) {
+        newErrors.email = "Please use a Gmail address (@gmail.com)";
+      }
+
+      if (formData.password.trim()) {
+        if (!Object.values(passwordErrors).every(Boolean)) {
+          newErrors.password = "Please meet all password requirements";
+        }
+      } else {
+        newErrors.password = "Password is required";
+      }
+    } else if (step === 2) {
+      if (!formData.phone.trim()) {
+        newErrors.phone = "Phone number is required";
+      } else if (!validatePhoneNumber(formData.phone)) {
+        newErrors.phone = "Please enter a valid Philippine mobile number";
+      }
+      if (!formData.birthDate) newErrors.birthDate = "Birth date is required";
+      if (!formData.gender) newErrors.gender = "Gender is required";
+    } else if (step === 3) {
+      if (!formData.businessName.trim())
+        newErrors.businessName = "Business name is required";
+      if (!formData.businessEmail.trim())
+        newErrors.businessEmail = "Business email is required";
+    } else if (step === 4) {
+      if (!formData.cityBarangay.trim())
+        newErrors.cityBarangay = "City and Barangay are required";
+      if (!formData.postalCode.trim())
+        newErrors.postalCode = "Postal code is required";
+      if (!formData.streetBuilding.trim())
+        newErrors.streetBuilding = "Street and building are required";
+      if (!formData.locationType)
+        newErrors.locationType = "Location type is required";
+    }
+
+    setErrors(newErrors);
+    console.log("Validation errors:", newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  // Step 1 - Personal Info
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+
+    if (id === "phone") {
+      // Only allow numbers and limit to 11 digits
+      const cleanValue = value.replace(/\D/g, "").slice(0, 11);
+      setFormData((prev) => ({ ...prev, [id]: cleanValue }));
+    } else {
+      setFormData((prev) => {
+        const newData = { ...prev, [id]: value };
+        if (id === "password" || id === "confirmPassword") {
+          validatePassword(
+            id === "password" ? value : newData.password,
+            id === "confirmPassword" ? value : newData.confirmPassword
+          );
+        }
+        return newData;
+      });
+    }
+
+    if (errors[id]) {
+      setErrors((prev) => ({ ...prev, [id]: null }));
+    }
+  };
+
+  const validatePassword = (password, confirmPassword) => {
+    const errors = {
+      length: password.length >= 8,
+      number: /\d/.test(password),
+      upper: /[A-Z]/.test(password),
+      lower: /[a-z]/.test(password),
+      symbol: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+      match: password === confirmPassword,
+    };
+    setPasswordErrors(errors);
+    return Object.values(errors).every(Boolean);
+  };
+
   const renderStep1 = () => (
     <div className="grid grid-cols-2 gap-2 mt-4">
       <div className="col-span-2 sm:col-span-1 flex flex-col gap-1">
@@ -46,8 +140,13 @@ const Register = () => {
           id="firstName"
           value={formData.firstName}
           onChange={handleInputChange}
-          className="border-2 py-1 px-2 border-tertiary rounded-md"
+          className={`border-2 py-1 px-2 rounded-md ${
+            errors.firstName ? "border-red-500" : "border-tertiary"
+          }`}
         />
+        {errors.firstName && (
+          <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
+        )}
       </div>
       <div className="col-span-2 sm:col-span-1 flex flex-col gap-1">
         <label htmlFor="lastName">Last Name</label>
@@ -59,35 +158,145 @@ const Register = () => {
           className="border-2 py-1 px-2 border-tertiary rounded-md"
         />
       </div>
-      <div className="col-span-2 flex flex-col gap-1">
+      <div className="col-span-2 flex flex-col gap-1 relative">
         <label htmlFor="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          value={formData.email}
-          onChange={handleInputChange}
-          className="border-2 py-1 px-2 border-tertiary rounded-md"
-        />
+        <div className="relative">
+          <input
+            type="email"
+            id="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            onFocus={() => setIsEmailFocused(true)}
+            onBlur={() => setIsEmailFocused(false)}
+            className={`w-full border-2 py-1 px-2 rounded-md ${
+              formData.email && formData.email.endsWith("@gmail.com")
+                ? "border-green-500"
+                : formData.email
+                ? "border-red-500"
+                : "border-tertiary"
+            }`}
+          />
+        </div>
+
+        {/* Email requirements feedback */}
+        {isEmailFocused && (
+          <div className="absolute left-full ml-4 top-0 w-48 bg-white p-3 rounded-md shadow-lg border text-sm">
+            <h4 className="font-semibold mb-2">Email requirements:</h4>
+            <ul className="space-y-1">
+              <li
+                className={`flex items-center gap-2 ${
+                  formData.email.endsWith("@gmail.com")
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}
+              >
+                {formData.email.endsWith("@gmail.com") ? "✓" : "×"} Must end
+                with @gmail.com
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
-      <div className="col-span-2 flex flex-col gap-1">
+      <div className="col-span-2 flex flex-col gap-1 relative">
         <label htmlFor="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          value={formData.password}
-          onChange={handleInputChange}
-          className="border-2 py-1 px-2 border-tertiary rounded-md"
-        />
+        <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            id="password"
+            value={formData.password}
+            onChange={handleInputChange}
+            onFocus={() => setIsPasswordFocused(true)}
+            onBlur={() => setIsPasswordFocused(false)}
+            className={`w-full border-2 py-1 px-2 rounded-md pr-10 ${
+              formData.password &&
+              Object.values({ ...passwordErrors, match: true }).every(Boolean)
+                ? "border-green-500"
+                : formData.password
+                ? "border-red-500"
+                : "border-tertiary"
+            }`}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+          >
+            {showPassword ? "👁️" : "👁️‍🗨️"}
+          </button>
+        </div>
+
+        {/* Password requirements feedback */}
+        {isPasswordFocused && (
+          <div className="absolute left-full ml-4 top-0 w-48 bg-white p-3 rounded-md shadow-lg border text-sm">
+            <h4 className="font-semibold mb-2">Password must have:</h4>
+            <ul className="space-y-1">
+              <li
+                className={`flex items-center gap-2 ${
+                  passwordErrors.length ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {passwordErrors.length ? "✓" : "×"} 8+ characters
+              </li>
+              <li
+                className={`flex items-center gap-2 ${
+                  passwordErrors.number ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {passwordErrors.number ? "✓" : "×"} One number
+              </li>
+              <li
+                className={`flex items-center gap-2 ${
+                  passwordErrors.upper ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {passwordErrors.upper ? "✓" : "×"} One uppercase
+              </li>
+              <li
+                className={`flex items-center gap-2 ${
+                  passwordErrors.lower ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {passwordErrors.lower ? "✓" : "×"} One lowercase
+              </li>
+              <li
+                className={`flex items-center gap-2 ${
+                  passwordErrors.symbol ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {passwordErrors.symbol ? "✓" : "×"} One special character
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
+
       <div className="col-span-2 flex flex-col gap-1">
         <label htmlFor="confirmPassword">Confirm Password</label>
-        <input
-          type="password"
-          id="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleInputChange}
-          className="border-2 py-1 px-2 border-tertiary rounded-md"
-        />
+        <div className="relative">
+          <input
+            type={showConfirmPassword ? "text" : "password"}
+            id="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleInputChange}
+            className={`w-full border-2 py-1 px-2 rounded-md pr-10 ${
+              formData.confirmPassword && passwordErrors.match
+                ? "border-green-500"
+                : formData.confirmPassword
+                ? "border-red-500"
+                : "border-tertiary"
+            }`}
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+          >
+            {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
+          </button>
+        </div>
+        {formData.confirmPassword && !passwordErrors.match && (
+          <p className="text-red-500 text-sm mt-1">Passwords do not match</p>
+        )}
       </div>
     </div>
   );
@@ -102,9 +311,20 @@ const Register = () => {
           id="phone"
           value={formData.phone}
           onChange={handleInputChange}
-          className="border-2 py-1 px-2 border-tertiary rounded-md"
-          placeholder="Enter your phone number"
+          placeholder="09XXXXXXXXX"
+          className={`border-2 py-1 px-2 rounded-md ${
+            formData.phone && validatePhoneNumber(formData.phone)
+              ? "border-green-500"
+              : formData.phone
+              ? "border-red-500"
+              : "border-tertiary"
+          }`}
         />
+        {formData.phone && !validatePhoneNumber(formData.phone) && (
+          <p className="text-red-500 text-sm mt-1">
+            Please enter a valid Philippine mobile number (09XXXXXXXXX)
+          </p>
+        )}
       </div>
       <div className="col-span-2 flex flex-col gap-1">
         <label htmlFor="birthDate">Birth Date</label>
@@ -246,8 +466,8 @@ const Register = () => {
   );
 
   const handleSubmit = () => {
-    console.log("Form Data:", formData);
-    // Handle form submission
+    console.log("Form submitted:", formData);
+    // Add your submission logic here
   };
 
   // Render left side content based on current step
@@ -294,6 +514,61 @@ const Register = () => {
     }
   };
 
+  const handleProceed = () => {
+    console.log("Current step:", step);
+    console.log("Form validation result:", validateForm());
+
+    if (validateForm()) {
+      if (step < 4) {
+        setStep(step + 1);
+      } else {
+        handleSubmit();
+      }
+    }
+  };
+
+  // Add this function to check if current step is valid
+  const isStepValid = () => {
+    switch (step) {
+      case 1:
+        return (
+          formData.firstName.trim() !== "" &&
+          formData.lastName.trim() !== "" &&
+          formData.email.endsWith("@gmail.com") &&
+          formData.password.trim() !== "" &&
+          Object.values(passwordErrors).every(Boolean)
+        );
+      case 2:
+        return (
+          validatePhoneNumber(formData.phone) &&
+          formData.birthDate !== "" &&
+          formData.gender !== ""
+        );
+      case 3:
+        return (
+          formData.businessName.trim() !== "" &&
+          formData.businessEmail.trim() !== ""
+        );
+      case 4:
+        return (
+          formData.cityBarangay.trim() !== "" &&
+          formData.postalCode.trim() !== "" &&
+          formData.streetBuilding.trim() !== "" &&
+          formData.locationType !== ""
+        );
+      default:
+        return false;
+    }
+  };
+
+  // Add this function to validate Philippine phone numbers
+  const validatePhoneNumber = (phone) => {
+    // Remove any non-digit characters
+    const cleanPhone = phone.replace(/\D/g, "");
+    // Check if it starts with 09 and has 11 digits total
+    return /^09\d{9}$/.test(cleanPhone);
+  };
+
   return (
     <div className="w-full min-h-screen flex justify-center items-center p-4">
       <div className="w-full max-w-[1200px] min-h-[600px] border-2 bg-white grid grid-cols-1 lg:grid-cols-2 shadow-md">
@@ -331,14 +606,13 @@ const Register = () => {
 
             <div className="w-full mt-6">
               <button
-                onClick={() => {
-                  if (step < 4) {
-                    setStep(step + 1);
-                  } else {
-                    handleSubmit();
-                  }
-                }}
-                className="w-full rounded-md bg-primary text-white font-semibold text-center py-2 px-3 text-[1.1vw] hover:bg-primary/90 transition-colors"
+                onClick={handleProceed}
+                disabled={!isStepValid()}
+                className={`w-full rounded-md font-semibold text-center py-2 px-3 text-[1.1vw] transition-colors ${
+                  isStepValid()
+                    ? "bg-primary text-white hover:bg-primary/90"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
               >
                 {step === 4 ? "Submit" : "Proceed"}
               </button>
