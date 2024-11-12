@@ -6,12 +6,12 @@ export default function Completed({ data }) {
       {/*Product Container*/}
       <div className="flex flex-row items-center gap-4">
         <div>
-          <input
+          {/* <input
             type="checkbox"
             name=""
             id=""
             className="w-4 h-4 md:w-5 md:h-5"
-          />
+          /> */}
         </div>
 
         {/* Product Image Container */}
