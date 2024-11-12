@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import MainPage from "./pages/buyer/MainPage.jsx";
 import Store from "./pages/buyer/Store.jsx";
@@ -38,6 +40,7 @@ function App() {
         {/* <Route path="/dashboard" element={<Store />} /> */}
         <Route path="/register" element={<Register />} />
       </Routes>
+      <ToastContainer position="bottom-right" />
     </Router>
   );
 }

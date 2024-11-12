@@ -1,14 +1,24 @@
 import React from "react";
 import { Icon } from "@iconify/react";
+import { useNavigate } from "react-router-dom";
 
-const ProductCard = ({ image, price }) => {
+const ProductCard = ({ image, price, productId }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/product/${productId}`);
+  };
+
   return (
-    <div className="w-full min-w-[70px] max-w-[120px] flex flex-col gap-1">
-      <div className="aspect-square w-full">
+    <div
+      onClick={handleClick}
+      className="flex flex-col gap-1 cursor-pointer hover:opacity-90 transition-opacity"
+    >
+      <div className="">
         <img
           src={image}
           alt="Product Image"
-          className="w-full h-full object-cover rounded-lg"
+          className="w-[100px] h-[100px] object-cover rounded-lg"
         />
       </div>
       <div className="flex items-center">
