@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { LuArrowUpDown } from "react-icons/lu";
 
-const CartSummary = ({ totalAmount, totalQuantity }) => {
+const CartSummary = ({ totalAmount = 0, totalQuantity = 0 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   return (
@@ -34,12 +34,12 @@ const CartSummary = ({ totalAmount, totalQuantity }) => {
             {/* Add Total Items Row */}
             <div className="flex justify-between items-center mt-2">
               <span className="text-sm md:text-base text-white">
-                Total Items: {totalQuantity || 0}
+                Total Items: {totalQuantity}
               </span>
             </div>
             <div className="flex flex-row justify-between items-center my-1 md:my-2">
               <span className="font-bold text-md sm:text-lg md:text-xl lg:text-2xl text-white">
-                Total Down Payment: ₱{totalAmount?.toFixed(2) || "0.00"}
+                Total Down Payment: ₱{Number(totalAmount).toFixed(2)}
               </span>
               <div className="flex space-x-2">
                 <button className="mr-3 text-xs md:text-base text-white rounded-lg hover:text-gray-200 transition-colors">
@@ -62,7 +62,7 @@ const CartSummary = ({ totalAmount, totalQuantity }) => {
         }`}
       >
         <span className="text-white text-sm">
-          Summary ({totalQuantity || 0} items)
+          Summary ({totalQuantity} items)
         </span>
         <LuArrowUpDown className="text-white transform rotate-180" size={20} />
       </button>
