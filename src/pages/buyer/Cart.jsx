@@ -32,7 +32,12 @@ const Cart = () => {
     setSelectedItems((prev) => {
       const isSelected = prev.find(item => item.id === id);
       if (isSelected) {
-        return prev.filter(item => item.id !== id);
+        const updatedItems = prev.filter(item => item.id !== id);
+        // Check if all items are deselected
+        if (updatedItems.length === 0) {
+          return [];
+        }
+        return updatedItems;
       } else {
         return [...prev, { id, price, quantity }];
       }
@@ -40,19 +45,15 @@ const Cart = () => {
   };
 
   const handleSelectAll = (isSelected, products) => {
-    console.log("isSelected:", isSelected);
-    console.log("products:", products);
-    if (products && products.length > 0) {
-      if (isSelected) {
-        const allItems = products.map(item => ({
-          id: item.productId,
-          price: item.price * item.quantity,
-          quantity: item.quantity
-        }));
-        setSelectedItems(allItems);
-      } else {
-        setSelectedItems([]);
-      }
+    if (isSelected) {
+      const allItems = products.map(item => ({
+        id: item.productId,
+        price: item.price * item.quantity,
+        quantity: item.quantity
+      }));
+      setSelectedItems(allItems);
+    } else {
+      setSelectedItems([]);
     }
   };
 
