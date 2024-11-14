@@ -1,32 +1,31 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
-import ProductCard from "../../components/buyer/ProductCard";
-import neapolitanBrownie from "../../assets/CakeSample.png";
+import StoreProductCard from "../../components/buyer/StoreProductCard";
 import Navbar from "../../components/buyer/Navbar";
+import { bakerProducts } from "../../data/productDetails";
 
 const Store = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const [activeCategory, setActiveCategory] = useState("Cake");
+  const [activeCategory, setActiveCategory] = useState("All");
 
+  // Get products and categories from bakerProducts
+  const { categories: productCategories, products: bakerProductsList } = bakerProducts;
+
+  // Create categories array with counts
   const categories = [
-    { id: 1, name: "Cake" },
-    { id: 2, name: "Bread" },
-    { id: 3, name: "Pastries" },
-    { id: 4, name: "Cookies" },
+    { 
+      name: "All", 
+      count: bakerProductsList.length 
+    },
+    ...productCategories
   ];
 
-  const products = Array(15)
-    .fill({
-      image: neapolitanBrownie,
-      title: "Neapolitan Brownie Ice Cream Cake",
-      description:
-        "Using brownie mix instead of cake mix makes this easy cake extra chocolatey.",
-      price: 356.5,
-      rating: 4.7,
-    })
-    .map((product, index) => ({ ...product, id: index + 1 }));
+  // Filter products based on active category
+  const filteredProducts = activeCategory === "All"
+    ? bakerProductsList
+    : bakerProductsList.filter(product => product.category === activeCategory);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -39,7 +38,6 @@ const Store = () => {
 
   const handleCategoryClick = (categoryName) => {
     setActiveCategory(categoryName);
-    // Add your filter logic here
   };
 
   return (
@@ -122,11 +120,11 @@ const Store = () => {
             </div>
           </div>
           <div className="w-[90%] sm:w-[90%] lg:w-[80%] font-[Oswald] overflow-x-hidden">
-            {/* Category  */}
-            <div className="flex gap-10 font-light px-4 overflow-x-auto whitespace-nowrap ">
+            {/* Category Buttons */}
+            <div className="flex gap-10 font-light px-4 overflow-x-auto whitespace-nowrap">
               {categories.map((category) => (
                 <button
-                  key={category.id}
+                  key={category.name}
                   onClick={() => handleCategoryClick(category.name)}
                   className={`text-sm sm:text-base lg:text-lg py-2 transition-colors duration-200 border-b-2 
                     ${
@@ -136,22 +134,37 @@ const Store = () => {
                     }`}
                 >
                   {category.name}
+                  {category.count && (
+                    <span className="ml-2 text-sm text-gray-500">
+                      ({category.count})
+                    </span>
+                  )}
                 </button>
               ))}
             </div>
+
             <div className="w-full border border-gray-400"></div>
+
+            {/* Products Grid */}
             <div className="w-full mt-5 h-[800px] overflow-y-auto">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 justify-items-center">
-                {products.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    image={product.image}
-                    title={product.title}
-                    description={product.description}
-                    price={product.price}
-                    rating={product.rating}
-                  />
-                ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
+                {filteredProducts.length > 0 ? (
+                  filteredProducts.map((product) => (
+                    <StoreProductCard
+                      key={product.id}
+                      id={product.id}
+                      image={product.image}
+                      title={product.name}
+                      description={product.description}
+                      price={product.price}
+                      rating={product.rating}
+                    />
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-8 text-gray-500">
+                    No products found in this category
+                  </div>
+                )}
               </div>
             </div>
           </div>

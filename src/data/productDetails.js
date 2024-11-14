@@ -15,7 +15,8 @@ export const bakerProducts = {
     {
       id: 1,
       name: "Neapolitan Brownie Cake",
-      description: "A delicious triple-layered brownie featuring chocolate, vanilla, and strawberry flavors.",
+      description:
+        "A delicious triple-layered brownie featuring chocolate, vanilla, and strawberry flavors.",
       price: 499.99,
       rating: 4.5,
       ordered: 250,
@@ -23,7 +24,7 @@ export const bakerProducts = {
       stock: 50,
       category: "Cakes",
       image: neapolitanBrownie,
-      status: "Available"
+      status: "Available",
     },
     {
       id: 2,
@@ -36,7 +37,7 @@ export const bakerProducts = {
       stock: 30,
       category: "Cakes",
       image: neapolitanBrownie,
-      status: "Available"
+      status: "Available",
     },
     {
       id: 3,
@@ -49,7 +50,7 @@ export const bakerProducts = {
       stock: 25,
       category: "Cakes",
       image: neapolitanBrownie,
-      status: "Low Stock"
+      status: "Low Stock",
     },
     {
       id: 4,
@@ -62,7 +63,7 @@ export const bakerProducts = {
       stock: 40,
       category: "Cakes",
       image: neapolitanBrownie,
-      status: "Available"
+      status: "Available",
     },
     {
       id: 5,
@@ -75,7 +76,7 @@ export const bakerProducts = {
       stock: 35,
       category: "Cakes",
       image: neapolitanBrownie,
-      status: "Available"
+      status: "Available",
     },
     // Bread
     {
@@ -89,7 +90,7 @@ export const bakerProducts = {
       stock: 60,
       category: "Bread",
       image: neapolitanBrownie,
-      status: "Available"
+      status: "Available",
     },
     {
       id: 7,
@@ -102,7 +103,7 @@ export const bakerProducts = {
       stock: 45,
       category: "Bread",
       image: neapolitanBrownie,
-      status: "Available"
+      status: "Available",
     },
     {
       id: 8,
@@ -115,7 +116,7 @@ export const bakerProducts = {
       stock: 40,
       category: "Bread",
       image: neapolitanBrownie,
-      status: "Available"
+      status: "Available",
     },
     // Pastries
     {
@@ -129,7 +130,7 @@ export const bakerProducts = {
       stock: 80,
       category: "Pastries",
       image: neapolitanBrownie,
-      status: "Available"
+      status: "Available",
     },
     {
       id: 10,
@@ -142,7 +143,7 @@ export const bakerProducts = {
       stock: 55,
       category: "Pastries",
       image: neapolitanBrownie,
-      status: "Available"
+      status: "Available",
     },
     // Cookies
     {
@@ -156,7 +157,7 @@ export const bakerProducts = {
       stock: 100,
       category: "Cookies",
       image: neapolitanBrownie,
-      status: "Available"
+      status: "Available",
     },
     {
       id: 12,
@@ -169,7 +170,7 @@ export const bakerProducts = {
       stock: 75,
       category: "Cookies",
       image: neapolitanBrownie,
-      status: "Available"
+      status: "Available",
     },
     // Pies
     {
@@ -183,7 +184,7 @@ export const bakerProducts = {
       stock: 30,
       category: "Pies",
       image: neapolitanBrownie,
-      status: "Available"
+      status: "Available",
     },
     {
       id: 14,
@@ -196,7 +197,7 @@ export const bakerProducts = {
       stock: 25,
       category: "Pies",
       image: neapolitanBrownie,
-      status: "Low Stock"
+      status: "Low Stock",
     },
     // More Cakes
     {
@@ -210,7 +211,7 @@ export const bakerProducts = {
       stock: 20,
       category: "Cakes",
       image: neapolitanBrownie,
-      status: "Low Stock"
+      status: "Low Stock",
     },
     {
       id: 16,
@@ -223,7 +224,7 @@ export const bakerProducts = {
       stock: 35,
       category: "Cakes",
       image: neapolitanBrownie,
-      status: "Available"
+      status: "Available",
     },
     // More Bread
     {
@@ -237,7 +238,7 @@ export const bakerProducts = {
       stock: 50,
       category: "Bread",
       image: neapolitanBrownie,
-      status: "Available"
+      status: "Available",
     },
     // More Pastries
     {
@@ -251,7 +252,7 @@ export const bakerProducts = {
       stock: 45,
       category: "Pastries",
       image: neapolitanBrownie,
-      status: "Available"
+      status: "Available",
     },
     // More Cookies
     {
@@ -265,7 +266,7 @@ export const bakerProducts = {
       stock: 65,
       category: "Cookies",
       image: neapolitanBrownie,
-      status: "Available"
+      status: "Available",
     },
     {
       id: 20,
@@ -278,9 +279,9 @@ export const bakerProducts = {
       stock: 30,
       category: "Cakes",
       image: neapolitanBrownie,
-      status: "Available"
-    }
-  ]
+      status: "Available",
+    },
+  ],
 };
 
 // Export for buyer's product details
@@ -288,12 +289,13 @@ export const productDetails = {
   mainProduct: {
     id: 1,
     name: "Neapolitan Brownie Cake",
-    description: "A delicious triple-layered brownie featuring chocolate, vanilla, and strawberry flavors.",
+    description:
+      "A delicious triple-layered brownie featuring chocolate, vanilla, and strawberry flavors.",
     price: 499.99,
     rating: 4.5,
     ordered: 250,
     images: [neapolitanBrownie, neapolitanBrownie, neapolitanBrownie], // Replace with actual images
-    stock: 50
+    stock: 50,
   },
   recommendedProducts: [
     {
@@ -301,21 +303,21 @@ export const productDetails = {
       name: "Classic Chocolate Cake",
       price: 599.99,
       image: neapolitanBrownie,
-      rating: 4.8
+      rating: 4.8,
     },
     {
       id: 3,
       name: "Red Velvet Dream",
       price: 649.99,
       image: neapolitanBrownie,
-      rating: 4.7
+      rating: 4.7,
     },
     {
       id: 4,
       name: "Vanilla Bean Delight",
       price: 449.99,
       image: neapolitanBrownie,
-      rating: 4.3
-    }
-  ]
-}; 
+      rating: 4.3,
+    },
+  ],
+};
