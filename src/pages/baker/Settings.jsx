@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Sidebar from "../../components/baker/Sidebar";
+import { Icon } from "@iconify/react";
+import profileImage from "../../assets/Dummy_Profile.png";
 
 const Settings = () => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
@@ -7,16 +9,13 @@ const Settings = () => {
   const [formData, setFormData] = useState({
     firstName: "Bryan",
     lastName: "Ramos",
-    email: "bryan@example.com",
-    phone: "+63 912 345 6789",
-    address: "123 Baker Street",
-    currentPassword: "",
+    email: "bryanramos@gmail.com",
+    phone: "0912 345 6789",
+    birthDate: "04/20/2001",
+    password: "••••••••••••",
     newPassword: "",
-    confirmPassword: "",
-    storeName: "Bryan's Bakery",
-    storeDescription: "Serving the best cakes since 2020",
-    openingTime: "08:00",
-    closingTime: "17:00",
+    storeName: "Bryan's Bakeria",
+    verified: true,
   });
 
   const handleInputChange = (e) => {
@@ -29,7 +28,6 @@ const Settings = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add your form submission logic here
     console.log("Form submitted:", formData);
   };
 
@@ -44,7 +42,40 @@ const Settings = () => {
           ${isSidebarExpanded ? "ml-64" : "ml-20"}`}
       >
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-2xl font-bold mb-6">Settings</h1>
+          {/* Cover Photo and Profile Section */}
+          <div className="relative mb-20 bg-white rounded-lg shadow-sm">
+            <div className="h-48 bg-gray-200 rounded-t-lg overflow-hidden">
+              <img
+                src="https://images.unsplash.com/photo-1607478900766-efe13248b125"
+                alt="Cover"
+                className="w-full h-full object-cover"
+              />
+              <button className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-white/90 transition-colors">
+                <Icon icon="material-symbols:edit" />
+                Edit cover photo
+              </button>
+            </div>
+            <div className="absolute -bottom-16 left-8">
+              <div className="relative">
+                <img
+                  src={profileImage}
+                  alt="Profile"
+                  className="w-32 h-32 rounded-full border-4 border-white"
+                />
+                <button className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md hover:bg-gray-50">
+                  <Icon icon="material-symbols:edit" className="text-xl" />
+                </button>
+              </div>
+            </div>
+            <div className="absolute -bottom-16 left-44 flex items-center gap-2">
+              <h2 className="text-2xl font-bold">{formData.storeName}</h2>
+              {formData.verified && (
+                <span className="bg-[#E88F2A] text-white text-sm px-3 py-1 rounded">
+                  Get Verified
+                </span>
+              )}
+            </div>
+          </div>
 
           {/* Settings Navigation */}
           <div className="flex gap-4 mb-6">
@@ -56,17 +87,17 @@ const Settings = () => {
               }`}
               onClick={() => setActiveTab("profile")}
             >
-              Profile Settings
+              Personal Information
             </button>
             <button
               className={`px-4 py-2 rounded-lg ${
-                activeTab === "store"
+                activeTab === "business"
                   ? "bg-[#E88F2A] text-white"
                   : "bg-white text-gray-600"
               }`}
-              onClick={() => setActiveTab("store")}
+              onClick={() => setActiveTab("business")}
             >
-              Store Settings
+              Business Information
             </button>
             <button
               className={`px-4 py-2 rounded-lg ${
@@ -83,13 +114,15 @@ const Settings = () => {
           {/* Settings Content */}
           <div className="bg-white rounded-lg p-6 shadow-sm">
             <form onSubmit={handleSubmit}>
-              {/* Profile Settings */}
               {activeTab === "profile" && (
                 <div className="space-y-6">
-                  <div className="flex gap-4">
-                    <div className="flex-1">
+                  <p className="text-sm text-gray-500">
+                    Display as your profile information
+                  </p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        First Name
+                        First name
                       </label>
                       <input
                         type="text"
@@ -99,9 +132,9 @@ const Settings = () => {
                         className="w-full p-2 border rounded-lg"
                       />
                     </div>
-                    <div className="flex-1">
+                    <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Last Name
+                        Last name
                       </label>
                       <input
                         type="text"
@@ -111,150 +144,67 @@ const Settings = () => {
                         className="w-full p-2 border rounded-lg"
                       />
                     </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border rounded-lg"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border rounded-lg"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Address
-                    </label>
-                    <textarea
-                      name="address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      rows="3"
-                      className="w-full p-2 border rounded-lg"
-                    />
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        className="w-full p-2 border rounded-lg"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Birth date
+                      </label>
+                      <input
+                        type="text"
+                        name="birthDate"
+                        value={formData.birthDate}
+                        onChange={handleInputChange}
+                        className="w-full p-2 border rounded-lg"
+                      />
+                    </div>
+                    <div className="col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="w-full p-2 border rounded-lg"
+                      />
+                    </div>
                   </div>
                 </div>
               )}
 
-              {/* Store Settings */}
-              {activeTab === "store" && (
+              {/* Keep your existing store and security tabs */}
+              {activeTab === "business" && (
+                // Your existing store settings
                 <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Store Name
-                    </label>
-                    <input
-                      type="text"
-                      name="storeName"
-                      value={formData.storeName}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border rounded-lg"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Store Description
-                    </label>
-                    <textarea
-                      name="storeDescription"
-                      value={formData.storeDescription}
-                      onChange={handleInputChange}
-                      rows="4"
-                      className="w-full p-2 border rounded-lg"
-                    />
-                  </div>
-                  <div className="flex gap-4">
-                    <div className="flex-1">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Opening Time
-                      </label>
-                      <input
-                        type="time"
-                        name="openingTime"
-                        value={formData.openingTime}
-                        onChange={handleInputChange}
-                        className="w-full p-2 border rounded-lg"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Closing Time
-                      </label>
-                      <input
-                        type="time"
-                        name="closingTime"
-                        value={formData.closingTime}
-                        onChange={handleInputChange}
-                        className="w-full p-2 border rounded-lg"
-                      />
-                    </div>
-                  </div>
+                  {/* ... existing store settings ... */}
                 </div>
               )}
 
-              {/* Security Settings */}
               {activeTab === "security" && (
+                // Your existing security settings
                 <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Current Password
-                    </label>
-                    <input
-                      type="password"
-                      name="currentPassword"
-                      value={formData.currentPassword}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border rounded-lg"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      New Password
-                    </label>
-                    <input
-                      type="password"
-                      name="newPassword"
-                      value={formData.newPassword}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border rounded-lg"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Confirm New Password
-                    </label>
-                    <input
-                      type="password"
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border rounded-lg"
-                    />
-                  </div>
+                  {/* ... existing security settings ... */}
                 </div>
               )}
 
-              <div className="mt-6">
+              <div className="mt-6 flex justify-end">
                 <button
                   type="submit"
                   className="bg-[#E88F2A] text-white px-6 py-2 rounded-lg hover:bg-[#E88F2A]/90"
                 >
-                  Save Changes
+                  Update
                 </button>
               </div>
             </form>

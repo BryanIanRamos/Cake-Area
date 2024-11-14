@@ -48,7 +48,9 @@ const Products = () => {
             <h1 className="text-2xl font-bold">Keep an Eye on Your Stock</h1>
             <button
               className="bg-[#E88F2A] text-white px-4 py-2 rounded-lg hover:bg-[#E88F2A]/90 flex items-center gap-2"
-              onClick={() => {/* Add new product logic */}}
+              onClick={() => {
+                /* Add new product logic */
+              }}
             >
               <Icon icon="mdi:plus" />
               Add Goods
@@ -143,4 +145,4 @@ const Products = () => {
   );
 };
 
-export default Products; 
+export default Products;
