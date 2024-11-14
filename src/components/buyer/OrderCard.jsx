@@ -54,7 +54,10 @@ const OrderCard = ({ data, type, onSelectItem, selectedItems = [], onSelectAll, 
               </div>
               {/* Cancel Button - Only show for in-process */}
               {type === 'in-process' && (
-                <div className="flex justify-end px-8 pb-4">
+                <div className="flex flex-col items-end px-8 pb-4 gap-1">
+                  <h1 className='text-gray-400'>
+                    Total Amount: <span className='text-black font-semibold'>₱1600.00</span>
+                  </h1>
                   <button className="bg-[#DC3545] text-white px-8 py-2 rounded">
                     Cancel
                   </button>
