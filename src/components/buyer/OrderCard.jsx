@@ -8,8 +8,10 @@ import Completed from "./Completed";
 import Cancelled from "./Cancelled";
 import Refund from "./Refund";
 
-const OrderCard = ({ data, type, onSelectItem, selectedItems }) => {
+const OrderCard = ({ data, type, onSelectItem, selectedItems = [], onSelectAll, onQuantityChange }) => {
   const isSelected = (id) => selectedItems.some(item => item.id === id);
+
+  console.log("Selected Items:",selectedItems)
 
   const renderOrderContent = () => {
     switch(type) {
@@ -20,6 +22,7 @@ const OrderCard = ({ data, type, onSelectItem, selectedItems }) => {
             data={product}
             onSelectItem={onSelectItem}
             isSelected={isSelected(product.productId)}
+            onQuantityChange={onQuantityChange}
           />
         ));
       case 'in-process':
@@ -226,19 +229,22 @@ const OrderCard = ({ data, type, onSelectItem, selectedItems }) => {
     }
   };
 
+  const handleSelectAll = (event) => {
+    const isChecked = event.target.checked;
+    onSelectAll(isChecked, data.products); // Pass the products to handle selection
+  };
+
   return (
     <div className="bg-white shadow-lg rounded-xl">
       {/* Header */}
       <div className="flex flex-row gap-4 md:gap-8 items-center justify-between bg-secondary rounded-t-xl py-6 px-4 md:px-8 text-white">
         <div className='flex gap-4 md:gap-8 items-center'>
-          {type === 'cart' && (
-            <input 
-              type="checkbox" 
-              className="w-4 h-4 md:w-5 md:h-5"
-              onChange={() => onSelectItem(data.id, data.products.reduce((sum, product) => sum + product.price * product.quantity, 0), data.products.reduce((sum, product) => sum + product.quantity, 0))}
-              checked={isSelected(data.id)}
-            />
-          )}
+          <input 
+            type="checkbox" 
+            className="w-4 h-4 md:w-5 md:h-5"
+            onChange={handleSelectAll} // Handle select all
+            checked={data.products.every(product => isSelected(product.productId))} // Check if all are selected
+          />
           <div className="flex gap-2 items-center text-xs md:text-lg font-semibold">
             <LuChefHat size={32} className="md:size-42" />Baker |  {data.bakerName}
           </div>

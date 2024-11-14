@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 
-export default function CardProducts({ data, onSelectItem, isSelected }) {
+export default function CardProducts({ data, onSelectItem, isSelected, onQuantityChange }) {
+  const [quantity, setQuantity] = useState(data.quantity);
+
+  useEffect(() => {
+    setQuantity(data.quantity);
+  }, [data.quantity]);
+
   const handleQuantityChange = (change) => {
-    // Logic to handle quantity change
-    // This can be implemented to notify the parent component
+    const newQuantity = quantity + change;
+    if (newQuantity >= 0) {
+      setQuantity(newQuantity);
+      onQuantityChange(data.productId, newQuantity);
+    }
   };
 
   return (
@@ -48,9 +57,14 @@ export default function CardProducts({ data, onSelectItem, isSelected }) {
               </button>
               <input
                 type="number"
-                value={data.quantity}
-                className="w-12 text-center border-gray-300"
-                readOnly
+                value={quantity}
+                className="w-12 text-center border-gray-300 outline-none"
+                readOnly={true}
+                onChange={(e) => {
+                  const newQuantity = Math.max(0, parseInt(e.target.value) || 0);
+                  setQuantity(newQuantity);
+                  onQuantityChange(data.productId, newQuantity);
+                }}
               />
               <button
                 className="bg-gray-100 px-3 py-1 rounded-r-lg border border-gray-300"
