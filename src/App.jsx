@@ -20,6 +20,7 @@ import Header from "./components/buyer/Header.jsx";
 import Orders from "./pages/baker/Orders.jsx";
 import Products from "./pages/baker/Products";
 import Reviews from "./pages/baker/Reviews";
+import Statistics from "./pages/baker/Statistics";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -50,6 +51,7 @@ function App() {
         <Route path="/dashboard/reviews" element={<Reviews />} />
         <Route path="/dashboard/settings" element={<Settings />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/dashboard/statistics" element={<Statistics />} />
       </Routes>
       <ToastContainer position="bottom-right" />
     </Router>

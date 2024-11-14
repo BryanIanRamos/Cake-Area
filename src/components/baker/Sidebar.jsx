@@ -11,6 +11,7 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
     { title: "Dashboard", icon: "material-symbols:dashboard", path: "/dashboard" },
     { title: "Orders", icon: "mdi:cart", path: "/dashboard/orders" },
     { title: "Products", icon: "mdi:cake", path: "/dashboard/products" },
+    { title: "Statistics", icon: "mdi:chart-bar", path: "/dashboard/statistics" },
     { title: "Reviews", icon: "material-symbols:rate-review", path: "/dashboard/reviews" },
     { title: "Settings", icon: "material-symbols:settings", path: "/dashboard/settings" },
   ];
