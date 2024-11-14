@@ -4,28 +4,27 @@ import profile from "../../assets/Dummy_Profile.png";
 import { Icon } from "@iconify/react";
 import { Link, useLocation } from "react-router-dom";
 
-const Sidebar = () => {
-  const [isExpanded, setIsExpanded] = useState(true);
+const Sidebar = ({ isExpanded, setIsExpanded }) => {
   const location = useLocation();
 
   const menuItems = [
-    { title: "Dashboard", icon: "material-symbols:dashboard", path: "/baker" },
-    { title: "Orders", icon: "mdi:cart", path: "/baker/orders" },
-    { title: "Products", icon: "mdi:cake", path: "/baker/products" },
-    { title: "Reviews", icon: "material-symbols:rate-review", path: "/baker/reviews" },
-    { title: "Settings", icon: "material-symbols:settings", path: "/baker/settings" },
+    { title: "Dashboard", icon: "material-symbols:dashboard", path: "/dashboard" },
+    { title: "Orders", icon: "mdi:cart", path: "/dashboard/orders" },
+    { title: "Products", icon: "mdi:cake", path: "/dashboard/products" },
+    { title: "Reviews", icon: "material-symbols:rate-review", path: "/dashboard/reviews" },
+    { title: "Settings", icon: "material-symbols:settings", path: "/dashboard/settings" },
   ];
 
   return (
     <div
-      className={`absolute left-0 ${
-        isExpanded ? "w-[15%]" : "w-[5%]"
-      } h-full bg-[#3A3531] flex flex-col items-center p-5 transition-all duration-300`}
+      className={`fixed top-0 left-0 h-screen bg-[#3A3531] flex flex-col items-center p-5 
+        transition-all duration-300 ease-in-out
+        ${isExpanded ? "w-[15%]" : "w-[5%]"}`}
     >
       {/* Toggle button */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="absolute -right-4 top-10 bg-[#3A3531] p-2 rounded-full hover:bg-[#4a443f] transition-colors"
+        className="absolute -right-4 top-10 bg-[#3A3531] p-2 rounded-full hover:bg-[#4a443f] transition-colors cursor-pointer z-50"
       >
         <Icon
           icon={isExpanded ? "ph:caret-left-bold" : "ph:caret-right-bold"}

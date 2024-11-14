@@ -12,10 +12,14 @@ import Test from "./pages/buyer/test.jsx";
 import Register from "./pages/baker/Register.jsx";
 
 import Dashboard from "./pages/baker/Dashboard.jsx";
+import Settings from "./pages/baker/Settings.jsx";
 
 import "./App.css";
 import ForgotPassword from "./pages/buyer/ForgotPassword.jsx";
 import Header from "./components/buyer/Header.jsx";
+import Orders from "./pages/baker/Orders.jsx";
+import Products from "./pages/baker/Products";
+import Reviews from "./pages/baker/Reviews";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -29,17 +33,22 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* Customer's Route */}
-        <Route path="/Store" element={<Store />} />
-        <Route path="/Product" element={<Product />} />
-        <Route path="/Cart/*" element={<Cart />} />
+        <Route path="/store" element={<Store />} />
+        <Route path="/product" element={<Product />} />
+        <Route path="/cart/*" element={<Cart />} />
         <Route
-          path="/Profile"
+          path="/profile"
           element={
             <Profile isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
           }
         />
-        {/* Baker's Route */}
+
+        {/* Baker's Route - Update these paths */}
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard/orders" element={<Orders />} />
+        <Route path="/dashboard/products" element={<Products />} />
+        <Route path="/dashboard/reviews" element={<Reviews />} />
+        <Route path="/dashboard/settings" element={<Settings />} />
         <Route path="/register" element={<Register />} />
       </Routes>
       <ToastContainer position="bottom-right" />
