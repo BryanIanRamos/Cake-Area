@@ -23,37 +23,82 @@ import RefundData from "../../data/RefundData.json";
 const Cart = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [selectedItems, setSelectedItems] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [totalQuantity, setTotalQuantity] = useState(0);
-  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [adjustedQuantities, setAdjustedQuantities] = useState({});
 
-  const handleTotalChange = ({ amount, quantity }) => {
-    console.log("Total Amount:", amount, "Total Quantity:", quantity);
-    setTotalAmount(amount);
+  const handleSelectItem = (id) => {
+    setSelectedItems((prev) => {
+      const isSelected = prev.find(item => item.id === id);
+      const adjustedQuantity = adjustedQuantities[id] || 0;
+
+      // Find the product in CartData to get the original price and quantity
+      const product = CartData.data.flatMap(order => order.products).find(product => product.productId === id);
+      const price = product ? product.price : 0; // Get the original price from CartData
+      const originalQuantity = product ? product.quantity : 0; // Get the original quantity from CartData
+
+      if (isSelected) {
+        return prev.filter(item => item.id !== id);
+      } else {
+        return [...prev, { id, price, quantity: adjustedQuantity || originalQuantity }];
+      }
+    });
+  };
+
+  const handleSelectAll = (isSelected, products) => {
+    console.log("isSelected:", isSelected);
+    console.log("products:", products);
+    if (products && products.length > 0) {
+      if (isSelected) {
+        // When selecting all, ensure to add only unique items
+        const allItems = products.map(item => ({
+          id: item.productId,
+          price: item.price,
+          quantity: item.quantity
+        }));
+
+        // Check if any items are already selected
+        const newSelectedItems = allItems.filter(item => !selectedItems.find(selected => selected.id === item.id));
+        setSelectedItems(prev => [...prev, ...newSelectedItems]);
+      } else {
+        // Deselect all items from the current card
+        const currentCardIds = products.map(item => item.productId);
+        setSelectedItems(prev => prev.filter(item => !currentCardIds.includes(item.id)));
+      }
+    }
+  };
+  console.log("Selected: ", selectedItems);
+
+  const handleQuantityChange = (id, newQuantity) => {
+    setAdjustedQuantities((prev) => ({
+      ...prev,
+      [id]: newQuantity,
+    }));
+
+    const updatedItems = selectedItems.map(item => {
+      if (item.id === id) {
+        return { ...item, quantity: newQuantity };
+      }
+      return item;
+    });
+
+    // Calculate total amount and quantity using updatedItems
+    const total = updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const quantity = updatedItems.reduce((sum, item) => sum + item.quantity, 0);
+
+    setTotalAmount(total);
     setTotalQuantity(quantity);
+    setSelectedItems(updatedItems);
   };
 
   useEffect(() => {
-    console.log("Selected Products:", selectedProducts);
-    console.log("Total Amount:", totalAmount, "Total Quantity:", totalQuantity);
-    const calculatedTotalAmount = selectedProducts.reduce((sum, product) => {
-      return sum + (product.price * product.quantity);
-    }, 0);
-
-    const calculatedTotalQuantity = selectedProducts.reduce((sum, product) => {
-      return sum + product.quantity;
-    }, 0);
-
-    handleTotalChange({
-      amount: calculatedTotalAmount,
-      quantity: calculatedTotalQuantity
-    });
-  }, [selectedProducts]);
-
-  useEffect(() => {
-    setTotalAmount(0);
-    setSelectedProducts([]);
-  }, [location.pathname]);
+    const total = selectedItems.reduce((sum, item) => sum + (item.price * (adjustedQuantities[item.id] || item.quantity)), 0);
+    const quantity = selectedItems.reduce((sum, item) => sum + (adjustedQuantities[item.id] || item.quantity), 0);
+    setTotalAmount(total);
+    setTotalQuantity(quantity);
+  }, [selectedItems, adjustedQuantities]);
 
   const getOrderCount = () => {
     switch(location.pathname) {
@@ -114,7 +159,11 @@ const Cart = () => {
                         key={index} 
                         data={data} 
                         type="cart" 
-                        onTotalChange={handleTotalChange}
+                        onSelectItem={handleSelectItem}
+                        onSelectAll={handleSelectAll}
+                        selectedItems={selectedItems}
+                        onQuantityChange={handleQuantityChange}
+                        quantity={adjustedQuantities[data.productId] || data.quantity}
                       />
                     ))}
                   </div>
@@ -184,10 +233,7 @@ const Cart = () => {
           </Routes>
         </div>
       </div>
-      <CartSummary 
-        totalAmount={totalAmount} 
-        totalQuantity={totalQuantity}
-      />
+      <CartSummary totalAmount={totalAmount} totalQuantity={totalQuantity} />
     </div>
   );
 };

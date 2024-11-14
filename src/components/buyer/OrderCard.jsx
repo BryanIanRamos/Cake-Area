@@ -1,103 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { LuMessagesSquare } from "react-icons/lu";
 import { LuChefHat } from "react-icons/lu";
-import CardProducts from "./CardProducts";
+import CardProducts from "./CartProducts";
 import InProcess from "./InProcess";
 import ToReceive from "./ToRecieve";
 import Completed from "./Completed";
 import Cancelled from "./Cancelled";
 import Refund from "./Refund";
 
-const OrderCard = ({ data, type, onTotalChange }) => {
-  const [isAllSelected, setIsAllSelected] = useState(false);
-  const [selectedProducts, setSelectedProducts] = useState([]);
+const OrderCard = ({ data, type, onSelectItem, selectedItems = [], onSelectAll, onQuantityChange }) => {
+  const isSelected = (id) => selectedItems.some(item => item.id === id);
 
-  // Update total calculations whenever selectedProducts changes
-  useEffect(() => {
-    if (onTotalChange) {
-      const totalAmount = selectedProducts.reduce((sum, product) => {
-        return sum + (product.price * product.quantity);
-      }, 0);
+  console.log("Selected Items:",selectedItems)
 
-      onTotalChange({
-        amount: totalAmount,
-        selectedProducts: selectedProducts,
-        quantity: selectedProducts.reduce((sum, product) => sum + product.quantity, 0)
-      });
-    }
-  }, [selectedProducts, onTotalChange]);
-
-  // Handle header checkbox change
-  const handleHeaderCheckboxChange = (e) => {
-    const checked = e.target.checked;
-    setIsAllSelected(checked);
-    
-    if (checked) {
-      // Select all products with their current quantities
-      const allProducts = data.products.map(product => ({
-        ...product,
-        quantity: product.quantity || 1
-      }));
-      setSelectedProducts(allProducts);
-    } else {
-      setSelectedProducts([]);
-    }
-  };
-
-  // Handle individual product selection and quantity changes
-  const handleProductChange = (product, isChecked, quantity = 1) => {
-    setSelectedProducts(prev => {
-      let newSelected;
-      if (isChecked) {
-        // Add or update product with current quantity and calculated total
-        const updatedProduct = {
-          ...product,
-          quantity,
-          totalPrice: product.price * quantity
-        };
-        newSelected = [...prev.filter(p => p.id !== product.id), updatedProduct];
-      } else {
-        // Remove product if unchecked
-        newSelected = prev.filter(p => p.id !== product.id);
-      }
-      
-      // Calculate and update total amount
-      const totalAmount = newSelected.reduce((sum, p) => sum + p.totalPrice, 0);
-      const totalQuantity = newSelected.reduce((sum, p) => sum + p.quantity, 0);
-      
-      if (onTotalChange) {
-        onTotalChange({
-          amount: totalAmount,
-          quantity: totalQuantity,
-          selectedProducts: newSelected
-        });
-      }
-      
-      return newSelected;
-    });
-
-    // Update isAllSelected based on whether all products are selected
-    const allProducts = data.products.length;
-    const selectedCount = isChecked 
-      ? selectedProducts.length + 1 
-      : selectedProducts.length - 1;
-    setIsAllSelected(selectedCount === allProducts);
-  };
-
-  // Helper function to render the order content based on type
   const renderOrderContent = () => {
     switch(type) {
       case 'cart':
-        return data.products.map((product, index) => (
-          <div key={index}>
-            <CardProducts 
-              data={product} 
-              isSelected={isAllSelected}
-              onProductChange={handleProductChange}
-            />
-          </div>
+        return data.products.map((product) => (
+          <CardProducts 
+            key={product.id}
+            data={product}
+            onSelectItem={onSelectItem}
+            isSelected={isSelected(product.productId)}
+            onQuantityChange={onQuantityChange}
+          />
         ));
-      
       case 'in-process':
         return (
           <div className="flex justify-between">
@@ -302,25 +229,26 @@ const OrderCard = ({ data, type, onTotalChange }) => {
     }
   };
 
+  const handleSelectAll = (event) => {
+    const isChecked = event.target.checked;
+    onSelectAll(isChecked, data.products); // Pass the products to handle selection
+  };
+
   return (
     <div className="bg-white shadow-lg rounded-xl">
       {/* Header */}
       <div className="flex flex-row gap-4 md:gap-8 items-center justify-between bg-secondary rounded-t-xl py-6 px-4 md:px-8 text-white">
         <div className='flex gap-4 md:gap-8 items-center'>
-          {type === 'cart' && (
-            <>
-              <input 
-                type="checkbox" 
-                checked={isAllSelected}
-                onChange={handleHeaderCheckboxChange}
-                className="w-4 h-4 md:w-5 md:h-5"
-              />
-            </>
-          )}
+          <input 
+            type="checkbox" 
+            className="w-4 h-4 md:w-5 md:h-5"
+            onChange={handleSelectAll} // Handle select all
+            checked={data.products.every(product => isSelected(product.productId))} // Check if all are selected
+          />
           <div className="flex gap-2 items-center text-xs md:text-lg font-semibold">
             <LuChefHat size={32} className="md:size-42" />Baker |  {data.bakerName}
           </div>
-          <LuMessagesSquare size={26} className="text-primary cursor-pointer" />
+          <LuMessagesSquare size={26} className="text-primary" />
         </div>
 
 

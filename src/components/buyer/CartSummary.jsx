@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { LuArrowUpDown } from "react-icons/lu";
 
-const CartSummary = ({ totalAmount, totalQuantity }) => {
-  const [isVisible, setIsVisible] = useState(false);
+const CartSummary = ({ totalAmount = 0, totalQuantity = 0 }) => {
+  const [isVisible, setIsVisible] = useState(true);
+
+  console.log("Total Quantity: ", totalQuantity);
+  console.log("Total Amount: ", totalAmount);
 
   return (
     <div className="fixed bottom-0 w-full">
@@ -14,9 +17,9 @@ const CartSummary = ({ totalAmount, totalQuantity }) => {
         {/* Toggle Button */}
         <button
           onClick={() => setIsVisible(!isVisible)}
-          className="absolute -top-8 right-4 md:right-40 bg-secondary px-6 py-1 rounded-t-lg hover:bg-secondary/90 transition-all duration-300 cursor-pointer flex items-center gap-2"
+          className="absolute -top-9 right-4 md:right-40 bg-secondary px-8 py-2 rounded-t-lg hover:bg-secondary/90 transition-all duration-300 cursor-pointer flex items-center gap-2"
         >
-          <span className="text-white text-sm">Summary</span>
+          <span className="text-white text-sm">Summary ({totalQuantity} items)</span>
           <LuArrowUpDown
             className={`text-white transform transition-transform duration-300 ${
               isVisible ? "rotate-0" : "rotate-180"
@@ -34,12 +37,12 @@ const CartSummary = ({ totalAmount, totalQuantity }) => {
             {/* Add Total Items Row */}
             <div className="flex justify-between items-center mt-2">
               <span className="text-sm md:text-base text-white">
-                Total Items: {totalQuantity || 0}
+                Total Items: {totalQuantity}
               </span>
             </div>
             <div className="flex flex-row justify-between items-center my-1 md:my-2">
               <span className="font-bold text-md sm:text-lg md:text-xl lg:text-2xl text-white">
-                Total Down Payment: ₱{totalAmount?.toFixed(2) || "0.00"}
+                Total Down Payment: ₱{Number(totalAmount).toFixed(2)}
               </span>
               <div className="flex space-x-2">
                 <button className="mr-3 text-xs md:text-base text-white rounded-lg hover:text-gray-200 transition-colors">
@@ -55,17 +58,17 @@ const CartSummary = ({ totalAmount, totalQuantity }) => {
       </div>
 
       {/* Static button */}
-      <button
+      {/* <button
         onClick={() => setIsVisible(!isVisible)}
         className={`absolute bottom-0 right-4 md:right-40 bg-secondary px-6 py-1 rounded-t-lg hover:bg-secondary/90 transition-opacity duration-300 cursor-pointer flex items-center gap-2 ${
           isVisible ? "opacity-0" : "opacity-100"
         }`}
       >
         <span className="text-white text-sm">
-          Summary ({totalQuantity || 0} items)
+          Summary ({totalQuantity} items)
         </span>
         <LuArrowUpDown className="text-white transform rotate-180" size={20} />
-      </button>
+      </button> */}
     </div>
   );
 };
