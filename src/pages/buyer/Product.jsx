@@ -9,27 +9,45 @@ import ProductCard from "../../components/buyer/ProductCard";
 import { commentData } from "../../data/commentData";
 import CommentCard from "../../components/buyer/CommentCard";
 import Pagination from "../../components/buyer/Pagination";
+import { productDetails } from "../../data/productDetails";
 
 const Product = () => {
+  const { mainProduct, recommendedProducts } = productDetails;
+
   const [quantity, setQuantity] = useState(1);
-  const [selectedImage, setSelectedImage] = useState(neapolitanBrownie);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const commentsPerPage = 3; // Number of comments to show per page
+  const commentsPerPage = 3;
   const [selectedFilter, setSelectedFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("newest");
 
-  // Calculate pagination
+  const downPayment = mainProduct.price * 0.5;
+
   const indexOfLastComment = currentPage * commentsPerPage;
   const indexOfFirstComment = indexOfLastComment - commentsPerPage;
 
   const getFilteredComments = () => {
-    if (selectedFilter === "all") {
-      return commentData;
-    }
-    const ratingFilter = parseInt(selectedFilter);
-    return commentData.filter(
-      (comment) => Math.floor(comment.rating) === ratingFilter
-    );
+    let filtered = selectedFilter === "all" 
+      ? commentData 
+      : commentData.filter((comment) => Math.floor(comment.rating) === parseInt(selectedFilter));
+
+    return filtered.sort((a, b) => {
+      switch (sortBy) {
+        case "newest":
+          return new Date(b.date) - new Date(a.date);
+        case "oldest":
+          return new Date(a.date) - new Date(b.date);
+        case "highest":
+          return b.rating - a.rating;
+        case "lowest":
+          return a.rating - b.rating;
+        case "mostLiked":
+          return b.likes - a.likes;
+        default:
+          return 0;
+      }
+    });
   };
 
   const filteredComments = getFilteredComments();
@@ -40,7 +58,7 @@ const Product = () => {
   );
 
   const handleQuantityChange = (value) => {
-    const newQuantity = Math.max(1, Math.min(99, value));
+    const newQuantity = Math.max(1, Math.min(mainProduct.stock, value));
     setQuantity(newQuantity);
   };
 
@@ -52,9 +70,9 @@ const Product = () => {
     navigate("/checkout", {
       state: {
         product: {
-          id: 1,
-          name: "Choco-Berry Surprise Cake",
-          price: 713.0,
+          id: mainProduct.id,
+          name: mainProduct.name,
+          price: mainProduct.price,
           quantity: quantity,
         },
       },
@@ -70,7 +88,12 @@ const Product = () => {
 
   const handleFilterChange = (filter) => {
     setSelectedFilter(filter);
-    setCurrentPage(1); // Reset to first page when filter changes
+    setCurrentPage(1);
+  };
+
+  const handleSort = (sortType) => {
+    setSortBy(sortType);
+    setCurrentPage(1);
   };
 
   return (
@@ -78,44 +101,40 @@ const Product = () => {
       <Navbar />
 
       <div className="w-full h-fit max-w-6xl mx-auto flex flex-col gap-2 mt-[5%]">
-        {/* Top Content  */}
-        <div className="bg-white grid grid-cols-1 md:grid-cols-3 w-full gap-4 p-4 rounded-lg shadow-md ">
-          {/* Image Section - Left Column */}
+        {/* Top Content */}
+        <div className="bg-white grid grid-cols-1 md:grid-cols-3 w-full gap-4 p-4 rounded-lg shadow-md">
+          {/* Image Section */}
           <div className="w-full h-[400px]">
             <div className="w-full h-full">
-              {/* Main Image Container */}
               <div className="w-full h-[75%] mb-2">
                 <img
-                  src={neapolitanBrownie}
-                  alt="Main Product Image"
+                  src={mainProduct.images[selectedImageIndex] || neapolitanBrownie}
+                  alt={mainProduct.name}
                   className="w-full h-full object-cover rounded-lg transition-transform transform hover:scale-105"
                 />
               </div>
-
-              {/* Thumbnail Images Container */}
               <div className="grid grid-cols-3 h-[23%] gap-2">
-                {[...Array(3)].map((_, index) => (
+                {mainProduct.images.map((img, index) => (
                   <img
                     key={index}
-                    src={neapolitanBrownie}
-                    alt={`Thumbnail ${index + 1}`}
-                    className="w-full h-full object-cover rounded-md cursor-pointer hover:opacity-80 transition-opacity"
+                    src={img}
+                    alt={`${mainProduct.name} ${index + 1}`}
+                    className={`w-full h-full object-cover rounded-md cursor-pointer hover:opacity-80 transition-opacity ${
+                      selectedImageIndex === index ? 'border-2 border-primary' : ''
+                    }`}
+                    onClick={() => setSelectedImageIndex(index)}
                   />
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Content Section - Right Columns */}
+          {/* Content Section */}
           <div className="col-span-2 p-4 space-y-3">
-            {/* Title & Description */}
             <div>
-              <h2 className="text-2xl font-bold mb-2">
-                Choco-Berry Surprise Cake
-              </h2>
+              <h2 className="text-2xl font-bold mb-2">{mainProduct.name}</h2>
               <p className="text-gray-600 text-base h-[120px]">
-                This whimsical and elegant cake would impress just about anyone,
-                and the gorgeous chocolate details just scream "party."
+                {mainProduct.description}
               </p>
             </div>
 
@@ -123,13 +142,17 @@ const Product = () => {
               <div className="flex items-center gap-4 py-2 border-y border-gray-200 w-fit">
                 <div className="flex items-center gap-1">
                   <span className="text-gray-500 text-sm">₱</span>
-                  <span className="text-lg font-semibold">713.00</span>
+                  <span className="text-lg font-semibold">
+                    {mainProduct.price.toFixed(2)}
+                  </span>
                   <span className="text-gray-500 text-sm">Price</span>
                 </div>
                 <div className="h-5 w-[1px] bg-gray-300"></div>
                 <div className="flex items-center gap-1">
                   <span className="text-gray-500 text-sm">₱</span>
-                  <span className="text-lg font-semibold">356.50</span>
+                  <span className="text-lg font-semibold">
+                    {downPayment.toFixed(2)}
+                  </span>
                   <span className="text-gray-500 text-sm">Down payment</span>
                 </div>
                 <span className="bg-[#F4A340] text-white text-sm px-4 py-1 rounded">
@@ -139,14 +162,16 @@ const Product = () => {
 
               {/* Rating and Sold Count */}
               <div className="flex items-center gap-2">
-                <span className="text-[#F4A340] font-bold">4.7</span>
+                <span className="text-[#F4A340] font-bold">{mainProduct.rating}</span>
                 <Rating
                   icon="ph:star-fill"
                   clickable={false}
-                  initialRating={4.7}
+                  initialRating={mainProduct.rating}
                   className="text-[#F4A340]"
                 />
-                <span className="text-gray-500 text-sm">| 54 Sold</span>
+                <span className="text-gray-500 text-sm">
+                  | {mainProduct.ordered} Sold
+                </span>
               </div>
 
               {/* Quantity Section */}
@@ -198,26 +223,27 @@ const Product = () => {
           </div>
         </div>
 
-        {/* Mid Content  */}
+        {/* Recommended Products Section */}
         <div className="w-full bg-white max-w-6xl h-[210px] mx-auto p-4 rounded-lg shadow-md">
           <h3 className="text-xl font-semibold mb-4">Recommend</h3>
           <div className="flex gap-4 overflow-x-auto pb-4">
-            {[669, 669, 669, 669, 669].map((price, index) => (
+            {recommendedProducts.map((recommendedProduct) => (
               <ProductCard
-                key={index}
-                image={neapolitanBrownie}
-                price={price}
+                key={recommendedProduct.id}
+                image={recommendedProduct.image || neapolitanBrownie}
+                price={recommendedProduct.price}
+                name={recommendedProduct.name}
               />
             ))}
           </div>
         </div>
 
-        {/* Bottom Content  */}
+        {/* Bottom Content */}
         <div className="flex justify-center items-center w-full bg-white max-w-6xl mx-auto p-4">
           <div className="w-full">
             <h2 className="text-xl font-semibold">Product Rating</h2>
             <div className="items-center gap-2 bg-[#FAF3EB] w-full h-[180px] mt-3 p-5 grid grid-cols-1 md:grid-cols-4 rounded-lg shadow-md">
-              {/* Rating Section  */}
+              {/* Rating Section */}
               <div className="w-full h-full col-span-1 font-[Oswald] flex justify-center items-center">
                 <div>
                   <div className="flex items-center gap-1">
@@ -266,6 +292,27 @@ const Product = () => {
                     </div>
                   ))}
                 </div>
+              </div>
+            </div>
+            {/* Add Sort Dropdown before Comments Section */}
+            <div className="flex justify-between items-center mt-6 mb-4">
+              <h3 className="text-lg font-semibold">Customer Reviews</h3>
+              <div className="relative">
+                <select
+                  value={sortBy}
+                  onChange={(e) => handleSort(e.target.value)}
+                  className="appearance-none bg-white border border-gray-300 rounded-md px-4 py-2 pr-8 text-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                >
+                  <option value="newest">Newest First</option>
+                  <option value="oldest">Oldest First</option>
+                  <option value="highest">Highest Rating</option>
+                  <option value="lowest">Lowest Rating</option>
+                  <option value="mostLiked">Most Liked</option>
+                </select>
+                <Icon 
+                  icon="mdi:chevron-down" 
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"
+                />
               </div>
             </div>
             {/* Comments Section */}

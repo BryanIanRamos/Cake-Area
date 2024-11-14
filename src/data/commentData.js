@@ -4,26 +4,26 @@ export const commentData = [
   {
     id: 1,
     user: {
-      name: "Coraline Brown",
-      profilePic: neapolitanBrownie,
+      name: "John Doe",
+      avatar: "/path/to/avatar.jpg"
     },
-    rating: 5.0,
-    date: "2024-12-09",
-    comment: "Perfect! Absolutely loved it.",
+    rating: 4.5,
+    date: "2024-03-15T10:30:00", // Use ISO date format
+    comment: "Great product! Really enjoyed it.",
     images: [neapolitanBrownie, neapolitanBrownie, neapolitanBrownie],
-    likes: 123,
+    likes: 15
   },
   {
     id: 2,
     user: {
-      name: "John Smith",
-      profilePic: neapolitanBrownie,
+      name: "Jane Smith",
+      avatar: "/path/to/avatar.jpg"
     },
-    rating: 4.0,
-    date: "2024-12-08",
-    comment: "Very good but could be better.",
+    rating: 5,
+    date: "2024-03-14T15:45:00",
+    comment: "Absolutely perfect!",
     images: [neapolitanBrownie],
-    likes: 98,
+    likes: 23
   },
   {
     id: 3,

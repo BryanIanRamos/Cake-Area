@@ -1,35 +1,59 @@
 import React, { useState } from "react";
 import Sidebar from "../../components/baker/Sidebar";
 import { Icon } from "@iconify/react";
-import neapolitanBrownie from "../../assets/CakeSample.png";
+import { bakerProducts } from "../../data/productDetails";
 
 const Products = () => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Cakes");
+  const [sortBy, setSortBy] = useState("name");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Sample categories with count
-  const categories = [
-    { name: "Cakes", count: 5 },
-    { name: "Bread", count: 3 },
-    { name: "Pantries", count: 2 },
-    { name: "Cookies", count: 4 },
-    { name: "Pies", count: 3 },
-    { name: "Muffins", count: 1 },
-  ];
+  const { categories, products } = bakerProducts;
 
-  // Sample products data
-  const products = [
-    {
-      id: 1,
-      name: "Choco-Berry Surprise Cake",
-      price: "₱ 782.00",
-      ordered: 26,
-      viewed: 132,
-      image: neapolitanBrownie,
-      rating: 4.5,
-    },
-    // Add more products as needed
+  // Filter and sort products
+  const getFilteredAndSortedProducts = () => {
+    let filtered = products.filter(product => {
+      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = selectedCategory === "All" || product.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+
+    // Sort the filtered products
+    return filtered.sort((a, b) => {
+      switch (sortBy) {
+        case "name":
+          return a.name.localeCompare(b.name);
+        case "nameDesc":
+          return b.name.localeCompare(a.name);
+        case "priceAsc":
+          return a.price - b.price;
+        case "priceDesc":
+          return b.price - a.price;
+        case "rating":
+          return b.rating - a.rating;
+        case "ordered":
+          return b.ordered - a.ordered;
+        case "viewed":
+          return b.viewed - a.viewed;
+        default:
+          return 0;
+      }
+    });
+  };
+
+  const filteredProducts = getFilteredAndSortedProducts();
+
+  // Sort options
+  const sortOptions = [
+    { value: "name", label: "Name (A-Z)", icon: "material-symbols:sort-by-alpha" },
+    { value: "nameDesc", label: "Name (Z-A)", icon: "material-symbols:sort-by-alpha" },
+    { value: "priceAsc", label: "Price (Low to High)", icon: "mdi:sort-numeric-ascending" },
+    { value: "priceDesc", label: "Price (High to Low)", icon: "mdi:sort-numeric-descending" },
+    { value: "rating", label: "Highest Rating", icon: "material-symbols:star" },
+    { value: "ordered", label: "Most Ordered", icon: "mdi:shopping-outline" },
+    { value: "viewed", label: "Most Viewed", icon: "mdi:eye-outline" },
   ];
 
   return (
@@ -89,15 +113,42 @@ const Products = () => {
                 className="absolute left-3 top-2.5 text-gray-400 text-xl"
               />
             </div>
-            <button className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-50">
-              <Icon icon="material-symbols:sort" />
-              Sort By
-            </button>
+            
+            {/* Sort Dropdown */}
+            <div className="relative">
+              <button 
+                className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-50"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              >
+                <Icon icon="material-symbols:sort" />
+                Sort By: {sortOptions.find(option => option.value === sortBy)?.label}
+              </button>
+              
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border z-10">
+                  {sortOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      className={`w-full px-4 py-2 text-left flex items-center gap-2 hover:bg-gray-50 ${
+                        sortBy === option.value ? 'text-[#E88F2A]' : 'text-gray-700'
+                      }`}
+                      onClick={() => {
+                        setSortBy(option.value);
+                        setIsDropdownOpen(false);
+                      }}
+                    >
+                      <Icon icon={option.icon} className="text-lg" />
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Products Grid */}
           <div className="bg-white rounded-lg shadow">
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <div
                 key={product.id}
                 className="flex items-center gap-4 p-4 border-b hover:bg-gray-50 transition-colors"
