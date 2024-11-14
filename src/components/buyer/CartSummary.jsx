@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { LuArrowUpDown } from "react-icons/lu";
 
 const CartSummary = ({ totalAmount = 0, totalQuantity = 0 }) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+
+  console.log("Total Quantity: ", totalQuantity);
+  console.log("Total Amount: ", totalAmount);
 
   return (
     <div className="fixed bottom-0 w-full">
@@ -14,9 +17,9 @@ const CartSummary = ({ totalAmount = 0, totalQuantity = 0 }) => {
         {/* Toggle Button */}
         <button
           onClick={() => setIsVisible(!isVisible)}
-          className="absolute -top-8 right-4 md:right-40 bg-secondary px-6 py-1 rounded-t-lg hover:bg-secondary/90 transition-all duration-300 cursor-pointer flex items-center gap-2"
+          className="absolute -top-9 right-4 md:right-40 bg-secondary px-8 py-2 rounded-t-lg hover:bg-secondary/90 transition-all duration-300 cursor-pointer flex items-center gap-2"
         >
-          <span className="text-white text-sm">Summary</span>
+          <span className="text-white text-sm">Summary ({totalQuantity} items)</span>
           <LuArrowUpDown
             className={`text-white transform transition-transform duration-300 ${
               isVisible ? "rotate-0" : "rotate-180"
@@ -55,7 +58,7 @@ const CartSummary = ({ totalAmount = 0, totalQuantity = 0 }) => {
       </div>
 
       {/* Static button */}
-      <button
+      {/* <button
         onClick={() => setIsVisible(!isVisible)}
         className={`absolute bottom-0 right-4 md:right-40 bg-secondary px-6 py-1 rounded-t-lg hover:bg-secondary/90 transition-opacity duration-300 cursor-pointer flex items-center gap-2 ${
           isVisible ? "opacity-0" : "opacity-100"
@@ -65,7 +68,7 @@ const CartSummary = ({ totalAmount = 0, totalQuantity = 0 }) => {
           Summary ({totalQuantity} items)
         </span>
         <LuArrowUpDown className="text-white transform rotate-180" size={20} />
-      </button>
+      </button> */}
     </div>
   );
 };

@@ -19,7 +19,7 @@ const CartHeader = () => {
             src={whiteLogo}
             alt="logo"
           />
-          Cake Area
+          Bakers' Area
         </div>
 
         {/* Search Bar Container */}

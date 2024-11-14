@@ -27,42 +27,78 @@ const Cart = () => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [totalQuantity, setTotalQuantity] = useState(0);
+  const [adjustedQuantities, setAdjustedQuantities] = useState({});
 
-  const handleSelectItem = (id, price, quantity) => {
+  const handleSelectItem = (id) => {
     setSelectedItems((prev) => {
       const isSelected = prev.find(item => item.id === id);
+      const adjustedQuantity = adjustedQuantities[id] || 0;
+
+      // Find the product in CartData to get the original price and quantity
+      const product = CartData.data.flatMap(order => order.products).find(product => product.productId === id);
+      const price = product ? product.price : 0; // Get the original price from CartData
+      const originalQuantity = product ? product.quantity : 0; // Get the original quantity from CartData
+
       if (isSelected) {
-        const updatedItems = prev.filter(item => item.id !== id);
-        // Check if all items are deselected
-        if (updatedItems.length === 0) {
-          return [];
-        }
-        return updatedItems;
+        return prev.filter(item => item.id !== id);
       } else {
-        return [...prev, { id, price, quantity }];
+        return [...prev, { id, price, quantity: adjustedQuantity || originalQuantity }];
       }
     });
   };
 
   const handleSelectAll = (isSelected, products) => {
-    if (isSelected) {
-      const allItems = products.map(item => ({
-        id: item.productId,
-        price: item.price * item.quantity,
-        quantity: item.quantity
-      }));
-      setSelectedItems(allItems);
-    } else {
-      setSelectedItems([]);
+    console.log("isSelected:", isSelected);
+    console.log("products:", products);
+    if (products && products.length > 0) {
+      if (isSelected) {
+        // When selecting all, ensure to add only unique items
+        const allItems = products.map(item => ({
+          id: item.productId,
+          price: item.price,
+          quantity: item.quantity
+        }));
+
+        // Check if any items are already selected
+        const newSelectedItems = allItems.filter(item => !selectedItems.find(selected => selected.id === item.id));
+        setSelectedItems(prev => [...prev, ...newSelectedItems]);
+      } else {
+        // Deselect all items from the current card
+        const currentCardIds = products.map(item => item.productId);
+        setSelectedItems(prev => prev.filter(item => !currentCardIds.includes(item.id)));
+      }
     }
+  };
+  console.log("Selected: ", selectedItems);
+
+  const handleQuantityChange = (id, newQuantity) => {
+    setAdjustedQuantities((prev) => ({
+      ...prev,
+      [id]: newQuantity,
+    }));
+
+    const updatedItems = selectedItems.map(item => {
+      if (item.id === id) {
+        return { ...item, quantity: newQuantity };
+      }
+      return item;
+    });
+
+    // Calculate total amount and quantity using updatedItems
+    const total = updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const quantity = updatedItems.reduce((sum, item) => sum + item.quantity, 0);
+
+    setTotalAmount(total);
+    setTotalQuantity(quantity);
+    setSelectedItems(updatedItems);
   };
 
   useEffect(() => {
-    const total = selectedItems.reduce((sum, item) => sum + item.price, 0);
-    const quantity = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
+    const total = selectedItems.reduce((sum, item) => sum + (item.price * (adjustedQuantities[item.id] || item.quantity)), 0);
+    const quantity = selectedItems.reduce((sum, item) => sum + (adjustedQuantities[item.id] || item.quantity), 0);
     setTotalAmount(total);
     setTotalQuantity(quantity);
-  }, [selectedItems]);
+  }, [selectedItems, adjustedQuantities]);
 
   const getOrderCount = () => {
     switch(location.pathname) {
@@ -126,6 +162,8 @@ const Cart = () => {
                         onSelectItem={handleSelectItem}
                         onSelectAll={handleSelectAll}
                         selectedItems={selectedItems}
+                        onQuantityChange={handleQuantityChange}
+                        quantity={adjustedQuantities[data.productId] || data.quantity}
                       />
                     ))}
                   </div>

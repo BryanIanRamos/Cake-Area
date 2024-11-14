@@ -8,8 +8,10 @@ import Completed from "./Completed";
 import Cancelled from "./Cancelled";
 import Refund from "./Refund";
 
-const OrderCard = ({ data, type, onSelectItem, selectedItems, onSelectAll }) => {
+const OrderCard = ({ data, type, onSelectItem, selectedItems = [], onSelectAll, onQuantityChange }) => {
   const isSelected = (id) => selectedItems.some(item => item.id === id);
+
+  console.log("Selected Items:",selectedItems)
 
   const renderOrderContent = () => {
     switch(type) {
@@ -20,6 +22,7 @@ const OrderCard = ({ data, type, onSelectItem, selectedItems, onSelectAll }) => 
             data={product}
             onSelectItem={onSelectItem}
             isSelected={isSelected(product.productId)}
+            onQuantityChange={onQuantityChange}
           />
         ));
       case 'in-process':
