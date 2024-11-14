@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import MainPage from "./pages/buyer/MainPage.jsx";
 import Store from "./pages/buyer/Store.jsx";
@@ -11,9 +11,16 @@ import Profile from "./pages/buyer/Profile.jsx";
 import Test from "./pages/buyer/test.jsx";
 import Register from "./pages/baker/Register.jsx";
 
+import Dashboard from "./pages/baker/Dashboard.jsx";
+import Settings from "./pages/baker/Settings.jsx";
+
 import "./App.css";
 import ForgotPassword from "./pages/buyer/ForgotPassword.jsx";
 import Header from "./components/buyer/Header.jsx";
+import Orders from "./pages/baker/Orders.jsx";
+import Products from "./pages/baker/Products";
+import Reviews from "./pages/baker/Reviews";
+import Statistics from "./pages/baker/Statistics";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -27,18 +34,24 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* Customer's Route */}
-        <Route path="/Store" element={<Store />} />
-        <Route path="/Product" element={<Product />} />
-        <Route path="/Cart/*" element={<Cart />} />
+        <Route path="/store" element={<Store />} />
+        <Route path="/product" element={<Product />} />
+        <Route path="/cart/*" element={<Cart />} />
         <Route
-          path="/Profile"
+          path="/profile"
           element={
             <Profile isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
           }
         />
-        {/* Baker's Route */}
-        {/* <Route path="/dashboard" element={<Store />} /> */}
+
+        {/* Baker's Route - Update these paths */}
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard/orders" element={<Orders />} />
+        <Route path="/dashboard/products" element={<Products />} />
+        <Route path="/dashboard/reviews" element={<Reviews />} />
+        <Route path="/dashboard/settings" element={<Settings />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/dashboard/statistics" element={<Statistics />} />
       </Routes>
       <ToastContainer position="bottom-right" />
     </Router>
