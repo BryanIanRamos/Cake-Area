@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import MainPage from "./pages/buyer/MainPage.jsx";
 import Store from "./pages/buyer/Store.jsx";
@@ -10,6 +10,8 @@ import Cart from "./pages/buyer/Cart.jsx";
 import Profile from "./pages/buyer/Profile.jsx";
 import Test from "./pages/buyer/test.jsx";
 import Register from "./pages/baker/Register.jsx";
+
+import Dashboard from "./pages/baker/Dashboard.jsx";
 
 import "./App.css";
 import ForgotPassword from "./pages/buyer/ForgotPassword.jsx";
@@ -37,7 +39,7 @@ function App() {
           }
         />
         {/* Baker's Route */}
-        {/* <Route path="/dashboard" element={<Store />} /> */}
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/register" element={<Register />} />
       </Routes>
       <ToastContainer position="bottom-right" />
