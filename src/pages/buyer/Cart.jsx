@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { LuArrowUpDown } from "react-icons/lu";
+import { Toaster, toast } from 'sonner'
 
 // To be Cleaned
 // import ToReceive from "../../components/ToReceive"; -U
@@ -19,6 +20,8 @@ import ToReceiveData from "../../data/ToRecieveData.json";
 import CompletedData from "../../data/CompleteData.json";
 import CancelledData from "../../data/CancelledData.json";
 import RefundData from "../../data/RefundData.json";
+import { esES } from "@mui/x-date-pickers/locales";
+import OrderConfirmation from "../../components/buyer/modals/OrderConfirmation";
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -28,6 +31,14 @@ const Cart = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [totalQuantity, setTotalQuantity] = useState(0);
   const [adjustedQuantities, setAdjustedQuantities] = useState({});
+  const [selectedCards, setSelectedCards] = useState({});
+  const [checkOutConfirm, setCheckOutConfirm] = useState(false);
+
+
+
+  const closeConfirmation = () => {
+    setCheckOutConfirm(false);
+  }
 
   const handleSelectItem = (id) => {
     setSelectedItems((prev) => {
@@ -100,6 +111,79 @@ const Cart = () => {
     setTotalQuantity(quantity);
   }, [selectedItems, adjustedQuantities]);
 
+  // Function to remove selected items and reset states
+  const removeSelectedItems = () => {
+      setSelectedItems([]);
+      setAdjustedQuantities({});
+      setTotalAmount(0);
+      setTotalQuantity(0);
+      setSelectedCards({});
+      toast.success("Selected items have been removed.");
+  };
+
+  // Function to handle the remove action with confirmation
+  const handleRemoveSelected = () => {
+    // Check if there are any selected items
+    if (selectedItems.length > 0) {
+      // Display a custom confirmation toast using Sonner
+      toast.custom(
+        (t) => (
+          <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-6 flex flex-col items-center">
+            <p className="mb-4 text-center">Are you sure you want to unselect all selected items?</p>
+            <div className="flex space-x-4">
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors"
+                onClick={() => {
+                  removeSelectedItems(); // Function to remove all selected items
+                  toast.dismiss(t.id);  // Dismiss the confirmation toast
+                }}
+              >
+                Confirm
+              </button>
+              <button
+                className="bg-gray-300 text-black px-4 py-2 rounded-md hover:bg-gray-400 transition-colors"
+                onClick={() => toast.dismiss(t.id)} // Dismiss the confirmation toast
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ),
+        {
+          duration: Infinity, // Keeps the toast open until the user interacts
+          style: { 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center' 
+          },
+        }
+      );
+    } else {
+      // Display an error toast if no items are selected
+      toast.error('No selected items!', {
+        duration: 3000, // Duration the toast will be visible
+        style: {
+          minWidth: '200px',
+          textAlign: 'center',
+        },
+      });
+    }
+  };
+
+  const handleCheckout = () => {
+    if (selectedItems.length === 0) {
+      toast.error('No selected items!'), {
+        duration: 200,
+        style: {
+          minWidth: '200px',
+          textAlign: 'center',
+        },
+      }
+    } else {
+      setCheckOutConfirm(true);
+    }
+  }
+
   const getOrderCount = () => {
     switch(location.pathname) {
       case '/cart':
@@ -122,8 +206,16 @@ const Cart = () => {
 
   return (
     <div className="flex flex-col justify-center gap-8">
+      <Toaster richColors closeButton position="top-center" />
       <CartHeader />
       <div className="flex flex-col px-4 md:px-8 lg:px-12 xl:px-32 2xl:px-72 justify-between gap-4">
+        {checkOutConfirm && (
+          <OrderConfirmation 
+            isOpen = {checkOutConfirm}
+            closeModal = {closeConfirmation}
+            totalAmount = {totalAmount}
+          />
+        )}
         <div className="flex flex-col gap-2">
           <div className="flex justify-between pt-24 md:pt-36">
             <div className="flex gap-2 items-center text-xl md:text-3xl font-semibold">
@@ -233,7 +325,12 @@ const Cart = () => {
           </Routes>
         </div>
       </div>
-      <CartSummary totalAmount={totalAmount} totalQuantity={totalQuantity} />
+      <CartSummary 
+        totalAmount={totalAmount} 
+        totalQuantity={totalQuantity} 
+        onRemoveSelected={handleRemoveSelected} 
+        onCheckout={handleCheckout}
+      />
     </div>
   );
 };
