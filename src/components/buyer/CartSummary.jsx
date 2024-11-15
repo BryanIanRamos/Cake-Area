@@ -4,16 +4,6 @@ import OrderConfirmation from "./modals/OrderConfirmation";
 
 const CartSummary = ({ totalAmount = 0, totalQuantity = 0, onRemoveSelected, onCheckout }) => {
   const [isVisible, setIsVisible] = useState(true);
-  // const [checkOutConfirm, setCheckOutConfirm] = useState(false);
-
-
-  // const openConfirmation = () => {
-  //   setCheckOutConfirm(true);
-  // }
-
-  // const closeConfirmation = () => {
-  //   setCheckOutConfirm(false);
-  // }
 
 
   console.log("Total Quantity: ", totalQuantity);
@@ -21,13 +11,6 @@ const CartSummary = ({ totalAmount = 0, totalQuantity = 0, onRemoveSelected, onC
 
   return (
     <div className="fixed bottom-0 w-full">
-      {/* {checkOutConfirm && (
-        <OrderConfirmation 
-          isOpen = {checkOutConfirm}
-          closeModal = {closeConfirmation}
-          totalAmount = {totalAmount}
-        />
-      )} */}
       <div
         className={`transform transition-all duration-300 ease-in-out ${
           isVisible ? "translate-y-0" : "translate-y-full"

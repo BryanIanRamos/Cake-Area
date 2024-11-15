@@ -14,13 +14,15 @@ import CartHeader from "../../components/buyer/CartHeader";
 import CartTabs from "../../components/buyer/CartTabs";
 import OrderCard from "../../components/buyer/OrderCard";
 import CartSummary from "../../components/buyer/CartSummary";
+
 import CartData from "../../data/CartData.json";
-import InProcessData from "../../data/InProcessData.json";
-import ToReceiveData from "../../data/ToRecieveData.json";
-import CompletedData from "../../data/CompleteData.json";
-import CancelledData from "../../data/CancelledData.json";
-import RefundData from "../../data/RefundData.json";
-import { esES } from "@mui/x-date-pickers/locales";
+// import InProcessData from "../../data/InProcessData.json";
+// import ToReceiveData from "../../data/ToRecieveData.json";
+// import CompletedData from "../../data/CompleteData.json";
+// import CancelledData from "../../data/CancelledData.json";
+// import RefundData from "../../data/RefundData.json";
+// import { esES } from "@mui/x-date-pickers/locales";
+
 import OrderConfirmation from "../../components/buyer/modals/OrderConfirmation";
 
 const Cart = () => {
@@ -172,13 +174,13 @@ const Cart = () => {
 
   const handleCheckout = () => {
     if (selectedItems.length === 0) {
-      toast.error('No selected items!'), {
-        duration: 200,
+      toast.error('No selected items!', {
+        duration: 300,
         style: {
           minWidth: '200px',
           textAlign: 'center',
         },
-      }
+      });
     } else {
       setCheckOutConfirm(true);
     }
@@ -188,17 +190,17 @@ const Cart = () => {
     switch(location.pathname) {
       case '/cart':
       case '/':
-        return CartData.data.length;
+        return CartData.data.filter(order => order.tab === 'cart').length;
       case '/cart/in-process':
-        return InProcessData.data.length;
+        return CartData.data.filter(order => order.tab === 'in-process').length;
       case '/cart/to-receive':
-        return ToReceiveData.data.length;
+        return CartData.data.filter(order => order.tab === 'to-receive').length;
       case '/cart/completed':
-        return CompletedData.data.length;
+        return CartData.data.filter(order => order.tab === 'completed').length;
       case '/cart/cancelled':
-        return CancelledData.data.length;
+        return CartData.data.filter(order => order.tab === 'cancelled').length;
       case '/cart/refund':
-        return RefundData.data.length;
+        return CartData.data.filter(order => order.tab === 'refund').length;
       default:
         return 0;
     }
@@ -214,6 +216,7 @@ const Cart = () => {
             isOpen = {checkOutConfirm}
             closeModal = {closeConfirmation}
             totalAmount = {totalAmount}
+            selectedItems={selectedItems}
           />
         )}
         <div className="flex flex-col gap-2">
@@ -246,17 +249,19 @@ const Cart = () => {
               element={
                 <div className="overflow-y-auto flex-1">
                   <div className="flex flex-col gap-4 pb-36">
-                    {CartData.data.map((data, index) => (
-                      <OrderCard 
-                        key={index} 
-                        data={data} 
-                        type="cart" 
-                        onSelectItem={handleSelectItem}
-                        onSelectAll={handleSelectAll}
-                        selectedItems={selectedItems}
-                        onQuantityChange={handleQuantityChange}
-                        quantity={adjustedQuantities[data.productId] || data.quantity}
-                      />
+                    {CartData.data
+                      .filter(order => order.tab === 'cart')
+                      .map((data, index) => (
+                        <OrderCard 
+                          key={index} 
+                          data={data} 
+                          type="cart" 
+                          onSelectItem={handleSelectItem}
+                          onSelectAll={handleSelectAll}
+                          selectedItems={selectedItems}
+                          onQuantityChange={handleQuantityChange}
+                          quantity={adjustedQuantities[data.id] || data.quantity}
+                        />
                     ))}
                   </div>
                 </div>
@@ -267,8 +272,10 @@ const Cart = () => {
               element={
                 <div className="overflow-y-auto flex-1">
                   <div className="flex flex-col gap-4 pb-36">
-                    {InProcessData.data.map((data, index) => (
-                      <OrderCard key={index} data={data} type="in-process" />
+                    {CartData.data
+                      .filter(order => order.tab === 'in-process')
+                      .map((data, index) => (
+                        <OrderCard key={index} data={data} type="in-process" />
                     ))}
                   </div>
                 </div>
@@ -279,8 +286,10 @@ const Cart = () => {
               element={
                 <div className="overflow-y-auto flex-1">
                   <div className="flex flex-col gap-4 pb-36">
-                    {ToReceiveData.data.map((data, index) => (
-                      <OrderCard key={index} data={data} type="to-receive" />
+                  {CartData.data
+                      .filter(order => order.tab === 'to-receive')
+                      .map((data, index) => (
+                        <OrderCard key={index} data={data} type="to-receive" />
                     ))}
                   </div>
                 </div>
@@ -291,8 +300,10 @@ const Cart = () => {
               element={
                 <div className="overflow-y-auto flex-1">
                   <div className="flex flex-col gap-4 pb-36">
-                    {CompletedData.data.map((data, index) => (
-                      <OrderCard key={index} data={data} type="completed" />
+                    {CartData.data
+                      .filter(order => order.tab === 'completed')
+                      .map((data, index) => (
+                        <OrderCard key={index} data={data} type="completed" />
                     ))}
                   </div>
                 </div>
@@ -303,8 +314,10 @@ const Cart = () => {
               element={
                 <div className="overflow-y-auto flex-1">
                   <div className="flex flex-col gap-4 pb-36">
-                    {CancelledData.data.map((data, index) => (
-                      <OrderCard key={index} data={data} type="cancelled" />
+                    {CartData.data
+                      .filter(order => order.tab === 'cancelled')
+                      .map((data, index) => (
+                        <OrderCard key={index} data={data} type="cancelled" />
                     ))}
                   </div>
                 </div>
@@ -315,8 +328,10 @@ const Cart = () => {
               element={
                 <div className="overflow-y-auto flex-1">
                   <div className="flex flex-col gap-4 pb-36">
-                    {RefundData.data.map((data, index) => (
-                      <OrderCard key={index} data={data} type="refund" />
+                    {CartData.data
+                      .filter(order => order.tab === 'refund')
+                      .map((data, index) => (
+                        <OrderCard key={index} data={data} type="refund" />
                     ))}
                   </div>
                 </div>

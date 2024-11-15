@@ -1,7 +1,7 @@
 import React from 'react';
 import { Icon } from "@iconify/react";
 
-function OrderConfirmation({ closeModal, totalAmount}) {
+function OrderConfirmation({ closeModal, totalAmount }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="border w-[73vw] sm:w-[53vw] md:w-[43vw] lg:w-[35vw] h-fit p-4 sm:p-5 md:p-6 lg:p-7 bg-white">

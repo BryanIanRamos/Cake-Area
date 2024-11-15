@@ -201,7 +201,7 @@ const OrderCard = ({ data, type, onSelectItem, selectedItems = [], onSelectAll, 
                 </div>
                 <div>
                   <p className="text-[#00B517] text-base">Approved at</p>
-                  <p className="text-sm">{data.completeDate}</p>
+                  <p className="text-sm">{data.approvedDate}</p>
                 </div>
               </div>
               {/* Details Button */}
