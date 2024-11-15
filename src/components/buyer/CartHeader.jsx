@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
-import whiteLogo from "../../assets/white-logo.png";
+import whiteLogo from "../../assets/BA-logo.png";
 
 const CartHeader = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);

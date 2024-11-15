@@ -1,14 +1,33 @@
 import React, { useState } from "react";
 import { LuArrowUpDown } from "react-icons/lu";
+import OrderConfirmation from "./modals/OrderConfirmation";
 
-const CartSummary = ({ totalAmount = 0, totalQuantity = 0 }) => {
+const CartSummary = ({ totalAmount = 0, totalQuantity = 0, onRemoveSelected, onCheckout }) => {
   const [isVisible, setIsVisible] = useState(true);
+  // const [checkOutConfirm, setCheckOutConfirm] = useState(false);
+
+
+  // const openConfirmation = () => {
+  //   setCheckOutConfirm(true);
+  // }
+
+  // const closeConfirmation = () => {
+  //   setCheckOutConfirm(false);
+  // }
+
 
   console.log("Total Quantity: ", totalQuantity);
   console.log("Total Amount: ", totalAmount);
 
   return (
     <div className="fixed bottom-0 w-full">
+      {/* {checkOutConfirm && (
+        <OrderConfirmation 
+          isOpen = {checkOutConfirm}
+          closeModal = {closeConfirmation}
+          totalAmount = {totalAmount}
+        />
+      )} */}
       <div
         className={`transform transition-all duration-300 ease-in-out ${
           isVisible ? "translate-y-0" : "translate-y-full"
@@ -45,10 +64,17 @@ const CartSummary = ({ totalAmount = 0, totalQuantity = 0 }) => {
                 Total Down Payment: ₱{Number(totalAmount).toFixed(2)}
               </span>
               <div className="flex space-x-2">
-                <button className="mr-3 text-xs md:text-base text-white rounded-lg hover:text-gray-200 transition-colors">
+                {/* Attach the handler to the Remove button */}
+                <button 
+                  onClick={onRemoveSelected} 
+                  className="mr-3 text-xs md:text-base text-white rounded-lg hover:text-gray-200 transition-colors"
+                >
                   Remove
                 </button>
-                <button className="px-2 md:px-4 py-2 md:py-2.5 text-xs md:text-base bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+                <button 
+                  className="px-2 md:px-4 py-2 md:py-2.5 text-xs md:text-base bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                  onClick={onCheckout}
+                >
                   Check Out
                 </button>
               </div>
@@ -58,17 +84,7 @@ const CartSummary = ({ totalAmount = 0, totalQuantity = 0 }) => {
       </div>
 
       {/* Static button */}
-      {/* <button
-        onClick={() => setIsVisible(!isVisible)}
-        className={`absolute bottom-0 right-4 md:right-40 bg-secondary px-6 py-1 rounded-t-lg hover:bg-secondary/90 transition-opacity duration-300 cursor-pointer flex items-center gap-2 ${
-          isVisible ? "opacity-0" : "opacity-100"
-        }`}
-      >
-        <span className="text-white text-sm">
-          Summary ({totalQuantity} items)
-        </span>
-        <LuArrowUpDown className="text-white transform rotate-180" size={20} />
-      </button> */}
+      {/* ... (Optional: If you plan to use it in the future) */}
     </div>
   );
 };

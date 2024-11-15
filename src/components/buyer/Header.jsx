@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Cake_area_logo from "../../assets/cake_area_logo.png";
+import Cake_area_logo from "../../assets/BA-logo.png";
 
 const Header = ({
   isLoggedIn,
@@ -47,10 +47,10 @@ const Header = ({
         <img
           src={Cake_area_logo}
           alt="Cake Area Logo"
-          className="h-[7vw] sm:max-h-[5vw] xl:h-[3vw]"
+          className="h-[7vw] sm:max-h-[5vw] xl:h-[4vw]"
         />
         <h1 className="font-[Oswald] text-[3vw] sm:text-[2vw] font-semibold">
-          Bakers Area
+          Bakers' Area
         </h1>
       </div>
 
