@@ -192,11 +192,25 @@ const Cart = () => {
       const allProductsSelected = order.products.every(product => selectedItems.some(item => item.id === product.productId));
 
       if (allProductsSelected && order.tab === 'cart') {
+        // Update the quantities and total amount for the order
+        const updatedProducts = order.products.map(product => {
+          const selectedItem = selectedItems.find(item => item.id === product.productId);
+          const adjustedQuantity = adjustedQuantities[product.productId] || product.quantity;
+          return {
+            ...product,
+            quantity: selectedItem ? adjustedQuantity : product.quantity
+          };
+        });
+
+        const totalAmount = updatedProducts.reduce((sum, product) => sum + (product.price * product.quantity), 0);
+
         return {
           ...order,
           tab: 'in-process',
           orderDate: currentDate,
           receiveDate: receiveDate,
+          products: updatedProducts,
+          totalAmount: totalAmount
         };
       }
 
@@ -279,8 +293,13 @@ const Cart = () => {
                     {cartData
                       .filter(order => order.tab === 'in-process')
                       .map((data, index) => (
-                        <OrderCard key={index} data={data} type="in-process" />
-                    ))}
+                        <OrderCard 
+                          key={index} 
+                          data={data} 
+                          type="in-process" 
+                          totalAmount={data.totalAmount}
+                        />
+                      ))}
                   </div>
                 </div>
               }

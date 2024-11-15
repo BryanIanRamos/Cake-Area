@@ -8,7 +8,7 @@ import Completed from "./Completed";
 import Cancelled from "./Cancelled";
 import Refund from "./Refund";
 
-const OrderCard = ({ data, type, onSelectItem, selectedItems = [], onSelectAll, onQuantityChange }) => {
+const OrderCard = ({ data, type, onSelectItem, selectedItems = [], onSelectAll, onQuantityChange, totalAmount, totalQuantity }) => {
   const isSelected = (id) => selectedItems.some(item => item.id === id);
 
   console.log("Selected Items:",selectedItems)
@@ -25,47 +25,46 @@ const OrderCard = ({ data, type, onSelectItem, selectedItems = [], onSelectAll, 
             onQuantityChange={onQuantityChange}
           />
         ));
-      case 'in-process':
-        return (
-          <div className="flex justify-between">
-            {/* Products */}
-            <div>
-              {data.products.map((product, index) => (
-                <InProcess 
-                  key={index} 
-                  data={{
-                    ...data,
-                    products: product
-                  }} 
-                />
-              ))}
-            </div>
-            <div className="flex flex-col justify-between my-8">
-              {/* Order Dates */}
-              <div className="flex justify-end gap-8 px-8 pt-4 font-semibold">
-                <div>
-                  <p className="text-orange-400 text-base">Order Placed</p>
-                  <p className="text-sm">{data.orderDate}</p>
-                </div>
-                <div>
-                  <p className="text-orange-400 text-base">To Receive</p>
-                  <p className="text-sm">{data.receiveDate}</p>
-                </div>
+        case 'in-process':
+          return (
+            <div className="flex justify-between">
+              {/* Products */}
+              <div>
+                {data.products.map((product, index) => (
+                  <InProcess 
+                    key={index} 
+                    data={{
+                      ...data,
+                      products: product
+                    }} 
+                    quantity={product.quantity}
+                  />
+                ))}
               </div>
-              {/* Cancel Button - Only show for in-process */}
-              {type === 'in-process' && (
-                <div className="flex flex-col items-end px-8 pb-4 gap-1">
+              <div className="flex flex-col justify-between my-8">
+                {/* Order Dates */}
+                <div className="flex justify-end gap-8 px-8 pt-4 font-semibold">
+                  <div>
+                    <p className="text-orange-400 text-base">Order Placed</p>
+                    <p className="text-sm">{data.orderDate}</p>
+                  </div>
+                  <div>
+                    <p className="text-orange-400 text-base">To Receive</p>
+                    <p className="text-sm">{data.receiveDate}</p>
+                  </div>
+                </div>
+                {/* Display Total Amount */}
+                <div className="flex flex-col items-end px-8 pb-4 pt-6 gap-1">
                   <h1 className='text-gray-400'>
-                    Total Amount: <span className='text-black font-semibold'>₱1600.00</span>
+                    Total Amount: <span className='text-black font-semibold'>₱{totalAmount || 0}.00</span>
                   </h1>
                   <button className="bg-[#DC3545] text-white px-8 py-2 rounded">
                     Cancel
                   </button>
                 </div>
-              )}
+              </div>
             </div>
-          </div>
-        );
+          );
       case 'to-receive':
         return (
           <div className="flex justify-between">
