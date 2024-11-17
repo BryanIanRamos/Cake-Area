@@ -3,30 +3,21 @@ import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { LuArrowUpDown } from "react-icons/lu";
 import { Toaster, toast } from 'sonner'
 
-// To be Cleaned
-// import ToReceive from "../../components/ToReceive"; -U
-// import Completed from "../../components/Completed"; -u
-// import Cancelled from "../../components/Cancelled"; -u
-// import Refund from "../../components/Refund"; -u
-// import InProcess from "../../components/InProcess"; -u
-
+// Cleaned Imports
 import CartHeader from "../../components/buyer/CartHeader";
 import CartTabs from "../../components/buyer/CartTabs";
 import OrderCard from "../../components/buyer/OrderCard";
 import CartSummary from "../../components/buyer/CartSummary";
-import CartData from "../../data/CartData.json";
-import InProcessData from "../../data/InProcessData.json";
-import ToReceiveData from "../../data/ToRecieveData.json";
-import CompletedData from "../../data/CompleteData.json";
-import CancelledData from "../../data/CancelledData.json";
-import RefundData from "../../data/RefundData.json";
-import { esES } from "@mui/x-date-pickers/locales";
+
+import initialCartData from "../../data/CartData.json"; // Renamed for clarity
+
 import OrderConfirmation from "../../components/buyer/modals/OrderConfirmation";
 
 const Cart = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [cartData, setCartData] = useState(initialCartData.data); // Manage CartData using state
   const [selectedItems, setSelectedItems] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [totalQuantity, setTotalQuantity] = useState(0);
@@ -34,21 +25,19 @@ const Cart = () => {
   const [selectedCards, setSelectedCards] = useState({});
   const [checkOutConfirm, setCheckOutConfirm] = useState(false);
 
-
-
   const closeConfirmation = () => {
     setCheckOutConfirm(false);
-  }
+  };
 
   const handleSelectItem = (id) => {
     setSelectedItems((prev) => {
       const isSelected = prev.find(item => item.id === id);
       const adjustedQuantity = adjustedQuantities[id] || 0;
 
-      // Find the product in CartData to get the original price and quantity
-      const product = CartData.data.flatMap(order => order.products).find(product => product.productId === id);
-      const price = product ? product.price : 0; // Get the original price from CartData
-      const originalQuantity = product ? product.quantity : 0; // Get the original quantity from CartData
+      // Find the product in cartData to get the original price and quantity
+      const product = cartData.flatMap(order => order.products).find(product => product.productId === id);
+      const price = product ? product.price : 0;
+      const originalQuantity = product ? product.quantity : 0;
 
       if (isSelected) {
         return prev.filter(item => item.id !== id);
@@ -59,28 +48,22 @@ const Cart = () => {
   };
 
   const handleSelectAll = (isSelected, products) => {
-    console.log("isSelected:", isSelected);
-    console.log("products:", products);
     if (products && products.length > 0) {
       if (isSelected) {
-        // When selecting all, ensure to add only unique items
         const allItems = products.map(item => ({
           id: item.productId,
           price: item.price,
           quantity: item.quantity
         }));
 
-        // Check if any items are already selected
         const newSelectedItems = allItems.filter(item => !selectedItems.find(selected => selected.id === item.id));
         setSelectedItems(prev => [...prev, ...newSelectedItems]);
       } else {
-        // Deselect all items from the current card
         const currentCardIds = products.map(item => item.productId);
         setSelectedItems(prev => prev.filter(item => !currentCardIds.includes(item.id)));
       }
     }
   };
-  console.log("Selected: ", selectedItems);
 
   const handleQuantityChange = (id, newQuantity) => {
     setAdjustedQuantities((prev) => ({
@@ -95,7 +78,6 @@ const Cart = () => {
       return item;
     });
 
-    // Calculate total amount and quantity using updatedItems
     const total = updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const quantity = updatedItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -113,19 +95,17 @@ const Cart = () => {
 
   // Function to remove selected items and reset states
   const removeSelectedItems = () => {
-      setSelectedItems([]);
-      setAdjustedQuantities({});
-      setTotalAmount(0);
-      setTotalQuantity(0);
-      setSelectedCards({});
-      toast.success("Selected items have been removed.");
+    setSelectedItems([]);
+    setAdjustedQuantities({});
+    setTotalAmount(0);
+    setTotalQuantity(0);
+    setSelectedCards({});
+    toast.success("Selected items have been removed.");
   };
 
   // Function to handle the remove action with confirmation
   const handleRemoveSelected = () => {
-    // Check if there are any selected items
     if (selectedItems.length > 0) {
-      // Display a custom confirmation toast using Sonner
       toast.custom(
         (t) => (
           <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-6 flex flex-col items-center">
@@ -134,15 +114,15 @@ const Cart = () => {
               <button
                 className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors"
                 onClick={() => {
-                  removeSelectedItems(); // Function to remove all selected items
-                  toast.dismiss(t.id);  // Dismiss the confirmation toast
+                  removeSelectedItems();
+                  toast.dismiss(t.id);
                 }}
               >
                 Confirm
               </button>
               <button
                 className="bg-gray-300 text-black px-4 py-2 rounded-md hover:bg-gray-400 transition-colors"
-                onClick={() => toast.dismiss(t.id)} // Dismiss the confirmation toast
+                onClick={() => toast.dismiss(t.id)}
               >
                 Cancel
               </button>
@@ -150,7 +130,7 @@ const Cart = () => {
           </div>
         ),
         {
-          duration: Infinity, // Keeps the toast open until the user interacts
+          duration: Infinity,
           style: { 
             display: 'flex', 
             justifyContent: 'center', 
@@ -159,9 +139,8 @@ const Cart = () => {
         }
       );
     } else {
-      // Display an error toast if no items are selected
       toast.error('No selected items!', {
-        duration: 3000, // Duration the toast will be visible
+        duration: 3000,
         style: {
           minWidth: '200px',
           textAlign: 'center',
@@ -172,36 +151,76 @@ const Cart = () => {
 
   const handleCheckout = () => {
     if (selectedItems.length === 0) {
-      toast.error('No selected items!'), {
-        duration: 200,
+      toast.error('No selected items!', {
+        duration: 3000,
         style: {
           minWidth: '200px',
           textAlign: 'center',
         },
-      }
+      });
     } else {
       setCheckOutConfirm(true);
     }
-  }
+  };
 
   const getOrderCount = () => {
     switch(location.pathname) {
       case '/cart':
       case '/':
-        return CartData.data.length;
+        return cartData.filter(order => order.tab === 'cart').length;
       case '/cart/in-process':
-        return InProcessData.data.length;
+        return cartData.filter(order => order.tab === 'in-process').length;
       case '/cart/to-receive':
-        return ToReceiveData.data.length;
+        return cartData.filter(order => order.tab === 'to-receive').length;
       case '/cart/completed':
-        return CompletedData.data.length;
+        return cartData.filter(order => order.tab === 'completed').length;
       case '/cart/cancelled':
-        return CancelledData.data.length;
+        return cartData.filter(order => order.tab === 'cancelled').length;
       case '/cart/refund':
-        return RefundData.data.length;
+        return cartData.filter(order => order.tab === 'refund').length;
       default:
         return 0;
     }
+  };
+
+  // Function to handle confirmation with receiveDate
+  const handleConfirmCheckout = (receiveDate) => {
+    const currentDate = new Date().toLocaleDateString();
+
+    setCartData(prevCartData => prevCartData.map(order => {
+      // Check if all products in the order are selected
+      const allProductsSelected = order.products.every(product => selectedItems.some(item => item.id === product.productId));
+
+      if (allProductsSelected && order.tab === 'cart') {
+        // Update the quantities and total amount for the order
+        const updatedProducts = order.products.map(product => {
+          const selectedItem = selectedItems.find(item => item.id === product.productId);
+          const adjustedQuantity = adjustedQuantities[product.productId] || product.quantity;
+          return {
+            ...product,
+            quantity: selectedItem ? adjustedQuantity : product.quantity
+          };
+        });
+
+        const totalAmount = updatedProducts.reduce((sum, product) => sum + (product.price * product.quantity), 0);
+
+        return {
+          ...order,
+          tab: 'in-process',
+          orderDate: currentDate,
+          receiveDate: receiveDate,
+          products: updatedProducts,
+          totalAmount: totalAmount
+        };
+      }
+
+      return order;
+    }));
+
+    // Reset selections
+    removeSelectedItems();
+    setCheckOutConfirm(false);
+    toast.success("Checkout successful!");
   };
 
   return (
@@ -211,9 +230,11 @@ const Cart = () => {
       <div className="flex flex-col px-4 md:px-8 lg:px-12 xl:px-32 2xl:px-72 justify-between gap-4">
         {checkOutConfirm && (
           <OrderConfirmation 
-            isOpen = {checkOutConfirm}
-            closeModal = {closeConfirmation}
-            totalAmount = {totalAmount}
+            isOpen={checkOutConfirm}
+            closeModal={closeConfirmation}
+            totalAmount={totalAmount}
+            selectedItems={selectedItems}
+            onConfirm={handleConfirmCheckout} // Pass the confirm handler
           />
         )}
         <div className="flex flex-col gap-2">
@@ -246,17 +267,19 @@ const Cart = () => {
               element={
                 <div className="overflow-y-auto flex-1">
                   <div className="flex flex-col gap-4 pb-36">
-                    {CartData.data.map((data, index) => (
-                      <OrderCard 
-                        key={index} 
-                        data={data} 
-                        type="cart" 
-                        onSelectItem={handleSelectItem}
-                        onSelectAll={handleSelectAll}
-                        selectedItems={selectedItems}
-                        onQuantityChange={handleQuantityChange}
-                        quantity={adjustedQuantities[data.productId] || data.quantity}
-                      />
+                    {cartData
+                      .filter(order => order.tab === 'cart')
+                      .map((data, index) => (
+                        <OrderCard 
+                          key={index} 
+                          data={data} 
+                          type="cart" 
+                          onSelectItem={handleSelectItem}
+                          onSelectAll={handleSelectAll}
+                          selectedItems={selectedItems}
+                          onQuantityChange={handleQuantityChange}
+                          quantity={adjustedQuantities[data.id] || data.quantity}
+                        />
                     ))}
                   </div>
                 </div>
@@ -267,9 +290,16 @@ const Cart = () => {
               element={
                 <div className="overflow-y-auto flex-1">
                   <div className="flex flex-col gap-4 pb-36">
-                    {InProcessData.data.map((data, index) => (
-                      <OrderCard key={index} data={data} type="in-process" />
-                    ))}
+                    {cartData
+                      .filter(order => order.tab === 'in-process')
+                      .map((data, index) => (
+                        <OrderCard 
+                          key={index} 
+                          data={data} 
+                          type="in-process" 
+                          totalAmount={data.totalAmount}
+                        />
+                      ))}
                   </div>
                 </div>
               }
@@ -279,8 +309,10 @@ const Cart = () => {
               element={
                 <div className="overflow-y-auto flex-1">
                   <div className="flex flex-col gap-4 pb-36">
-                    {ToReceiveData.data.map((data, index) => (
-                      <OrderCard key={index} data={data} type="to-receive" />
+                  {cartData
+                      .filter(order => order.tab === 'to-receive')
+                      .map((data, index) => (
+                        <OrderCard key={index} data={data} type="to-receive" />
                     ))}
                   </div>
                 </div>
@@ -291,8 +323,10 @@ const Cart = () => {
               element={
                 <div className="overflow-y-auto flex-1">
                   <div className="flex flex-col gap-4 pb-36">
-                    {CompletedData.data.map((data, index) => (
-                      <OrderCard key={index} data={data} type="completed" />
+                    {cartData
+                      .filter(order => order.tab === 'completed')
+                      .map((data, index) => (
+                        <OrderCard key={index} data={data} type="completed" />
                     ))}
                   </div>
                 </div>
@@ -303,8 +337,10 @@ const Cart = () => {
               element={
                 <div className="overflow-y-auto flex-1">
                   <div className="flex flex-col gap-4 pb-36">
-                    {CancelledData.data.map((data, index) => (
-                      <OrderCard key={index} data={data} type="cancelled" />
+                    {cartData
+                      .filter(order => order.tab === 'cancelled')
+                      .map((data, index) => (
+                        <OrderCard key={index} data={data} type="cancelled" />
                     ))}
                   </div>
                 </div>
@@ -315,8 +351,10 @@ const Cart = () => {
               element={
                 <div className="overflow-y-auto flex-1">
                   <div className="flex flex-col gap-4 pb-36">
-                    {RefundData.data.map((data, index) => (
-                      <OrderCard key={index} data={data} type="refund" />
+                    {cartData
+                      .filter(order => order.tab === 'refund')
+                      .map((data, index) => (
+                        <OrderCard key={index} data={data} type="refund" />
                     ))}
                   </div>
                 </div>
