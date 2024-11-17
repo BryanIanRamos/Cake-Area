@@ -20,7 +20,7 @@
         }
       ],
       "requestDate": "June 2, 2023",
-      "completeDate": "Pending"
+      "approvedDate": "Pending"
     },
     {
       "id": "0123456",
@@ -42,7 +42,7 @@
         }
       ],
       "requestDate": "June 2, 2023",
-      "completeDate": "June 6, 2023"
+      "approvedDate": "June 6, 2023"
     },
     {
       "id": "0123456",
@@ -57,7 +57,7 @@
         }
       ],
       "requestDate": "June 2, 2023",
-      "completeDate": "Pending"
+      "approvedDate": "Pending"
     }
   ]
 }

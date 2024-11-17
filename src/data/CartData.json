@@ -3,6 +3,7 @@
     {
       "id": "00123",
       "bakerName": "Emily Johnson",
+      "tab": "cart",
       "products": [
         {
           "productId": "prod10",
@@ -20,11 +21,17 @@
           "image": "/src/assets/Cake_BG.png",
           "quantity": 1 
         }
-      ]
+      ],
+      "orderDate": "",
+      "receiveDate": "",
+      "status": "",
+      "requestDate": "",
+      "approvedDate": ""
     },
     {
       "id": "00124",
       "bakerName": "Michael Smith",
+      "tab": "cart",
       "products": [
         {
           "productId": "prod12",
@@ -34,11 +41,17 @@
           "image": "/src/assets/Cake_BG.png",
           "quantity": 3 
         }
-      ]
+      ],
+      "orderDate": "",
+      "receiveDate": "",
+      "status": "",
+      "requestDate": "",
+      "approvedDate": ""
     },
     {
       "id": "00125",
       "bakerName": "Sophia Lee",
+      "tab": "cart",
       "products": [
         {
           "productId": "prod13",
@@ -56,11 +69,17 @@
           "image": "/src/assets/Cake_BG.png",
           "quantity": 2 
         }
-      ]
+      ],
+      "orderDate": "",
+      "receiveDate": "",
+      "status": "",
+      "requestDate": "",
+      "approvedDate": ""
     },
     {
       "id": "00126",
       "bakerName": "James Brown",
+      "tab": "cart",
       "products": [
         {
           "productId": "prod15",
@@ -86,7 +105,192 @@
           "image": "/src/assets/Cake_BG.png",
           "quantity": 1 
         }
-      ]
+      ],
+      "orderDate": "",
+      "receiveDate": "",
+      "status": "",
+      "requestDate": "",
+      "approvedDate": ""
+    },
+    {
+      "id": "00127",
+      "bakerName": "James Brown",
+      "tab": "cart",
+      "products": [
+        {
+          "productId": "prod15",
+          "productName": "Carrot Cake",
+          "description": "A moist carrot cake with walnuts and cream cheese frosting.",
+          "price": 480.0,
+          "image": "/src/assets/Cake_BG.png",
+          "quantity": 1 
+        },
+        {
+          "productId": "prod16",
+          "productName": "Pineapple Upside Down Cake",
+          "description": "A sweet and tangy pineapple cake baked upside down with caramelized sugar.",
+          "price": 520.0,
+          "image": "/src/assets/Cake_BG.png",
+          "quantity": 1 
+        },
+        {
+          "productId": "prod17",
+          "productName": "Cookies and Cream Cake",
+          "description": "A delicious cake made with cookies and cream, perfect for chocolate lovers.",
+          "price": 600.0,
+          "image": "/src/assets/Cake_BG.png",
+          "quantity": 1 
+        }
+      ],
+      "orderDate": "",
+      "receiveDate": "",
+      "status": "",
+      "requestDate": "",
+      "approvedDate": ""
+    },
+    {
+      "id": "00128",
+      "bakerName": "James Brown",
+      "tab": "to-receive",
+      "products": [
+        {
+          "productId": "prod21",
+          "productName": "Carrot Cake",
+          "description": "A moist carrot cake with walnuts and cream cheese frosting.",
+          "price": 480.0,
+          "image": "/src/assets/Cake_BG.png",
+          "quantity": 1 
+        },
+        {
+          "productId": "prod22",
+          "productName": "Pineapple Upside Down Cake",
+          "description": "A sweet and tangy pineapple cake baked upside down with caramelized sugar.",
+          "price": 520.0,
+          "image": "/src/assets/Cake_BG.png",
+          "quantity": 1 
+        },
+        {
+          "productId": "prod23",
+          "productName": "Cookies and Cream Cake",
+          "description": "A delicious cake made with cookies and cream, perfect for chocolate lovers.",
+          "price": 600.0,
+          "image": "/src/assets/Cake_BG.png",
+          "quantity": 1 
+        }
+      ],
+      "orderDate": "November 11, 2024",
+      "receiveDate": "November 21, 2024",
+      "status": "On Delivery",
+      "requestDate": "",
+      "approvedDate": ""
+    },
+    {
+      "id": "00129",
+      "bakerName": "James Brown",
+      "tab": "completed",
+      "products": [
+        {
+          "productId": "prod15",
+          "productName": "Carrot Cake",
+          "description": "A moist carrot cake with walnuts and cream cheese frosting.",
+          "price": 480.0,
+          "image": "/src/assets/Cake_BG.png",
+          "quantity": 1 
+        },
+        {
+          "productId": "prod16",
+          "productName": "Pineapple Upside Down Cake",
+          "description": "A sweet and tangy pineapple cake baked upside down with caramelized sugar.",
+          "price": 520.0,
+          "image": "/src/assets/Cake_BG.png",
+          "quantity": 1 
+        },
+        {
+          "productId": "prod17",
+          "productName": "Cookies and Cream Cake",
+          "description": "A delicious cake made with cookies and cream, perfect for chocolate lovers.",
+          "price": 600.0,
+          "image": "/src/assets/Cake_BG.png",
+          "quantity": 1 
+        }
+      ],
+      "orderDate": "November 11, 2024",
+      "receiveDate": "November 21, 2024",
+      "status": "Delivered",
+      "requestDate": "June 2, 2023",
+      "approvedDate": "Pending"
+    },
+    {
+      "id": "00130",
+      "bakerName": "James Brown",
+      "tab": "cancelled",
+      "products": [
+        {
+          "productId": "prod15",
+          "productName": "Carrot Cake",
+          "description": "A moist carrot cake with walnuts and cream cheese frosting.",
+          "price": 480.0,
+          "image": "/src/assets/Cake_BG.png",
+          "quantity": 1 
+        },
+        {
+          "productId": "prod16",
+          "productName": "Pineapple Upside Down Cake",
+          "description": "A sweet and tangy pineapple cake baked upside down with caramelized sugar.",
+          "price": 520.0,
+          "image": "/src/assets/Cake_BG.png",
+          "quantity": 1 
+        },
+        {
+          "productId": "prod17",
+          "productName": "Cookies and Cream Cake",
+          "description": "A delicious cake made with cookies and cream, perfect for chocolate lovers.",
+          "price": 600.0,
+          "image": "/src/assets/Cake_BG.png",
+          "quantity": 1 
+        }
+      ],
+      "orderDate": "",
+      "receiveDate": "",
+      "status": "Cancelled",
+      "requestDate": "",
+      "approvedDate": ""
+    },
+    {
+      "id": "00131",
+      "bakerName": "James Brown",
+      "tab": "refund",
+      "products": [
+        {
+          "productId": "prod15",
+          "productName": "Carrot Cake",
+          "description": "A moist carrot cake with walnuts and cream cheese frosting.",
+          "price": 480.0,
+          "image": "/src/assets/Cake_BG.png",
+          "quantity": 1 
+        },
+        {
+          "productId": "prod16",
+          "productName": "Pineapple Upside Down Cake",
+          "description": "A sweet and tangy pineapple cake baked upside down with caramelized sugar.",
+          "price": 520.0,
+          "image": "/src/assets/Cake_BG.png",
+          "quantity": 1 
+        },
+        {
+          "productId": "prod17",
+          "productName": "Cookies and Cream Cake",
+          "description": "A delicious cake made with cookies and cream, perfect for chocolate lovers.",
+          "price": 600.0,
+          "image": "/src/assets/Cake_BG.png",
+          "quantity": 1 
+        }
+      ],
+      "orderDate": "",
+      "receiveDate": "",
+      "status": "Refund",
+      "requestDate": "June 2, 2023",
+      "approvedDate": "Pending"
     }
   ]
 }
