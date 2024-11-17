@@ -22,6 +22,14 @@ import Products from "./pages/baker/Products";
 import Reviews from "./pages/baker/Reviews";
 import Statistics from "./pages/baker/Statistics";
 
+import AdminDashboard from "./pages/admin/Dashboard";
+import AccountsMonitoring from "./pages/admin/AccountsMonitoring";
+import RefundRequests from "./pages/admin/RefundRequests";
+import BusinessVerification from "./pages/admin/BusinessVerification";
+import ReportedContent from "./pages/admin/ReportedContent";
+import AccountManagement from "./pages/admin/AccountManagement";
+import AdminLogin from "./pages/admin/Login";
+
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -52,6 +60,16 @@ function App() {
         <Route path="/dashboard/settings" element={<Settings />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard/statistics" element={<Statistics />} />
+
+        {/* Admin Routes */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/accounts" element={<AccountsMonitoring />} />
+        <Route path="/admin/refunds" element={<RefundRequests />} />
+        <Route path="/admin/verification" element={<BusinessVerification />} />
+        <Route path="/admin/reports" element={<ReportedContent />} />
+        <Route path="/admin/management" element={<AccountManagement />} />
+        <Route path="/admin/statistics" element={<Statistics />} />
       </Routes>
       <ToastContainer position="bottom-right" />
     </Router>

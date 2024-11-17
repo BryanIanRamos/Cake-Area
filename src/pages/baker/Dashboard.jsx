@@ -29,7 +29,11 @@ const Dashboard = () => {
         className={`transition-all duration-300 flex-1 overflow-y-auto p-6
           ${isSidebarExpanded ? "ml-64" : "ml-20"}`}
       >
-        <WelcomeSection name="Bryan Ramos" salesAmount="8,251.21" />
+        <WelcomeSection 
+          name="Bryan Ramos" 
+          salesAmount="8,251.21" 
+          balance="12,435.50"
+        />
         <OrdersTakenSection orders={ordersTaken} />
         <PendingOrdersTable
           orders={paginatedOrders}

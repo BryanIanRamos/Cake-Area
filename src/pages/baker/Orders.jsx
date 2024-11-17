@@ -121,7 +121,6 @@ const Orders = () => {
                     <th className="text-left p-4">Total</th>
                     <th className="text-left p-4">Delivery Date</th>
                     <th className="text-left p-4">Payment</th>
-                    <th className="text-left p-4">Status</th>
                     <th className="text-left p-4">Actions</th>
                   </tr>
                 </thead>
@@ -159,18 +158,6 @@ const Orders = () => {
                         >
                           {order.paymentStatus}
                         </span>
-                      </td>
-                      <td className="p-4">
-                        <select
-                          className="border rounded px-2 py-1 text-sm"
-                          defaultValue={order.status}
-                        >
-                          <option value="pending">Pending</option>
-                          <option value="preparing">Preparing</option>
-                          <option value="ready">Ready for Pickup</option>
-                          <option value="completed">Completed</option>
-                          <option value="cancelled">Cancelled</option>
-                        </select>
                       </td>
                       <td className="p-4">
                         <div className="flex gap-2">
