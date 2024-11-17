@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 import { Link } from "react-router-dom";
 
-const WelcomeSection = ({ name, salesAmount }) => {
+const WelcomeSection = ({ name, salesAmount, balance }) => {
   return (
     <>
       <div className="mb-6">
@@ -9,8 +9,12 @@ const WelcomeSection = ({ name, salesAmount }) => {
         <h1 className="text-2xl font-bold">{name}</h1>
       </div>
 
-      <div className="bg-[#E88F2A] rounded-lg p-6 mb-8 text-white">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="bg-[#E88F2A] rounded-lg py-6 px-10 mb-8 text-white">
+        <div className="grid grid-cols-3 sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="h-full text-left">
+            <h2 className="text-xl font-semibold mb-2">Current Balance</h2>
+            <p className="text-2xl font-bold">₱ {balance}</p>
+          </div>
           <div>
             <h2 className="text-xl font-semibold mb-2">
               Here's Happening in your
@@ -18,7 +22,11 @@ const WelcomeSection = ({ name, salesAmount }) => {
             <p>sales this week</p>
             <p className="text-2xl font-bold mt-2">₱ {salesAmount}</p>
           </div>
-          <Link to="/dashboard/orders">
+
+          <Link
+            to="/dashboard/orders"
+            className="flex justify-center items-center"
+          >
             <button className="bg-white text-[#E88F2A] px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
               Manage Orders
             </button>
@@ -29,4 +37,4 @@ const WelcomeSection = ({ name, salesAmount }) => {
   );
 };
 
-export default WelcomeSection; 
+export default WelcomeSection;
