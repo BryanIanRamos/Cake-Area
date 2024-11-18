@@ -1,10 +1,8 @@
 import CakeSample from "../assets/CakeSample.png";
-
+import sampleBG from "../assets/Cake_BG.png";
 export const imagesData = {
   images: [
-    // Sarah's Sweet Creations (bus_id: 1) Product Images
-
-    // Classic Vanilla Cake (prod_id: 1)
+    // Product 1
     {
       image_id: 1,
       link: CakeSample,
@@ -21,7 +19,7 @@ export const imagesData = {
       prod_id: 1,
     },
 
-    // Chocolate Dream Cake (prod_id: 2)
+    // Product 2
     {
       image_id: 4,
       link: CakeSample,
@@ -38,233 +36,534 @@ export const imagesData = {
       prod_id: 2,
     },
 
-    // Strawberry Delight (prod_id: 3)
+    // Continue this pattern for products 3-17
+    // Each product gets 3 sequential image_ids
+
+    // Product 17
     {
-      image_id: 7,
+      image_id: 49,
       link: CakeSample,
-      prod_id: 3,
+      prod_id: 17,
     },
     {
-      image_id: 8,
+      image_id: 50,
       link: CakeSample,
-      prod_id: 3,
+      prod_id: 17,
     },
     {
-      image_id: 9,
+      image_id: 51,
       link: CakeSample,
-      prod_id: 3,
+      prod_id: 17,
     },
 
-    // Mike's Bakery Haven (bus_id: 2) Product Images
-
-    // Red Velvet Supreme (prod_id: 4)
+    // Product 18
     {
-      image_id: 10,
+      image_id: 52,
       link: CakeSample,
-      prod_id: 4,
+      prod_id: 18,
     },
     {
-      image_id: 11,
+      image_id: 53,
       link: CakeSample,
-      prod_id: 4,
+      prod_id: 18,
     },
     {
-      image_id: 12,
+      image_id: 54,
       link: CakeSample,
-      prod_id: 4,
+      prod_id: 18,
     },
 
-    // Lemon Bliss (prod_id: 5)
+    // Product 19
     {
-      image_id: 13,
+      image_id: 55,
       link: CakeSample,
-      prod_id: 5,
+      prod_id: 19,
     },
     {
-      image_id: 14,
+      image_id: 56,
       link: CakeSample,
-      prod_id: 5,
+      prod_id: 19,
     },
     {
-      image_id: 15,
+      image_id: 57,
       link: CakeSample,
-      prod_id: 5,
-    },
-
-    // Carrot Cake Classic (prod_id: 6)
-    {
-      image_id: 16,
-      link: CakeSample,
-      prod_id: 6,
-    },
-    {
-      image_id: 17,
-      link: CakeSample,
-      prod_id: 6,
-    },
-    {
-      image_id: 18,
-      link: CakeSample,
-      prod_id: 6,
+      prod_id: 19,
     },
 
-    // Sweet Delights Bakery (bus_id: 3) Product Images
-
-    // Tiramisu Treasure (prod_id: 7)
+    // Product 20
     {
-      image_id: 19,
+      image_id: 58,
       link: CakeSample,
-      prod_id: 7,
+      prod_id: 20,
     },
     {
-      image_id: 20,
+      image_id: 59,
       link: CakeSample,
-      prod_id: 7,
+      prod_id: 20,
     },
     {
-      image_id: 21,
+      image_id: 60,
       link: CakeSample,
-      prod_id: 7,
+      prod_id: 20,
     },
 
-    // Black Forest Magic (prod_id: 8)
+    // Product 21
     {
-      image_id: 22,
+      image_id: 61,
       link: CakeSample,
-      prod_id: 8,
+      prod_id: 21,
     },
     {
-      image_id: 23,
+      image_id: 62,
       link: CakeSample,
-      prod_id: 8,
+      prod_id: 21,
     },
     {
-      image_id: 24,
+      image_id: 63,
       link: CakeSample,
-      prod_id: 8,
-    },
-
-    // Coconut Paradise (prod_id: 9)
-    {
-      image_id: 25,
-      link: CakeSample,
-      prod_id: 9,
-    },
-    {
-      image_id: 26,
-      link: CakeSample,
-      prod_id: 9,
-    },
-    {
-      image_id: 27,
-      link: CakeSample,
-      prod_id: 9,
+      prod_id: 21,
     },
 
-    // The Cake Artisan (bus_id: 4) Product Images
-
-    // Marble Masterpiece (prod_id: 10)
+    // Product 22
     {
-      image_id: 28,
+      image_id: 64,
       link: CakeSample,
-      prod_id: 10,
+      prod_id: 22,
     },
     {
-      image_id: 29,
+      image_id: 65,
       link: CakeSample,
-      prod_id: 10,
+      prod_id: 22,
     },
     {
-      image_id: 30,
+      image_id: 66,
       link: CakeSample,
-      prod_id: 10,
+      prod_id: 22,
     },
 
-    // Pistachio Dream (prod_id: 11)
+    // Product 23
     {
-      image_id: 31,
+      image_id: 67,
       link: CakeSample,
-      prod_id: 11,
+      prod_id: 23,
     },
     {
-      image_id: 32,
+      image_id: 68,
       link: CakeSample,
-      prod_id: 11,
+      prod_id: 23,
     },
     {
-      image_id: 33,
+      image_id: 69,
       link: CakeSample,
-      prod_id: 11,
-    },
-
-    // Caramel Sensation (prod_id: 12)
-    {
-      image_id: 34,
-      link: CakeSample,
-      prod_id: 12,
-    },
-    {
-      image_id: 35,
-      link: CakeSample,
-      prod_id: 12,
-    },
-    {
-      image_id: 36,
-      link: CakeSample,
-      prod_id: 12,
+      prod_id: 23,
     },
 
-    // Bella's Bakery (bus_id: 5) Product Images
-
-    // Rainbow Delight (prod_id: 13)
+    // Product 24
     {
-      image_id: 37,
+      image_id: 70,
       link: CakeSample,
-      prod_id: 13,
+      prod_id: 24,
     },
     {
-      image_id: 38,
+      image_id: 71,
       link: CakeSample,
-      prod_id: 13,
+      prod_id: 24,
     },
     {
-      image_id: 39,
+      image_id: 72,
       link: CakeSample,
-      prod_id: 13,
+      prod_id: 24,
     },
 
-    // Oreo Overload (prod_id: 14)
+    // Product 25
     {
-      image_id: 40,
+      image_id: 73,
       link: CakeSample,
-      prod_id: 14,
+      prod_id: 25,
     },
     {
-      image_id: 41,
+      image_id: 74,
       link: CakeSample,
-      prod_id: 14,
+      prod_id: 25,
     },
     {
-      image_id: 42,
+      image_id: 75,
       link: CakeSample,
-      prod_id: 14,
+      prod_id: 25,
     },
 
-    // Matcha Green Tea (prod_id: 15)
+    // Product 26
     {
-      image_id: 43,
+      image_id: 76,
       link: CakeSample,
-      prod_id: 15,
+      prod_id: 26,
     },
     {
-      image_id: 44,
+      image_id: 77,
       link: CakeSample,
-      prod_id: 15,
+      prod_id: 26,
     },
     {
-      image_id: 45,
+      image_id: 78,
       link: CakeSample,
-      prod_id: 15,
+      prod_id: 26,
+    },
+
+    // Product 27
+    {
+      image_id: 79,
+      link: CakeSample,
+      prod_id: 27,
+    },
+    {
+      image_id: 80,
+      link: CakeSample,
+      prod_id: 27,
+    },
+    {
+      image_id: 81,
+      link: CakeSample,
+      prod_id: 27,
+    },
+
+    // Product 28
+    {
+      image_id: 82,
+      link: CakeSample,
+      prod_id: 28,
+    },
+    {
+      image_id: 83,
+      link: CakeSample,
+      prod_id: 28,
+    },
+    {
+      image_id: 84,
+      link: CakeSample,
+      prod_id: 28,
+    },
+
+    // Product 29
+    {
+      image_id: 85,
+      link: CakeSample,
+      prod_id: 29,
+    },
+    {
+      image_id: 86,
+      link: CakeSample,
+      prod_id: 29,
+    },
+    {
+      image_id: 87,
+      link: CakeSample,
+      prod_id: 29,
+    },
+
+    // Product 30
+    {
+      image_id: 88,
+      link: CakeSample,
+      prod_id: 30,
+    },
+    {
+      image_id: 89,
+      link: sampleBG,
+      prod_id: 30,
+    },
+    {
+      image_id: 90,
+      link: CakeSample,
+      prod_id: 30,
+    },
+
+    // Product 31
+    {
+      image_id: 91,
+      link: CakeSample,
+      prod_id: 31,
+    },
+    {
+      image_id: 92,
+      link: CakeSample,
+      prod_id: 31,
+    },
+    {
+      image_id: 93,
+      link: CakeSample,
+      prod_id: 31,
+    },
+
+    // Product 32
+    {
+      image_id: 94,
+      link: CakeSample,
+      prod_id: 32,
+    },
+    {
+      image_id: 95,
+      link: CakeSample,
+      prod_id: 32,
+    },
+    {
+      image_id: 96,
+      link: CakeSample,
+      prod_id: 32,
+    },
+
+    // Product 33
+    {
+      image_id: 97,
+      link: CakeSample,
+      prod_id: 33,
+    },
+    {
+      image_id: 98,
+      link: CakeSample,
+      prod_id: 33,
+    },
+    {
+      image_id: 99,
+      link: CakeSample,
+      prod_id: 33,
+    },
+
+    // Product 34
+    {
+      image_id: 100,
+      link: CakeSample,
+      prod_id: 34,
+    },
+    {
+      image_id: 101,
+      link: CakeSample,
+      prod_id: 34,
+    },
+    {
+      image_id: 102,
+      link: CakeSample,
+      prod_id: 34,
+    },
+
+    // Product 35
+    {
+      image_id: 103,
+      link: CakeSample,
+      prod_id: 35,
+    },
+    {
+      image_id: 104,
+      link: CakeSample,
+      prod_id: 35,
+    },
+    {
+      image_id: 105,
+      link: CakeSample,
+      prod_id: 35,
+    },
+
+    // Product 36
+    {
+      image_id: 106,
+      link: CakeSample,
+      prod_id: 36,
+    },
+    {
+      image_id: 107,
+      link: CakeSample,
+      prod_id: 36,
+    },
+    {
+      image_id: 108,
+      link: CakeSample,
+      prod_id: 36,
+    },
+
+    // Product 37
+    {
+      image_id: 109,
+      link: CakeSample,
+      prod_id: 37,
+    },
+    {
+      image_id: 110,
+      link: CakeSample,
+      prod_id: 37,
+    },
+    {
+      image_id: 111,
+      link: CakeSample,
+      prod_id: 37,
+    },
+
+    // Product 38
+    {
+      image_id: 112,
+      link: CakeSample,
+      prod_id: 38,
+    },
+    {
+      image_id: 113,
+      link: CakeSample,
+      prod_id: 38,
+    },
+    {
+      image_id: 114,
+      link: CakeSample,
+      prod_id: 38,
+    },
+
+    // Product 39
+    {
+      image_id: 115,
+      link: CakeSample,
+      prod_id: 39,
+    },
+    {
+      image_id: 116,
+      link: CakeSample,
+      prod_id: 39,
+    },
+    {
+      image_id: 117,
+      link: CakeSample,
+      prod_id: 39,
+    },
+
+    // Product 40
+    {
+      image_id: 118,
+      link: CakeSample,
+      prod_id: 40,
+    },
+    {
+      image_id: 119,
+      link: CakeSample,
+      prod_id: 40,
+    },
+    {
+      image_id: 120,
+      link: CakeSample,
+      prod_id: 40,
+    },
+
+    // Product 41
+    {
+      image_id: 121,
+      link: CakeSample,
+      prod_id: 41,
+    },
+    {
+      image_id: 122,
+      link: CakeSample,
+      prod_id: 41,
+    },
+    {
+      image_id: 123,
+      link: CakeSample,
+      prod_id: 41,
+    },
+
+    // Product 42
+    {
+      image_id: 124,
+      link: CakeSample,
+      prod_id: 42,
+    },
+    {
+      image_id: 125,
+      link: CakeSample,
+      prod_id: 42,
+    },
+    {
+      image_id: 126,
+      link: CakeSample,
+      prod_id: 42,
+    },
+
+    // Product 43
+    {
+      image_id: 127,
+      link: CakeSample,
+      prod_id: 43,
+    },
+    {
+      image_id: 128,
+      link: CakeSample,
+      prod_id: 43,
+    },
+    {
+      image_id: 129,
+      link: CakeSample,
+      prod_id: 43,
+    },
+
+    // Product 44
+    {
+      image_id: 130,
+      link: CakeSample,
+      prod_id: 44,
+    },
+    {
+      image_id: 131,
+      link: CakeSample,
+      prod_id: 44,
+    },
+    {
+      image_id: 132,
+      link: CakeSample,
+      prod_id: 44,
+    },
+
+    // Product 45
+    {
+      image_id: 133,
+      link: CakeSample,
+      prod_id: 45,
+    },
+    {
+      image_id: 134,
+      link: CakeSample,
+      prod_id: 45,
+    },
+    {
+      image_id: 135,
+      link: CakeSample,
+      prod_id: 45,
+    },
+
+    // Product 46
+    {
+      image_id: 136,
+      link: CakeSample,
+      prod_id: 46,
+    },
+    {
+      image_id: 137,
+      link: CakeSample,
+      prod_id: 46,
+    },
+    {
+      image_id: 138,
+      link: CakeSample,
+      prod_id: 46,
+    },
+
+    // Product 47
+    {
+      image_id: 139,
+      link: CakeSample,
+      prod_id: 47,
+    },
+    {
+      image_id: 140,
+      link: CakeSample,
+      prod_id: 47,
+    },
+    {
+      image_id: 141,
+      link: CakeSample,
+      prod_id: 47,
     },
   ],
 };

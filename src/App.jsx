@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import MainPage from "./pages/buyer/MainPage.jsx";
 import Store from "./pages/buyer/Store.jsx";
-import Product from "./pages/buyer/Product.jsx";
+import BuyerProduct from "./pages/buyer/Product.jsx";
 import Cart from "./pages/buyer/Cart.jsx";
 import Profile from "./pages/buyer/Profile.jsx";
 import Test from "./pages/buyer/test.jsx";
@@ -43,7 +43,8 @@ function App() {
 
         {/* Customer's Route */}
         <Route path="/store/:userId" element={<Store />} />
-        <Route path="/product" element={<Product />} />
+        {/* <Route path="/product" element={<Product />} /> */}
+        <Route path="/product/:productId" element={<BuyerProduct />} />
         <Route path="/cart/*" element={<Cart />} />
         <Route
           path="/profile"
@@ -70,6 +71,8 @@ function App() {
         <Route path="/admin/reports" element={<ReportedContent />} />
         <Route path="/admin/management" element={<AccountManagement />} />
         <Route path="/admin/statistics" element={<Statistics />} />
+
+        {/* Add the product route */}
       </Routes>
       <ToastContainer position="bottom-right" />
     </Router>
