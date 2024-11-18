@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Icon } from "@iconify/react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
 const LoginModal = ({ isOpen, closeModal, onLogin }) => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleForgotPassword = (e) => {
     e.preventDefault();
@@ -14,11 +16,7 @@ const LoginModal = ({ isOpen, closeModal, onLogin }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Your login logic here
-    
-    // After successful login
-    onLogin(); // This will update the header
-    closeModal();
+    onLogin(email, password);
   };
 
   return (
@@ -43,12 +41,18 @@ const LoginModal = ({ isOpen, closeModal, onLogin }) => {
                 <input
                   type="email"
                   placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="border border-gray-300 p-2 rounded text-[2vw] sm:text-[1.5vw] lg:text-[1vw]"
+                  required
                 />
                 <input
                   type="password"
                   placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="border border-gray-300 p-2 rounded text-[2vw] sm:text-[1.5vw] lg:text-[1vw]"
+                  required
                 />
               </div>
               <div className="flex justify-between text-[1.8vw] sm:text-[1.3vw] lg:text-[0.9vw] text-gray-600">
