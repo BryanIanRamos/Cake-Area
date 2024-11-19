@@ -1,7 +1,7 @@
-import { saveToLocalStorage, loadFromLocalStorage } from './localStorage';
+import { saveToLocalStorage, loadFromLocalStorage } from "./localStorage";
 
 // Load initial data from localStorage or use default data
-export let productData = loadFromLocalStorage('productData', {
+export let productData = loadFromLocalStorage("productData", {
   products: [
     // Sarah's Sweet Creations (bus_id: 1) Products
     {
@@ -572,24 +572,28 @@ export let productData = loadFromLocalStorage('productData', {
       bus_id: 3,
       cat_id: 3,
     },
-  ]
+  ],
 });
 
 export const updateProductData = (updatedProduct) => {
-  const index = productData.products.findIndex(p => p.prod_id === updatedProduct.prod_id);
+  const index = productData.products.findIndex(
+    (p) => p.prod_id === updatedProduct.prod_id
+  );
   if (index !== -1) {
     productData.products[index] = updatedProduct;
     // Save to localStorage after update
-    saveToLocalStorage('productData', productData);
+    saveToLocalStorage("productData", productData);
   }
 };
 
 export const addProduct = (newProduct) => {
   productData.products.push(newProduct);
-  saveToLocalStorage('productData', productData);
+  saveToLocalStorage("productData", productData);
 };
 
 export const deleteProduct = (productId) => {
-  productData.products = productData.products.filter(p => p.prod_id !== productId);
-  saveToLocalStorage('productData', productData);
+  productData.products = productData.products.filter(
+    (p) => p.prod_id !== productId
+  );
+  saveToLocalStorage("productData", productData);
 };

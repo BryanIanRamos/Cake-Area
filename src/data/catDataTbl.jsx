@@ -1,6 +1,6 @@
-import { saveToLocalStorage, loadFromLocalStorage } from './localStorage';
+import { saveToLocalStorage, loadFromLocalStorage } from "./localStorage";
 
-export let categoryData = loadFromLocalStorage('categoryData', {
+export let categoryData = loadFromLocalStorage("categoryData", {
   categories: [
     {
       cat_id: 1,
@@ -66,19 +66,19 @@ export let categoryData = loadFromLocalStorage('categoryData', {
 });
 
 export const addCategory = (newCategory) => {
-  const newId = Math.max(...categoryData.categories.map(c => c.cat_id)) + 1;
+  const newId = Math.max(...categoryData.categories.map((c) => c.cat_id)) + 1;
   categoryData.categories.push({
     cat_id: newId,
     name: newCategory,
   });
-  saveToLocalStorage('categoryData', categoryData);
+  saveToLocalStorage("categoryData", categoryData);
   return newId;
 };
 
 export const updateCategory = (catId, newName) => {
-  const index = categoryData.categories.findIndex(c => c.cat_id === catId);
+  const index = categoryData.categories.findIndex((c) => c.cat_id === catId);
   if (index !== -1) {
     categoryData.categories[index].name = newName;
-    saveToLocalStorage('categoryData', categoryData);
+    saveToLocalStorage("categoryData", categoryData);
   }
 };

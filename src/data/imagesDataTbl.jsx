@@ -1,8 +1,8 @@
-import { saveToLocalStorage, loadFromLocalStorage } from './localStorage';
+import { saveToLocalStorage, loadFromLocalStorage } from "./localStorage";
 import CakeSample from "../assets/CakeSample.png";
 import sampleBG from "../assets/Cake_BG.png";
 
-export let imagesData = loadFromLocalStorage('imagesData', {
+export let imagesData = loadFromLocalStorage("imagesData", {
   images: [
     // Product 1
     {
@@ -572,17 +572,19 @@ export let imagesData = loadFromLocalStorage('imagesData', {
 
 export const updateImages = (productId, newImages) => {
   // Remove existing images
-  imagesData.images = imagesData.images.filter(img => img.prod_id !== productId);
-  
+  imagesData.images = imagesData.images.filter(
+    (img) => img.prod_id !== productId
+  );
+
   // Add new images
-  const lastId = Math.max(...imagesData.images.map(img => img.image_id), 0);
+  const lastId = Math.max(...imagesData.images.map((img) => img.image_id), 0);
   const newEntries = newImages.map((image, index) => ({
     image_id: lastId + index + 1,
     link: image.link || URL.createObjectURL(image),
-    prod_id: productId
+    prod_id: productId,
   }));
-  
+
   imagesData.images.push(...newEntries);
-  saveToLocalStorage('imagesData', imagesData);
+  saveToLocalStorage("imagesData", imagesData);
   return newEntries;
 };

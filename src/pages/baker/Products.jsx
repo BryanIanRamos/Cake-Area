@@ -4,7 +4,7 @@ import { Icon } from "@iconify/react";
 import { productData, updateProductData } from "../../data/productDataTbl";
 import { categoryData, addCategory } from "../../data/catDataTbl";
 import { imagesData, updateImages } from "../../data/imagesDataTbl";
-import Toast from '../../components/baker/Toast';
+import Toast from "../../components/baker/Toast";
 
 const Products = () => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
@@ -19,41 +19,71 @@ const Products = () => {
   const [newCategory, setNewCategory] = useState("");
   const [toast, setToast] = useState({
     show: false,
-    message: '',
-    type: 'success'
+    message: "",
+    type: "success",
   });
 
   const categoriesRef = useRef(null);
 
   // Add sortOptions array
   const sortOptions = [
-    { value: "name", label: "Name (A-Z)", icon: "material-symbols:sort-by-alpha" },
-    { value: "nameDesc", label: "Name (Z-A)", icon: "material-symbols:sort-by-alpha" },
-    { value: "priceAsc", label: "Price (Low to High)", icon: "material-symbols:price-change" },
-    { value: "priceDesc", label: "Price (High to Low)", icon: "material-symbols:price-change" },
+    {
+      value: "name",
+      label: "Name (A-Z)",
+      icon: "material-symbols:sort-by-alpha",
+    },
+    {
+      value: "nameDesc",
+      label: "Name (Z-A)",
+      icon: "material-symbols:sort-by-alpha",
+    },
+    {
+      value: "priceAsc",
+      label: "Price (Low to High)",
+      icon: "material-symbols:price-change",
+    },
+    {
+      value: "priceDesc",
+      label: "Price (High to Low)",
+      icon: "material-symbols:price-change",
+    },
     { value: "rating", label: "Rating", icon: "material-symbols:star" },
-    { value: "ordered", label: "Most Ordered", icon: "material-symbols:order-approve" },
-    { value: "viewed", label: "Most Viewed", icon: "material-symbols:visibility" }
+    {
+      value: "ordered",
+      label: "Most Ordered",
+      icon: "material-symbols:order-approve",
+    },
+    {
+      value: "viewed",
+      label: "Most Viewed",
+      icon: "material-symbols:visibility",
+    },
   ];
 
   // Get categories with count
-  const categoriesWithCount = categoryData.categories.map(category => {
-    const count = productData.products.filter(product => product.cat_id === category.cat_id).length;
+  const categoriesWithCount = categoryData.categories.map((category) => {
+    const count = productData.products.filter(
+      (product) => product.cat_id === category.cat_id
+    ).length;
     return { ...category, count };
   });
 
   // Add "All" category
   const allCategories = [
     { cat_id: 0, name: "All", count: productData.products.length },
-    ...categoriesWithCount
+    ...categoriesWithCount,
   ];
 
   // Filter and sort products
   const getFilteredAndSortedProducts = () => {
-    let filtered = productData.products.filter(product => {
-      const matchesSearch = product.prod_name.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = selectedCategory === "All" || 
-        categoryData.categories.find(cat => cat.cat_id === product.cat_id)?.name === selectedCategory;
+    let filtered = productData.products.filter((product) => {
+      const matchesSearch = product.prod_name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+      const matchesCategory =
+        selectedCategory === "All" ||
+        categoryData.categories.find((cat) => cat.cat_id === product.cat_id)
+          ?.name === selectedCategory;
       return matchesSearch && matchesCategory;
     });
 
@@ -83,7 +113,9 @@ const Products = () => {
 
   // Get first image for each product
   const getProductImage = (prod_id) => {
-    const productImage = imagesData.images.find(img => img.prod_id === prod_id);
+    const productImage = imagesData.images.find(
+      (img) => img.prod_id === prod_id
+    );
     return productImage?.link || "";
   };
 
@@ -91,28 +123,28 @@ const Products = () => {
 
   const scrollBarStyle = {
     // For the container with scrollbar
-    overflow: 'auto',
-    scrollbarWidth: 'thin', // For Firefox
-    scrollbarColor: '#E88F2A #F5F5F5', // For Firefox: thumb and track colors
-    
+    overflow: "auto",
+    scrollbarWidth: "thin", // For Firefox
+    scrollbarColor: "#E88F2A #F5F5F5", // For Firefox: thumb and track colors
+
     // Webkit browsers (Chrome, Safari, Edge)
-    '&::-webkit-scrollbar': {
-      width: '6px',
-      height: '6px', // For horizontal scrollbar
+    "&::-webkit-scrollbar": {
+      width: "6px",
+      height: "6px", // For horizontal scrollbar
     },
-    
-    '&::-webkit-scrollbar-track': {
-      background: '#F5F5F5',
-      borderRadius: '10px',
+
+    "&::-webkit-scrollbar-track": {
+      background: "#F5F5F5",
+      borderRadius: "10px",
     },
-    
-    '&::-webkit-scrollbar-thumb': {
-      background: '#E88F2A',
-      borderRadius: '10px',
-      '&:hover': {
-        background: '#d17d1e',
+
+    "&::-webkit-scrollbar-thumb": {
+      background: "#E88F2A",
+      borderRadius: "10px",
+      "&:hover": {
+        background: "#d17d1e",
       },
-    }
+    },
   };
 
   // Handle scroll with mouse wheel
@@ -144,24 +176,24 @@ const Products = () => {
   // Add smooth scrolling behavior
   useEffect(() => {
     if (categoriesRef.current) {
-      categoriesRef.current.style.scrollBehavior = 'smooth';
+      categoriesRef.current.style.scrollBehavior = "smooth";
     }
   }, []);
 
   const handleCategoryClick = (categoryName) => {
     setSelectedCategory(categoryName);
-    
+
     // Find the clicked button element
-    const buttons = categoriesRef.current?.querySelectorAll('button');
-    const clickedButton = Array.from(buttons).find(
-      button => button.textContent.includes(categoryName)
+    const buttons = categoriesRef.current?.querySelectorAll("button");
+    const clickedButton = Array.from(buttons).find((button) =>
+      button.textContent.includes(categoryName)
     );
 
     if (clickedButton) {
       clickedButton.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center'
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
       });
     }
   };
@@ -171,34 +203,34 @@ const Products = () => {
     setIsEditModalOpen(true);
   };
 
-  const showToast = (message, type = 'success') => {
+  const showToast = (message, type = "success") => {
     setToast({
       show: true,
       message,
-      type
+      type,
     });
   };
 
   // Add new state for validation errors
   const [errors, setErrors] = useState({
-    prod_name: '',
-    price: '',
-    cat_id: '',
-    description: '',
-    images: ''
+    prod_name: "",
+    price: "",
+    cat_id: "",
+    description: "",
+    images: "",
   });
 
   // Update handleEditSubmit with complete validation
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Reset errors
     setErrors({
-      prod_name: '',
-      price: '',
-      cat_id: '',
-      description: '',
-      images: ''
+      prod_name: "",
+      price: "",
+      cat_id: "",
+      description: "",
+      images: "",
     });
 
     // Validate all fields
@@ -206,35 +238,40 @@ const Products = () => {
     let hasErrors = false;
 
     if (!editingProduct?.prod_name?.trim()) {
-      newErrors.prod_name = 'Product name is required';
+      newErrors.prod_name = "Product name is required";
       hasErrors = true;
     }
 
     if (!editingProduct?.price || editingProduct.price <= 0) {
-      newErrors.price = 'Valid price is required';
+      newErrors.price = "Valid price is required";
       hasErrors = true;
     }
 
     if (!editingProduct?.cat_id) {
-      newErrors.cat_id = 'Category is required';
+      newErrors.cat_id = "Category is required";
       hasErrors = true;
     }
 
     if (!editingProduct?.description?.trim()) {
-      newErrors.description = 'Description is required';
+      newErrors.description = "Description is required";
       hasErrors = true;
     }
 
     // Image validation (if you want to require at least one image)
-    const currentImages = imagesData.images.filter(img => img.prod_id === editingProduct?.prod_id);
-    if (currentImages.length === 0 && (!selectedImages || selectedImages.length === 0)) {
-      newErrors.images = 'At least one image is required';
+    const currentImages = imagesData.images.filter(
+      (img) => img.prod_id === editingProduct?.prod_id
+    );
+    if (
+      currentImages.length === 0 &&
+      (!selectedImages || selectedImages.length === 0)
+    ) {
+      newErrors.images = "At least one image is required";
       hasErrors = true;
     }
 
     if (hasErrors) {
       setErrors(newErrors);
-      showToast('Please fill in all required fields', 'error');
+      showToast("Please fill in all required fields", "error");
       return;
     }
 
@@ -243,7 +280,7 @@ const Products = () => {
       updateProductData({
         ...editingProduct,
         price: parseFloat(editingProduct.price),
-        cat_id: parseInt(editingProduct.cat_id)
+        cat_id: parseInt(editingProduct.cat_id),
       });
 
       // Handle images if there are changes
@@ -254,33 +291,33 @@ const Products = () => {
       setIsEditModalOpen(false);
       setEditingProduct(null);
       setSelectedImages([]);
-      setNewCategory('');
+      setNewCategory("");
       setIsAddingCategory(false);
-      showToast('Product updated successfully! 🎉');
+      showToast("Product updated successfully! 🎉");
     } catch (error) {
-      console.error('Error updating product:', error);
-      showToast('Error updating product. Please try again.', 'error');
+      console.error("Error updating product:", error);
+      showToast("Error updating product. Please try again.", "error");
     }
   };
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     if (files.length > 3) {
-      showToast('Maximum 3 images allowed', 'warning');
+      showToast("Maximum 3 images allowed", "warning");
       return;
     }
-    
+
     try {
       const imageFiles = files.slice(0, 3);
-      const imageUrls = imageFiles.map(file => URL.createObjectURL(file));
+      const imageUrls = imageFiles.map((file) => URL.createObjectURL(file));
       setSelectedImages(imageUrls);
       setNewProduct({
         ...newProduct,
-        images: imageFiles
+        images: imageFiles,
       });
     } catch (error) {
-      console.error('Error processing images:', error);
-      showToast('Error processing images. Please try again.', 'error');
+      console.error("Error processing images:", error);
+      showToast("Error processing images. Please try again.", "error");
     }
   };
 
@@ -288,12 +325,12 @@ const Products = () => {
     const newImages = [...selectedImages];
     newImages.splice(index, 1);
     setSelectedImages(newImages);
-    
+
     const newProductImages = [...newProduct.images];
     newProductImages.splice(index, 1);
     setNewProduct({
       ...newProduct,
-      images: newProductImages
+      images: newProductImages,
     });
   };
 
@@ -306,28 +343,28 @@ const Products = () => {
   // Add these new states
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newProduct, setNewProduct] = useState({
-    prod_name: '',
-    price: '',
-    description: '',
-    cat_id: '',
+    prod_name: "",
+    price: "",
+    description: "",
+    cat_id: "",
     images: [],
     bus_id: 1, // Set this to the actual baker's business ID
     rate: 0,
     views: 0,
-    num_orders: 0
+    num_orders: 0,
   });
 
   // Add this function to handle adding new product
   const handleAddSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Reset errors
     setErrors({
-      prod_name: '',
-      price: '',
-      cat_id: '',
-      description: '',
-      images: ''
+      prod_name: "",
+      price: "",
+      cat_id: "",
+      description: "",
+      images: "",
     });
 
     // Validate all fields
@@ -335,39 +372,40 @@ const Products = () => {
     let hasErrors = false;
 
     if (!newProduct.prod_name?.trim()) {
-      newErrors.prod_name = 'Product name is required';
+      newErrors.prod_name = "Product name is required";
       hasErrors = true;
     }
 
     if (!newProduct.price || newProduct.price <= 0) {
-      newErrors.price = 'Valid price is required';
+      newErrors.price = "Valid price is required";
       hasErrors = true;
     }
 
     if (!newProduct.cat_id) {
-      newErrors.cat_id = 'Category is required';
+      newErrors.cat_id = "Category is required";
       hasErrors = true;
     }
 
     if (!newProduct.description?.trim()) {
-      newErrors.description = 'Description is required';
+      newErrors.description = "Description is required";
       hasErrors = true;
     }
 
     if (!selectedImages || selectedImages.length === 0) {
-      newErrors.images = 'At least one image is required';
+      newErrors.images = "At least one image is required";
       hasErrors = true;
     }
 
     if (hasErrors) {
       setErrors(newErrors);
-      showToast('Please fill in all required fields', 'error');
+      showToast("Please fill in all required fields", "error");
       return;
     }
 
     try {
       // Generate new product ID
-      const newProdId = Math.max(...productData.products.map(p => p.prod_id)) + 1;
+      const newProdId =
+        Math.max(...productData.products.map((p) => p.prod_id)) + 1;
 
       // Create new product
       const productToAdd = {
@@ -375,10 +413,10 @@ const Products = () => {
         prod_id: newProdId,
         price: parseFloat(newProduct.price),
         cat_id: parseInt(newProduct.cat_id),
-        images: newProduct.images.map(img => ({
+        images: newProduct.images.map((img) => ({
           ...img,
-          prod_id: newProdId
-        }))
+          prod_id: newProdId,
+        })),
       };
 
       // Add the new product to the productData
@@ -391,21 +429,63 @@ const Products = () => {
 
       setIsAddModalOpen(false);
       setNewProduct({
-        prod_name: '',
-        price: '',
-        description: '',
-        cat_id: '',
+        prod_name: "",
+        price: "",
+        description: "",
+        cat_id: "",
         images: [],
         bus_id: 1,
         rate: 0,
         views: 0,
-        num_orders: 0
+        num_orders: 0,
       });
       setSelectedImages([]);
-      showToast('Product added successfully! 🎉');
+      showToast("Product added successfully! 🎉");
     } catch (error) {
-      console.error('Error adding product:', error);
-      showToast('Error adding product. Please try again.', 'error');
+      console.error("Error adding product:", error);
+      showToast("Error adding product. Please try again.", "error");
+    }
+  };
+
+  // Add new state for delete confirmation modal
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
+
+  // Add delete handler functions
+  const handleDeleteClick = (product) => {
+    setProductToDelete(product);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    try {
+      // Remove product from productData
+      const productIndex = productData.products.findIndex(
+        (p) => p.prod_id === productToDelete.prod_id
+      );
+      if (productIndex !== -1) {
+        productData.products.splice(productIndex, 1);
+      }
+
+      // Remove associated images
+      const imagesToDelete = imagesData.images.filter(
+        (img) => img.prod_id === productToDelete.prod_id
+      );
+      imagesToDelete.forEach((img) => {
+        const imageIndex = imagesData.images.findIndex(
+          (i) => i.img_id === img.img_id
+        );
+        if (imageIndex !== -1) {
+          imagesData.images.splice(imageIndex, 1);
+        }
+      });
+
+      setIsDeleteModalOpen(false);
+      setProductToDelete(null);
+      showToast("Product deleted successfully! 🗑️");
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      showToast("Error deleting product. Please try again.", "error");
     }
   };
 
@@ -543,7 +623,10 @@ const Products = () => {
                   >
                     Edit
                   </button>
-                  <button className="text-red-500 hover:text-red-700">
+                  <button 
+                    onClick={() => handleDeleteClick(product)}
+                    className="text-red-500 hover:text-red-700"
+                  >
                     <Icon icon="mdi:delete" className="text-xl" />
                   </button>
                 </div>
@@ -1003,6 +1086,31 @@ const Products = () => {
                   Add Product
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-md p-6">
+            <h2 className="text-xl font-bold mb-4">Delete Product</h2>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete "{productToDelete?.prod_name}"? This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="px-4 py-2 border rounded-lg hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteConfirm}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+              >
+                Delete
+              </button>
             </div>
           </div>
         </div>
