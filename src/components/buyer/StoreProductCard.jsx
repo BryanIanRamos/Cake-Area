@@ -1,49 +1,42 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const StoreProductCard = ({ id, image, title, description, price, rating }) => {
+  const navigate = useNavigate();
+  const formattedRating = rating.toFixed(1);
+
+  const handleClick = () => {
+    navigate(`/product/${id}`);
+  };
+
   return (
-    <Link to={`/product/${id}`} className="w-full max-w-[280px] bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-      {/* Product Image */}
-      <div className="w-full h-[180px] overflow-hidden">
+    <div 
+      onClick={handleClick}
+      className="group bg-white rounded-lg shadow-md overflow-hidden h-full flex flex-col transform transition-all duration-300 hover:scale-[1.02] hover:shadow-lg cursor-pointer"
+    >
+      <div className="overflow-hidden">
         <img 
           src={image} 
           alt={title} 
-          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+          className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110" 
         />
       </div>
-
-      {/* Product Details */}
-      <div className="p-4">
-        {/* Title */}
-        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+      <div className="p-4 flex flex-col flex-grow">
+        <h3 className="text-lg font-semibold text-gray-800 group-hover:text-primary transition-colors duration-200">
           {title}
         </h3>
-
-        {/* Description */}
-        <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-          {description}
-        </p>
-
-        {/* Price and Rating */}
-        <div className="flex items-center justify-between">
-          <span className="text-[#713000] font-semibold">
-            ₱ {price.toFixed(2)}
+        <p className="text-gray-600 text-sm mt-1">{description}</p>
+        <div className="flex justify-between items-center mt-auto pt-3">
+          <span className="text-primary font-semibold group-hover:scale-105 transition-transform duration-200">
+            ₱ {price}
           </span>
-          {rating && (
-            <div className="flex items-center gap-1">
-              <span className="text-amber-400">★</span>
-              <span className="text-sm text-gray-600">{rating}</span>
-            </div>
-          )}
-        </div>
-
-        {/* Quantity */}
-        <div className="text-sm text-gray-500 mt-1">
-          Quantity: 1
+          <div className="flex items-center group-hover:scale-105 transition-transform duration-200">
+            <span className="text-amber-400 mr-1">★</span>
+            <span className="text-gray-600">{formattedRating}</span>
+          </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 

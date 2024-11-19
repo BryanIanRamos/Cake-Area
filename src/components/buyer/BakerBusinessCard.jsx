@@ -1,27 +1,57 @@
 import { useState, useEffect } from "react";
-import BakerProf from "../../data/bakerProf.json";
-import DumProfile from "../../assets/Dummy_Profile.png";
+import { useNavigate } from "react-router-dom";
+import { businessData } from "../../data/businessDataTbl";
+import { userData } from "../../data/userDataTbl";
+import { addressData } from "../../data/addressDataTbl";
+import { profileData } from "../../data/profileDataTbl";
 import { Icon } from "@iconify/react";
 import Rating from "./Rating";
 
 const BakerBusinessCard = ({ selectedFilter }) => {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const baker = BakerProf.bakersProfile;
+  
+  // Get only active businesses and combine with their address and profile data
+  const getBusinessesWithDetails = () => {
+    return businessData.businesses
+      .filter(business => business.is_active)
+      .map(business => {
+        // Find business owner's work address
+        const businessAddress = addressData.addresses.find(
+          address => address.user_id === business.user_id && address.type === 1
+        );
+        
+        // Find business owner's profile
+        const businessProfile = profileData.profiles.find(
+          profile => profile.user_id === business.user_id
+        );
+        
+        return {
+          ...business,
+          location: businessAddress ? businessAddress.location : "Location not available",
+          profileImage: businessProfile ? businessProfile.img : null,
+          ownerName: businessProfile 
+            ? `${businessProfile.first_name} ${businessProfile.last_name}`
+            : "Unknown Owner"
+        };
+      });
+  };
 
   // Add filtering logic
   const getFilteredBakers = () => {
-    if (!selectedFilter) return baker;
+    const businesses = getBusinessesWithDetails();
+    if (!selectedFilter) return businesses;
 
-    return [...baker].sort((a, b) => {
+    return [...businesses].sort((a, b) => {
       switch (selectedFilter) {
         case "rate":
-          return b.StoreRate - a.StoreRate;
+          return b.store_rating - a.store_rating;
         case "service":
-          return b.productRate - a.productRate;
+          return b.service_rating - a.service_rating;
         case "sold":
-          return b.sold - a.sold;
+          return b.total_sold - a.total_sold;
         case "goods":
-          return b.available - a.available;
+          return b.available_items - a.available_items;
         default:
           return 0;
       }
@@ -39,7 +69,6 @@ const BakerBusinessCard = ({ selectedFilter }) => {
   const itemsPerPage = 5;
   const buttonsPerPage = 5;
 
-  // Use filtered bakers for pagination
   const indexOfLastUser = currentPage * itemsPerPage;
   const indexOfFirstUser = indexOfLastUser - itemsPerPage;
   const currentBakers = filteredBakers.slice(indexOfFirstUser, indexOfLastUser);
@@ -51,28 +80,30 @@ const BakerBusinessCard = ({ selectedFilter }) => {
   };
 
   // Calculate the start and end page numbers for the current group of buttons
-  const startPage =
-    Math.floor((currentPage - 1) / buttonsPerPage) * buttonsPerPage + 1;
+  const startPage = Math.floor((currentPage - 1) / buttonsPerPage) * buttonsPerPage + 1;
   const endPage = Math.min(startPage + buttonsPerPage - 1, totalPages);
+
+  const handleCardClick = (userId) => {
+    navigate(`/store/${userId}`);
+  };
 
   return (
     <div className="p-8 text-center">
       <div className="space-y-4">
         {currentBakers.map((baker) => (
           <div
-            key={baker.id}
+            key={baker.bus_id}
+            onClick={() => handleCardClick(baker.user_id)}
             className="p-4 bg-gray-100 shadow-md text-lg text-gray-800 grid grid-cols-12 items-start gap-5 
             transform transition-all duration-300 hover:shadow-xl hover:scale-[1.02] hover:bg-white 
             cursor-pointer rounded-lg border border-transparent hover:border-gray-200"
           >
-            {/* Profile image */}
-            <div
-              className="col-span-2 hidden sm:flex justify-center items-center lg:p-3 
-              transition-transform duration-300 hover:scale-105"
-            >
+            {/* Profile image - now using image from profile data */}
+            <div className="col-span-2 hidden sm:flex justify-center items-center lg:p-3 
+              transition-transform duration-300 hover:scale-105">
               <img
-                src={baker.image}
-                alt="profile"
+                src={baker.profileImage}
+                alt={`${baker.ownerName}'s profile`}
                 className="rounded-lg hover:shadow-md transition-all duration-300"
               />
             </div>
@@ -80,60 +111,48 @@ const BakerBusinessCard = ({ selectedFilter }) => {
             {/* Information */}
             <div className="col-span-12 sm:col-span-9 flex flex-col justify-start items-start text-left">
               <div className="grid grid-cols-2 w-full text-[12px] sm:text-[1.5vw] md:text-[1.5vw] xl:text-[1.4vw]">
-                <div
-                  className="font-[oswald] font-semibold md:pb-2 
-                 "
-                >
+                <div className="font-[oswald] font-semibold md:pb-2">
                   {baker.name}
                 </div>
-                <div className="ont-[NotoSerif] flex items-center gap-1 text-[8px] sm:text-[1.5vw] md:text-[1.5vw] xl:text-[1.4vw]">
-                  <Icon
-                    icon="lsicon:location-outline"
-                    className="group-hover:scale-110 transition-transform duration-300"
-                  />
+                <div className="font-[NotoSerif] flex items-center gap-1 text-[8px] sm:text-[1.5vw] md:text-[1.5vw] xl:text-[1.4vw]">
+                  <Icon icon="lsicon:location-outline" />
                   <p>{baker.location}</p>
                 </div>
               </div>
 
               {/* Description */}
-              <div
-                className="font-[NotoSerif] sm:h-[6vw] lg:h-[5vw] xl:h-[6vw] w-full overflow-hidden 
+              <div className="font-[NotoSerif] sm:h-[6vw] lg:h-[5vw] xl:h-[6vw] w-full overflow-hidden 
                 text-ellipsis text-[10px] sm:text-[1.5vw] md:text-[1.3vw] lg:text-[1.3vw] xl:text-[1.4vw] 2xl:text-[1.5vw] 
-                leading-[15px] sm:leading-[12px] md:leading-[13px] lg:leading-[15px] xl:leading-[22px] 2xl:leading-[25px]
-                hover:text-gray-700 transition-colors duration-300"
-              >
+                leading-[15px] sm:leading-[12px] md:leading-[13px] lg:leading-[15px] xl:leading-[22px] 2xl:leading-[25px]">
                 <p className="m-0 overflow-hidden text-ellipsis line-clamp-3">
-                  {baker.StoreDescription}
+                  {baker.description}
                 </p>
               </div>
 
               {/* Ratings */}
-              <div
-                className="grid grid-cols-2 w-full text-[6px] h-fit sm:text-[0.8vw] md:text-[1vw] xl:text-[1vw]
-                "
-              >
+              <div className="grid grid-cols-2 w-full text-[6px] h-fit sm:text-[0.8vw] md:text-[1vw] xl:text-[1vw]">
                 {/* Sold and store rate */}
                 <div className="flex font-[oswald] items-center gap-1 sm-gap-2">
                   <div className="group-hover:font-semibold transition-all duration-300">
-                    {baker.sold} Sold |
+                    {baker.total_sold} Sold |
                   </div>
                   <Rating
                     icon="ph:star-fill"
                     clickable={false}
-                    initialRating={baker.StoreRate}
+                    initialRating={baker.store_rating}
                   />
                   <span className="group-hover:font-semibold">
-                    ({baker.StoreRate} Rate)
+                    ({baker.store_rating} Rate)
                   </span>
                 </div>
                 {/* Product and Service Rate */}
                 <div className="flex font-[oswald] items-center gap-1 sm-gap-2">
                   <div className="group-hover:font-semibold transition-all duration-300">
-                    {baker.available} Available |
+                    {baker.available_items} Available |
                   </div>
-                  <Rating clickable={false} initialRating={baker.productRate} />
+                  <Rating clickable={false} initialRating={baker.service_rating} />
                   <span className="group-hover:font-semibold">
-                    ({baker.productRate} Service)
+                    ({baker.service_rating} Service)
                   </span>
                 </div>
               </div>

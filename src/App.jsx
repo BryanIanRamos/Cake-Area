@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import MainPage from "./pages/buyer/MainPage.jsx";
 import Store from "./pages/buyer/Store.jsx";
-import Product from "./pages/buyer/Product.jsx";
+import BuyerProduct from "./pages/buyer/Product.jsx";
 import Cart from "./pages/buyer/Cart.jsx";
 import Profile from "./pages/buyer/Profile.jsx";
 import Test from "./pages/buyer/test.jsx";
@@ -42,8 +42,9 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* Customer's Route */}
-        <Route path="/store" element={<Store />} />
-        <Route path="/product" element={<Product />} />
+        <Route path="/store/:userId" element={<Store />} />
+        {/* <Route path="/product" element={<Product />} /> */}
+        <Route path="/product/:productId" element={<BuyerProduct />} />
         <Route path="/cart/*" element={<Cart />} />
         <Route
           path="/profile"
@@ -53,12 +54,12 @@ function App() {
         />
 
         {/* Baker's Route - Update these paths */}
+        <Route path="/baker/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/orders" element={<Orders />} />
         <Route path="/dashboard/products" element={<Products />} />
         <Route path="/dashboard/reviews" element={<Reviews />} />
         <Route path="/dashboard/settings" element={<Settings />} />
-        <Route path="/register" element={<Register />} />
         <Route path="/dashboard/statistics" element={<Statistics />} />
 
         {/* Admin Routes */}
@@ -70,6 +71,8 @@ function App() {
         <Route path="/admin/reports" element={<ReportedContent />} />
         <Route path="/admin/management" element={<AccountManagement />} />
         <Route path="/admin/statistics" element={<Statistics />} />
+
+        {/* Add the product route */}
       </Routes>
       <ToastContainer position="bottom-right" />
     </Router>

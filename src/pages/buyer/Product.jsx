@@ -1,36 +1,71 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useMemo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Navbar from "../../components/buyer/Navbar";
-import neapolitanBrownie from "../../assets/CakeSample.png";
+import CakeSample from "../../assets/CakeSample.png";
 import Rating from "../../components/buyer/Rating";
 import { Icon } from "@iconify/react";
 import ProductCard from "../../components/buyer/ProductCard";
 import { commentData } from "../../data/commentData";
 import CommentCard from "../../components/buyer/CommentCard";
 import Pagination from "../../components/buyer/Pagination";
-import { productDetails } from "../../data/productDetails";
+import { productData } from "../../data/productDataTbl";
+import { imagesData } from "../../data/imagesDataTbl";
 
 const Product = () => {
-  const { mainProduct, recommendedProducts } = productDetails;
+  const { productId } = useParams();
+  const navigate = useNavigate();
+
+  // Get the product data based on the route parameter
+  const product = productData.products.find(
+    (p) => p.prod_id === parseInt(productId)
+  );
+
+  // Get product images for this specific product
+  const productImages = imagesData.images.filter(
+    (img) => img.prod_id === parseInt(productId)
+  );
+
+  console.log("Product ID:", productId);
+  console.log("Found Images:", productImages);
+
+  // If product not found, show error
+  if (!product) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h1 className="text-2xl font-bold text-gray-800">Product not found</h1>
+        <button
+          onClick={() => navigate("/")}
+          className="mt-4 px-4 py-2 bg-primary text-white rounded-lg"
+        >
+          Return to Home
+        </button>
+      </div>
+    );
+  }
+
+  console.log("Product:", product); // Debug log
+  console.log("Product Images:", productImages); // Debug log
 
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const commentsPerPage = 3;
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
 
-  const downPayment = mainProduct.price * 0.5;
+  const downPayment = product.price * 0.5;
 
   const indexOfLastComment = currentPage * commentsPerPage;
   const indexOfFirstComment = indexOfLastComment - commentsPerPage;
 
   const getFilteredComments = () => {
-    let filtered = selectedFilter === "all" 
-      ? commentData 
-      : commentData.filter((comment) => Math.floor(comment.rating) === parseInt(selectedFilter));
+    let filtered =
+      selectedFilter === "all"
+        ? commentData
+        : commentData.filter(
+            (comment) => Math.floor(comment.rating) === parseInt(selectedFilter)
+          );
 
     return filtered.sort((a, b) => {
       switch (sortBy) {
@@ -58,7 +93,7 @@ const Product = () => {
   );
 
   const handleQuantityChange = (value) => {
-    const newQuantity = Math.max(1, Math.min(mainProduct.stock, value));
+    const newQuantity = Math.max(1, Math.min(product.qty, value));
     setQuantity(newQuantity);
   };
 
@@ -70,9 +105,9 @@ const Product = () => {
     navigate("/checkout", {
       state: {
         product: {
-          id: mainProduct.id,
-          name: mainProduct.name,
-          price: mainProduct.price,
+          id: product.prod_id,
+          name: product.prod_name,
+          price: product.price,
           quantity: quantity,
         },
       },
@@ -81,9 +116,6 @@ const Product = () => {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    document
-      .getElementById("comments-section")
-      .scrollIntoView({ behavior: "smooth" });
   };
 
   const handleFilterChange = (filter) => {
@@ -96,6 +128,21 @@ const Product = () => {
     setCurrentPage(1);
   };
 
+  const handleImageClick = (index) => {
+    setSelectedImageIndex(index);
+  };
+
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`);
+    window.scrollTo(0, 0);
+  };
+
+  const recommendedProducts = useMemo(() => {
+    return productData.products
+      .filter(p => p.bus_id === product.bus_id && p.prod_id !== product.prod_id)
+      .slice(0, 4); // Show up to 4 recommended products
+  }, [product.bus_id, product.prod_id]);
+
   return (
     <div className="flex flex-col items-center justify-start h-full w-full px-4 py-6 md:px-10 md:py-8">
       <Navbar />
@@ -106,24 +153,32 @@ const Product = () => {
           {/* Image Section */}
           <div className="w-full h-[400px]">
             <div className="w-full h-full">
+              {/* Main Large Image */}
               <div className="w-full h-[75%] mb-2">
                 <img
-                  src={mainProduct.images[selectedImageIndex] || neapolitanBrownie}
-                  alt={mainProduct.name}
-                  className="w-full h-full object-cover rounded-lg transition-transform transform hover:scale-105"
+                  src={productImages[selectedImageIndex]?.link || CakeSample}
+                  alt={product.prod_name}
+                  className="w-full h-full object-cover rounded-lg"
                 />
               </div>
+              {/* Thumbnail Images */}
               <div className="grid grid-cols-3 h-[23%] gap-2">
-                {mainProduct.images.map((img, index) => (
-                  <img
-                    key={index}
-                    src={img}
-                    alt={`${mainProduct.name} ${index + 1}`}
-                    className={`w-full h-full object-cover rounded-md cursor-pointer hover:opacity-80 transition-opacity ${
-                      selectedImageIndex === index ? 'border-2 border-primary' : ''
+                {productImages.slice(0, 3).map((image, index) => (
+                  <div
+                    key={image.image_id}
+                    onClick={() => handleImageClick(index)}
+                    className={`cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+                      selectedImageIndex === index
+                        ? "border-primary"
+                        : "border-transparent hover:border-gray-300"
                     }`}
-                    onClick={() => setSelectedImageIndex(index)}
-                  />
+                  >
+                    <img
+                      src={image.link}
+                      alt={`${product.prod_name} view ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                 ))}
               </div>
             </div>
@@ -132,9 +187,9 @@ const Product = () => {
           {/* Content Section */}
           <div className="col-span-2 p-4 space-y-3">
             <div>
-              <h2 className="text-2xl font-bold mb-2">{mainProduct.name}</h2>
+              <h2 className="text-2xl font-bold mb-2">{product.prod_name}</h2>
               <p className="text-gray-600 text-base h-[120px]">
-                {mainProduct.description}
+                {product.description}
               </p>
             </div>
 
@@ -143,7 +198,7 @@ const Product = () => {
                 <div className="flex items-center gap-1">
                   <span className="text-gray-500 text-sm">₱</span>
                   <span className="text-lg font-semibold">
-                    {mainProduct.price.toFixed(2)}
+                    {product.price.toFixed(2)}
                   </span>
                   <span className="text-gray-500 text-sm">Price</span>
                 </div>
@@ -162,15 +217,15 @@ const Product = () => {
 
               {/* Rating and Sold Count */}
               <div className="flex items-center gap-2">
-                <span className="text-[#F4A340] font-bold">{mainProduct.rating}</span>
+                <span className="text-[#F4A340] font-bold">{product.rate}</span>
                 <Rating
                   icon="ph:star-fill"
                   clickable={false}
-                  initialRating={mainProduct.rating}
+                  initialRating={product.rate}
                   className="text-[#F4A340]"
                 />
                 <span className="text-gray-500 text-sm">
-                  | {mainProduct.ordered} Sold
+                  | Stock: {product.qty}
                 </span>
               </div>
 
@@ -228,12 +283,21 @@ const Product = () => {
           <h3 className="text-xl font-semibold mb-4">Recommend</h3>
           <div className="flex gap-4 overflow-x-auto pb-4">
             {recommendedProducts.map((recommendedProduct) => (
-              <ProductCard
-                key={recommendedProduct.id}
-                image={recommendedProduct.image || neapolitanBrownie}
-                price={recommendedProduct.price}
-                name={recommendedProduct.name}
-              />
+              <div 
+                key={recommendedProduct.prod_id}
+                onClick={() => handleProductClick(recommendedProduct.prod_id)}
+                className="cursor-pointer transform transition-transform duration-200 hover:scale-105"
+              >
+                <ProductCard
+                  productId={recommendedProduct.prod_id}
+                  name={recommendedProduct.prod_name}
+                  price={recommendedProduct.price}
+                  image={imagesData.images.find(
+                    img => img.prod_id === recommendedProduct.prod_id
+                  )?.link || CakeSample}
+                  className="min-w-[200px]"
+                />
+              </div>
             ))}
           </div>
         </div>
@@ -309,8 +373,8 @@ const Product = () => {
                   <option value="lowest">Lowest Rating</option>
                   <option value="mostLiked">Most Liked</option>
                 </select>
-                <Icon 
-                  icon="mdi:chevron-down" 
+                <Icon
+                  icon="mdi:chevron-down"
                   className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"
                 />
               </div>

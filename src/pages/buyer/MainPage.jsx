@@ -5,6 +5,8 @@ import SelectAccount from "../../components/buyer/SelectAccount";
 import LoginModal from "../../components/buyer/LoginModal";
 import Header from "../../components/buyer/Header";
 import FeedbackPopup from "../../components/buyer/FeedbackPopup";
+import { userData } from "../../data/userDataTbl";
+import { profileData } from "../../data/profileDataTbl";
 
 const MainPage = () => {
   const [selectedFilter, setSelectedFilter] = useState("rate");
@@ -22,6 +24,7 @@ const MainPage = () => {
   const [feedbackType, setFeedbackType] = useState("success");
 
   // Function to open the modal
+  // account type
   const openModal = () => {
     setModalOpen(true);
   };
@@ -40,15 +43,37 @@ const MainPage = () => {
     setLoginModalOpen(false);
   };
 
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-    setUserName("John Doe"); // Replace with actual user name from your auth system
-    closeLoginModal();
+  const handleLogin = (email, password) => {
+    // Find user with matching email and password
+    const user = userData.users.find(
+      (user) => user.email === email && user.password === password
+    );
 
-    // Show feedback
-    setFeedbackMessage("Successfully logged in!");
-    setFeedbackType("success");
-    setShowFeedback(true);
+    if (user) {
+      // Find the corresponding profile
+      const userProfile = profileData.profiles.find(
+        (profile) => profile.user_id === user.user_id
+      );
+
+      setIsLoggedIn(true);
+      // Set username as full name from profile
+      setUserName(
+        userProfile
+          ? `${userProfile.first_name} ${userProfile.last_name}`
+          : user.email
+      );
+      closeLoginModal();
+
+      // Show success feedback
+      setFeedbackMessage("Successfully logged in!");
+      setFeedbackType("success");
+      setShowFeedback(true);
+    } else {
+      // Show error feedback
+      setFeedbackMessage("Invalid email or password!");
+      setFeedbackType("error");
+      setShowFeedback(true);
+    }
   };
 
   const handleLogout = () => {

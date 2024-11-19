@@ -1,51 +1,76 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify/react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import StoreProductCard from "../../components/buyer/StoreProductCard";
 import Navbar from "../../components/buyer/Navbar";
-import { bakerProducts } from "../../data/productDetails";
+import { businessData } from "../../data/businessDataTbl";
+import { productData } from "../../data/productDataTbl";
+import { profileData } from "../../data/profileDataTbl";
+import { categoryData } from "../../data/catDataTbl";
+import CakeSample from "../../assets/CakeSample.png";
 
 const Store = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { userId } = useParams();
   const navigate = useNavigate();
+  
+  // Get business data for this user
+  const business = businessData.businesses.find(b => b.user_id === parseInt(userId));
+  const profile = profileData.profiles.find(p => p.user_id === parseInt(userId));
+  
+  // Get products for this business
+  const storeProducts = productData.products.filter(p => p.bus_id === business?.bus_id);
+
+  // If no business found, show error
+  if (!business || !profile) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h1 className="text-2xl font-bold text-gray-800">Store not found</h1>
+        <button 
+          onClick={() => navigate('/')}
+          className="mt-4 px-4 py-2 bg-primary text-white rounded-lg"
+        >
+          Return to Home
+        </button>
+      </div>
+    );
+  }
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("popular"); // popular, priceLow, priceHigh, rating
+  const [sortBy, setSortBy] = useState("popular");
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 8;
 
-  const { categories: productCategories, products: bakerProductsList } =
-    bakerProducts;
-
-  // Create categories array with dynamically calculated counts
-  const categories = productCategories.map((category) => ({
-    name: category.name,
-    count:
-      category.name === "All"
-        ? bakerProductsList.length
-        : bakerProductsList.filter(
-            (product) => product.category === category.name
-          ).length,
-  }));
-
-  // Add the handleCategoryClick function
-  const handleCategoryClick = (categoryName) => {
-    setActiveCategory(categoryName);
-  };
+  // Create categories array with counts for this store's products
+  const categories = [
+    {
+      name: "All",
+      count: storeProducts.length
+    },
+    ...categoryData.categories.map(category => ({
+      name: category.name,
+      count: storeProducts.filter(product => product.cat_id === category.cat_id).length
+    })).filter(cat => cat.count > 0) // Only show categories with products
+  ];
 
   // Filter and sort products
   const getFilteredAndSortedProducts = () => {
-    // First filter by category
-    let filtered =
-      activeCategory === "All"
-        ? bakerProductsList
-        : bakerProductsList.filter(
-            (product) => product.category === activeCategory
-          );
+    let filtered = storeProducts;
 
-    // Then filter by search query
+    // Filter by category
+    if (activeCategory !== "All") {
+      const categoryId = categoryData.categories.find(
+        cat => cat.name === activeCategory
+      )?.cat_id;
+      filtered = filtered.filter(product => product.cat_id === categoryId);
+    }
+
+    // Filter by search
     if (searchQuery) {
       filtered = filtered.filter(
-        (product) =>
-          product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product =>
+          product.prod_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           product.description.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
@@ -58,29 +83,27 @@ const Store = () => {
         case "priceHigh":
           return b.price - a.price;
         case "rating":
-          return b.rating - a.rating;
+          return b.rate - a.rate;
         case "popular":
         default:
-          return b.ordered - a.ordered;
+          return b.qty - a.qty; // Using qty as a proxy for popularity
       }
     });
   };
 
-  // Add pagination state
-  const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 8;
-
-  // Get filtered and sorted products
   const filteredProducts = getFilteredAndSortedProducts();
-
-  // Calculate pagination
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = filteredProducts.slice(
     indexOfFirstProduct,
     indexOfLastProduct
   );
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+
+  // Add the handleCategoryClick function
+  const handleCategoryClick = (categoryName) => {
+    setActiveCategory(categoryName);
+  };
 
   // Handle page change
   const handlePageChange = (pageNumber) => {
@@ -97,31 +120,30 @@ const Store = () => {
         <div className="w-full flex flex-col sm:mt-10 justify-center items-center px-3 sm:px-0 gap-4 pt-2">
           {/* Baker Profile Section */}
           <div className="grid grid-cols-1 sm:grid-cols-5 w-full sm:w-[90%] lg:w-[80%] gap-3 sm:gap-6 bg-white rounded-md p-10">
-            {/* Baker Info */}
             <div className="sm:col-span-2 flex flex-col sm:flex-row gap-6 items-center sm:items-start">
               <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-primary/20">
                 <img
-                  src="/path-to-baker-image.jpg"
-                  alt="Baker Profile"
+                  src={profile.img}
+                  alt={`${profile.first_name}'s Profile`}
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="text-center sm:text-left">
                 <h1 className="text-2xl font-semibold text-gray-800">
-                  Bryan's Cake Area
+                  {business.name}
                 </h1>
-                <p className="text-gray-600 mt-1">Master Baker: Bryan Ramos</p>
+                <p className="text-gray-600 mt-1">
+                  Master Baker: {profile.first_name} {profile.last_name}
+                </p>
                 <div className="flex items-center gap-2 justify-center sm:justify-start mt-2">
                   <div className="flex items-center text-amber-400">
                     <Icon icon="mdi:star" className="text-xl" />
-                    <span className="ml-1 text-gray-700">4.8</span>
+                    <span className="ml-1 text-gray-700">{business.store_rating}</span>
                   </div>
                   <span className="text-gray-400">|</span>
                   <div className="flex items-center text-gray-600">
                     <Icon icon="mdi:cake-variant" className="text-xl" />
-                    <span className="ml-1">
-                      {bakerProductsList.length} Products
-                    </span>
+                    <span className="ml-1">{business.available_items} Products</span>
                   </div>
                 </div>
               </div>
@@ -134,7 +156,7 @@ const Store = () => {
                   icon="mdi:store-check"
                   className="text-3xl text-primary mx-auto"
                 />
-                <p className="text-2xl font-semibold mt-2">1.2k+</p>
+                <p className="text-2xl font-semibold mt-2">{business.total_sold}+</p>
                 <p className="text-gray-600 text-sm">Orders Completed</p>
               </div>
               <div className="bg-gray-50 p-4 rounded-lg text-center">
@@ -142,8 +164,8 @@ const Store = () => {
                   icon="mdi:account-group"
                   className="text-3xl text-primary mx-auto"
                 />
-                <p className="text-2xl font-semibold mt-2">500+</p>
-                <p className="text-gray-600 text-sm">Happy Customers</p>
+                <p className="text-2xl font-semibold mt-2">{business.no_visits}+</p>
+                <p className="text-gray-600 text-sm">Store Visits</p>
               </div>
               <div className="bg-gray-50 p-4 rounded-lg text-center hidden sm:block">
                 <Icon
@@ -158,24 +180,18 @@ const Store = () => {
             {/* Baker Description */}
             <div className="sm:col-span-5 mt-6">
               <p className="text-gray-600 text-center sm:text-left">
-                Welcome to Bryan's Cake Area! We specialize in creating
-                delicious, handcrafted baked goods using only the finest
-                ingredients. From custom cakes to fresh pastries, we put love
-                and care into every creation.
+                {business.description}
               </p>
               <div className="flex flex-wrap gap-3 justify-center sm:justify-start mt-4">
-                <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
-                  Custom Cakes
-                </span>
-                <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
-                  Fresh Daily
-                </span>
-                <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
-                  Special Events
-                </span>
-                <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
-                  Local Delivery
-                </span>
+                {categoryData.categories
+                  .filter(cat => storeProducts.some(prod => prod.cat_id === cat.cat_id))
+                  .slice(0, 4)
+                  .map(cat => (
+                    <span key={cat.cat_id} className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
+                      {cat.name}
+                    </span>
+                  ))
+                }
               </div>
             </div>
           </div>
@@ -248,14 +264,13 @@ const Store = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                   {currentProducts.map((product) => (
                     <StoreProductCard
-                      key={product.id}
-                      id={product.id}
-                      image={product.image}
-                      title={product.name}
+                      key={product.prod_id}
+                      id={product.prod_id}
+                      image={CakeSample}
+                      title={product.prod_name}
                       description={product.description}
                       price={product.price}
-                      rating={product.rating}
-                      ordered={product.ordered}
+                      rating={product.rate}
                     />
                   ))}
                 </div>
