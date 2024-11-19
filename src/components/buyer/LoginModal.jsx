@@ -2,28 +2,52 @@ import React, { useState } from "react";
 import { Icon } from "@iconify/react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import { userData } from "../../data/userDataTbl";
 
 const LoginModal = ({ isOpen, closeModal, onLogin }) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginMessage, setLoginMessage] = useState("");
 
-  const handleForgotPassword = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    closeModal();
-    navigate("/forgot-password");
-  };
+    setIsLoading(true);
+    setLoginMessage("Logging in...");
+    
+    // Simulate network delay for smooth transition
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    const user = userData.users.find(
+      (user) => user.email === email && user.password === password
+    );
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+    if (user && user.role === 1) {
+      setLoginMessage("Admin login not allowed here");
+      setIsLoading(false);
+      onLogin(email, password);
+      return;
+    }
+
+    if (user && user.role === 2) {
+      setLoginMessage("Welcome back, baker!");
+      onLogin(email, password);
+      await new Promise(resolve => setTimeout(resolve, 500));
+      closeModal();
+      navigate('/dashboard');
+      return;
+    }
+
+    // For regular customers or invalid login
     onLogin(email, password);
+    setIsLoading(false);
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="border w-[73vw] sm:w-[53vw] md:w-[43vw] lg:w-[35vw] h-fit p-4 sm:p-5 md:p-6 lg:p-7 bg-white">
         <div className="border-[3px] border-primary h-full p-2 md:p-3 lg:p-4 relative">
-          {/* Close Button */}
           <button
             className="absolute right-1 md:right-2 lg:right-3 top-1 md:top-2 lg:top-3 text-[3.6vw] sm:text-[3vh] md:text-[2.6vw] lg:text-[1.6vw] text-primary hover:text-red-400"
             onClick={closeModal}
@@ -36,6 +60,12 @@ const LoginModal = ({ isOpen, closeModal, onLogin }) => {
             <h2 className="w-full text-[3.6vw] sm:text-[2.5vw] md:text-[2.1vw] lg:text-[1.6vw] font-semibold text-primary">
               Login to Your Account
             </h2>
+            {/* Show loading message */}
+            {isLoading && (
+              <div className="text-primary text-[1.8vw] sm:text-[1.3vw] lg:text-[0.9vw] text-gray-600">
+                {loginMessage}
+              </div>
+            )}
             <form className="mt-4 space-y-4 px-4" onSubmit={handleSubmit}>
               <div className="flex flex-col gap-2">
                 <input
@@ -61,7 +91,6 @@ const LoginModal = ({ isOpen, closeModal, onLogin }) => {
                 </label>
                 <button
                   type="button"
-                  onClick={handleForgotPassword}
                   className="text-primary hover:underline"
                 >
                   Forgot Password?
