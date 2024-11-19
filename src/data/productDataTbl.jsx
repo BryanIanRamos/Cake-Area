@@ -1,5 +1,7 @@
-// Export product data table
-export const productData = {
+import { saveToLocalStorage, loadFromLocalStorage } from './localStorage';
+
+// Load initial data from localStorage or use default data
+export let productData = loadFromLocalStorage('productData', {
   products: [
     // Sarah's Sweet Creations (bus_id: 1) Products
     {
@@ -8,9 +10,11 @@ export const productData = {
       description: "Light and fluffy vanilla cake with buttercream frosting",
       price: 499.99,
       rate: 4.8,
-      qty: 25,
+      // qty: 25,
+      views: 2450,
+      num_orders: 156,
       bus_id: 1,
-      cat_id: 1 // Cakes
+      cat_id: 1,
     },
     {
       prod_id: 2,
@@ -18,9 +22,11 @@ export const productData = {
       description: "Rich chocolate layers with dark chocolate ganache",
       price: 549.99,
       rate: 4.9,
-      qty: 20,
+      // qty: 20,
+      views: 2890,
+      num_orders: 178,
       bus_id: 1,
-      cat_id: 1 // Cakes
+      cat_id: 1,
     },
     {
       prod_id: 3,
@@ -28,9 +34,11 @@ export const productData = {
       description: "Traditional red velvet with cream cheese frosting",
       price: 599.99,
       rate: 4.2,
-      qty: 15,
+      // qty: 15,
+      views: 1980,
+      num_orders: 89,
       bus_id: 1,
-      cat_id: 1 // Cakes
+      cat_id: 1,
     },
     {
       prod_id: 4,
@@ -38,9 +46,11 @@ export const productData = {
       description: "Zesty lemon cake with fresh blueberries",
       price: 529.99,
       rate: 4.3,
-      qty: 18,
+      // qty: 18,
+      views: 1560,
+      num_orders: 95,
       bus_id: 1,
-      cat_id: 1 // Cakes
+      cat_id: 1,
     },
     {
       prod_id: 5,
@@ -48,19 +58,24 @@ export const productData = {
       description: "Spiced carrot cake with walnuts and cream cheese frosting",
       price: 479.99,
       rate: 4.7,
-      qty: 22,
+      // qty: 22,
+      views: 2150,
+      num_orders: 142,
       bus_id: 1,
-      cat_id: 1 // Cakes
+      cat_id: 1,
     },
     {
       prod_id: 6,
       prod_name: "Strawberry Shortcake Classic",
-      description: "Light vanilla cake with fresh strawberries and whipped cream",
+      description:
+        "Light vanilla cake with fresh strawberries and whipped cream",
       price: 459.99,
       rate: 4.4,
-      qty: 20,
+      // qty: 20,
+      views: 1890,
+      num_orders: 134,
       bus_id: 1,
-      cat_id: 1 // Cakes
+      cat_id: 1,
     },
     {
       prod_id: 7,
@@ -68,9 +83,11 @@ export const productData = {
       description: "Coffee-soaked layers with mascarpone cream",
       price: 599.99,
       rate: 4.9,
-      qty: 15,
+      // qty: 15,
+      views: 3120,
+      num_orders: 198,
       bus_id: 1,
-      cat_id: 10 // Specialty Desserts
+      cat_id: 10,
     },
     {
       prod_id: 8,
@@ -78,9 +95,11 @@ export const productData = {
       description: "Chocolate cake with cherries and whipped cream",
       price: 579.99,
       rate: 4.5,
-      qty: 12,
+      // qty: 12,
+      views: 2340,
+      num_orders: 145,
       bus_id: 1,
-      cat_id: 1 // Cakes
+      cat_id: 1,
     },
     {
       prod_id: 9,
@@ -88,9 +107,11 @@ export const productData = {
       description: "Coconut cake with coconut cream frosting",
       price: 489.99,
       rate: 4.1,
-      qty: 18,
+      // qty: 18,
+      views: 1670,
+      num_orders: 98,
       bus_id: 1,
-      cat_id: 1 // Cakes
+      cat_id: 1,
     },
     {
       prod_id: 10,
@@ -98,9 +119,11 @@ export const productData = {
       description: "Creamy cheesecake with Oreo cookie base",
       price: 559.99,
       rate: 4.8,
-      qty: 20,
+      // qty: 20,
+      views: 2780,
+      num_orders: 167,
       bus_id: 1,
-      cat_id: 10 // Specialty Desserts
+      cat_id: 10,
     },
     {
       prod_id: 11,
@@ -108,9 +131,11 @@ export const productData = {
       description: "Moist banana bread with crunchy walnuts",
       price: 299.99,
       rate: 4.3,
-      qty: 25,
+      // qty: 25,
+      views: 1450,
+      num_orders: 234,
       bus_id: 1,
-      cat_id: 2 // Bread
+      cat_id: 2,
     },
     {
       prod_id: 12,
@@ -118,9 +143,11 @@ export const productData = {
       description: "Classic cookies with premium chocolate chips",
       price: 199.99,
       rate: 4.7,
-      qty: 50,
+      // qty: 50,
+      views: 2890,
+      num_orders: 456,
       bus_id: 1,
-      cat_id: 4 // Cookies
+      cat_id: 4,
     },
     {
       prod_id: 13,
@@ -128,9 +155,11 @@ export const productData = {
       description: "Flaky pastry with seasonal fruits",
       price: 89.99,
       rate: 4.2,
-      qty: 30,
+      // qty: 30,
+      views: 1670,
+      num_orders: 289,
       bus_id: 1,
-      cat_id: 3 // Pastries
+      cat_id: 3,
     },
     {
       prod_id: 14,
@@ -138,9 +167,11 @@ export const productData = {
       description: "Soft rolls with cinnamon and cream cheese frosting",
       price: 129.99,
       rate: 4.8,
-      qty: 35,
+      // qty: 35,
+      views: 2450,
+      num_orders: 378,
       bus_id: 1,
-      cat_id: 9 // Rolls
+      cat_id: 9,
     },
     {
       prod_id: 15,
@@ -148,9 +179,11 @@ export const productData = {
       description: "Traditional apple pie with buttery crust",
       price: 399.99,
       rate: 4.4,
-      qty: 15,
+      // qty: 15,
+      views: 1890,
+      num_orders: 145,
       bus_id: 1,
-      cat_id: 5 // Pies
+      cat_id: 5,
     },
 
     // Lisa's Artisan Bakery (bus_id: 2) Products
@@ -160,9 +193,11 @@ export const productData = {
       description: "Traditional sourdough with perfect crust",
       price: 189.99,
       rate: 4.9,
-      qty: 30,
+      // qty: 30,
+      views: 3450,
+      num_orders: 567,
       bus_id: 2,
-      cat_id: 2 // Bread
+      cat_id: 2,
     },
     {
       prod_id: 17,
@@ -170,9 +205,11 @@ export const productData = {
       description: "Classic French baguette with crispy crust",
       price: 149.99,
       rate: 4.8,
-      qty: 40,
+      // qty: 40,
+      views: 2980,
+      num_orders: 678,
       bus_id: 2,
-      cat_id: 2 // Bread
+      cat_id: 2,
     },
     {
       prod_id: 18,
@@ -180,9 +217,11 @@ export const productData = {
       description: "Buttery layered French croissant",
       price: 79.99,
       rate: 4.7,
-      qty: 45,
+      // qty: 45,
+      views: 3120,
+      num_orders: 789,
       bus_id: 2,
-      cat_id: 3 // Pastries
+      cat_id: 3,
     },
     {
       prod_id: 19,
@@ -190,9 +229,11 @@ export const productData = {
       description: "Healthy whole wheat bread with seeds",
       price: 169.99,
       rate: 4.3,
-      qty: 25,
+      // qty: 25,
+      views: 2340,
+      num_orders: 432,
       bus_id: 2,
-      cat_id: 2 // Bread
+      cat_id: 2,
     },
     {
       prod_id: 20,
@@ -200,9 +241,11 @@ export const productData = {
       description: "Traditional rye bread with caraway seeds",
       price: 179.99,
       rate: 4.2,
-      qty: 20,
+      // qty: 20,
+      views: 1980,
+      num_orders: 345,
       bus_id: 2,
-      cat_id: 2 // Bread
+      cat_id: 2,
     },
     {
       prod_id: 21,
@@ -210,9 +253,11 @@ export const productData = {
       description: "Italian bread with soft interior and crispy crust",
       price: 159.99,
       rate: 4.4,
-      qty: 30,
+      // qty: 30,
+      views: 2150,
+      num_orders: 423,
       bus_id: 2,
-      cat_id: 2 // Bread
+      cat_id: 2,
     },
     {
       prod_id: 22,
@@ -220,9 +265,11 @@ export const productData = {
       description: "Soft muffins with chocolate chips",
       price: 99.99,
       rate: 4.3,
-      qty: 40,
+      // qty: 40,
+      views: 2670,
+      num_orders: 534,
       bus_id: 2,
-      cat_id: 3 // Pastries
+      cat_id: 3,
     },
     {
       prod_id: 23,
@@ -230,9 +277,11 @@ export const productData = {
       description: "Italian focaccia with herbs and olive oil",
       price: 169.99,
       rate: 4.8,
-      qty: 25,
+      // qty: 25,
+      views: 2890,
+      num_orders: 467,
       bus_id: 2,
-      cat_id: 2 // Bread
+      cat_id: 2,
     },
     {
       prod_id: 24,
@@ -240,9 +289,11 @@ export const productData = {
       description: "Rich and buttery French bread",
       price: 189.99,
       rate: 4.7,
-      qty: 20,
+      // qty: 20,
+      views: 2450,
+      num_orders: 389,
       bus_id: 2,
-      cat_id: 2 // Bread
+      cat_id: 2,
     },
     {
       prod_id: 25,
@@ -250,9 +301,11 @@ export const productData = {
       description: "Artisanal country-style bread",
       price: 199.99,
       rate: 4.1,
-      qty: 15,
+      // qty: 15,
+      views: 1890,
+      num_orders: 278,
       bus_id: 2,
-      cat_id: 2 // Bread
+      cat_id: 2,
     },
     {
       prod_id: 26,
@@ -260,9 +313,11 @@ export const productData = {
       description: "Twisted bread with chocolate filling",
       price: 249.99,
       rate: 4.9,
-      qty: 18,
+      // qty: 18,
+      views: 3120,
+      num_orders: 445,
       bus_id: 2,
-      cat_id: 2 // Bread
+      cat_id: 2,
     },
     {
       prod_id: 27,
@@ -270,9 +325,11 @@ export const productData = {
       description: "Twisted bread rolls with garlic butter",
       price: 129.99,
       rate: 4.2,
-      qty: 40,
+      // qty: 40,
+      views: 2230,
+      num_orders: 567,
       bus_id: 2,
-      cat_id: 9 // Rolls
+      cat_id: 9,
     },
     {
       prod_id: 28,
@@ -280,51 +337,60 @@ export const productData = {
       description: "Soft pretzel-style dinner rolls",
       price: 139.99,
       rate: 4.3,
-      qty: 35,
+      // qty: 35,
+      views: 2180,
+      num_orders: 489,
       bus_id: 2,
-      cat_id: 9 // Rolls
+      cat_id: 9,
     },
+    // Emma's French Patisserie (bus_id: 3) Products
     {
       prod_id: 29,
-      prod_name: "Challah Bread",
-      description: "Traditional braided Jewish bread",
-      price: 189.99,
+      prod_name: "Classic French Croissant",
+      description: "Buttery, flaky French pastry",
+      price: 89.99,
       rate: 4.8,
-      qty: 20,
-      bus_id: 2,
-      cat_id: 2 // Bread
+      // qty: 50,
+      views: 3450,
+      num_orders: 890,
+      bus_id: 3,
+      cat_id: 3,
     },
     {
       prod_id: 30,
-      prod_name: "Dinner Rolls",
-      description: "Classic soft dinner rolls",
+      prod_name: "Pain au Chocolat",
+      description: "Chocolate-filled croissant pastry",
       price: 99.99,
-      rate: 4.1,
-      qty: 50,
-      bus_id: 2,
-      cat_id: 9 // Rolls
+      rate: 4.9,
+      // qty: 45,
+      views: 3670,
+      num_orders: 923,
+      bus_id: 3,
+      cat_id: 3,
     },
-
-    // Peter's Pastry Paradise (bus_id: 3) Products
     {
       prod_id: 31,
-      prod_name: "Classic French Éclair",
-      description: "Choux pastry filled with cream and chocolate",
-      price: 129.99,
-      rate: 4.8,
-      qty: 40,
+      prod_name: "Fruit Danish Pastry",
+      description: "Flaky pastry with seasonal fruit filling",
+      price: 109.99,
+      rate: 4.5,
+      // qty: 40,
+      views: 2890,
+      num_orders: 678,
       bus_id: 3,
-      cat_id: 3 // Pastries
+      cat_id: 3,
     },
     {
       prod_id: 32,
-      prod_name: "Fruit Tart",
+      prod_name: "Fresh Fruit Tart",
       description: "Sweet pastry crust with custard and fresh fruits",
       price: 189.99,
       rate: 4.7,
-      qty: 25,
+      // qty: 25,
+      views: 2780,
+      num_orders: 456,
       bus_id: 3,
-      cat_id: 7 // Tarts
+      cat_id: 7,
     },
     {
       prod_id: 33,
@@ -332,9 +398,11 @@ export const productData = {
       description: "Rich chocolate mousse on chocolate sponge",
       price: 219.99,
       rate: 4.9,
-      qty: 20,
+      // qty: 20,
+      views: 3120,
+      num_orders: 345,
       bus_id: 3,
-      cat_id: 1 // Cakes
+      cat_id: 1,
     },
     {
       prod_id: 34,
@@ -342,9 +410,11 @@ export const productData = {
       description: "Light choux pastry with whipped cream",
       price: 99.99,
       rate: 4.2,
-      qty: 45,
+      // qty: 45,
+      views: 2450,
+      num_orders: 567,
       bus_id: 3,
-      cat_id: 3 // Pastries
+      cat_id: 3,
     },
     {
       prod_id: 35,
@@ -352,9 +422,11 @@ export const productData = {
       description: "Flaky croissant with almond filling",
       price: 119.99,
       rate: 4.8,
-      qty: 30,
+      // qty: 30,
+      views: 2980,
+      num_orders: 678,
       bus_id: 3,
-      cat_id: 3 // Pastries
+      cat_id: 3,
     },
     {
       prod_id: 36,
@@ -362,9 +434,11 @@ export const productData = {
       description: "Tangy lemon curd with fluffy meringue",
       price: 179.99,
       rate: 4.3,
-      qty: 22,
+      // qty: 22,
+      views: 2340,
+      num_orders: 432,
       bus_id: 3,
-      cat_id: 7 // Tarts
+      cat_id: 7,
     },
     {
       prod_id: 37,
@@ -372,9 +446,11 @@ export const productData = {
       description: "Rich chocolate ganache pastry",
       price: 159.99,
       rate: 4.7,
-      qty: 35,
+      // qty: 35,
+      views: 2670,
+      num_orders: 545,
       bus_id: 3,
-      cat_id: 7 // Tarts
+      cat_id: 7,
     },
     {
       prod_id: 38,
@@ -382,9 +458,11 @@ export const productData = {
       description: "Crispy puff pastry heart shapes",
       price: 89.99,
       rate: 4.1,
-      qty: 40,
+      // qty: 40,
+      views: 1980,
+      num_orders: 423,
       bus_id: 3,
-      cat_id: 3 // Pastries
+      cat_id: 3,
     },
     {
       prod_id: 39,
@@ -392,9 +470,11 @@ export const productData = {
       description: "Layered puff pastry with vanilla cream",
       price: 169.99,
       rate: 4.8,
-      qty: 18,
+      // qty: 18,
+      views: 2890,
+      num_orders: 467,
       bus_id: 3,
-      cat_id: 3 // Pastries
+      cat_id: 3,
     },
     {
       prod_id: 40,
@@ -402,9 +482,11 @@ export const productData = {
       description: "French almond meringue cookies",
       price: 129.99,
       rate: 4.9,
-      qty: 50,
+      // qty: 50,
+      views: 3450,
+      num_orders: 890,
       bus_id: 3,
-      cat_id: 4 // Cookies
+      cat_id: 4,
     },
     {
       prod_id: 41,
@@ -412,9 +494,11 @@ export const productData = {
       description: "Flaky pastry with various fillings",
       price: 109.99,
       rate: 4.2,
-      qty: 35,
+      // qty: 35,
+      views: 2230,
+      num_orders: 445,
       bus_id: 3,
-      cat_id: 3 // Pastries
+      cat_id: 3,
     },
     {
       prod_id: 42,
@@ -422,9 +506,11 @@ export const productData = {
       description: "Choux pastry with chocolate sauce",
       price: 139.99,
       rate: 4.4,
-      qty: 30,
+      // qty: 30,
+      views: 2450,
+      num_orders: 534,
       bus_id: 3,
-      cat_id: 3 // Pastries
+      cat_id: 3,
     },
     {
       prod_id: 43,
@@ -432,9 +518,11 @@ export const productData = {
       description: "Layered phyllo with nuts and honey",
       price: 189.99,
       rate: 4.8,
-      qty: 25,
+      // qty: 25,
+      views: 2780,
+      num_orders: 456,
       bus_id: 3,
-      cat_id: 10 // Specialty Desserts
+      cat_id: 10,
     },
     {
       prod_id: 44,
@@ -442,9 +530,11 @@ export const productData = {
       description: "Crispy tubes with sweet ricotta filling",
       price: 149.99,
       rate: 4.3,
-      qty: 28,
+      // qty: 28,
+      views: 2340,
+      num_orders: 389,
       bus_id: 3,
-      cat_id: 10 // Specialty Desserts
+      cat_id: 10,
     },
     {
       prod_id: 45,
@@ -452,9 +542,11 @@ export const productData = {
       description: "Layered almond sponge cake with coffee",
       price: 219.99,
       rate: 4.9,
-      qty: 15,
+      // qty: 15,
+      views: 3120,
+      num_orders: 278,
       bus_id: 3,
-      cat_id: 1 // Cakes
+      cat_id: 1,
     },
     {
       prod_id: 46,
@@ -462,9 +554,11 @@ export const productData = {
       description: "Ring-shaped choux with praline cream",
       price: 199.99,
       rate: 4.7,
-      qty: 20,
+      // qty: 20,
+      views: 2670,
+      num_orders: 345,
       bus_id: 3,
-      cat_id: 3 // Pastries
+      cat_id: 3,
     },
     {
       prod_id: 47,
@@ -472,9 +566,30 @@ export const productData = {
       description: "Double-decker choux pastry",
       price: 169.99,
       rate: 4.2,
-      qty: 22,
+      // qty: 22,
+      views: 2180,
+      num_orders: 312,
       bus_id: 3,
-      cat_id: 3 // Pastries
-    }
+      cat_id: 3,
+    },
   ]
+});
+
+export const updateProductData = (updatedProduct) => {
+  const index = productData.products.findIndex(p => p.prod_id === updatedProduct.prod_id);
+  if (index !== -1) {
+    productData.products[index] = updatedProduct;
+    // Save to localStorage after update
+    saveToLocalStorage('productData', productData);
+  }
+};
+
+export const addProduct = (newProduct) => {
+  productData.products.push(newProduct);
+  saveToLocalStorage('productData', productData);
+};
+
+export const deleteProduct = (productId) => {
+  productData.products = productData.products.filter(p => p.prod_id !== productId);
+  saveToLocalStorage('productData', productData);
 };
