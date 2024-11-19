@@ -168,12 +168,19 @@ const Cart = () => {
   const handleConfirmCheckout = (receiveDate) => {
     const selectedOrders = cartItems.filter(item => 
       selectedItems.includes(item.order_id)
-    ).map(item => ({
-      ...item,
-      status: "Processing",
-      checkoutDate: new Date().toISOString(),
-      receiveDate: receiveDate.toISOString()
-    }));
+    ).map(item => {
+      const totalAmount = item.overall_pay || item.product.price * (item.qty || 1);
+      return {
+        ...item,
+        status: "Processing",
+        checkoutDate: new Date().toISOString(),
+        receiveDate: receiveDate.toISOString(),
+        totalAmount: totalAmount,
+        downPayment: totalAmount * 0.5,
+        remainingPayment: totalAmount * 0.5,
+        paymentStatus: "Partial - Down Payment Received"
+      };
+    });
 
     // Add to processing orders
     setProcessingOrders(prev => [...prev, ...selectedOrders]);
@@ -186,7 +193,7 @@ const Cart = () => {
     setSelectedItems([]);
     setCheckOutConfirm(false);
     
-    toast.success("Orders have been placed successfully!");
+    toast.success("Down payment received! Order has been placed successfully!");
     navigate('/cart/in-process');
   };
 
@@ -227,11 +234,12 @@ const Cart = () => {
   }, [cartItems]);
 
   return (
-    <div className="flex flex-col justify-center gap-8">
+    <div className="min-h-screen flex flex-col">
       <Toaster richColors closeButton position="top-center" />
       <CartHeader />
       
-      <div className="flex flex-col px-4 md:px-8 lg:px-12 xl:px-32 2xl:px-72 justify-between gap-4">
+      {/* Main content area */}
+      <div className="flex-1 px-4 md:px-8 lg:px-12 xl:px-32 2xl:px-72 mb-24"> {/* Added mb-24 for CartSummary space */}
         {checkOutConfirm && (
           <OrderConfirmation 
             isOpen={checkOutConfirm}
@@ -265,7 +273,7 @@ const Cart = () => {
           <Route
             path="/"
             element={
-              <div className="flex flex-col gap-4 pb-20">
+              <div className="flex flex-col gap-4 pb-20 relative z-0">
                 {isLoading ? (
                   <div className="text-center py-8">
                     <p>Loading cart items...</p>
@@ -298,7 +306,7 @@ const Cart = () => {
           <Route
             path="/in-process"
             element={
-              <div className="flex flex-col gap-4 pb-20">
+              <div className="flex flex-col gap-4 mt-4">
                 {processingOrders.length === 0 ? (
                   <div className="text-center py-8">
                     <p>No orders in process</p>
@@ -311,7 +319,14 @@ const Cart = () => {
                   </div>
                 ) : (
                   processingOrders.map((order, index) => (
-                    <div key={index} className="border rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow">
+                    <div 
+                      key={index} 
+                      className="border rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                      onClick={() => {
+                        console.log('Card clicked:', order);
+                        // Add your click handler here
+                      }}
+                    >
                       <div className="flex justify-between mb-4 pb-2 border-b">
                         <div className="flex flex-col">
                           <h3 className="font-semibold text-lg">Order #{order.order_id}</h3>
@@ -369,11 +384,14 @@ const Cart = () => {
         </Routes>
       </div>
 
-      <CartSummary
-        totalAmount={totalAmount}
-        itemCount={selectedItems.length}
-        onCheckout={handleCheckout}
-      />
+      {/* CartSummary at the bottom */}
+      <div className="fixed bottom-0 left-0 right-0">
+        <CartSummary
+          totalAmount={totalAmount}
+          itemCount={selectedItems.length}
+          onCheckout={handleCheckout}
+        />
+      </div>
     </div>
   );
 };
