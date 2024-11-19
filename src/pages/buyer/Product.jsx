@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Navbar from "../../components/buyer/Navbar";
@@ -116,9 +116,6 @@ const Product = () => {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    document
-      .getElementById("comments-section")
-      .scrollIntoView({ behavior: "smooth" });
   };
 
   const handleFilterChange = (filter) => {
@@ -134,6 +131,17 @@ const Product = () => {
   const handleImageClick = (index) => {
     setSelectedImageIndex(index);
   };
+
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`);
+    window.scrollTo(0, 0);
+  };
+
+  const recommendedProducts = useMemo(() => {
+    return productData.products
+      .filter(p => p.bus_id === product.bus_id && p.prod_id !== product.prod_id)
+      .slice(0, 4); // Show up to 4 recommended products
+  }, [product.bus_id, product.prod_id]);
 
   return (
     <div className="flex flex-col items-center justify-start h-full w-full px-4 py-6 md:px-10 md:py-8">
@@ -274,7 +282,23 @@ const Product = () => {
         <div className="w-full bg-white max-w-6xl h-[210px] mx-auto p-4 rounded-lg shadow-md">
           <h3 className="text-xl font-semibold mb-4">Recommend</h3>
           <div className="flex gap-4 overflow-x-auto pb-4">
-            {/* Add recommended products here */}
+            {recommendedProducts.map((recommendedProduct) => (
+              <div 
+                key={recommendedProduct.prod_id}
+                onClick={() => handleProductClick(recommendedProduct.prod_id)}
+                className="cursor-pointer transform transition-transform duration-200 hover:scale-105"
+              >
+                <ProductCard
+                  productId={recommendedProduct.prod_id}
+                  name={recommendedProduct.prod_name}
+                  price={recommendedProduct.price}
+                  image={imagesData.images.find(
+                    img => img.prod_id === recommendedProduct.prod_id
+                  )?.link || CakeSample}
+                  className="min-w-[200px]"
+                />
+              </div>
+            ))}
           </div>
         </div>
 

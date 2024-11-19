@@ -11,7 +11,7 @@ const LoginModal = ({ isOpen, closeModal, onLogin }) => {
   const handleForgotPassword = (e) => {
     e.preventDefault();
     closeModal();
-    navigate('/forgot-password');
+    navigate("/forgot-password");
   };
 
   const handleSubmit = (e) => {
@@ -59,7 +59,7 @@ const LoginModal = ({ isOpen, closeModal, onLogin }) => {
                 <label className="flex items-center gap-2">
                   <input type="checkbox" /> Remember me
                 </label>
-                <button 
+                <button
                   type="button"
                   onClick={handleForgotPassword}
                   className="text-primary hover:underline"
@@ -97,4 +97,4 @@ LoginModal.propTypes = {
   onLogin: PropTypes.func.isRequired,
 };
 
-export default LoginModal; 
+export default LoginModal;

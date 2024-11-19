@@ -54,12 +54,12 @@ function App() {
         />
 
         {/* Baker's Route - Update these paths */}
+        <Route path="/baker/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/orders" element={<Orders />} />
         <Route path="/dashboard/products" element={<Products />} />
         <Route path="/dashboard/reviews" element={<Reviews />} />
         <Route path="/dashboard/settings" element={<Settings />} />
-        <Route path="/register" element={<Register />} />
         <Route path="/dashboard/statistics" element={<Statistics />} />
 
         {/* Admin Routes */}

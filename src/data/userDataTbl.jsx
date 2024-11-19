@@ -7,7 +7,7 @@ export const userData = {
       password: "hashedPassword123", // In real app, passwords should be properly hashed
       created_at: "2024-01-15",
       role: 1, // 1: Admin, 2: Baker, 3: Customer
-      is_Login: false
+      is_Login: false,
     },
     {
       user_id: 2,
@@ -15,7 +15,7 @@ export const userData = {
       password: "hashedPassword456",
       created_at: "2024-01-20",
       role: 2,
-      is_Login: true
+      is_Login: false,
     },
     {
       user_id: 3,
@@ -23,7 +23,7 @@ export const userData = {
       password: "hashedPassword789",
       created_at: "2024-02-01",
       role: 3,
-      is_Login: false
+      is_Login: false,
     },
     {
       user_id: 4,
@@ -31,7 +31,7 @@ export const userData = {
       password: "hashedPasswordABC",
       created_at: "2024-02-15",
       role: 3,
-      is_Login: true
+      is_Login: true,
     },
     {
       user_id: 5,
@@ -39,7 +39,7 @@ export const userData = {
       password: "hashedPasswordDEF",
       created_at: "2024-02-28",
       role: 1,
-      is_Login: true
+      is_Login: true,
     },
     {
       user_id: 6,
@@ -47,7 +47,7 @@ export const userData = {
       password: "hashedPasswordGHI",
       created_at: "2024-03-05",
       role: 2,
-      is_Login: false
+      is_Login: false,
     },
     {
       user_id: 7,
@@ -55,7 +55,7 @@ export const userData = {
       password: "hashedPasswordJKL",
       created_at: "2024-03-10",
       role: 3,
-      is_Login: true
+      is_Login: true,
     },
     {
       user_id: 8,
@@ -63,7 +63,7 @@ export const userData = {
       password: "hashedPasswordMNO",
       created_at: "2024-03-15",
       role: 3,
-      is_Login: false
+      is_Login: false,
     },
     {
       user_id: 9,
@@ -71,7 +71,7 @@ export const userData = {
       password: "hashedPasswordPQR",
       created_at: "2024-03-20",
       role: 2,
-      is_Login: true
+      is_Login: true,
     },
     {
       user_id: 10,
@@ -79,9 +79,9 @@ export const userData = {
       password: "hashedPasswordSTU",
       created_at: "2024-03-25",
       role: 1,
-      is_Login: true
-    }
-  ]
+      is_Login: true,
+    },
+  ],
 };
 
 // Export orders data table
@@ -96,7 +96,7 @@ export const ordersData = {
       overall_pay: 999.98, // price * qty
       prod_id: 1, // Classic Vanilla Cake
       user_id: 3,
-      bus_id: 1 // Sarah's Sweet Creations
+      bus_id: 1, // Sarah's Sweet Creations
     },
     {
       order_id: 2,
@@ -106,7 +106,7 @@ export const ordersData = {
       overall_pay: 599.99,
       prod_id: 3, // Red Velvet Delight
       user_id: 3,
-      bus_id: 1
+      bus_id: 1,
     },
     {
       order_id: 3,
@@ -116,7 +116,7 @@ export const ordersData = {
       overall_pay: 539.94,
       prod_id: 41, // Danish Pastry
       user_id: 3,
-      bus_id: 3 // Peter's Pastry Paradise
+      bus_id: 3, // Peter's Pastry Paradise
     },
 
     // Orders for Emma Wilson (user_id: 4)
@@ -128,7 +128,7 @@ export const ordersData = {
       overall_pay: 1099.98,
       prod_id: 2, // Chocolate Dream Cake
       user_id: 4,
-      bus_id: 1
+      bus_id: 1,
     },
     {
       order_id: 5,
@@ -138,7 +138,7 @@ export const ordersData = {
       overall_pay: 379.98,
       prod_id: 16, // Sourdough Bread
       user_id: 4,
-      bus_id: 2
+      bus_id: 2,
     },
     {
       order_id: 6,
@@ -148,7 +148,7 @@ export const ordersData = {
       overall_pay: 519.96,
       prod_id: 38, // Palmier
       user_id: 4,
-      bus_id: 3
+      bus_id: 3,
     },
     {
       order_id: 7,
@@ -158,7 +158,7 @@ export const ordersData = {
       overall_pay: 339.98,
       prod_id: 39, // Mille-feuille
       user_id: 4,
-      bus_id: 3
+      bus_id: 3,
     },
 
     // Orders for Tom Smith (user_id: 7)
@@ -170,7 +170,7 @@ export const ordersData = {
       overall_pay: 479.99,
       prod_id: 5, // Carrot Cake Supreme
       user_id: 7,
-      bus_id: 1
+      bus_id: 1,
     },
     {
       order_id: 9,
@@ -180,7 +180,7 @@ export const ordersData = {
       overall_pay: 399.98,
       prod_id: 20, // Rye Bread
       user_id: 7,
-      bus_id: 2
+      bus_id: 2,
     },
     {
       order_id: 10,
@@ -190,7 +190,7 @@ export const ordersData = {
       overall_pay: 389.94,
       prod_id: 44, // Cannoli
       user_id: 7,
-      bus_id: 3
+      bus_id: 3,
     },
 
     // Orders for Anna Jones (user_id: 8)
@@ -202,7 +202,7 @@ export const ordersData = {
       overall_pay: 459.99,
       prod_id: 6, // Strawberry Shortcake
       user_id: 8,
-      bus_id: 1
+      bus_id: 1,
     },
     {
       order_id: 12,
@@ -212,7 +212,7 @@ export const ordersData = {
       overall_pay: 439.98,
       prod_id: 24, // Brioche
       user_id: 8,
-      bus_id: 2
+      bus_id: 2,
     },
     {
       order_id: 13,
@@ -222,7 +222,7 @@ export const ordersData = {
       overall_pay: 389.94,
       prod_id: 34, // Cream Puff
       user_id: 8,
-      bus_id: 3
+      bus_id: 3,
     },
     {
       order_id: 14,
@@ -232,7 +232,7 @@ export const ordersData = {
       overall_pay: 219.99,
       prod_id: 45, // Opera Cake
       user_id: 8,
-      bus_id: 3
-    }
-  ]
+      bus_id: 3,
+    },
+  ],
 };

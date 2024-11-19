@@ -58,7 +58,7 @@ const MainPage = () => {
       setIsLoggedIn(true);
       // Set username as full name from profile
       setUserName(
-        userProfile 
+        userProfile
           ? `${userProfile.first_name} ${userProfile.last_name}`
           : user.email
       );
