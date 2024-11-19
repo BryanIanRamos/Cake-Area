@@ -1,73 +1,64 @@
 import React, { useState } from 'react';
-import { Icon } from "@iconify/react";
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
-function OrderConfirmation({ closeModal, totalAmount, onConfirm }) {
-  const [receiveDate, setReceiveDate] = useState('');
+const OrderConfirmation = ({ isOpen, closeModal, totalAmount, selectedItems, onConfirm }) => {
+  const [receiveDate, setReceiveDate] = useState(null);
 
-  const handleConfirm = () => {
-    if (receiveDate) {
-      onConfirm(receiveDate);
-    } else {
-      toast.error("Please select a receive date.");
-    }
-  };
+  if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="border w-[73vw] sm:w-[53vw] md:w-[43vw] lg:w-[35vw] h-fit p-4 sm:p-5 md:p-6 lg:p-7 bg-white">
-        <div className="border-[3px] border-primary h-full p-2 md:p-3 lg:p-4 relative">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 max-w-md w-full">
+        <h2 className="text-2xl font-semibold mb-4">Confirm Order</h2>
+        
+        <div className="mb-4">
+          <h3 className="font-semibold mb-2">Selected Items:</h3>
+          {selectedItems?.map((item, index) => (
+            <div key={index} className="flex justify-between mb-2">
+              <span>{item?.product?.prod_name || 'Unknown Product'}</span>
+              <span>₱{item?.overall_pay?.toFixed(2) || '0.00'}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="mb-4">
+          <h3 className="font-semibold mb-2">Select Receive Date:</h3>
+          <DatePicker
+            selected={receiveDate}
+            onChange={date => setReceiveDate(date)}
+            minDate={new Date()}
+            className="w-full border rounded-lg p-2"
+            placeholderText="Select date"
+            required
+          />
+        </div>
+
+        <div className="flex justify-between items-center mb-4">
+          <span className="font-semibold">Total Amount:</span>
+          <span className="text-xl font-bold">₱{totalAmount.toFixed(2)}</span>
+        </div>
+
+        <div className="flex gap-4">
           <button
-            className="absolute right-1 md:right-2 lg:right-3 top-1 md:top-2 lg:top-3 text-[3.6vw] sm:text-[3vh] md:text-[2.6vw] lg:text-[1.6vw] text-primary hover:text-red-400"
             onClick={closeModal}
-            aria-label="Close modal"
+            className="flex-1 py-2 border rounded-lg hover:bg-gray-100"
           >
-            <Icon icon="icon-park-solid:close-one" />
+            Cancel
           </button>
-          <div className="mb-6 flex flex-col items-center">
-            <h2 className="text-primary font-bold text-[18px] sm:text-[1.6rem] 2xl:text-[2rem]">
-              Confirm Order
-            </h2>
-            <p className="text-gray-600 text-[12px] sm:text-[14px] lg:text-[16px]">
-              Do you want to checkout?
-            </p>
-          </div>
-          <p className="text-center text-gray-500 text-[12px] sm:text-[14px] lg:text-[16px]">
-            Total amount: <span className='font-bold text-2xl'>₱{totalAmount}.00</span>
-          </p>
-
-          {/* Receive Date Picker */}
-          <div className="mt-4">
-            <label htmlFor="receive-date" className="block text-gray-700 text-sm font-bold mb-2">
-              Select Receive Date:
-            </label>
-            <input
-              type="date"
-              id="receive-date"
-              value={receiveDate}
-              onChange={(e) => setReceiveDate(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-          </div>
-
-          <div className='flex gap-2 mt-5'>
-            <button
-              type="button"
-              className="w-full bg-primary text-white py-2 rounded hover:bg-primary/90 text-[2vw] sm:text-[1.5vw] lg:text-[1vw]"
-              onClick={handleConfirm} // Handle confirmation with receiveDate
-            >
-              Confirm
-            </button>
-            <button
-              onClick={closeModal}
-              className="w-full bg-gray-300 text-gray-600 py-2 rounded hover:bg-gray-200 text-[2vw] sm:text-[1.5vw] lg:text-[1vw]"
-            >
-              Cancel
-            </button>
-          </div>
+          <button
+            onClick={() => onConfirm(receiveDate)}
+            disabled={!receiveDate}
+            className={`flex-1 py-2 rounded-lg text-white ${
+              receiveDate ? 'bg-primary hover:bg-primary-dark' : 'bg-gray-400'
+            }`}
+          >
+            Confirm Order
+          </button>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default OrderConfirmation;

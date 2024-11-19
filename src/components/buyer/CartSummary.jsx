@@ -1,73 +1,106 @@
 import React, { useState } from "react";
-import { LuArrowUpDown } from "react-icons/lu";
-import OrderConfirmation from "./modals/OrderConfirmation";
+import { FiChevronUp, FiChevronDown } from "react-icons/fi";
 
-const CartSummary = ({ totalAmount = 0, totalQuantity = 0, onRemoveSelected, onCheckout }) => {
-  const [isVisible, setIsVisible] = useState(true);
-
-
-  console.log("Total Quantity: ", totalQuantity);
-  console.log("Total Amount: ", totalAmount);
+const CartSummary = ({ totalAmount, itemCount, onCheckout }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="fixed bottom-0 w-full">
-      <div
-        className={`transform transition-all duration-300 ease-in-out ${
-          isVisible ? "translate-y-0" : "translate-y-full"
-        }`}
-      >
+    <div className="fixed bottom-0 left-0 right-0">
+      <div className="bg-white border-t shadow-lg">
         {/* Toggle Button */}
-        <button
-          onClick={() => setIsVisible(!isVisible)}
-          className="absolute -top-9 right-4 md:right-40 bg-secondary px-8 py-2 rounded-t-lg hover:bg-secondary/90 transition-all duration-300 cursor-pointer flex items-center gap-2"
-        >
-          <span className="text-white text-sm">Summary ({totalQuantity} items)</span>
-          <LuArrowUpDown
-            className={`text-white transform transition-transform duration-300 ${
-              isVisible ? "rotate-0" : "rotate-180"
-            }`}
-            size={20}
-          />
-        </button>
+        <div className="flex justify-end">
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="flex items-center justify-center w-12 h-8 bg-white rounded-t-lg border border-b-0 border-gray-200 -mt-8 transition-transform duration-300 hover:bg-gray-50"
+          >
+            {isExpanded ? <FiChevronDown size={20} /> : <FiChevronUp size={20} />}
+          </button>
+        </div>
 
-        {/* Summary Content */}
-        <div className="bg-secondary w-full">
-          <div className="px-4 md:px-40 py-3">
-            <p className="text-xs md:text-sm lg:text-base text-white">
-              Before you check out, please double-check your order details.
-            </p>
-            {/* Add Total Items Row */}
-            <div className="flex justify-between items-center mt-2">
-              <span className="text-sm md:text-base text-white">
-                Total Items: {totalQuantity}
-              </span>
+        {/* Content Container */}
+        <div className="max-w-7xl mx-auto px-4">
+          {/* Main Summary Row (Always Visible) */}
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center gap-4">
+              <span className="text-gray-500">Selected: {itemCount} items</span>
+              <span className="font-semibold text-lg">₱{totalAmount.toFixed(2)}</span>
             </div>
-            <div className="flex flex-row justify-between items-center my-1 md:my-2">
-              <span className="font-bold text-md sm:text-lg md:text-xl lg:text-2xl text-white">
-                Total Down Payment: ₱{Number(totalAmount).toFixed(2)}
-              </span>
-              <div className="flex space-x-2">
-                {/* Attach the handler to the Remove button */}
-                <button 
-                  onClick={onRemoveSelected} 
-                  className="mr-3 text-xs md:text-base text-white rounded-lg hover:text-gray-200 transition-colors"
-                >
-                  Remove
-                </button>
-                <button 
-                  className="px-2 md:px-4 py-2 md:py-2.5 text-xs md:text-base bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+            <button
+              onClick={onCheckout}
+              disabled={itemCount === 0}
+              className={`px-8 py-2 rounded-lg font-semibold transition-colors ${
+                itemCount === 0
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-primary text-white hover:bg-primary-dark'
+              }`}
+            >
+              Checkout
+            </button>
+          </div>
+
+          {/* Expandable Content */}
+          <div 
+            className={`
+              overflow-hidden transition-all duration-300 ease-in-out
+              ${isExpanded ? 'max-h-[400px] opacity-100' : 'max-h-0 opacity-0'}
+            `}
+          >
+            <div className="py-4 space-y-4 border-t">
+              {/* Order Summary */}
+              <div className="space-y-2">
+                <h3 className="font-semibold text-lg">Order Summary</h3>
+                <div className="flex justify-between text-gray-600">
+                  <span>Items Subtotal:</span>
+                  <span>₱{totalAmount.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-gray-600">
+                  <span>Delivery Fee:</span>
+                  <span>₱0.00</span>
+                </div>
+                <div className="flex justify-between text-gray-600">
+                  <span>Service Fee:</span>
+                  <span>₱0.00</span>
+                </div>
+                <div className="flex justify-between font-semibold text-lg pt-2 border-t">
+                  <span>Total Payment:</span>
+                  <span className="text-primary">₱{totalAmount.toFixed(2)}</span>
+                </div>
+              </div>
+
+              {/* Payment Methods */}
+              <div className="space-y-2">
+                <h3 className="font-semibold text-lg">Payment Method</h3>
+                <div className="flex flex-wrap gap-2">
+                  <button className="px-4 py-2 border rounded-lg hover:border-primary hover:text-primary transition-colors">
+                    Cash on Delivery
+                  </button>
+                  <button className="px-4 py-2 border rounded-lg hover:border-primary hover:text-primary transition-colors">
+                    GCash
+                  </button>
+                  <button className="px-4 py-2 border rounded-lg hover:border-primary hover:text-primary transition-colors">
+                    Credit Card
+                  </button>
+                </div>
+              </div>
+
+              {/* Checkout Button */}
+              <div className="pt-4">
+                <button
                   onClick={onCheckout}
+                  disabled={itemCount === 0}
+                  className={`w-full py-3 rounded-lg font-semibold transition-colors ${
+                    itemCount === 0
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-primary text-white hover:bg-primary-dark'
+                  }`}
                 >
-                  Check Out
+                  Checkout ({itemCount} items)
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Static button */}
-      {/* ... (Optional: If you plan to use it in the future) */}
     </div>
   );
 };
