@@ -59,9 +59,9 @@ const StoreOrderCard = ({ storeData, selectedItems, onSelectItem, onSelectAll, o
           </Link>
         </div>
         <div className="flex items-center gap-2 text-sm text-gray-500">
-          <span>⭐ {business.store_rating}</span>
+          <span>⭐ {business.rating || business.store_rating || "0.0"}</span>
           <span>|</span>
-          <span>{business.total_sold} sold</span>
+          <span>{business.total_sold || 0} sold</span>
         </div>
       </div>
 
