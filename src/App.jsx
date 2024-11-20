@@ -64,7 +64,7 @@ function App() {
 
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/accounts" element={<AccountsMonitoring />} />
         <Route path="/admin/refunds" element={<RefundRequests />} />
         <Route path="/admin/verification" element={<BusinessVerification />} />
