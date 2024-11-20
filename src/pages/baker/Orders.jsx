@@ -17,8 +17,11 @@ const Orders = () => {
   const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
   const [selectedOrderForAccept, setSelectedOrderForAccept] = useState(null);
   const [orders, setOrders] = useState(ordersData);
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: "success"
+  });
 
   // Filter orders based on active tab and search query
   const filteredOrders = orders.filter((order) => {
@@ -88,9 +91,12 @@ const Orders = () => {
       // Close the modal
       setIsAcceptModalOpen(false);
       
-      // Show toast notification
-      setToastMessage("Order successfully accepted and moved to Processing!");
-      setShowToast(true);
+      // Show toast notification using the toast object
+      setToast({
+        show: true,
+        message: `Order ${orderId} has been accepted successfully!`,
+        type: "success"
+      });
       
       // Switch to Processing tab
       setActiveTab("processing");
@@ -315,11 +321,14 @@ const Orders = () => {
         onAccept={handleAcceptConfirm}
       />
 
-      <Toast
-        show={showToast}
-        onClose={() => setShowToast(false)}
-        message={toastMessage}
-      />
+      {/* Toast notification */}
+      {toast.show && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({ ...toast, show: false })}
+        />
+      )}
     </div>
   );
 };
