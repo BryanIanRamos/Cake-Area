@@ -49,7 +49,7 @@ export const ordersData = loadFromLocalStorage("ordersData", [
     paymentStatus: "",
   },
   {
-    order_id: "ORD001",
+    order_id: "ORD021",
     customer_id: 3,
     customer_name: "Angelo Galope",
     business_id: 1,

@@ -4,6 +4,9 @@ import { ordersData, updateOrder } from "../../data/orderDataTbl";
 import ProductModal from "../../components/baker/ProductModal";
 import AcceptOrderModal from "../../components/baker/AcceptOrderModal";
 import Toast from "../../components/baker/Toast";
+import MarkAsDoneModal from "../../components/baker/MarkAsDoneModal";
+import MarkAsDeliveredModal from "../../components/baker/MarkAsDeliveredModal";
+import { saveToLocalStorage, loadFromLocalStorage } from "../../data/localStorage";
 
 const Orders = () => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
@@ -22,6 +25,10 @@ const Orders = () => {
     message: "",
     type: "success"
   });
+  const [isMarkAsDoneModalOpen, setIsMarkAsDoneModalOpen] = useState(false);
+  const [isMarkAsDeliveredModalOpen, setIsMarkAsDeliveredModalOpen] = useState(false);
+  const [selectedOrderForDone, setSelectedOrderForDone] = useState(null);
+  const [selectedOrderForDelivered, setSelectedOrderForDelivered] = useState(null);
 
   // Filter orders based on active tab and search query
   const filteredOrders = orders.filter((order) => {
@@ -103,9 +110,74 @@ const Orders = () => {
     }
   };
 
-  const handleMarkAsDone = (orderId) => {
-    // Implement mark as done logic here
-    console.log(`Mark order ${orderId} as done`);
+  const handleMarkAsDone = (order) => {
+    setSelectedOrderForDone(order);
+    setIsMarkAsDoneModalOpen(true);
+  };
+
+  const handleMarkAsDoneConfirm = (orderId) => {
+    const orderToUpdate = orders.find(order => order.order_id === orderId);
+    if (orderToUpdate) {
+      const updatedOrder = {
+        ...orderToUpdate,
+        status: "To Receive",
+        updated_at: new Date().toISOString()
+      };
+      
+      // Update in localStorage
+      updateOrder(updatedOrder);
+      
+      // Update local state
+      setOrders(prevOrders => 
+        prevOrders.map(order => 
+          order.order_id === orderId ? updatedOrder : order
+        )
+      );
+      
+      setIsMarkAsDoneModalOpen(false);
+      setToast({
+        show: true,
+        message: `Order ${orderId} has been marked as done!`,
+        type: "success"
+      });
+      
+      setActiveTab("to receive");
+    }
+  };
+
+  const handleMarkAsDelivered = (order) => {
+    setSelectedOrderForDelivered(order);
+    setIsMarkAsDeliveredModalOpen(true);
+  };
+
+  const handleMarkAsDeliveredConfirm = (orderId) => {
+    const orderToUpdate = orders.find(order => order.order_id === orderId);
+    if (orderToUpdate) {
+      const updatedOrder = {
+        ...orderToUpdate,
+        status: "Completed",
+        updated_at: new Date().toISOString()
+      };
+      
+      // Update in localStorage
+      updateOrder(updatedOrder);
+      
+      // Update local state
+      setOrders(prevOrders => 
+        prevOrders.map(order => 
+          order.order_id === orderId ? updatedOrder : order
+        )
+      );
+      
+      setIsMarkAsDeliveredModalOpen(false);
+      setToast({
+        show: true,
+        message: `Order ${orderId} has been marked as delivered!`,
+        type: "success"
+      });
+      
+      setActiveTab("completed");
+    }
   };
 
   const handleReview = (orderId) => {
@@ -135,17 +207,17 @@ const Orders = () => {
         {status === "Processing" && (
           <button
             className="text-yellow-600 hover:text-yellow-800"
-            onClick={() => handleMarkAsDone(order.order_id)}
+            onClick={() => handleMarkAsDone(order)}
           >
             Mark as Done
           </button>
         )}
-        {status === "Completed" && (
+        {status === "To Receive" && (
           <button
-            className="text-purple-600 hover:text-purple-800"
-            onClick={() => handleReview(order.order_id)}
+            className="text-green-600 hover:text-green-800"
+            onClick={() => handleMarkAsDelivered(order)}
           >
-            Review
+            Mark as Delivered
           </button>
         )}
       </div>
@@ -319,6 +391,20 @@ const Orders = () => {
         onClose={() => setIsAcceptModalOpen(false)}
         order={selectedOrderForAccept}
         onAccept={handleAcceptConfirm}
+      />
+
+      <MarkAsDoneModal
+        isOpen={isMarkAsDoneModalOpen}
+        onClose={() => setIsMarkAsDoneModalOpen(false)}
+        order={selectedOrderForDone}
+        onMarkAsDone={handleMarkAsDoneConfirm}
+      />
+
+      <MarkAsDeliveredModal
+        isOpen={isMarkAsDeliveredModalOpen}
+        onClose={() => setIsMarkAsDeliveredModalOpen(false)}
+        order={selectedOrderForDelivered}
+        onMarkAsDelivered={handleMarkAsDeliveredConfirm}
       />
 
       {/* Toast notification */}
