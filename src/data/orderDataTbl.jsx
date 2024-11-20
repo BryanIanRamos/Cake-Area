@@ -51,7 +51,7 @@ export const ordersData = loadFromLocalStorage("ordersData", [
   {
     order_id: "ORD001",
     customer_id: 3,
-    customer_name: "Mike Customer",
+    customer_name: "Angelo Galope",
     business_id: 1,
     business: {
       bus_id: 2,
@@ -83,7 +83,7 @@ export const ordersData = loadFromLocalStorage("ordersData", [
   {
     order_id: "ORD003",
     customer_id: 4,
-    customer_name: "Emma Wilson",
+    customer_name: "Angelo Galope",
     business_id: 2,
     business: {
       bus_id: 2,

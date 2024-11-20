@@ -1,24 +1,10 @@
 import React from 'react';
 
 const AcceptOrderModal = ({ isOpen, onClose, order, onAccept }) => {
-  if (!isOpen) return null;
+  if (!isOpen || !order) return null;
 
   const handleAccept = () => {
-    // Confirm before accepting
-    if (window.confirm('Are you sure you want to accept this order?')) {
-      onAccept(order.order_id);
-    }
-  };
-
-  // Format date for display
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    onAccept(order.order_id);
   };
 
   return (
@@ -47,13 +33,13 @@ const AcceptOrderModal = ({ isOpen, onClose, order, onAccept }) => {
           <div>
             <p className="text-sm font-medium text-gray-700">Checkout Date:</p>
             <p className="text-sm text-gray-600">
-              {order.checkoutDate ? formatDate(order.checkoutDate) : 'Not specified'}
+              {new Date(order.checkoutDate).toLocaleString()}
             </p>
           </div>
           <div>
             <p className="text-sm font-medium text-gray-700">Receive Date:</p>
             <p className="text-sm text-gray-600">
-              {order.receiveDate ? formatDate(order.receiveDate) : 'Not specified'}
+              {new Date(order.receiveDate).toLocaleString()}
             </p>
           </div>
         </div>

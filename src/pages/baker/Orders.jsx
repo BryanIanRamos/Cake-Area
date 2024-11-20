@@ -3,6 +3,7 @@ import Sidebar from "../../components/baker/Sidebar";
 import { ordersData, updateOrder } from "../../data/orderDataTbl";
 import ProductModal from "../../components/baker/ProductModal";
 import AcceptOrderModal from "../../components/baker/AcceptOrderModal";
+import Toast from "../../components/baker/Toast";
 
 const Orders = () => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
@@ -15,14 +16,39 @@ const Orders = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
   const [selectedOrderForAccept, setSelectedOrderForAccept] = useState(null);
+  const [orders, setOrders] = useState(ordersData);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
   // Filter orders based on active tab and search query
-  const filteredOrders = ordersData.filter((order) => {
-    const matchesTab = activeTab === "all" || order.status.toLowerCase() === activeTab;
-    const matchesSearch = order.products.some(product =>
-      product.prod_name.toLowerCase().includes(searchQuery.toLowerCase())
-    ) || order.order_id.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesTab && matchesSearch;
+  const filteredOrders = orders.filter((order) => {
+    const matchesSearch = searchQuery 
+      ? order.products.some(product =>
+          product.prod_name.toLowerCase().includes(searchQuery.toLowerCase())
+        ) || order.order_id.toLowerCase().includes(searchQuery.toLowerCase())
+      : true;
+
+    // Strict status matching based on tab
+    const statusMatch = (() => {
+      switch(activeTab) {
+        case 'pending':
+          return order.status === 'Pending';
+        case 'processing':
+          return order.status === 'Processing';
+        case 'to receive':
+          return order.status === 'To Receive';
+        case 'completed':
+          return order.status === 'Completed';
+        case 'cancelled':
+          return order.status === 'Cancelled';
+        case 'refunded':
+          return order.status === 'Refunded';
+        default:
+          return false;
+      }
+    })();
+
+    return matchesSearch && statusMatch;
   });
 
   // Save activeTab to localStorage whenever it changes
@@ -41,7 +67,7 @@ const Orders = () => {
   };
 
   const handleAcceptConfirm = (orderId) => {
-    const orderToUpdate = ordersData.find(order => order.order_id === orderId);
+    const orderToUpdate = orders.find(order => order.order_id === orderId);
     if (orderToUpdate) {
       const updatedOrder = {
         ...orderToUpdate,
@@ -52,17 +78,22 @@ const Orders = () => {
       // Update in localStorage
       updateOrder(updatedOrder);
       
+      // Update local state
+      setOrders(prevOrders => 
+        prevOrders.map(order => 
+          order.order_id === orderId ? updatedOrder : order
+        )
+      );
+      
       // Close the modal
       setIsAcceptModalOpen(false);
       
-      // Show success message
-      alert("Order successfully accepted and moved to Processing!");
+      // Show toast notification
+      setToastMessage("Order successfully accepted and moved to Processing!");
+      setShowToast(true);
       
       // Switch to Processing tab
       setActiveTab("processing");
-      
-      // Refresh the page to show updated data
-      window.location.reload();
     }
   };
 
@@ -74,6 +105,53 @@ const Orders = () => {
   const handleReview = (orderId) => {
     // Implement review logic here
     console.log(`Review order ${orderId}`);
+  };
+
+  // Action buttons should only show based on exact status match
+  const renderActionButtons = (order) => {
+    const status = order.status;
+    return (
+      <div className="flex gap-2">
+        <button
+          className="text-blue-600 hover:text-blue-800"
+          onClick={() => handleView(order)}
+        >
+          View
+        </button>
+        {status === "Pending" && (
+          <button
+            className="text-green-600 hover:text-green-800"
+            onClick={() => handleAccept(order)}
+          >
+            Accept
+          </button>
+        )}
+        {status === "Processing" && (
+          <button
+            className="text-yellow-600 hover:text-yellow-800"
+            onClick={() => handleMarkAsDone(order.order_id)}
+          >
+            Mark as Done
+          </button>
+        )}
+        {status === "Completed" && (
+          <button
+            className="text-purple-600 hover:text-purple-800"
+            onClick={() => handleReview(order.order_id)}
+          >
+            Review
+          </button>
+        )}
+      </div>
+    );
+  };
+
+  // Update the tab click handler to include refresh
+  const handleTabClick = (tab) => {
+    if (tab !== activeTab) {
+      setActiveTab(tab);
+      setOrders(ordersData); // Refresh the orders data
+    }
   };
 
   return (
@@ -141,7 +219,7 @@ const Orders = () => {
                           ? "border-[#E88F2A] text-[#E88F2A]"
                           : "border-transparent text-gray-500 hover:text-gray-700"
                       }`}
-                      onClick={() => setActiveTab(tab)}
+                      onClick={() => handleTabClick(tab)}
                     >
                       {tab.charAt(0).toUpperCase() + tab.slice(1)}
                     </button>
@@ -188,38 +266,7 @@ const Orders = () => {
                       <td className="p-4">₱{order.total_amount.toFixed(2)}</td>
                       <td className="p-4">{order.status}</td>
                       <td className="p-4">
-                        <div className="flex gap-2">
-                          <button
-                            className="text-blue-600 hover:text-blue-800"
-                            onClick={() => handleView(order)}
-                          >
-                            View
-                          </button>
-                          {order.status === "Pending" && (
-                            <button
-                              className="text-green-600 hover:text-green-800"
-                              onClick={() => handleAccept(order)}
-                            >
-                              Accept
-                            </button>
-                          )}
-                          {order.status === "Processing" && (
-                            <button
-                              className="text-yellow-600 hover:text-yellow-800"
-                              onClick={() => handleMarkAsDone(order.order_id)}
-                            >
-                              Mark as Done
-                            </button>
-                          )}
-                          {order.status === "Completed" && (
-                            <button
-                              className="text-purple-600 hover:text-purple-800"
-                              onClick={() => handleReview(order.order_id)}
-                            >
-                              Review
-                            </button>
-                          )}
-                        </div>
+                        {renderActionButtons(order)}
                       </td>
                     </tr>
                   ))}
@@ -266,6 +313,12 @@ const Orders = () => {
         onClose={() => setIsAcceptModalOpen(false)}
         order={selectedOrderForAccept}
         onAccept={handleAcceptConfirm}
+      />
+
+      <Toast
+        show={showToast}
+        onClose={() => setShowToast(false)}
+        message={toastMessage}
       />
     </div>
   );
