@@ -4,24 +4,24 @@ import { userData } from "../../data/userDataTbl";
 
 const AdminLayout = ({ children }) => {
   const navigate = useNavigate();
-  const [adminName, setAdminName] = useState('Admin Name');
+  const [adminName, setAdminName] = useState("Admin Name");
   const [toast, setToast] = useState({
     show: false,
     message: "",
-    type: "success"
+    type: "success",
   });
 
   useEffect(() => {
-    const adminData = localStorage.getItem('adminData');
+    const adminData = localStorage.getItem("adminData");
     if (adminData) {
       const { admin_id } = JSON.parse(adminData);
-      const admin = userData.users.find(user => user.user_id === admin_id);
+      const admin = userData.users.find((user) => user.user_id === admin_id);
       if (admin) {
-        const name = admin.email.split('@')[0];
+        const name = admin.email.split("@")[0];
         const formattedName = name
-          .split('.')
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ');
+          .split(".")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
         setAdminName(formattedName);
       }
     }
@@ -31,27 +31,27 @@ const AdminLayout = ({ children }) => {
     setToast({
       show: true,
       message,
-      type
+      type,
     });
 
     setTimeout(() => {
-      setToast(prev => ({ ...prev, show: false }));
+      setToast((prev) => ({ ...prev, show: false }));
     }, 2000);
   };
 
   const handleLogout = () => {
-    showToast('Logged out successfully!', 'success');
-    
+    showToast("Logged out successfully!", "success");
+
     setTimeout(() => {
-      localStorage.removeItem('adminData');
-      navigate('/admin/login');
+      localStorage.removeItem("adminData");
+      navigate("/admin/login");
     }, 1000);
   };
 
   const navigation = [
     {
       name: "Dashboard",
-      path: "/admin",
+      path: "/admin/dashboard",
       icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
     },
     {
@@ -127,8 +127,8 @@ const AdminLayout = ({ children }) => {
               </h1>
               <div className="flex items-center">
                 <span className="text-sm text-gray-500 mr-4">{adminName}</span>
-                <span 
-                  className="text-red-600 cursor-pointer" 
+                <span
+                  className="text-red-600 cursor-pointer"
                   onClick={handleLogout}
                 >
                   Logout
@@ -142,9 +142,9 @@ const AdminLayout = ({ children }) => {
 
       {/* Toast Notification */}
       {toast.show && (
-        <div 
+        <div
           className={`fixed bottom-4 right-4 px-4 py-2 rounded-lg shadow-lg
-            ${toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'} 
+            ${toast.type === "success" ? "bg-green-500" : "bg-red-500"} 
             text-white
             transition-opacity duration-300 ease-in-out`}
         >

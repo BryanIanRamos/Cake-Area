@@ -3,16 +3,16 @@ export const busVerificationData = {
   verificationRequests: [
     {
       verification_id: 1,
-      bus_id: null, // null because business isn't created until verified
-      user_id: 2, // References sarah.baker@email.com
+      bus_id: null,
+      user_id: 2,
       businessName: "Sarah's Sweet Creations",
       ownerName: "Sarah Baker",
       dateSubmitted: "2024-03-15",
-      status: "Pending", // Status types: Pending, Approved, Rejected
+      status: "Pending",
       documents: {
-        permit: "business-permit-sarah.jpg",
-        license: "food-license-sarah.jpg",
-        certification: "health-cert-sarah.jpg"
+        permit: "/assets/business_permit.png",
+        license: "/assets/business_license.jpg",
+        certification: "/assets/business_cert.jpg"
       },
       details: {
         address: "123 Baker Street, Cake City",
@@ -26,15 +26,15 @@ export const busVerificationData = {
     {
       verification_id: 2,
       bus_id: null,
-      user_id: 6, // References lisa.baker@email.com
+      user_id: 6,
       businessName: "Lisa's Artisan Bakery",
       ownerName: "Lisa Baker",
       dateSubmitted: "2024-03-14",
       status: "Pending",
       documents: {
-        permit: "business-permit-lisa.jpg",
-        license: "food-license-lisa.jpg",
-        certification: "health-cert-lisa.jpg"
+        permit: "/assets/business_permit.png",
+        license: "/assets/business_license.jpg",
+        certification: "/assets/business_cert.jpg"
       },
       details: {
         address: "456 Pastry Lane, Dessert Town",
@@ -48,15 +48,15 @@ export const busVerificationData = {
     {
       verification_id: 3,
       bus_id: null,
-      user_id: 9, // References peter.baker@email.com
+      user_id: 9,
       businessName: "Peter's Pastry Paradise",
       ownerName: "Peter Baker",
       dateSubmitted: "2024-03-10",
       status: "Pending",
       documents: {
-        permit: "business-permit-peter.jpg",
-        license: "food-license-peter.jpg",
-        certification: "health-cert-peter.jpg"
+        permit: "/assets/business_permit.png",
+        license: "/assets/business_license.jpg",
+        certification: "/assets/business_cert.jpg"
       },
       details: {
         address: "789 Bread Street, Pastry City",
