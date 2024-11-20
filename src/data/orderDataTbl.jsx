@@ -21,29 +21,59 @@ export const ordersData = loadFromLocalStorage("ordersData", [
         prod_name: "Classic Vanilla Celebration Cake",
         description: "Light and fluffy vanilla cake with buttercream frosting",
         price: 499.99,
-        quantity: 1
+        quantity: 1,
       },
       {
         prod_id: 2,
         prod_name: "Chocolate Dream Layer Cake",
         description: "Rich chocolate layers with dark chocolate ganache",
         price: 549.99,
-        quantity: 2
+        quantity: 2,
       },
       {
         prod_id: 12,
         prod_name: "Classic Chocolate Chip Cookies",
         description: "Classic cookies with premium chocolate chips",
         price: 199.99,
-        quantity: 3
-      }
+        quantity: 3,
+      },
     ],
     images: [{ link: CakeSample }],
     total_amount: 2149.94,
     status: "Pending",
     created_at: new Date().toISOString(),
-    checkoutDate: null,
-    receiveDate: null,
+    checkoutDate: "2024-03-18T15:30:00Z",
+    receiveDate: "2024-03-25T15:00:00Z",
+    downPayment: 0,
+    remainingPayment: 0,
+    paymentStatus: "",
+  },
+  {
+    order_id: "ORD001",
+    customer_id: 3,
+    customer_name: "Mike Customer",
+    business_id: 1,
+    business: {
+      bus_id: 2,
+      name: "Lisa's Artisan Bakery",
+      rating: 4.9,
+      total_sold: 980,
+    },
+    products: [
+      {
+        prod_id: 16,
+        prod_name: "Traditional Sourdough Bread",
+        description: "Traditional sourdough with perfect crust",
+        price: 189.99,
+        quantity: 2,
+      },
+    ],
+    images: [{ link: CakeSample }],
+    total_amount: 2149.94,
+    status: "Pending",
+    created_at: new Date().toISOString(),
+    checkoutDate: "2024-03-18T15:30:00Z",
+    receiveDate: "2024-03-25T15:00:00Z",
     downPayment: 0,
     remainingPayment: 0,
     paymentStatus: "",
@@ -67,22 +97,22 @@ export const ordersData = loadFromLocalStorage("ordersData", [
         prod_name: "Traditional Sourdough Bread",
         description: "Traditional sourdough with perfect crust",
         price: 189.99,
-        quantity: 2
+        quantity: 2,
       },
       {
         prod_id: 17,
         prod_name: "French Baguette",
         description: "Classic French baguette with crispy crust",
         price: 149.99,
-        quantity: 3
+        quantity: 3,
       },
       {
         prod_id: 18,
         prod_name: "Butter Croissant",
         description: "Buttery layered French croissant",
         price: 79.99,
-        quantity: 4
-      }
+        quantity: 4,
+      },
     ],
     images: [{ link: CakeSample }],
     total_amount: 829.93,
@@ -113,15 +143,15 @@ export const ordersData = loadFromLocalStorage("ordersData", [
         prod_name: "Classic French Croissant",
         description: "Buttery, flaky French pastry",
         price: 89.99,
-        quantity: 5
+        quantity: 5,
       },
       {
         prod_id: 38,
         prod_name: "Classic Palmier",
         description: "Crispy puff pastry heart",
         price: 129.99,
-        quantity: 2
-      }
+        quantity: 2,
+      },
     ],
     images: [{ link: CakeSample }],
     total_amount: 619.94,
@@ -150,10 +180,11 @@ export const ordersData = loadFromLocalStorage("ordersData", [
       {
         prod_id: 5,
         prod_name: "Carrot Spice Cake",
-        description: "Spiced carrot cake with walnuts and cream cheese frosting",
+        description:
+          "Spiced carrot cake with walnuts and cream cheese frosting",
         price: 479.99,
-        quantity: 1
-      }
+        quantity: 1,
+      },
     ],
     images: [{ link: CakeSample }],
     total_amount: 479.99,
@@ -183,8 +214,8 @@ export const ordersData = loadFromLocalStorage("ordersData", [
         prod_name: "French Baguette",
         description: "Classic French baguette with crispy crust",
         price: 149.99,
-        quantity: 2
-      }
+        quantity: 2,
+      },
     ],
     images: [{ link: CakeSample }],
     total_amount: 299.98,
@@ -215,8 +246,8 @@ export const ordersData = loadFromLocalStorage("ordersData", [
         prod_name: "Pain au Chocolat",
         description: "Chocolate-filled croissant pastry",
         price: 99.99,
-        quantity: 3
-      }
+        quantity: 3,
+      },
     ],
     images: [{ link: CakeSample }],
     total_amount: 299.97,
@@ -245,8 +276,8 @@ export const ordersData = loadFromLocalStorage("ordersData", [
         prod_name: "Black Forest Cake",
         description: "Chocolate cake with cherries and whipped cream",
         price: 579.99,
-        quantity: 1
-      }
+        quantity: 1,
+      },
     ],
     images: [{ link: CakeSample }],
     total_amount: 579.99,
@@ -275,8 +306,8 @@ export const ordersData = loadFromLocalStorage("ordersData", [
         prod_name: "Assorted Cupcakes Box",
         description: "12 pieces of assorted flavored cupcakes",
         price: 449.99,
-        quantity: 2
-      }
+        quantity: 2,
+      },
     ],
     images: [{ link: CakeSample }],
     total_amount: 899.98,
@@ -301,7 +332,9 @@ export const updateOrder = (updatedOrder) => {
       updated_at: new Date().toISOString(),
     };
     saveToLocalStorage("ordersData", ordersData);
+    return true;
   }
+  return false;
 };
 
 export const addOrder = (newOrder) => {

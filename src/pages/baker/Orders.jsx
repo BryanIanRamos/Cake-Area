@@ -1,15 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/baker/Sidebar";
-import { ordersData } from "../../data/orderDataTbl";
+import { ordersData, updateOrder } from "../../data/orderDataTbl";
 import ProductModal from "../../components/baker/ProductModal";
+import AcceptOrderModal from "../../components/baker/AcceptOrderModal";
 
 const Orders = () => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
-  const [activeTab, setActiveTab] = useState("pending");
+  const [activeTab, setActiveTab] = useState(() => {
+    return localStorage.getItem("activeOrderTab") || "pending"
+  });
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
+  const [selectedOrderForAccept, setSelectedOrderForAccept] = useState(null);
 
   // Filter orders based on active tab and search query
   const filteredOrders = ordersData.filter((order) => {
@@ -20,14 +25,45 @@ const Orders = () => {
     return matchesTab && matchesSearch;
   });
 
+  // Save activeTab to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("activeOrderTab", activeTab);
+  }, [activeTab]);
+
   const handleView = (order) => {
     setSelectedOrder(order);
     setIsModalOpen(true);
   };
 
-  const handleAccept = (orderId) => {
-    // Implement accept logic here
-    console.log(`Accept order ${orderId}`);
+  const handleAccept = (order) => {
+    setSelectedOrderForAccept(order);
+    setIsAcceptModalOpen(true);
+  };
+
+  const handleAcceptConfirm = (orderId) => {
+    const orderToUpdate = ordersData.find(order => order.order_id === orderId);
+    if (orderToUpdate) {
+      const updatedOrder = {
+        ...orderToUpdate,
+        status: "Processing",
+        updated_at: new Date().toISOString()
+      };
+      
+      // Update in localStorage
+      updateOrder(updatedOrder);
+      
+      // Close the modal
+      setIsAcceptModalOpen(false);
+      
+      // Show success message
+      alert("Order successfully accepted and moved to Processing!");
+      
+      // Switch to Processing tab
+      setActiveTab("processing");
+      
+      // Refresh the page to show updated data
+      window.location.reload();
+    }
   };
 
   const handleMarkAsDone = (orderId) => {
@@ -162,7 +198,7 @@ const Orders = () => {
                           {order.status === "Pending" && (
                             <button
                               className="text-green-600 hover:text-green-800"
-                              onClick={() => handleAccept(order.order_id)}
+                              onClick={() => handleAccept(order)}
                             >
                               Accept
                             </button>
@@ -223,6 +259,13 @@ const Orders = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         order={selectedOrder}
+      />
+
+      <AcceptOrderModal
+        isOpen={isAcceptModalOpen}
+        onClose={() => setIsAcceptModalOpen(false)}
+        order={selectedOrderForAccept}
+        onAccept={handleAcceptConfirm}
       />
     </div>
   );
