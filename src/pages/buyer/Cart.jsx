@@ -77,23 +77,26 @@ const Cart = () => {
         console.log("All orders:", ordersData); // Debug log
 
         // Get pending/cart items with business rating info
-        const pendingItems = ordersData.filter(order => 
-          order.status === "Pending" || order.status === "Cart"
-        ).map(order => ({
-          ...order,
-          business: {
-            ...order.business,
-            name: order.business?.name || "Unknown Store",
-            rating: order.business?.rating || 4.5,
-            total_sold: order.business?.total_sold || 0
-          },
-          // Ensure products array exists and has price
-          products: order.products?.map(product => ({
-            ...product,
-            price: product.price || 0,
-            quantity: product.quantity || 1
-          })) || []
-        }));
+        const pendingItems = ordersData
+          .filter(
+            (order) => order.status === "Pending" || order.status === "Cart"
+          )
+          .map((order) => ({
+            ...order,
+            business: {
+              ...order.business,
+              name: order.business?.name || "Unknown Store",
+              rating: order.business?.rating || 4.5,
+              total_sold: order.business?.total_sold || 0,
+            },
+            // Ensure products array exists and has price
+            products:
+              order.products?.map((product) => ({
+                ...product,
+                price: product.price || 0,
+                quantity: product.quantity || 1,
+              })) || [],
+          }));
         setCartItems(pendingItems);
 
         // Get processing orders
@@ -157,7 +160,7 @@ const Cart = () => {
           products: [],
           images: order.images,
           status: order.status,
-          total_amount: 0
+          total_amount: 0,
         };
       }
 
@@ -173,10 +176,10 @@ const Cart = () => {
   const handleConfirmCheckout = (receiveDate) => {
     // Create new orders in "Processing" status
     const newOrders = cartItems.reduce((acc, order) => {
-      const selectedProducts = order.products.filter(p => 
+      const selectedProducts = order.products.filter((p) =>
         selectedItems.includes(p.prod_id)
       );
-      
+
       if (selectedProducts.length > 0) {
         acc.push({
           order_id: `ORD${Date.now()}-${order.business.bus_id}`,
@@ -184,36 +187,45 @@ const Cart = () => {
           business: order.business,
           products: selectedProducts,
           images: order.images,
-          total_amount: selectedProducts.reduce((sum, p) => 
-            sum + (p.price * p.quantity), 0
+          total_amount: selectedProducts.reduce(
+            (sum, p) => sum + p.price * p.quantity,
+            0
           ),
           status: "Processing",
           created_at: new Date().toISOString(),
           checkoutDate: new Date().toISOString(),
           receiveDate: receiveDate.toISOString(),
-          downPayment: selectedProducts.reduce((sum, p) => 
-            sum + (p.price * p.quantity), 0) * 0.5,
-          remainingPayment: selectedProducts.reduce((sum, p) => 
-            sum + (p.price * p.quantity), 0) * 0.5,
-          paymentStatus: "Partial - Down Payment Received"
+          downPayment:
+            selectedProducts.reduce((sum, p) => sum + p.price * p.quantity, 0) *
+            0.5,
+          remainingPayment:
+            selectedProducts.reduce((sum, p) => sum + p.price * p.quantity, 0) *
+            0.5,
+          paymentStatus: "Partial - Down Payment Received",
         });
       }
       return acc;
     }, []);
 
     // Add to processing orders
-    setProcessingOrders(prev => [...prev, ...newOrders]);
+    setProcessingOrders((prev) => [...prev, ...newOrders]);
 
     // Remove selected items from cart
-    setCartItems(prev => prev.map(order => ({
-      ...order,
-      products: order.products.filter(p => !selectedItems.includes(p.prod_id))
-    })).filter(order => order.products.length > 0));
+    setCartItems((prev) =>
+      prev
+        .map((order) => ({
+          ...order,
+          products: order.products.filter(
+            (p) => !selectedItems.includes(p.prod_id)
+          ),
+        }))
+        .filter((order) => order.products.length > 0)
+    );
 
     // Reset selections and close modal
     setSelectedItems([]);
     setCheckOutConfirm(false);
-    
+
     // Show success message and navigate
     toast.success("Down payment received! Order has been placed successfully!");
     navigate("/cart/in-process");
@@ -221,16 +233,16 @@ const Cart = () => {
 
   // Update handleSelectAll for business groups
   const handleSelectAll = (businessId) => {
-    const businessProducts = cartItems
-      .find(order => order.business?.bus_id === businessId)
-      ?.products || [];
-      
-    const allProductIds = businessProducts.map(p => p.prod_id);
-    const allSelected = allProductIds.every(id => selectedItems.includes(id));
+    const businessProducts =
+      cartItems.find((order) => order.business?.bus_id === businessId)
+        ?.products || [];
 
-    setSelectedItems(prev => {
+    const allProductIds = businessProducts.map((p) => p.prod_id);
+    const allSelected = allProductIds.every((id) => selectedItems.includes(id));
+
+    setSelectedItems((prev) => {
       if (allSelected) {
-        return prev.filter(id => !allProductIds.includes(id));
+        return prev.filter((id) => !allProductIds.includes(id));
       }
       return [...new Set([...prev, ...allProductIds])];
     });
@@ -238,9 +250,9 @@ const Cart = () => {
 
   // Update handleSelectItem
   const handleSelectItem = (prodId) => {
-    setSelectedItems(prev => {
+    setSelectedItems((prev) => {
       if (prev.includes(prodId)) {
-        return prev.filter(id => id !== prodId);
+        return prev.filter((id) => id !== prodId);
       }
       return [...prev, prodId];
     });
@@ -263,13 +275,15 @@ const Cart = () => {
   useEffect(() => {
     const newTotal = cartItems.reduce((sum, order) => {
       const orderTotal = order.products
-        .filter(product => selectedItems.includes(product.prod_id))
-        .reduce((orderSum, product) => 
-          orderSum + ((product.price || 0) * (product.quantity || 1)), 0
+        .filter((product) => selectedItems.includes(product.prod_id))
+        .reduce(
+          (orderSum, product) =>
+            orderSum + (product.price || 0) * (product.quantity || 1),
+          0
         );
       return sum + orderTotal;
     }, 0);
-    
+
     setTotalAmount(newTotal);
   }, [selectedItems, cartItems]);
 
@@ -282,17 +296,18 @@ const Cart = () => {
 
     // Get selected products with their current quantities
     const selectedOrders = cartItems.reduce((acc, order) => {
-      const selectedProducts = order.products.filter(p => 
+      const selectedProducts = order.products.filter((p) =>
         selectedItems.includes(p.prod_id)
       );
-      
+
       if (selectedProducts.length > 0) {
         acc.push({
           business: order.business,
           products: selectedProducts,
-          total_amount: selectedProducts.reduce((sum, p) => 
-            sum + (p.price * p.quantity), 0
-          )
+          total_amount: selectedProducts.reduce(
+            (sum, p) => sum + p.price * p.quantity,
+            0
+          ),
         });
       }
       return acc;
@@ -349,13 +364,13 @@ const Cart = () => {
           bus_id: 1,
           name: "Sarah's Sweet Creations",
           rating: 4.8,
-          total_sold: 1250
+          total_sold: 1250,
         },
         product: {
           prod_id: 8,
           prod_name: "Red Velvet Cake",
           description: "Classic red velvet with cream cheese frosting",
-          price: 649.99
+          price: 649.99,
         },
         images: [{ link: CakeSample }],
         quantity: 2,
@@ -363,8 +378,8 @@ const Cart = () => {
         total_amount: 1299.98,
         status: "To Receive",
         created_at: "2024-03-19T08:00:00Z",
-        receiveDate: "2024-03-21T15:00:00Z"
-      }
+        receiveDate: "2024-03-21T15:00:00Z",
+      },
     ];
 
     // Dummy data for completed orders
@@ -376,13 +391,13 @@ const Cart = () => {
           bus_id: 2,
           name: "Bella's Bakeshop",
           rating: 4.9,
-          total_sold: 2000
+          total_sold: 2000,
         },
         product: {
           prod_id: 15,
           prod_name: "Chocolate Truffle Cake",
           description: "Rich chocolate cake with truffle ganache",
-          price: 799.99
+          price: 799.99,
         },
         images: [{ link: CakeSample }],
         quantity: 1,
@@ -390,8 +405,8 @@ const Cart = () => {
         total_amount: 799.99,
         status: "Completed",
         created_at: "2024-03-15T10:00:00Z",
-        completedDate: "2024-03-17T14:30:00Z"
-      }
+        completedDate: "2024-03-17T14:30:00Z",
+      },
     ];
 
     // Dummy data for cancelled orders
@@ -403,13 +418,13 @@ const Cart = () => {
           bus_id: 3,
           name: "Peter's Pastry Paradise",
           rating: 4.7,
-          total_sold: 1500
+          total_sold: 1500,
         },
         product: {
           prod_id: 30,
           prod_name: "Pain au Chocolat",
           description: "Chocolate-filled croissant pastry",
-          price: 99.99
+          price: 99.99,
         },
         images: [{ link: CakeSample }],
         quantity: 6,
@@ -418,8 +433,8 @@ const Cart = () => {
         status: "Cancelled",
         created_at: "2024-03-18T09:00:00Z",
         cancellationReason: "Delivery date not suitable",
-        cancelledDate: "2024-03-18T10:30:00Z"
-      }
+        cancelledDate: "2024-03-18T10:30:00Z",
+      },
     ];
 
     // Dummy data for refund orders
@@ -431,13 +446,13 @@ const Cart = () => {
           bus_id: 4,
           name: "Marie's Macarons",
           rating: 4.6,
-          total_sold: 800
+          total_sold: 800,
         },
         product: {
           prod_id: 45,
           prod_name: "Assorted Macarons",
           description: "Box of 12 assorted flavored macarons",
-          price: 499.99
+          price: 499.99,
         },
         images: [{ link: CakeSample }],
         quantity: 3,
@@ -447,8 +462,8 @@ const Cart = () => {
         created_at: "2024-03-16T11:00:00Z",
         refundReason: "Wrong flavor selection delivered",
         refundStatus: "Processing Refund",
-        refundNotes: "Customer received different flavors than ordered"
-      }
+        refundNotes: "Customer received different flavors than ordered",
+      },
     ];
 
     setToReceiveOrders(dummyToReceive);
@@ -462,19 +477,21 @@ const Cart = () => {
   // Add quantity handler
   const handleQuantityChange = (prodId, newQty) => {
     if (newQty < 1) return; // Prevent quantities less than 1
-    
-    setCartItems(prev => prev.map(order => ({
-      ...order,
-      products: order.products.map(product => 
-        product.prod_id === prodId 
-          ? { ...product, quantity: newQty }
-          : product
-      )
-    })));
+
+    setCartItems((prev) =>
+      prev.map((order) => ({
+        ...order,
+        products: order.products.map((product) =>
+          product.prod_id === prodId
+            ? { ...product, quantity: newQty }
+            : product
+        ),
+      }))
+    );
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col pb-20">
       <Toaster richColors closeButton position="top-center" />
       <CartHeader />
 
@@ -487,8 +504,8 @@ const Cart = () => {
             isOpen={checkOutConfirm}
             onClose={() => setCheckOutConfirm(false)}
             onConfirm={handleConfirmCheckout}
-            orders={cartItems.filter(order => 
-              order.products.some(p => selectedItems.includes(p.prod_id))
+            orders={cartItems.filter((order) =>
+              order.products.some((p) => selectedItems.includes(p.prod_id))
             )}
             selectedItems={selectedItems}
             totalAmount={totalAmount}

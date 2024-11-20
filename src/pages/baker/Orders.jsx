@@ -1,21 +1,44 @@
 import React, { useState } from "react";
 import Sidebar from "../../components/baker/Sidebar";
-import { orders, orderStats } from "../../data/orders.json";
+import { ordersData } from "../../data/orderDataTbl";
+import ProductModal from "../../components/baker/ProductModal";
 
 const Orders = () => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
   const [activeTab, setActiveTab] = useState("pending");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Filter orders based on active tab and search query
-  const filteredOrders = orders.filter((order) => {
-    const matchesTab = activeTab === "all" || order.status === activeTab;
-    const matchesSearch = order.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         order.product.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredOrders = ordersData.filter((order) => {
+    const matchesTab = activeTab === "all" || order.status.toLowerCase() === activeTab;
+    const matchesSearch = order.products.some(product =>
+      product.prod_name.toLowerCase().includes(searchQuery.toLowerCase())
+    ) || order.order_id.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesTab && matchesSearch;
   });
+
+  const handleView = (order) => {
+    setSelectedOrder(order);
+    setIsModalOpen(true);
+  };
+
+  const handleAccept = (orderId) => {
+    // Implement accept logic here
+    console.log(`Accept order ${orderId}`);
+  };
+
+  const handleMarkAsDone = (orderId) => {
+    // Implement mark as done logic here
+    console.log(`Mark order ${orderId} as done`);
+  };
+
+  const handleReview = (orderId) => {
+    // Implement review logic here
+    console.log(`Review order ${orderId}`);
+  };
 
   return (
     <div className="flex h-screen bg-[#F5F5F5]">
@@ -60,31 +83,12 @@ const Orders = () => {
               >
                 <option value="all">All Status</option>
                 <option value="pending">Pending</option>
-                <option value="preparing">Preparing</option>
-                <option value="ready">Ready for Pickup</option>
+                <option value="processing">Processing</option>
+                <option value="to receive">To Receive</option>
                 <option value="completed">Completed</option>
                 <option value="cancelled">Cancelled</option>
+                <option value="refunded">Refunded</option>
               </select>
-            </div>
-          </div>
-
-          {/* Order Status Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h3 className="text-gray-500 text-sm">Pending Orders</h3>
-              <p className="text-2xl font-bold">{orderStats.pending}</p>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h3 className="text-gray-500 text-sm">Preparing</h3>
-              <p className="text-2xl font-bold">{orderStats.preparing}</p>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h3 className="text-gray-500 text-sm">Ready for Pickup</h3>
-              <p className="text-2xl font-bold">{orderStats.ready}</p>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h3 className="text-gray-500 text-sm">Completed Today</h3>
-              <p className="text-2xl font-bold">{orderStats.completed}</p>
             </div>
           </div>
 
@@ -92,7 +96,7 @@ const Orders = () => {
           <div className="bg-white rounded-lg shadow-sm">
             <div className="border-b px-4">
               <div className="flex gap-4">
-                {["pending", "preparing", "ready", "completed", "cancelled"].map(
+                {["pending", "processing", "to receive", "completed", "cancelled", "refunded"].map(
                   (tab) => (
                     <button
                       key={tab}
@@ -117,56 +121,68 @@ const Orders = () => {
                   <tr className="bg-gray-50">
                     <th className="text-left p-4">Order ID</th>
                     <th className="text-left p-4">Customer</th>
-                    <th className="text-left p-4">Product</th>
+                    <th className="text-left p-4">Products</th>
                     <th className="text-left p-4">Total</th>
-                    <th className="text-left p-4">Delivery Date</th>
-                    <th className="text-left p-4">Payment</th>
+                    <th className="text-left p-4">Status</th>
                     <th className="text-left p-4">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredOrders.map((order) => (
-                    <tr key={order.id} className="border-t hover:bg-gray-50">
-                      <td className="p-4">{order.id}</td>
-                      <td className="p-4">{order.customerName}</td>
+                    <tr key={order.order_id} className="border-t hover:bg-gray-50">
+                      <td className="p-4">{order.order_id}</td>
+                      <td className="p-4">{order.customer_name}</td>
                       <td className="p-4">
-                        <div className="flex items-center gap-2">
-                          <img
-                            src={order.image}
-                            alt={order.product}
-                            className="w-10 h-10 rounded-lg object-cover"
-                          />
-                          <div>
-                            <p className="font-medium">{order.product}</p>
-                            <p className="text-sm text-gray-500">
-                              Qty: {order.quantity}
-                            </p>
+                        {order.products.map((product, index) => (
+                          <div key={index} className="flex items-center gap-2 mb-2">
+                            <img
+                              src={order.images[0].link}
+                              alt={product.prod_name}
+                              className="w-10 h-10 rounded-lg object-cover"
+                            />
+                            <div>
+                              <p className="font-medium">{product.prod_name}</p>
+                              <p className="text-sm text-gray-500">
+                                Qty: {product.quantity}
+                              </p>
+                            </div>
                           </div>
-                        </div>
+                        ))}
                       </td>
-                      <td className="p-4">{order.total}</td>
-                      <td className="p-4">{order.deliveryDate}</td>
-                      <td className="p-4">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs ${
-                            order.paymentStatus === "paid"
-                              ? "bg-green-100 text-green-800"
-                              : order.paymentStatus === "refunded"
-                              ? "bg-red-100 text-red-800"
-                              : "bg-yellow-100 text-yellow-800"
-                          }`}
-                        >
-                          {order.paymentStatus}
-                        </span>
-                      </td>
+                      <td className="p-4">₱{order.total_amount.toFixed(2)}</td>
+                      <td className="p-4">{order.status}</td>
                       <td className="p-4">
                         <div className="flex gap-2">
-                          <button className="text-blue-600 hover:text-blue-800">
+                          <button
+                            className="text-blue-600 hover:text-blue-800"
+                            onClick={() => handleView(order)}
+                          >
                             View
                           </button>
-                          <button className="text-red-600 hover:text-red-800">
-                            Cancel
-                          </button>
+                          {order.status === "Pending" && (
+                            <button
+                              className="text-green-600 hover:text-green-800"
+                              onClick={() => handleAccept(order.order_id)}
+                            >
+                              Accept
+                            </button>
+                          )}
+                          {order.status === "Processing" && (
+                            <button
+                              className="text-yellow-600 hover:text-yellow-800"
+                              onClick={() => handleMarkAsDone(order.order_id)}
+                            >
+                              Mark as Done
+                            </button>
+                          )}
+                          {order.status === "Completed" && (
+                            <button
+                              className="text-purple-600 hover:text-purple-800"
+                              onClick={() => handleReview(order.order_id)}
+                            >
+                              Review
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -178,7 +194,7 @@ const Orders = () => {
             {/* Pagination */}
             <div className="flex justify-between items-center p-4 border-t">
               <div className="text-sm text-gray-500">
-                Showing 1 to 10 of 50 entries
+                Showing 1 to 10 of {filteredOrders.length} entries
               </div>
               <div className="flex gap-2">
                 <button className="px-3 py-1 border rounded hover:bg-gray-50">
@@ -201,6 +217,13 @@ const Orders = () => {
           </div>
         </div>
       </main>
+
+      {/* Product Modal */}
+      <ProductModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        order={selectedOrder}
+      />
     </div>
   );
 };

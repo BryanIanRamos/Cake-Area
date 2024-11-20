@@ -6,6 +6,8 @@ export const ordersData = loadFromLocalStorage("ordersData", [
   // Cart/Pending Orders
   {
     order_id: "ORD001",
+    customer_id: 3,
+    customer_name: "Mike Customer",
     business_id: 1,
     business: {
       bus_id: 1,
@@ -50,6 +52,8 @@ export const ordersData = loadFromLocalStorage("ordersData", [
   // Processing Orders
   {
     order_id: "ORD003",
+    customer_id: 4,
+    customer_name: "Emma Wilson",
     business_id: 2,
     business: {
       bus_id: 2,
@@ -94,6 +98,8 @@ export const ordersData = loadFromLocalStorage("ordersData", [
   // To Receive Orders
   {
     order_id: "ORD004",
+    customer_id: 7,
+    customer_name: "Tom Smith",
     business_id: 3,
     business: {
       bus_id: 3,
@@ -131,6 +137,8 @@ export const ordersData = loadFromLocalStorage("ordersData", [
   // Completed Orders
   {
     order_id: "ORD005",
+    customer_id: 3,
+    customer_name: "Mike Customer",
     business_id: 1,
     business: {
       bus_id: 1,
@@ -160,6 +168,8 @@ export const ordersData = loadFromLocalStorage("ordersData", [
   // Cancelled Orders
   {
     order_id: "ORD006",
+    customer_id: 8,
+    customer_name: "Anna Jones",
     business_id: 2,
     business: {
       bus_id: 2,
@@ -190,6 +200,8 @@ export const ordersData = loadFromLocalStorage("ordersData", [
   // Refunded Orders
   {
     order_id: "ORD007",
+    customer_id: 9,
+    customer_name: "Peter Baker",
     business_id: 3,
     business: {
       bus_id: 3,
@@ -218,6 +230,8 @@ export const ordersData = loadFromLocalStorage("ordersData", [
   },
   {
     order_id: "ORD010",
+    customer_id: 3,
+    customer_name: "Mike Customer",
     business_id: 1,
     business: {
       bus_id: 1,
@@ -246,6 +260,8 @@ export const ordersData = loadFromLocalStorage("ordersData", [
   },
   {
     order_id: "ORD011",
+    customer_id: 6,
+    customer_name: "Lisa Baker",
     business_id: 2,
     business: {
       bus_id: 2,
