@@ -1,73 +1,147 @@
 import React, { useState } from "react";
-import { LuArrowUpDown } from "react-icons/lu";
-import OrderConfirmation from "./modals/OrderConfirmation";
+import { FiChevronUp, FiChevronDown, FiInfo } from "react-icons/fi";
 
-const CartSummary = ({ totalAmount = 0, totalQuantity = 0, onRemoveSelected, onCheckout }) => {
-  const [isVisible, setIsVisible] = useState(true);
-
-
-  console.log("Total Quantity: ", totalQuantity);
-  console.log("Total Amount: ", totalAmount);
+const CartSummary = ({ totalAmount, itemCount, onCheckout }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const deliveryFee = 50;
+  const serviceFee = 100;
+  const subtotal = totalAmount;
+  const total = subtotal + deliveryFee + serviceFee;
+  const downPaymentAmount = total * 0.5;
 
   return (
-    <div className="fixed bottom-0 w-full">
-      <div
-        className={`transform transition-all duration-300 ease-in-out ${
-          isVisible ? "translate-y-0" : "translate-y-full"
-        }`}
-      >
-        {/* Toggle Button */}
+    <div className="bg-white border-t shadow-lg">
+      {/* Toggle Button */}
+      <div className="flex justify-end">
         <button
-          onClick={() => setIsVisible(!isVisible)}
-          className="absolute -top-9 right-4 md:right-40 bg-secondary px-8 py-2 rounded-t-lg hover:bg-secondary/90 transition-all duration-300 cursor-pointer flex items-center gap-2"
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="flex items-center justify-center w-12 h-8 bg-white rounded-t-lg border border-b-0 border-gray-200 -mt-8"
         >
-          <span className="text-white text-sm">Summary ({totalQuantity} items)</span>
-          <LuArrowUpDown
-            className={`text-white transform transition-transform duration-300 ${
-              isVisible ? "rotate-0" : "rotate-180"
-            }`}
-            size={20}
-          />
+          {isExpanded ? <FiChevronDown size={20} /> : <FiChevronUp size={20} />}
         </button>
+      </div>
 
-        {/* Summary Content */}
-        <div className="bg-secondary w-full">
-          <div className="px-4 md:px-40 py-3">
-            <p className="text-xs md:text-sm lg:text-base text-white">
-              Before you check out, please double-check your order details.
-            </p>
-            {/* Add Total Items Row */}
-            <div className="flex justify-between items-center mt-2">
-              <span className="text-sm md:text-base text-white">
-                Total Items: {totalQuantity}
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Main Summary Row (Always Visible) */}
+        <div className="flex justify-between items-center h-16 border-b">
+          <div className="flex items-center gap-4">
+            <span className="text-gray-500 pr-4 border-r border-gray-300">
+              Selected: {itemCount} items
+            </span>
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-500">Down Payment (50%)</span>
+              <span className="font-semibold text-lg">
+                ₱{itemCount > 0 ? downPaymentAmount.toFixed(2) : "0.00"}
               </span>
             </div>
-            <div className="flex flex-row justify-between items-center my-1 md:my-2">
-              <span className="font-bold text-md sm:text-lg md:text-xl lg:text-2xl text-white">
-                Total Down Payment: ₱{Number(totalAmount).toFixed(2)}
-              </span>
-              <div className="flex space-x-2">
-                {/* Attach the handler to the Remove button */}
-                <button 
-                  onClick={onRemoveSelected} 
-                  className="mr-3 text-xs md:text-base text-white rounded-lg hover:text-gray-200 transition-colors"
-                >
-                  Remove
-                </button>
-                <button 
-                  className="px-2 md:px-4 py-2 md:py-2.5 text-xs md:text-base bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-                  onClick={onCheckout}
-                >
-                  Check Out
-                </button>
+          </div>
+        </div>
+
+        {/* Expandable Content */}
+        <div
+          className={`
+          transition-all duration-300 ease-in-out overflow-hidden
+          ${isExpanded ? "max-h-[400px] py-4" : "max-h-0"}
+        `}
+        >
+          {/* Order Summary */}
+          <div className="space-y-3 mb-4">
+            <h3 className="font-semibold text-lg">Order Summary</h3>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Items Subtotal:</span>
+                <span>₱{subtotal.toFixed(2)}</span>
               </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Delivery Fee:</span>
+                <span>₱{deliveryFee.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Service Fee:</span>
+                <span>₱{serviceFee.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between pt-2 border-t font-medium">
+                <span>Total Amount:</span>
+                <span>₱{total.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-primary font-medium">
+                <span>Down Payment (50%):</span>
+                <span>₱{downPaymentAmount.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-gray-500">
+                <span>Remaining Payment:</span>
+                <span>₱{downPaymentAmount.toFixed(2)}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Payment Method */}
+          <div className="space-y-3 mb-4">
+            <div className="flex justify-between items-center">
+              <h3 className="font-semibold text-lg">Payment Method</h3>
+              <p className="text-xs text-gray-500">
+                * Down payment is required before order confirmation
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                disabled
+                className="px-4 py-2 border rounded-lg text-gray-400 bg-gray-100 cursor-not-allowed"
+              >
+                Cash on Delivery (Not Available)
+              </button>
+              <button className="px-4 py-2 border rounded-lg hover:border-primary hover:text-primary transition-colors">
+                GCash
+              </button>
+              <button className="px-4 py-2 border rounded-lg hover:border-primary hover:text-primary transition-colors">
+                Credit Card
+              </button>
+            </div>
+            <p className="text-xs text-gray-500">
+              * Only customers with loyalty badge can avail COD payment method
+            </p>
+          </div>
+
+          {/* Payment Terms */}
+          <div className="relative group inline-block mb-20">
+            <div className="flex items-center gap-2 text-gray-500 cursor-help">
+              <FiInfo className="w-5 h-5" />
+              <span className="text-sm">Payment Terms</span>
+            </div>
+            <div
+              className="absolute bottom-full left-0 mb-2 w-64 p-3 bg-gray-800 text-white text-xs rounded-lg 
+              opacity-0 invisible group-hover:opacity-100 group-hover:visible 
+              transition-all duration-200 z-[60]"
+            >
+              <ul className="space-y-1.5">
+                <li>• 50% down payment required to confirm order</li>
+                <li>• Remaining 50% to be paid upon delivery</li>
+                <li>
+                  • Down payment is non-refundable once order is confirmed
+                </li>
+              </ul>
+              <div className="absolute -bottom-1 left-4 w-2 h-2 bg-gray-800 transform rotate-45"></div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Static button */}
-      {/* ... (Optional: If you plan to use it in the future) */}
+      {/* Bottom Payment Button */}
+      <div className="border-t bg-white">
+        <div className="max-w-7xl mx-auto p-4">
+          <button
+            onClick={onCheckout}
+            disabled={itemCount === 0}
+            className={`w-full py-3 rounded-lg font-semibold ${
+              itemCount === 0
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-primary text-white hover:bg-primary-dark"
+            }`}
+          >
+            Pay Down Payment (₱{downPaymentAmount.toFixed(2)})
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

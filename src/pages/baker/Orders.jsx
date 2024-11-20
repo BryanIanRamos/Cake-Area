@@ -1,21 +1,236 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/baker/Sidebar";
-import { orders, orderStats } from "../../data/orders.json";
+import { ordersData, updateOrder } from "../../data/orderDataTbl";
+import ProductModal from "../../components/baker/ProductModal";
+import AcceptOrderModal from "../../components/baker/AcceptOrderModal";
+import Toast from "../../components/baker/Toast";
+import MarkAsDoneModal from "../../components/baker/MarkAsDoneModal";
+import MarkAsDeliveredModal from "../../components/baker/MarkAsDeliveredModal";
+import { saveToLocalStorage, loadFromLocalStorage } from "../../data/localStorage";
 
 const Orders = () => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
-  const [activeTab, setActiveTab] = useState("pending");
+  const [activeTab, setActiveTab] = useState(() => {
+    return localStorage.getItem("activeOrderTab") || "pending"
+  });
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
+  const [selectedOrderForAccept, setSelectedOrderForAccept] = useState(null);
+  const [orders, setOrders] = useState(ordersData);
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: "success"
+  });
+  const [isMarkAsDoneModalOpen, setIsMarkAsDoneModalOpen] = useState(false);
+  const [isMarkAsDeliveredModalOpen, setIsMarkAsDeliveredModalOpen] = useState(false);
+  const [selectedOrderForDone, setSelectedOrderForDone] = useState(null);
+  const [selectedOrderForDelivered, setSelectedOrderForDelivered] = useState(null);
 
   // Filter orders based on active tab and search query
   const filteredOrders = orders.filter((order) => {
-    const matchesTab = activeTab === "all" || order.status === activeTab;
-    const matchesSearch = order.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         order.product.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesTab && matchesSearch;
+    const matchesSearch = searchQuery 
+      ? order.products.some(product =>
+          product.prod_name.toLowerCase().includes(searchQuery.toLowerCase())
+        ) || order.order_id.toLowerCase().includes(searchQuery.toLowerCase())
+      : true;
+
+    // Strict status matching based on tab
+    const statusMatch = (() => {
+      switch(activeTab) {
+        case 'pending':
+          return order.status === 'Pending';
+        case 'processing':
+          return order.status === 'Processing';
+        case 'to receive':
+          return order.status === 'To Receive';
+        case 'completed':
+          return order.status === 'Completed';
+        case 'cancelled':
+          return order.status === 'Cancelled';
+        case 'refunded':
+          return order.status === 'Refunded';
+        default:
+          return false;
+      }
+    })();
+
+    return matchesSearch && statusMatch;
   });
+
+  // Save activeTab to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("activeOrderTab", activeTab);
+  }, [activeTab]);
+
+  const handleView = (order) => {
+    setSelectedOrder(order);
+    setIsModalOpen(true);
+  };
+
+  const handleAccept = (order) => {
+    setSelectedOrderForAccept(order);
+    setIsAcceptModalOpen(true);
+  };
+
+  const handleAcceptConfirm = (orderId) => {
+    const orderToUpdate = orders.find(order => order.order_id === orderId);
+    if (orderToUpdate) {
+      const updatedOrder = {
+        ...orderToUpdate,
+        status: "Processing",
+        updated_at: new Date().toISOString()
+      };
+      
+      // Update in localStorage
+      updateOrder(updatedOrder);
+      
+      // Update local state
+      setOrders(prevOrders => 
+        prevOrders.map(order => 
+          order.order_id === orderId ? updatedOrder : order
+        )
+      );
+      
+      // Close the modal
+      setIsAcceptModalOpen(false);
+      
+      // Show toast notification using the toast object
+      setToast({
+        show: true,
+        message: `Order ${orderId} has been accepted successfully!`,
+        type: "success"
+      });
+      
+      // Switch to Processing tab
+      setActiveTab("processing");
+    }
+  };
+
+  const handleMarkAsDone = (order) => {
+    setSelectedOrderForDone(order);
+    setIsMarkAsDoneModalOpen(true);
+  };
+
+  const handleMarkAsDoneConfirm = (orderId) => {
+    const orderToUpdate = orders.find(order => order.order_id === orderId);
+    if (orderToUpdate) {
+      const updatedOrder = {
+        ...orderToUpdate,
+        status: "To Receive",
+        updated_at: new Date().toISOString()
+      };
+      
+      // Update in localStorage
+      updateOrder(updatedOrder);
+      
+      // Update local state
+      setOrders(prevOrders => 
+        prevOrders.map(order => 
+          order.order_id === orderId ? updatedOrder : order
+        )
+      );
+      
+      setIsMarkAsDoneModalOpen(false);
+      setToast({
+        show: true,
+        message: `Order ${orderId} has been marked as done!`,
+        type: "success"
+      });
+      
+      setActiveTab("to receive");
+    }
+  };
+
+  const handleMarkAsDelivered = (order) => {
+    setSelectedOrderForDelivered(order);
+    setIsMarkAsDeliveredModalOpen(true);
+  };
+
+  const handleMarkAsDeliveredConfirm = (orderId) => {
+    const orderToUpdate = orders.find(order => order.order_id === orderId);
+    if (orderToUpdate) {
+      const updatedOrder = {
+        ...orderToUpdate,
+        status: "Completed",
+        updated_at: new Date().toISOString()
+      };
+      
+      // Update in localStorage
+      updateOrder(updatedOrder);
+      
+      // Update local state
+      setOrders(prevOrders => 
+        prevOrders.map(order => 
+          order.order_id === orderId ? updatedOrder : order
+        )
+      );
+      
+      setIsMarkAsDeliveredModalOpen(false);
+      setToast({
+        show: true,
+        message: `Order ${orderId} has been marked as delivered!`,
+        type: "success"
+      });
+      
+      setActiveTab("completed");
+    }
+  };
+
+  const handleReview = (orderId) => {
+    // Implement review logic here
+    console.log(`Review order ${orderId}`);
+  };
+
+  // Action buttons should only show based on exact status match
+  const renderActionButtons = (order) => {
+    const status = order.status;
+    return (
+      <div className="flex gap-2">
+        <button
+          className="text-blue-600 hover:text-blue-800"
+          onClick={() => handleView(order)}
+        >
+          View
+        </button>
+        {status === "Pending" && (
+          <button
+            className="text-green-600 hover:text-green-800"
+            onClick={() => handleAccept(order)}
+          >
+            Accept
+          </button>
+        )}
+        {status === "Processing" && (
+          <button
+            className="text-yellow-600 hover:text-yellow-800"
+            onClick={() => handleMarkAsDone(order)}
+          >
+            Mark as Done
+          </button>
+        )}
+        {status === "To Receive" && (
+          <button
+            className="text-green-600 hover:text-green-800"
+            onClick={() => handleMarkAsDelivered(order)}
+          >
+            Mark as Delivered
+          </button>
+        )}
+      </div>
+    );
+  };
+
+  // Update the tab click handler to include refresh
+  const handleTabClick = (tab) => {
+    if (tab !== activeTab) {
+      setActiveTab(tab);
+      setOrders(ordersData); // Refresh the orders data
+    }
+  };
 
   return (
     <div className="flex h-screen bg-[#F5F5F5]">
@@ -60,31 +275,12 @@ const Orders = () => {
               >
                 <option value="all">All Status</option>
                 <option value="pending">Pending</option>
-                <option value="preparing">Preparing</option>
-                <option value="ready">Ready for Pickup</option>
+                <option value="processing">Processing</option>
+                <option value="to receive">To Receive</option>
                 <option value="completed">Completed</option>
                 <option value="cancelled">Cancelled</option>
+                <option value="refunded">Refunded</option>
               </select>
-            </div>
-          </div>
-
-          {/* Order Status Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h3 className="text-gray-500 text-sm">Pending Orders</h3>
-              <p className="text-2xl font-bold">{orderStats.pending}</p>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h3 className="text-gray-500 text-sm">Preparing</h3>
-              <p className="text-2xl font-bold">{orderStats.preparing}</p>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h3 className="text-gray-500 text-sm">Ready for Pickup</h3>
-              <p className="text-2xl font-bold">{orderStats.ready}</p>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h3 className="text-gray-500 text-sm">Completed Today</h3>
-              <p className="text-2xl font-bold">{orderStats.completed}</p>
             </div>
           </div>
 
@@ -92,7 +288,7 @@ const Orders = () => {
           <div className="bg-white rounded-lg shadow-sm">
             <div className="border-b px-4">
               <div className="flex gap-4">
-                {["pending", "preparing", "ready", "completed", "cancelled"].map(
+                {["pending", "processing", "to receive", "completed", "cancelled", "refunded"].map(
                   (tab) => (
                     <button
                       key={tab}
@@ -101,7 +297,7 @@ const Orders = () => {
                           ? "border-[#E88F2A] text-[#E88F2A]"
                           : "border-transparent text-gray-500 hover:text-gray-700"
                       }`}
-                      onClick={() => setActiveTab(tab)}
+                      onClick={() => handleTabClick(tab)}
                     >
                       {tab.charAt(0).toUpperCase() + tab.slice(1)}
                     </button>
@@ -117,57 +313,38 @@ const Orders = () => {
                   <tr className="bg-gray-50">
                     <th className="text-left p-4">Order ID</th>
                     <th className="text-left p-4">Customer</th>
-                    <th className="text-left p-4">Product</th>
+                    <th className="text-left p-4">Products</th>
                     <th className="text-left p-4">Total</th>
-                    <th className="text-left p-4">Delivery Date</th>
-                    <th className="text-left p-4">Payment</th>
+                    <th className="text-left p-4">Status</th>
                     <th className="text-left p-4">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredOrders.map((order) => (
-                    <tr key={order.id} className="border-t hover:bg-gray-50">
-                      <td className="p-4">{order.id}</td>
-                      <td className="p-4">{order.customerName}</td>
+                    <tr key={order.order_id} className="border-t hover:bg-gray-50">
+                      <td className="p-4">{order.order_id}</td>
+                      <td className="p-4">{order.customer_name}</td>
                       <td className="p-4">
-                        <div className="flex items-center gap-2">
-                          <img
-                            src={order.image}
-                            alt={order.product}
-                            className="w-10 h-10 rounded-lg object-cover"
-                          />
-                          <div>
-                            <p className="font-medium">{order.product}</p>
-                            <p className="text-sm text-gray-500">
-                              Qty: {order.quantity}
-                            </p>
+                        {order.products.map((product, index) => (
+                          <div key={index} className="flex items-center gap-2 mb-2">
+                            <img
+                              src={order.images[0].link}
+                              alt={product.prod_name}
+                              className="w-10 h-10 rounded-lg object-cover"
+                            />
+                            <div>
+                              <p className="font-medium">{product.prod_name}</p>
+                              <p className="text-sm text-gray-500">
+                                Qty: {product.quantity}
+                              </p>
+                            </div>
                           </div>
-                        </div>
+                        ))}
                       </td>
-                      <td className="p-4">{order.total}</td>
-                      <td className="p-4">{order.deliveryDate}</td>
+                      <td className="p-4">₱{order.total_amount.toFixed(2)}</td>
+                      <td className="p-4">{order.status}</td>
                       <td className="p-4">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs ${
-                            order.paymentStatus === "paid"
-                              ? "bg-green-100 text-green-800"
-                              : order.paymentStatus === "refunded"
-                              ? "bg-red-100 text-red-800"
-                              : "bg-yellow-100 text-yellow-800"
-                          }`}
-                        >
-                          {order.paymentStatus}
-                        </span>
-                      </td>
-                      <td className="p-4">
-                        <div className="flex gap-2">
-                          <button className="text-blue-600 hover:text-blue-800">
-                            View
-                          </button>
-                          <button className="text-red-600 hover:text-red-800">
-                            Cancel
-                          </button>
-                        </div>
+                        {renderActionButtons(order)}
                       </td>
                     </tr>
                   ))}
@@ -178,7 +355,7 @@ const Orders = () => {
             {/* Pagination */}
             <div className="flex justify-between items-center p-4 border-t">
               <div className="text-sm text-gray-500">
-                Showing 1 to 10 of 50 entries
+                Showing 1 to 10 of {filteredOrders.length} entries
               </div>
               <div className="flex gap-2">
                 <button className="px-3 py-1 border rounded hover:bg-gray-50">
@@ -201,6 +378,43 @@ const Orders = () => {
           </div>
         </div>
       </main>
+
+      {/* Product Modal */}
+      <ProductModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        order={selectedOrder}
+      />
+
+      <AcceptOrderModal
+        isOpen={isAcceptModalOpen}
+        onClose={() => setIsAcceptModalOpen(false)}
+        order={selectedOrderForAccept}
+        onAccept={handleAcceptConfirm}
+      />
+
+      <MarkAsDoneModal
+        isOpen={isMarkAsDoneModalOpen}
+        onClose={() => setIsMarkAsDoneModalOpen(false)}
+        order={selectedOrderForDone}
+        onMarkAsDone={handleMarkAsDoneConfirm}
+      />
+
+      <MarkAsDeliveredModal
+        isOpen={isMarkAsDeliveredModalOpen}
+        onClose={() => setIsMarkAsDeliveredModalOpen(false)}
+        order={selectedOrderForDelivered}
+        onMarkAsDelivered={handleMarkAsDeliveredConfirm}
+      />
+
+      {/* Toast notification */}
+      {toast.show && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({ ...toast, show: false })}
+        />
+      )}
     </div>
   );
 };

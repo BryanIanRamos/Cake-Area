@@ -1,73 +1,163 @@
-import React, { useState } from 'react';
-import { Icon } from "@iconify/react";
+import React, { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { FiX } from "react-icons/fi";
+import AddressSelectionModal from "./AddressSelectionModal";
+import dataAddress from "../../../data/address.json";
 
-function OrderConfirmation({ closeModal, totalAmount, onConfirm }) {
-  const [receiveDate, setReceiveDate] = useState('');
+const OrderConfirmation = ({
+  isOpen,
+  closeModal,
+  selectedItems,
+  totalAmount,
+  onConfirm,
+}) => {
+  // Get current date and add 4 days
+  const minDate = new Date();
+  minDate.setDate(minDate.getDate() + 4);
+
+  const [selectedDate, setSelectedDate] = useState(minDate);
+  const [selectedAddress, setSelectedAddress] = useState(dataAddress[0]);
+  const [showAddressModal, setShowAddressModal] = useState(false);
+
+  // Calculate fees and totals
+  const deliveryFee = 50;
+  const serviceFee = 100;
+  const subtotal = totalAmount;
+  const total = subtotal + deliveryFee + serviceFee;
+  const downPaymentAmount = total * 0.5;
 
   const handleConfirm = () => {
-    if (receiveDate) {
-      onConfirm(receiveDate);
-    } else {
-      toast.error("Please select a receive date.");
-    }
+    onConfirm(selectedDate);
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="border w-[73vw] sm:w-[53vw] md:w-[43vw] lg:w-[35vw] h-fit p-4 sm:p-5 md:p-6 lg:p-7 bg-white">
-        <div className="border-[3px] border-primary h-full p-2 md:p-3 lg:p-4 relative">
-          <button
-            className="absolute right-1 md:right-2 lg:right-3 top-1 md:top-2 lg:top-3 text-[3.6vw] sm:text-[3vh] md:text-[2.6vw] lg:text-[1.6vw] text-primary hover:text-red-400"
-            onClick={closeModal}
-            aria-label="Close modal"
-          >
-            <Icon icon="icon-park-solid:close-one" />
-          </button>
-          <div className="mb-6 flex flex-col items-center">
-            <h2 className="text-primary font-bold text-[18px] sm:text-[1.6rem] 2xl:text-[2rem]">
-              Confirm Order
-            </h2>
-            <p className="text-gray-600 text-[12px] sm:text-[14px] lg:text-[16px]">
-              Do you want to checkout?
-            </p>
-          </div>
-          <p className="text-center text-gray-500 text-[12px] sm:text-[14px] lg:text-[16px]">
-            Total amount: <span className='font-bold text-2xl'>₱{totalAmount}.00</span>
-          </p>
+    <div className="fixed inset-0 z-50 overflow-y-auto">
+      {/* Overlay */}
+      <div
+        className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+        onClick={closeModal}
+      />
 
-          {/* Receive Date Picker */}
-          <div className="mt-4">
-            <label htmlFor="receive-date" className="block text-gray-700 text-sm font-bold mb-2">
-              Select Receive Date:
-            </label>
-            <input
-              type="date"
-              id="receive-date"
-              value={receiveDate}
-              onChange={(e) => setReceiveDate(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-          </div>
-
-          <div className='flex gap-2 mt-5'>
-            <button
-              type="button"
-              className="w-full bg-primary text-white py-2 rounded hover:bg-primary/90 text-[2vw] sm:text-[1.5vw] lg:text-[1vw]"
-              onClick={handleConfirm} // Handle confirmation with receiveDate
-            >
-              Confirm
-            </button>
+      {/* Modal */}
+      <div className="flex min-h-full items-center justify-center p-4">
+        <div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-semibold">Confirm Order</h2>
             <button
               onClick={closeModal}
-              className="w-full bg-gray-300 text-gray-600 py-2 rounded hover:bg-gray-200 text-[2vw] sm:text-[1.5vw] lg:text-[1vw]"
+              className="text-gray-500 hover:text-gray-700"
             >
-              Cancel
+              <FiX size={20} />
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            {/* Date Selection */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Select Delivery Date
+              </label>
+              <div className="relative">
+                <DatePicker
+                  selected={selectedDate}
+                  onChange={(date) => setSelectedDate(date)}
+                  minDate={minDate}
+                  dateFormat="MMMM d, yyyy"
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-primary focus:border-primary"
+                  placeholderText="Select a date"
+                />
+                <p className="mt-1 text-sm text-gray-500">
+                  * Earliest delivery date is {minDate.toLocaleDateString()} to
+                  allow preparation time
+                </p>
+              </div>
+            </div>
+
+            {/* Add Delivery Address Section */}
+            <div className="border-b pb-4">
+              <h3 className="font-medium mb-2">Delivery Address</h3>
+              <div className="flex justify-between items-start">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{selectedAddress.name}</span>
+                    <span className="text-gray-500">|</span>
+                    <span className="text-gray-600">
+                      {selectedAddress.phone}
+                    </span>
+                  </div>
+                  <p className="text-gray-600 text-sm mt-1">
+                    {selectedAddress.address.line1}
+                  </p>
+                  <p className="text-gray-600 text-sm">
+                    {selectedAddress.address.line2}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowAddressModal(true)}
+                  className="text-primary hover:text-primary-dark text-sm underline"
+                >
+                  Change
+                </button>
+              </div>
+            </div>
+
+            {/* Order Summary */}
+            <div className="border-t pt-4">
+              <h3 className="font-medium mb-2">Order Summary</h3>
+
+              <div className="border-t mt-2 pt-2 space-y-1">
+                <div className="flex justify-between text-sm text-gray-600">
+                  <span>Items Subtotal:</span>
+                  <span>₱{subtotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-sm text-gray-600">
+                  <span>Delivery Fee:</span>
+                  <span>₱{deliveryFee.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-sm text-gray-600">
+                  <span>Service Fee:</span>
+                  <span>₱{serviceFee.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between font-medium pt-1 border-t">
+                  <span>Total Amount:</span>
+                  <span>₱{total.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-primary font-medium">
+                  <span>Down Payment (50%):</span>
+                  <span>₱{downPaymentAmount.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-sm text-gray-500">
+                  <span>Remaining Payment:</span>
+                  <span>₱{downPaymentAmount.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Confirmation Button */}
+            <button
+              onClick={handleConfirm}
+              className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark transition-colors"
+            >
+              Pay Down Payment (₱{downPaymentAmount.toFixed(2)})
             </button>
           </div>
         </div>
       </div>
+
+      {/* Add Address Selection Modal */}
+      <AddressSelectionModal
+        isOpen={showAddressModal}
+        onClose={() => setShowAddressModal(false)}
+        addresses={dataAddress}
+        selectedAddress={selectedAddress}
+        onSelectAddress={setSelectedAddress}
+      />
     </div>
   );
-}
+};
 
 export default OrderConfirmation;
