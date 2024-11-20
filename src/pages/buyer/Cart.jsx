@@ -171,38 +171,50 @@ const Cart = () => {
 
   // Update handleConfirmCheckout
   const handleConfirmCheckout = (receiveDate) => {
-    const groupedOrders = groupOrdersByBusiness(
-      cartItems.filter(item => selectedItems.includes(item.order_id))
-    );
-
-    const selectedOrders = Object.values(groupedOrders).map(group => ({
-      order_id: `ORD${Date.now()}`,
-      business_id: group.business.bus_id,
-      business: group.business,
-      products: group.products,
-      images: group.images,
-      total_amount: group.products.reduce((sum, product) => 
-        sum + (product.price * product.quantity), 0
-      ),
-      status: "Processing",
-      checkoutDate: new Date().toISOString(),
-      receiveDate: receiveDate.toISOString(),
-      downPayment: group.total_amount * 0.5,
-      remainingPayment: group.total_amount * 0.5,
-      paymentStatus: "Partial - Down Payment Received",
-    }));
+    // Create new orders in "Processing" status
+    const newOrders = cartItems.reduce((acc, order) => {
+      const selectedProducts = order.products.filter(p => 
+        selectedItems.includes(p.prod_id)
+      );
+      
+      if (selectedProducts.length > 0) {
+        acc.push({
+          order_id: `ORD${Date.now()}-${order.business.bus_id}`,
+          business_id: order.business.bus_id,
+          business: order.business,
+          products: selectedProducts,
+          images: order.images,
+          total_amount: selectedProducts.reduce((sum, p) => 
+            sum + (p.price * p.quantity), 0
+          ),
+          status: "Processing",
+          created_at: new Date().toISOString(),
+          checkoutDate: new Date().toISOString(),
+          receiveDate: receiveDate.toISOString(),
+          downPayment: selectedProducts.reduce((sum, p) => 
+            sum + (p.price * p.quantity), 0) * 0.5,
+          remainingPayment: selectedProducts.reduce((sum, p) => 
+            sum + (p.price * p.quantity), 0) * 0.5,
+          paymentStatus: "Partial - Down Payment Received"
+        });
+      }
+      return acc;
+    }, []);
 
     // Add to processing orders
-    setProcessingOrders(prev => [...prev, ...selectedOrders]);
+    setProcessingOrders(prev => [...prev, ...newOrders]);
 
-    // Remove from cart
-    setCartItems(prev => 
-      prev.filter(item => !selectedItems.includes(item.order_id))
-    );
+    // Remove selected items from cart
+    setCartItems(prev => prev.map(order => ({
+      ...order,
+      products: order.products.filter(p => !selectedItems.includes(p.prod_id))
+    })).filter(order => order.products.length > 0));
 
+    // Reset selections and close modal
     setSelectedItems([]);
     setCheckOutConfirm(false);
     
+    // Show success message and navigate
     toast.success("Down payment received! Order has been placed successfully!");
     navigate("/cart/in-process");
   };
@@ -261,21 +273,24 @@ const Cart = () => {
     setTotalAmount(newTotal);
   }, [selectedItems, cartItems]);
 
+  // Update handleCheckout to show confirmation modal
   const handleCheckout = () => {
     if (selectedItems.length === 0) {
       toast.error("Please select items to checkout");
       return;
     }
 
-    const selectedProducts = cartItems.reduce((acc, order) => {
-      const products = order.products.filter(p => 
+    // Get selected products with their current quantities
+    const selectedOrders = cartItems.reduce((acc, order) => {
+      const selectedProducts = order.products.filter(p => 
         selectedItems.includes(p.prod_id)
       );
-      if (products.length > 0) {
+      
+      if (selectedProducts.length > 0) {
         acc.push({
-          ...order,
-          products: products,
-          total_amount: products.reduce((sum, p) => 
+          business: order.business,
+          products: selectedProducts,
+          total_amount: selectedProducts.reduce((sum, p) => 
             sum + (p.price * p.quantity), 0
           )
         });
@@ -283,6 +298,7 @@ const Cart = () => {
       return acc;
     }, []);
 
+    // Show confirmation modal with selected orders
     setCheckOutConfirm(true);
   };
 
@@ -469,12 +485,13 @@ const Cart = () => {
         {checkOutConfirm && (
           <OrderConfirmation
             isOpen={checkOutConfirm}
-            closeModal={() => setCheckOutConfirm(false)}
-            totalAmount={totalAmount}
-            selectedItems={selectedItems.map((id) =>
-              cartItems.find((item) => item.order_id === id)
-            )}
+            onClose={() => setCheckOutConfirm(false)}
             onConfirm={handleConfirmCheckout}
+            orders={cartItems.filter(order => 
+              order.products.some(p => selectedItems.includes(p.prod_id))
+            )}
+            selectedItems={selectedItems}
+            totalAmount={totalAmount}
           />
         )}
         <div className="flex flex-col gap-2">
