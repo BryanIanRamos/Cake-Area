@@ -13,16 +13,31 @@ export const ordersData = loadFromLocalStorage("ordersData", [
       rating: 4.8,
       total_sold: 1250,
     },
-    product: {
-      prod_id: 1,
-      prod_name: "Classic Vanilla Celebration Cake",
-      description: "Light and fluffy vanilla cake with buttercream frosting",
-      price: 499.99,
-    },
+    products: [
+      {
+        prod_id: 1,
+        prod_name: "Classic Vanilla Celebration Cake",
+        description: "Light and fluffy vanilla cake with buttercream frosting",
+        price: 499.99,
+        quantity: 1
+      },
+      {
+        prod_id: 2,
+        prod_name: "Chocolate Dream Layer Cake",
+        description: "Rich chocolate layers with dark chocolate ganache",
+        price: 549.99,
+        quantity: 2
+      },
+      {
+        prod_id: 12,
+        prod_name: "Classic Chocolate Chip Cookies",
+        description: "Classic cookies with premium chocolate chips",
+        price: 199.99,
+        quantity: 3
+      }
+    ],
     images: [{ link: CakeSample }],
-    quantity: 2,
-    price: 499.99,
-    total_amount: 999.98,
+    total_amount: 2149.94,
     status: "Pending",
     created_at: new Date().toISOString(),
     checkoutDate: null,
@@ -30,39 +45,6 @@ export const ordersData = loadFromLocalStorage("ordersData", [
     downPayment: 0,
     remainingPayment: 0,
     paymentStatus: "",
-    cancellationReason: "",
-    refundReason: "",
-    refundDate: null,
-  },
-  {
-    order_id: "ORD002",
-    business_id: 1,
-    business: {
-      bus_id: 1,
-      name: "Sarah's Sweet Creations",
-      rating: 4.8,
-      total_sold: 1250,
-    },
-    product: {
-      prod_id: 2,
-      prod_name: "Chocolate Dream Layer Cake",
-      description: "Rich chocolate layers with dark chocolate ganache",
-      price: 549.99,
-    },
-    images: [{ link: CakeSample }],
-    quantity: 1,
-    price: 549.99,
-    total_amount: 549.99,
-    status: "Pending",
-    created_at: "2024-03-19T11:00:00Z",
-    checkoutDate: null,
-    receiveDate: null,
-    downPayment: 0,
-    remainingPayment: 0,
-    paymentStatus: "",
-    cancellationReason: "",
-    refundReason: "",
-    refundDate: null,
   },
 
   // Processing Orders
@@ -75,26 +57,38 @@ export const ordersData = loadFromLocalStorage("ordersData", [
       rating: 4.9,
       total_sold: 980,
     },
-    product: {
-      prod_id: 16,
-      prod_name: "Traditional Sourdough Bread",
-      description: "Traditional sourdough with perfect crust",
-      price: 189.99,
-    },
+    products: [
+      {
+        prod_id: 16,
+        prod_name: "Traditional Sourdough Bread",
+        description: "Traditional sourdough with perfect crust",
+        price: 189.99,
+        quantity: 2
+      },
+      {
+        prod_id: 17,
+        prod_name: "French Baguette",
+        description: "Classic French baguette with crispy crust",
+        price: 149.99,
+        quantity: 3
+      },
+      {
+        prod_id: 18,
+        prod_name: "Butter Croissant",
+        description: "Buttery layered French croissant",
+        price: 79.99,
+        quantity: 4
+      }
+    ],
     images: [{ link: CakeSample }],
-    quantity: 3,
-    price: 189.99,
-    total_amount: 569.97,
+    total_amount: 829.93,
     status: "Processing",
     created_at: "2024-03-18T15:00:00Z",
     checkoutDate: "2024-03-18T15:30:00Z",
     receiveDate: "2024-03-25T15:00:00Z",
-    downPayment: 284.99,
-    remainingPayment: 284.98,
+    downPayment: 414.97,
+    remainingPayment: 414.96,
     paymentStatus: "Partial - Down Payment Received",
-    cancellationReason: "",
-    refundReason: "",
-    refundDate: null,
   },
 
   // To Receive Orders
@@ -107,16 +101,24 @@ export const ordersData = loadFromLocalStorage("ordersData", [
       rating: 4.7,
       total_sold: 1500,
     },
-    product: {
-      prod_id: 29,
-      prod_name: "Classic French Croissant",
-      description: "Buttery, flaky French pastry",
-      price: 89.99,
-    },
+    products: [
+      {
+        prod_id: 29,
+        prod_name: "Classic French Croissant",
+        description: "Buttery, flaky French pastry",
+        price: 89.99,
+        quantity: 5
+      },
+      {
+        prod_id: 38,
+        prod_name: "Classic Palmier",
+        description: "Crispy puff pastry heart",
+        price: 129.99,
+        quantity: 2
+      }
+    ],
     images: [{ link: CakeSample }],
-    quantity: 5,
-    price: 89.99,
-    total_amount: 449.95,
+    total_amount: 619.94,
     status: "To Receive",
     created_at: "2024-03-17T09:00:00Z",
     checkoutDate: "2024-03-17T09:30:00Z",
@@ -124,9 +126,6 @@ export const ordersData = loadFromLocalStorage("ordersData", [
     downPayment: 0,
     remainingPayment: 0,
     paymentStatus: "",
-    cancellationReason: "",
-    refundReason: "",
-    refundDate: null,
   },
 
   // Completed Orders
@@ -139,15 +138,16 @@ export const ordersData = loadFromLocalStorage("ordersData", [
       rating: 4.8,
       total_sold: 1250,
     },
-    product: {
-      prod_id: 5,
-      prod_name: "Carrot Spice Cake",
-      description: "Spiced carrot cake with walnuts and cream cheese frosting",
-      price: 479.99,
-    },
+    products: [
+      {
+        prod_id: 5,
+        prod_name: "Carrot Spice Cake",
+        description: "Spiced carrot cake with walnuts and cream cheese frosting",
+        price: 479.99,
+        quantity: 1
+      }
+    ],
     images: [{ link: CakeSample }],
-    quantity: 1,
-    price: 479.99,
     total_amount: 479.99,
     status: "Completed",
     created_at: "2024-03-15T14:00:00Z",
@@ -155,9 +155,6 @@ export const ordersData = loadFromLocalStorage("ordersData", [
     downPayment: 0,
     remainingPayment: 0,
     paymentStatus: "",
-    cancellationReason: "",
-    refundReason: "",
-    refundDate: null,
   },
 
   // Cancelled Orders
@@ -170,15 +167,16 @@ export const ordersData = loadFromLocalStorage("ordersData", [
       rating: 4.9,
       total_sold: 980,
     },
-    product: {
-      prod_id: 17,
-      prod_name: "French Baguette",
-      description: "Classic French baguette with crispy crust",
-      price: 149.99,
-    },
+    products: [
+      {
+        prod_id: 17,
+        prod_name: "French Baguette",
+        description: "Classic French baguette with crispy crust",
+        price: 149.99,
+        quantity: 2
+      }
+    ],
     images: [{ link: CakeSample }],
-    quantity: 2,
-    price: 149.99,
     total_amount: 299.98,
     status: "Cancelled",
     created_at: "2024-03-16T16:00:00Z",
@@ -187,8 +185,6 @@ export const ordersData = loadFromLocalStorage("ordersData", [
     downPayment: 0,
     remainingPayment: 0,
     paymentStatus: "",
-    refundReason: "",
-    refundDate: null,
   },
 
   // Refunded Orders
@@ -201,15 +197,16 @@ export const ordersData = loadFromLocalStorage("ordersData", [
       rating: 4.7,
       total_sold: 1500,
     },
-    product: {
-      prod_id: 30,
-      prod_name: "Pain au Chocolat",
-      description: "Chocolate-filled croissant pastry",
-      price: 99.99,
-    },
+    products: [
+      {
+        prod_id: 30,
+        prod_name: "Pain au Chocolat",
+        description: "Chocolate-filled croissant pastry",
+        price: 99.99,
+        quantity: 3
+      }
+    ],
     images: [{ link: CakeSample }],
-    quantity: 3,
-    price: 99.99,
     total_amount: 299.97,
     refundAmount: 299.97,
     status: "Refunded",
@@ -228,15 +225,16 @@ export const ordersData = loadFromLocalStorage("ordersData", [
       rating: 4.8,
       total_sold: 1250,
     },
-    product: {
-      prod_id: 8,
-      prod_name: "Black Forest Cake",
-      description: "Chocolate cake with cherries and whipped cream",
-      price: 579.99,
-    },
+    products: [
+      {
+        prod_id: 8,
+        prod_name: "Black Forest Cake",
+        description: "Chocolate cake with cherries and whipped cream",
+        price: 579.99,
+        quantity: 1
+      }
+    ],
     images: [{ link: CakeSample }],
-    quantity: 1,
-    price: 579.99,
     total_amount: 579.99,
     refundAmount: 289.99,
     status: "Refunded",
@@ -255,15 +253,16 @@ export const ordersData = loadFromLocalStorage("ordersData", [
       rating: 4.9,
       total_sold: 980,
     },
-    product: {
-      prod_id: 15,
-      prod_name: "Assorted Cupcakes Box",
-      description: "12 pieces of assorted flavored cupcakes",
-      price: 449.99,
-    },
+    products: [
+      {
+        prod_id: 15,
+        prod_name: "Assorted Cupcakes Box",
+        description: "12 pieces of assorted flavored cupcakes",
+        price: 449.99,
+        quantity: 2
+      }
+    ],
     images: [{ link: CakeSample }],
-    quantity: 2,
-    price: 449.99,
     total_amount: 899.98,
     refundAmount: 899.98,
     status: "Refunded",

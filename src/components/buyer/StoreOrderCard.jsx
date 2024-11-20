@@ -4,10 +4,11 @@ import CakeSample from '../../assets/CakeSample.png';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 
 const StoreOrderCard = ({ storeData, selectedItems, onSelectItem, onSelectAll, onUpdateQuantity }) => {
-  const { business, items } = storeData;
-  
-  const allSelected = items.every(item => 
-    selectedItems.includes(item.order_id)
+  const products = storeData?.products || [];
+  const business = storeData?.business;
+
+  const allSelected = products.length > 0 && products.every(product => 
+    selectedItems.includes(product.prod_id)
   );
 
   const handleQuantityChange = (orderId, newQty) => {
@@ -16,10 +17,10 @@ const StoreOrderCard = ({ storeData, selectedItems, onSelectItem, onSelectAll, o
     }
   };
 
-  const renderPrice = (item) => {
-    const originalPrice = item.product?.orig_price || item.product?.price;
-    const currentPrice = item.product?.price;
-    const hasDiscount = originalPrice > currentPrice;
+  const renderPrice = (product) => {
+    const price = product?.price || 0;
+    const originalPrice = product?.orig_price || price;
+    const hasDiscount = originalPrice > price;
 
     return (
       <div className="flex flex-col">
@@ -29,11 +30,11 @@ const StoreOrderCard = ({ storeData, selectedItems, onSelectItem, onSelectAll, o
           </span>
         )}
         <span className="text-primary font-semibold text-lg">
-          ₱{currentPrice.toFixed(2)}
+          ₱{price.toFixed(2)}
         </span>
         {hasDiscount && (
           <span className="text-xs text-green-600">
-            {Math.round(((originalPrice - currentPrice) / originalPrice) * 100)}% OFF
+            {Math.round(((originalPrice - price) / originalPrice) * 100)}% OFF
           </span>
         )}
       </div>
@@ -41,99 +42,91 @@ const StoreOrderCard = ({ storeData, selectedItems, onSelectItem, onSelectAll, o
   };
 
   return (
-    <div className="border rounded-lg p-4 bg-white shadow-sm">
-      {/* Store Header */}
+    <div className="bg-white rounded-lg p-4 mb-4">
+      {/* Store Header with Checkbox - keeping existing styles */}
       <div className="flex justify-between items-center mb-4 pb-3 border-b">
         <div className="flex items-center gap-2">
           <input
             type="checkbox"
             checked={allSelected}
-            onChange={onSelectAll}
+            onChange={() => onSelectAll(business?.bus_id)}
             className="w-5 h-5"
           />
-          <Link 
-            to={`/store/${business.bus_id}`} 
-            className="font-semibold text-lg hover:text-primary"
-          >
-            {business.name}
-          </Link>
+          <h2 className="text-lg font-semibold">
+            {business?.name || "Unknown Store"}
+          </h2>
         </div>
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-          <span>⭐ {business.rating || business.store_rating || "0.0"}</span>
-          <span>|</span>
-          <span>{business.total_sold || 0} sold</span>
+        <div className="flex items-center gap-2">
+          <span className="text-yellow-400">★</span>
+          <span>{business?.rating || "0.0"}</span>
+          <span className="text-gray-400">|</span>
+          <span className="text-gray-600">
+            {business?.total_sold || 0} sold
+          </span>
         </div>
       </div>
 
-      {/* Order Items */}
-      <div className="flex flex-col gap-4">
-        {items.map((item, index) => (
-          <div key={index} className="flex gap-4 py-2">
+      {/* Products List - keeping existing styles */}
+      <div className="space-y-4">
+        {products.map((product, index) => (
+          <div key={index} className="flex gap-4 border-t pt-4 first:border-t-0 first:pt-0">
             <input
               type="checkbox"
-              checked={selectedItems.includes(item.order_id)}
-              onChange={() => onSelectItem(item.order_id)}
+              checked={selectedItems.includes(product.prod_id)}
+              onChange={() => onSelectItem(product.prod_id)}
               className="w-5 h-5 mt-8"
             />
-            
             <div className="flex gap-4 flex-1">
               <img
-                src={item.images?.[0]?.link || CakeSample}
-                alt={item.product?.prod_name}
+                src={product.images?.[0]?.link || CakeSample}
+                alt={product.prod_name}
                 className="w-24 h-24 object-cover rounded-md"
+                onError={(e) => {
+                  e.target.src = CakeSample;
+                  e.target.onerror = null;
+                }}
               />
               <div className="flex-1">
-                <h3 className="font-semibold">{item.product?.prod_name}</h3>
-                <p className="text-gray-500 text-sm line-clamp-2">
-                  {item.product?.description}
+                <h3 className="text-lg font-medium">
+                  {product.prod_name}
+                </h3>
+                <p className="text-gray-600">
+                  {product.description}
                 </p>
-                <div className="flex justify-between items-center mt-2">
-                  {renderPrice(item)}
-                  
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-600">Quantity:</span>
-                    <div className="flex items-center border rounded-lg">
-                      <button
-                        onClick={() => handleQuantityChange(item.order_id, (item.qty || 1) - 1)}
-                        className="px-2 py-1 hover:bg-gray-100 rounded-l-lg"
-                      >
-                        <FiMinus />
-                      </button>
-                      <span className="px-4 py-1 border-x">
-                        {item.qty || 1}
-                      </span>
-                      <button
-                        onClick={() => handleQuantityChange(item.order_id, (item.qty || 1) + 1)}
-                        className="px-2 py-1 hover:bg-gray-100 rounded-r-lg"
-                      >
-                        <FiPlus />
-                      </button>
+                <div className="flex justify-between items-end mt-2">
+                  <p className="text-primary text-lg font-semibold">
+                    ₱{(product.price || 0).toFixed(2)}
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-600">Quantity:</span>
+                      <div className="flex items-center border rounded-lg">
+                        <button
+                          onClick={() => onUpdateQuantity(product.prod_id, (product.quantity || 1) - 1)}
+                          className="px-2 py-1 hover:bg-gray-100 rounded-l-lg"
+                        >
+                          <FiMinus />
+                        </button>
+                        <span className="px-4 py-1 border-x">
+                          {product.quantity || 1}
+                        </span>
+                        <button
+                          onClick={() => onUpdateQuantity(product.prod_id, (product.quantity || 1) + 1)}
+                          className="px-2 py-1 hover:bg-gray-100 rounded-r-lg"
+                        >
+                          <FiPlus />
+                        </button>
+                      </div>
                     </div>
+                    <span className="text-gray-600">
+                      Total: ₱{((product.price || 0) * (product.quantity || 1)).toFixed(2)}
+                    </span>
                   </div>
-                </div>
-                
-                <div className="flex justify-end mt-2 text-sm text-gray-600">
-                  Total: ₱{((item.product?.price || 0) * (item.qty || 1)).toFixed(2)}
                 </div>
               </div>
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Store Footer */}
-      <div className="flex justify-between items-center mt-4 pt-3 border-t text-sm">
-        <div className="text-gray-500">
-          {items.length} item{items.length !== 1 ? 's' : ''} from this store
-        </div>
-        <div className="flex gap-4">
-          <button className="text-gray-600 hover:text-primary">
-            Chat with Seller
-          </button>
-          <button className="text-gray-600 hover:text-primary">
-            View Store
-          </button>
-        </div>
       </div>
     </div>
   );

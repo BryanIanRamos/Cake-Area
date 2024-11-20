@@ -84,9 +84,15 @@ const Cart = () => {
           business: {
             ...order.business,
             name: order.business?.name || "Unknown Store",
-            rating: order.business?.rating || 4.5,  // Add default rating
-            total_sold: order.business?.total_sold || 0  // Add default total_sold
-          }
+            rating: order.business?.rating || 4.5,
+            total_sold: order.business?.total_sold || 0
+          },
+          // Ensure products array exists and has price
+          products: order.products?.map(product => ({
+            ...product,
+            price: product.price || 0,
+            quantity: product.quantity || 1
+          })) || []
         }));
         setCartItems(pendingItems);
 
@@ -138,35 +144,94 @@ const Cart = () => {
     setStorageData(STORAGE_KEYS.PROCESSING_ORDERS, processingOrders);
   }, [processingOrders]);
 
-  const handleSelectItem = (orderId) => {
-    setSelectedItems((prev) => {
-      const isSelected = prev.includes(orderId);
-      if (isSelected) {
-        return prev.filter((id) => id !== orderId);
-      } else {
-        return [...prev, orderId];
+  // Update the grouping logic
+  const groupOrdersByBusiness = (orders) => {
+    return orders.reduce((acc, order) => {
+      const busId = order.business?.bus_id;
+      if (!busId) return acc;
+
+      if (!acc[busId]) {
+        acc[busId] = {
+          business: order.business,
+          order_id: order.order_id,
+          products: [],
+          images: order.images,
+          status: order.status,
+          total_amount: 0
+        };
       }
+
+      // Add all products from this order
+      acc[busId].products = [...acc[busId].products, ...order.products];
+      acc[busId].total_amount += order.total_amount || 0;
+
+      return acc;
+    }, {});
+  };
+
+  // Update handleConfirmCheckout
+  const handleConfirmCheckout = (receiveDate) => {
+    const groupedOrders = groupOrdersByBusiness(
+      cartItems.filter(item => selectedItems.includes(item.order_id))
+    );
+
+    const selectedOrders = Object.values(groupedOrders).map(group => ({
+      order_id: `ORD${Date.now()}`,
+      business_id: group.business.bus_id,
+      business: group.business,
+      products: group.products,
+      images: group.images,
+      total_amount: group.products.reduce((sum, product) => 
+        sum + (product.price * product.quantity), 0
+      ),
+      status: "Processing",
+      checkoutDate: new Date().toISOString(),
+      receiveDate: receiveDate.toISOString(),
+      downPayment: group.total_amount * 0.5,
+      remainingPayment: group.total_amount * 0.5,
+      paymentStatus: "Partial - Down Payment Received",
+    }));
+
+    // Add to processing orders
+    setProcessingOrders(prev => [...prev, ...selectedOrders]);
+
+    // Remove from cart
+    setCartItems(prev => 
+      prev.filter(item => !selectedItems.includes(item.order_id))
+    );
+
+    setSelectedItems([]);
+    setCheckOutConfirm(false);
+    
+    toast.success("Down payment received! Order has been placed successfully!");
+    navigate("/cart/in-process");
+  };
+
+  // Update handleSelectAll for business groups
+  const handleSelectAll = (businessId) => {
+    const businessProducts = cartItems
+      .find(order => order.business?.bus_id === businessId)
+      ?.products || [];
+      
+    const allProductIds = businessProducts.map(p => p.prod_id);
+    const allSelected = allProductIds.every(id => selectedItems.includes(id));
+
+    setSelectedItems(prev => {
+      if (allSelected) {
+        return prev.filter(id => !allProductIds.includes(id));
+      }
+      return [...new Set([...prev, ...allProductIds])];
     });
   };
 
-  const handleSelectAll = (businessId) => {
-    const businessItems = cartItems.filter(
-      (item) => item.bus_id === businessId
-    );
-    const allSelected = businessItems.every((item) =>
-      selectedItems.includes(item.order_id)
-    );
-
-    if (allSelected) {
-      setSelectedItems((prev) =>
-        prev.filter((id) => !businessItems.find((item) => item.order_id === id))
-      );
-    } else {
-      const newSelected = businessItems
-        .map((item) => item.order_id)
-        .filter((id) => !selectedItems.includes(id));
-      setSelectedItems((prev) => [...prev, ...newSelected]);
-    }
+  // Update handleSelectItem
+  const handleSelectItem = (prodId) => {
+    setSelectedItems(prev => {
+      if (prev.includes(prodId)) {
+        return prev.filter(id => id !== prodId);
+      }
+      return [...prev, prodId];
+    });
   };
 
   const handleUpdateQuantity = (orderId, newQty) => {
@@ -184,10 +249,16 @@ const Cart = () => {
   };
 
   useEffect(() => {
-    const total = cartItems
-      .filter((item) => selectedItems.includes(item.order_id))
-      .reduce((sum, item) => sum + (item.total_amount || 0), 0);
-    setTotalAmount(total);
+    const newTotal = cartItems.reduce((sum, order) => {
+      const orderTotal = order.products
+        .filter(product => selectedItems.includes(product.prod_id))
+        .reduce((orderSum, product) => 
+          orderSum + ((product.price || 0) * (product.quantity || 1)), 0
+        );
+      return sum + orderTotal;
+    }, 0);
+    
+    setTotalAmount(newTotal);
   }, [selectedItems, cartItems]);
 
   const handleCheckout = () => {
@@ -195,40 +266,24 @@ const Cart = () => {
       toast.error("Please select items to checkout");
       return;
     }
+
+    const selectedProducts = cartItems.reduce((acc, order) => {
+      const products = order.products.filter(p => 
+        selectedItems.includes(p.prod_id)
+      );
+      if (products.length > 0) {
+        acc.push({
+          ...order,
+          products: products,
+          total_amount: products.reduce((sum, p) => 
+            sum + (p.price * p.quantity), 0
+          )
+        });
+      }
+      return acc;
+    }, []);
+
     setCheckOutConfirm(true);
-  };
-
-  const handleConfirmCheckout = (receiveDate) => {
-    const selectedOrders = cartItems
-      .filter((item) => selectedItems.includes(item.order_id))
-      .map((item) => {
-        const totalAmount =
-          item.total_amount || item.price * (item.quantity || 1);
-        return {
-          ...item,
-          status: "Processing",
-          checkoutDate: new Date().toISOString(),
-          receiveDate: receiveDate.toISOString(),
-          totalAmount: totalAmount,
-          downPayment: totalAmount * 0.5,
-          remainingPayment: totalAmount * 0.5,
-          paymentStatus: "Partial - Down Payment Received",
-        };
-      });
-
-    // Add to processing orders
-    setProcessingOrders((prev) => [...prev, ...selectedOrders]);
-
-    // Remove from cart
-    setCartItems((prev) =>
-      prev.filter((item) => !selectedItems.includes(item.order_id))
-    );
-
-    setSelectedItems([]);
-    setCheckOutConfirm(false);
-
-    toast.success("Down payment received! Order has been placed successfully!");
-    navigate("/cart/in-process");
   };
 
   const getOrderCount = () => {
@@ -388,6 +443,20 @@ const Cart = () => {
 
   console.log("Current refunded orders:", refundOrders);
 
+  // Add quantity handler
+  const handleQuantityChange = (prodId, newQty) => {
+    if (newQty < 1) return; // Prevent quantities less than 1
+    
+    setCartItems(prev => prev.map(order => ({
+      ...order,
+      products: order.products.map(product => 
+        product.prod_id === prodId 
+          ? { ...product, quantity: newQty }
+          : product
+      )
+    })));
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Toaster richColors closeButton position="top-center" />
@@ -428,32 +497,24 @@ const Cart = () => {
           <Route
             path="/"
             element={
-              <div className="flex flex-col gap-4 pb-20 relative z-0">
+              <div className="flex flex-col gap-4 mt-4">
                 {isLoading ? (
-                  <div className="text-center py-8">
-                    <p>Loading cart items...</p>
-                  </div>
-                ) : groupedCartItems.length === 0 ? (
-                  <div className="text-center py-8">
-                    <p>Your cart is empty</p>
-                    <button
-                      onClick={() => navigate("/")}
-                      className="mt-4 bg-primary text-white px-6 py-2 rounded-lg"
-                    >
-                      Continue Shopping
-                    </button>
-                  </div>
-                ) : (
-                  groupedCartItems.map((group, index) => (
+                  <div>Loading...</div>
+                ) : cartItems && cartItems.length > 0 ? (
+                  cartItems.map((order, index) => (
                     <StoreOrderCard
                       key={index}
-                      storeData={group}
+                      storeData={order}
                       selectedItems={selectedItems}
                       onSelectItem={handleSelectItem}
-                      onSelectAll={() => handleSelectAll(group.business.bus_id)}
-                      onUpdateQuantity={handleUpdateQuantity}
+                      onSelectAll={handleSelectAll}
+                      onUpdateQuantity={handleQuantityChange}
                     />
                   ))
+                ) : (
+                  <div className="text-center py-8">
+                    <p>Your cart is empty</p>
+                  </div>
                 )}
               </div>
             }
