@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { userData } from '../../data/userDataTbl';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -8,6 +8,23 @@ const AdminLogin = () => {
     email: '',
     password: '',
   });
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: "success"
+  });
+
+  const showToast = (message, type) => {
+    setToast({
+      show: true,
+      message,
+      type
+    });
+
+    setTimeout(() => {
+      setToast(prev => ({ ...prev, show: false }));
+    }, 2000);
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -19,14 +36,34 @@ const AdminLogin = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Mock credentials (In real app, this should be handled securely)
-    if (formData.email === 'admin@cakearea.com' && formData.password === 'admin123') {
-      // Set some form of authentication token/state here
-      localStorage.setItem('adminToken', 'mock-token');
-      toast.success('Login successful!');
-      navigate('/admin');
+    // Find admin user with matching credentials
+    const admin = userData.users.find(user => 
+      user.email === formData.email && 
+      user.password === formData.password && 
+      user.role === 1 // Check if user is an admin
+    );
+
+    if (admin) {
+      // Store admin data in localStorage
+      const adminData = {
+        admin_id: admin.user_id,
+        email: admin.email,
+        token: 'admin-token-' + admin.user_id // In real app, use proper JWT
+      };
+      
+      localStorage.setItem('adminData', JSON.stringify(adminData));
+      
+      // Update login status in userData (in real app, this would be a DB update)
+      admin.is_Login = true;
+      
+      showToast('Login successful!', 'success');
+      
+      // Navigate after short delay to allow toast to be seen
+      setTimeout(() => {
+        navigate('/admin/dashboard');
+      }, 1000);
     } else {
-      toast.error('Invalid credentials');
+      showToast('Invalid credentials or not an admin account', 'error');
     }
   };
 
@@ -127,19 +164,37 @@ const AdminLogin = () => {
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="px-2 bg-white text-gray-500">
-                  Demo Credentials
+                  Demo Admin Accounts
                 </span>
               </div>
             </div>
             <div className="mt-6 grid grid-cols-1 gap-3">
               <div className="text-sm text-gray-500 text-center">
-                <p>Email: admin@cakearea.com</p>
-                <p>Password: admin123</p>
+                {userData.users
+                  .filter(user => user.role === 1)
+                  .map(admin => (
+                    <div key={admin.user_id} className="mb-2">
+                      <p>Email: {admin.email}</p>
+                      <p>Password: {admin.password}</p>
+                    </div>
+                  ))}
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Toast Notification */}
+      {toast.show && (
+        <div 
+          className={`fixed bottom-4 right-4 px-4 py-2 rounded-lg shadow-lg
+            ${toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'} 
+            text-white
+            transition-opacity duration-300 ease-in-out`}
+        >
+          <p>{toast.message}</p>
+        </div>
+      )}
     </div>
   );
 };
