@@ -7,6 +7,7 @@ import Toast from "../../components/baker/Toast";
 import MarkAsDoneModal from "../../components/baker/MarkAsDoneModal";
 import MarkAsDeliveredModal from "../../components/baker/MarkAsDeliveredModal";
 import { saveToLocalStorage, loadFromLocalStorage } from "../../data/localStorage";
+import CancelOrderModal from "../../components/baker/CancelOrderModal";
 
 const Orders = () => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
@@ -29,6 +30,8 @@ const Orders = () => {
   const [isMarkAsDeliveredModalOpen, setIsMarkAsDeliveredModalOpen] = useState(false);
   const [selectedOrderForDone, setSelectedOrderForDone] = useState(null);
   const [selectedOrderForDelivered, setSelectedOrderForDelivered] = useState(null);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [selectedOrderForCancel, setSelectedOrderForCancel] = useState(null);
 
   // Filter orders based on active tab and search query
   const filteredOrders = orders.filter((order) => {
@@ -185,36 +188,80 @@ const Orders = () => {
     console.log(`Review order ${orderId}`);
   };
 
+  const handleCancel = (order) => {
+    setSelectedOrderForCancel(order);
+    setIsCancelModalOpen(true);
+  };
+
+  const handleCancelConfirm = (orderId, reason) => {
+    const orderToUpdate = orders.find(order => order.order_id === orderId);
+    if (orderToUpdate) {
+      const updatedOrder = {
+        ...orderToUpdate,
+        status: "Cancelled",
+        cancel_reason: reason,
+        updated_at: new Date().toISOString()
+      };
+      
+      // Update in localStorage
+      updateOrder(updatedOrder);
+      
+      // Update local state
+      setOrders(prevOrders => 
+        prevOrders.map(order => 
+          order.order_id === orderId ? updatedOrder : order
+        )
+      );
+      
+      setIsCancelModalOpen(false);
+      setToast({
+        show: true,
+        message: `Order ${orderId} has been cancelled.`,
+        type: "error"
+      });
+      
+      setActiveTab("cancelled");
+    }
+  };
+
   // Action buttons should only show based on exact status match
   const renderActionButtons = (order) => {
     const status = order.status;
     return (
-      <div className="flex gap-2">
+      <div className="flex gap-4">
         <button
-          className="text-blue-600 hover:text-blue-800"
+          className="text-blue-600 hover:text-blue-800 font-medium"
           onClick={() => handleView(order)}
         >
           View
         </button>
         {status === "Pending" && (
           <button
-            className="text-green-600 hover:text-green-800"
+            className="text-green-600 hover:text-green-800 font-medium"
             onClick={() => handleAccept(order)}
           >
             Accept
           </button>
         )}
         {status === "Processing" && (
-          <button
-            className="text-yellow-600 hover:text-yellow-800"
-            onClick={() => handleMarkAsDone(order)}
-          >
-            Mark as Done
-          </button>
+          <>
+            <button
+              className="text-yellow-600 hover:text-yellow-800 font-medium"
+              onClick={() => handleMarkAsDone(order)}
+            >
+              Mark as Done
+            </button>
+            <button
+              className="text-red-600 hover:text-red-800 font-medium"
+              onClick={() => handleCancel(order)}
+            >
+              Cancel
+            </button>
+          </>
         )}
         {status === "To Receive" && (
           <button
-            className="text-green-600 hover:text-green-800"
+            className="text-green-600 hover:text-green-800 font-medium"
             onClick={() => handleMarkAsDelivered(order)}
           >
             Mark as Delivered
@@ -405,6 +452,13 @@ const Orders = () => {
         onClose={() => setIsMarkAsDeliveredModalOpen(false)}
         order={selectedOrderForDelivered}
         onMarkAsDelivered={handleMarkAsDeliveredConfirm}
+      />
+
+      <CancelOrderModal
+        isOpen={isCancelModalOpen}
+        onClose={() => setIsCancelModalOpen(false)}
+        order={selectedOrderForCancel}
+        onCancel={handleCancelConfirm}
       />
 
       {/* Toast notification */}

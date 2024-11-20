@@ -557,68 +557,83 @@ const Cart = () => {
             path="/in-process"
             element={
               <div className="flex flex-col gap-4 mt-4">
-                {processingOrders.length === 0 ? (
-                  <div className="text-center py-8">
-                    <p>No orders in process</p>
-                    <button
-                      onClick={() => navigate("/")}
-                      className="mt-4 bg-primary text-white px-6 py-2 rounded-lg"
-                    >
-                      Continue Shopping
-                    </button>
-                  </div>
-                ) : (
-                  processingOrders.map((order, index) => (
-                    <div key={index} className="bg-white rounded-lg p-4">
-                      <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-lg font-semibold">
-                          {order.business?.name || "Unknown Store"}
-                        </h2>
-                        <div className="flex items-center gap-2">
-                          <span className="text-yellow-400">★</span>
-                          <span>{order.business?.rating || "0.0"}</span>
-                          <span className="text-gray-400">|</span>
-                          <span className="text-gray-600">
-                            {order.business?.total_sold || 0} sold
-                          </span>
-                        </div>
+                {processingOrders.map((order, index) => (
+                  <div key={index} className="bg-white rounded-lg p-4">
+                    {/* Store Name Header */}
+                    <div className="flex justify-between items-center mb-4">
+                      <h2 className="text-lg font-semibold">
+                        {order.business?.name}
+                      </h2>
+                      <div className="flex items-center gap-2">
+                        <span className="text-yellow-400">★</span>
+                        <span>{order.business?.rating}</span>
+                        <span className="text-gray-400">|</span>
+                        <span className="text-gray-600">
+                          {order.business?.total_sold} sold
+                        </span>
                       </div>
+                    </div>
 
-                      <div className="flex gap-4">
+                    {/* Order Date */}
+                    <div className="text-sm text-gray-500 mb-3">
+                      Order Date: {new Date(order.created_at).toLocaleDateString()}
+                    </div>
+
+                    {/* Products List */}
+                    {order.products?.map((product, prodIndex) => (
+                      <div key={prodIndex} className="flex gap-4 mt-4 border-t pt-4 first:border-t-0 first:pt-0">
                         <img
-                          src={
-                            order.images?.[0]?.link ||
-                            "/path/to/default-image.jpg"
-                          }
-                          alt={order.product?.prod_name || "Product"}
+                          src={order.images?.[0]?.link || CakeSample}
+                          alt={product.prod_name}
                           className="w-24 h-24 object-cover rounded-md"
+                          onError={(e) => {
+                            e.target.src = CakeSample;
+                            e.target.onerror = null;
+                          }}
                         />
                         <div className="flex-1">
                           <h3 className="text-lg font-medium">
-                            {order.product?.prod_name || "Unknown Product"}
+                            {product.prod_name}
                           </h3>
                           <p className="text-gray-600">
-                            {order.product?.description ||
-                              "No description available"}
+                            {product.description}
                           </p>
                           <div className="flex justify-between items-end mt-2">
                             <p className="text-primary text-lg font-semibold">
-                              ₱{(order.price || 0).toFixed(2)}
+                              ₱{(product.price || 0).toFixed(2)}
                             </p>
                             <div className="flex items-center gap-4">
                               <span className="text-gray-600">
-                                Quantity: {order.quantity || 0}
+                                Quantity: {product.quantity}
                               </span>
                               <span className="text-gray-600">
-                                Total: ₱{(order.total_amount || 0).toFixed(2)}
+                                Total: ₱{((product.price || 0) * (product.quantity || 0)).toFixed(2)}
                               </span>
                             </div>
                           </div>
                         </div>
                       </div>
+                    ))}
+
+                    {/* Order Total */}
+                    <div className="mt-4 pt-4 border-t flex justify-between items-center">
+                      <div className="text-gray-600">
+                        <p>Down Payment (50%): ₱{(order.downPayment || 0).toFixed(2)}</p>
+                        <p>Remaining Payment: ₱{(order.remainingPayment || 0).toFixed(2)}</p>
+                      </div>
+                      <div className="text-lg font-semibold">
+                        Total Amount: ₱{(order.total_amount || 0).toFixed(2)}
+                      </div>
                     </div>
-                  ))
-                )}
+
+                    {/* Status Badge */}
+                    <div className="flex justify-end mt-4">
+                      <div className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
+                        Processing
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             }
           />
