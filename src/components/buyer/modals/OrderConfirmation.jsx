@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FiX } from "react-icons/fi";
+import AddressSelectionModal from "./AddressSelectionModal";
+import dataAddress from "../../../data/address.json";
 
 const OrderConfirmation = ({
   isOpen,
@@ -15,6 +17,8 @@ const OrderConfirmation = ({
   minDate.setDate(minDate.getDate() + 4);
 
   const [selectedDate, setSelectedDate] = useState(minDate);
+  const [selectedAddress, setSelectedAddress] = useState(dataAddress[0]);
+  const [showAddressModal, setShowAddressModal] = useState(false);
 
   // Calculate fees and totals
   const deliveryFee = 50;
@@ -73,17 +77,38 @@ const OrderConfirmation = ({
               </div>
             </div>
 
+            {/* Add Delivery Address Section */}
+            <div className="border-b pb-4">
+              <h3 className="font-medium mb-2">Delivery Address</h3>
+              <div className="flex justify-between items-start">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{selectedAddress.name}</span>
+                    <span className="text-gray-500">|</span>
+                    <span className="text-gray-600">
+                      {selectedAddress.phone}
+                    </span>
+                  </div>
+                  <p className="text-gray-600 text-sm mt-1">
+                    {selectedAddress.address.line1}
+                  </p>
+                  <p className="text-gray-600 text-sm">
+                    {selectedAddress.address.line2}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowAddressModal(true)}
+                  className="text-primary hover:text-primary-dark text-sm underline"
+                >
+                  Change
+                </button>
+              </div>
+            </div>
+
             {/* Order Summary */}
             <div className="border-t pt-4">
               <h3 className="font-medium mb-2">Order Summary</h3>
-              {selectedItems.map((item, index) => (
-                <div key={index} className="flex justify-between text-sm mb-1">
-                  <span>
-                    {item.product?.prod_name} x {item.qty}
-                  </span>
-                  <span>₱{(item.overall_pay || 0).toFixed(2)}</span>
-                </div>
-              ))}
+
               <div className="border-t mt-2 pt-2 space-y-1">
                 <div className="flex justify-between text-sm text-gray-600">
                   <span>Items Subtotal:</span>
@@ -122,6 +147,15 @@ const OrderConfirmation = ({
           </div>
         </div>
       </div>
+
+      {/* Add Address Selection Modal */}
+      <AddressSelectionModal
+        isOpen={showAddressModal}
+        onClose={() => setShowAddressModal(false)}
+        addresses={dataAddress}
+        selectedAddress={selectedAddress}
+        onSelectAddress={setSelectedAddress}
+      />
     </div>
   );
 };
