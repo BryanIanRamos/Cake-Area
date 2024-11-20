@@ -11,6 +11,7 @@ const CartTabs = () => {
     { name: "Completed", path: "/cart/completed" },
     { name: "Cancelled", path: "/cart/cancelled" },
     { name: "Refund", path: "/cart/refund" },
+    { name: "Refunded", path: "/cart/refunded" },
   ];
 
   // Updated function to check if the tab is active

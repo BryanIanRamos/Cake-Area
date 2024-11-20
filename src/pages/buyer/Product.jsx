@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import { Toaster, toast } from 'sonner';
 import Navbar from "../../components/buyer/Navbar";
 import CakeSample from "../../assets/CakeSample.png";
 import Rating from "../../components/buyer/Rating";
@@ -11,6 +11,8 @@ import CommentCard from "../../components/buyer/CommentCard";
 import Pagination from "../../components/buyer/Pagination";
 import { productData } from "../../data/productDataTbl";
 import { imagesData } from "../../data/imagesDataTbl";
+import OrderConfirmation from "../../components/buyer/modals/OrderConfirmation";
+import { FiAlertCircle } from 'react-icons/fi';
 
 const Product = () => {
   const { productId } = useParams();
@@ -53,6 +55,7 @@ const Product = () => {
   const commentsPerPage = 3;
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
+  const [orderConfirmOpen, setOrderConfirmOpen] = useState(false);
 
   const downPayment = product.price * 0.5;
 
@@ -92,25 +95,51 @@ const Product = () => {
     indexOfLastComment
   );
 
-  const handleQuantityChange = (value) => {
-    const newQuantity = Math.max(1, Math.min(product.qty, value));
-    setQuantity(newQuantity);
+  const handleQuantityChange = (newValue) => {
+    let value = parseInt(newValue);
+    
+    if (isNaN(value)) {
+      value = 1;
+    }
+    
+    if (value < 1) value = 1;
+    if (value > product.qty) value = product.qty;
+    
+    setQuantity(value);
   };
 
   const handleAddToCart = () => {
-    toast.success("Added to cart successfully!");
+    toast.success('Added to cart successfully!', {
+      icon: <FiAlertCircle className="text-lg" />,
+      className: 'font-[Oswald]',
+      position: 'bottom-right',
+      duration: 2000,
+    });
   };
 
   const handleOrderNow = () => {
-    navigate("/checkout", {
-      state: {
-        product: {
-          id: product.prod_id,
-          name: product.prod_name,
-          price: product.price,
-          quantity: quantity,
-        },
-      },
+    setOrderConfirmOpen(true);
+  };
+
+  const handleConfirmOrder = (receiveDate) => {
+    const orderDetails = {
+      ...product,
+      qty: quantity,
+      status: "Processing",
+      checkoutDate: new Date().toISOString(),
+      receiveDate: receiveDate.toISOString(),
+      totalAmount: product.price * quantity,
+      downPayment: product.price * quantity * 0.5,
+      remainingPayment: product.price * quantity * 0.5,
+      paymentStatus: "Partial - Down Payment Received"
+    };
+
+    navigate("/cart/in-process");
+    toast.success('Order placed successfully!', {
+      icon: <FiAlertCircle className="text-lg" />,
+      className: 'font-[Oswald]',
+      position: 'bottom-right',
+      duration: 2000,
     });
   };
 
@@ -137,6 +166,10 @@ const Product = () => {
     window.scrollTo(0, 0);
   };
 
+  const handleStoreClick = (busId) => {
+    navigate(`/store/${busId}`);
+  };
+
   const recommendedProducts = useMemo(() => {
     return productData.products
       .filter(p => p.bus_id === product.bus_id && p.prod_id !== product.prod_id)
@@ -145,7 +178,22 @@ const Product = () => {
 
   return (
     <div className="flex flex-col items-center justify-start h-full w-full px-4 py-6 md:px-10 md:py-8">
-      <Navbar />
+      <Toaster richColors position="bottom-right" />
+      <Navbar businessId={product.bus_id} />
+
+      {orderConfirmOpen && (
+        <OrderConfirmation 
+          isOpen={orderConfirmOpen}
+          closeModal={() => setOrderConfirmOpen(false)}
+          totalAmount={product.price * quantity}
+          selectedItems={[{
+            ...product,
+            qty: quantity,
+            overall_pay: product.price * quantity
+          }]}
+          onConfirm={handleConfirmOrder}
+        />
+      )}
 
       <div className="w-full h-fit max-w-6xl mx-auto flex flex-col gap-2 mt-[5%]">
         {/* Top Content */}
@@ -235,23 +283,21 @@ const Product = () => {
                 <div className="flex items-center gap-2">
                   <button
                     className="w-7 h-7 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-100 transition-colors"
-                    onClick={() => handleQuantityChange(quantity - 1)}
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   >
                     −
                   </button>
                   <input
                     type="number"
                     value={quantity}
-                    onChange={(e) =>
-                      handleQuantityChange(parseInt(e.target.value) || 1)
-                    }
+                    onChange={(e) => handleQuantityChange(e.target.value)}
                     className="w-14 h-7 border border-gray-300 rounded text-center text-sm"
                     min="1"
-                    max="99"
+                    max={product.qty || 99}
                   />
                   <button
                     className="w-7 h-7 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-100 transition-colors"
-                    onClick={() => handleQuantityChange(quantity + 1)}
+                    onClick={() => setQuantity(Math.min(product.qty || 99, quantity + 1))}
                   >
                     +
                   </button>

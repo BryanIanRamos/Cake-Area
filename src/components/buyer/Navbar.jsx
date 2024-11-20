@@ -11,7 +11,13 @@ const Navbar = () => {
   };
 
   const handleNavigation = (path) => {
-    navigate(path);
+    if (path === "/store") {
+      navigate(-1);
+    } else if (path === "/orders") {
+      navigate("/cart");
+    } else {
+      navigate(path);
+    }
     setIsMobileMenuOpen(false);
   };
 
@@ -20,7 +26,7 @@ const Navbar = () => {
       <div className="flex items-center pl-3 sm:pl-8">
         <p className="text-white text-sm sm:text-xl">Logo</p>
       </div>
-      
+
       {/* Mobile Menu Button */}
       <div className="sm:hidden flex justify-end items-center pr-3">
         <button
@@ -80,7 +86,7 @@ const Navbar = () => {
               onClick={() => handleNavigation("/store")}
               className="px-4 py-3 hover:bg-white/10 active:bg-white/20 transition-colors duration-200 text-sm"
             >
-              Store
+              Back
             </a>
             <a
               onClick={() => handleNavigation("/orders")}
@@ -101,4 +107,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar; 
+export default Navbar;

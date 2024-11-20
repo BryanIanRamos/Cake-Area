@@ -24,7 +24,8 @@ const STORAGE_KEYS = {
   PROCESSING_ORDERS: 'processingOrders',
   TO_RECEIVE_ORDERS: 'toReceiveOrders',
   COMPLETED_ORDERS: 'completedOrders',
-  CANCELLED_ORDERS: 'cancelledOrders'
+  CANCELLED_ORDERS: 'cancelledOrders',
+  REFUNDED_ORDERS: 'refundedOrders'
 };
 
 const getStorageData = (key) => {
@@ -54,6 +55,10 @@ const Cart = () => {
   const [checkOutConfirm, setCheckOutConfirm] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [processingOrders, setProcessingOrders] = useState([]);
+  const [toReceiveOrders, setToReceiveOrders] = useState([]);
+  const [completedOrders, setCompletedOrders] = useState([]);
+  const [cancelledOrders, setCancelledOrders] = useState([]);
+  const [refundedOrders, setRefundedOrders] = useState([]);
 
   // Modified useEffect to load from localStorage
   useEffect(() => {
@@ -204,11 +209,11 @@ const Cart = () => {
       case '/cart/in-process':
         return processingOrders.length;
       case '/cart/to-receive':
-        return getStorageData(STORAGE_KEYS.TO_RECEIVE_ORDERS).length;
+        return toReceiveOrders.length;
       case '/cart/completed':
-        return getStorageData(STORAGE_KEYS.COMPLETED_ORDERS).length;
+        return completedOrders.length;
       case '/cart/cancelled':
-        return getStorageData(STORAGE_KEYS.CANCELLED_ORDERS).length;
+        return cancelledOrders.length;
       default:
         return 0;
     }
@@ -232,6 +237,83 @@ const Cart = () => {
 
     return Object.values(grouped);
   }, [cartItems]);
+
+  // Add this useEffect to initialize the dummy data
+  useEffect(() => {
+    // Dummy data for to-receive orders
+    const dummyToReceive = [{
+      order_id: "TR001",
+      product: {
+        prod_name: "Classic Palmier",
+        price: 89.99,
+        description: "Crispy puff pastry heart shapes"
+      },
+      business: {
+        name: "Peter's Pastry Paradise"
+      },
+      qty: 4,
+      overall_pay: 359.96,
+      receiveDate: new Date().toISOString()
+    }];
+
+    // Dummy data for completed orders
+    const dummyCompleted = [{
+      order_id: "CO001",
+      product: {
+        prod_name: "Classic Palmier",
+        price: 89.99,
+        description: "Crispy puff pastry heart shapes"
+      },
+      business: {
+        name: "Peter's Pastry Paradise"
+      },
+      qty: 4,
+      overall_pay: 359.96,
+      completedDate: new Date().toISOString()
+    }];
+
+    // Dummy data for cancelled orders
+    const dummyCancelled = [{
+      order_id: "CA001",
+      product: {
+        prod_name: "Classic Palmier",
+        price: 89.99,
+        description: "Crispy puff pastry heart shapes"
+      },
+      business: {
+        name: "Peter's Pastry Paradise"
+      },
+      qty: 4,
+      overall_pay: 359.96,
+      cancellationReason: "Changed my mind",
+      cancelledDate: new Date().toISOString()
+    }];
+
+    // Dummy data for refunded orders
+    const dummyRefunded = [{
+      order_id: "RF001",
+      product: {
+        prod_name: "Classic Palmier",
+        price: 89.99,
+        description: "Crispy puff pastry heart shapes"
+      },
+      business: {
+        name: "Peter's Pastry Paradise"
+      },
+      qty: 4,
+      overall_pay: 359.96,
+      refundReason: "Product quality issues",
+      refundDate: new Date().toISOString()
+    }];
+
+    setToReceiveOrders(dummyToReceive);
+    setCompletedOrders(dummyCompleted);
+    setCancelledOrders(dummyCancelled);
+    setRefundedOrders(dummyRefunded);
+    console.log('Refunded orders set:', dummyRefunded);
+  }, []);
+
+  console.log('Current refunded orders:', refundedOrders);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -380,7 +462,244 @@ const Cart = () => {
               </div>
             }
           />
-          {/* Add other routes for different order statuses */}
+          <Route
+            path="/to-receive"
+            element={
+              <div className="flex flex-col gap-4 mt-4">
+                {toReceiveOrders.map((order, index) => (
+                  <div key={index}>
+                    <div className="bg-white rounded-lg p-4">
+                      {/* Store Name Header */}
+                      <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-lg font-semibold">{order.business?.name}</h2>
+                        <div className="flex items-center gap-2">
+                          <span className="text-yellow-400">★</span>
+                          <span>4.9</span>
+                          <span className="text-gray-400">|</span>
+                          <span className="text-gray-600">1250 sold</span>
+                        </div>
+                      </div>
+
+                      {/* Product Details */}
+                      <div className="flex gap-4">
+                        <img
+                          src="/path/to/default-image.jpg"
+                          alt={order.product?.prod_name}
+                          className="w-24 h-24 object-cover rounded-md"
+                        />
+                        <div className="flex-1">
+                          <h3 className="text-lg font-medium">{order.product?.prod_name}</h3>
+                          <p className="text-gray-600">{order.product?.description}</p>
+                          <div className="flex justify-between items-end mt-2">
+                            <p className="text-primary text-lg font-semibold">
+                              ₱{order.product?.price?.toFixed(2) || '0.00'}
+                            </p>
+                            <div className="flex items-center gap-4">
+                              <span className="text-gray-600">Quantity: {order.qty || 0}</span>
+                              <span className="text-gray-600">
+                                Total: ₱{order.overall_pay?.toFixed(2) || '0.00'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Status Badge */}
+                      <div className="flex justify-end mt-4">
+                        <div className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                          Ready for Pickup
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            }
+          />
+
+          <Route
+            path="/completed"
+            element={
+              <div className="flex flex-col gap-4 mt-4">
+                {completedOrders.map((order, index) => (
+                  <div key={index}>
+                    <div className="bg-white rounded-lg p-4">
+                      {/* Same structure as above */}
+                      <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-lg font-semibold">{order.business?.name}</h2>
+                        <div className="flex items-center gap-2">
+                          <span className="text-yellow-400">★</span>
+                          <span>4.9</span>
+                          <span className="text-gray-400">|</span>
+                          <span className="text-gray-600">1250 sold</span>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-4">
+                        <img
+                          src="/path/to/default-image.jpg"
+                          alt={order.product?.prod_name}
+                          className="w-24 h-24 object-cover rounded-md"
+                        />
+                        <div className="flex-1">
+                          <h3 className="text-lg font-medium">{order.product?.prod_name}</h3>
+                          <p className="text-gray-600">{order.product?.description}</p>
+                          <div className="flex justify-between items-end mt-2">
+                            <p className="text-primary text-lg font-semibold">
+                              ₱{order.product?.price?.toFixed(2) || '0.00'}
+                            </p>
+                            <div className="flex items-center gap-4">
+                              <span className="text-gray-600">Quantity: {order.qty || 0}</span>
+                              <span className="text-gray-600">
+                                Total: ₱{order.overall_pay?.toFixed(2) || '0.00'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end mt-4">
+                        <div className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                          Completed
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            }
+          />
+
+          <Route
+            path="/cancelled"
+            element={
+              <div className="flex flex-col gap-4 mt-4">
+                {cancelledOrders.map((order, index) => (
+                  <div key={index}>
+                    <div className="bg-white rounded-lg p-4">
+                      {/* Store Name Header */}
+                      <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-lg font-semibold">{order.business?.name}</h2>
+                        <div className="flex items-center gap-2">
+                          <span className="text-yellow-400">★</span>
+                          <span>4.9</span>
+                          <span className="text-gray-400">|</span>
+                          <span className="text-gray-600">1250 sold</span>
+                        </div>
+                      </div>
+
+                      {/* Product Details */}
+                      <div className="flex gap-4">
+                        <img
+                          src="/path/to/default-image.jpg"
+                          alt={order.product?.prod_name}
+                          className="w-24 h-24 object-cover rounded-md"
+                        />
+                        <div className="flex-1">
+                          <h3 className="text-lg font-medium">{order.product?.prod_name}</h3>
+                          <p className="text-gray-600">{order.product?.description}</p>
+                          <div className="flex justify-between items-end mt-2">
+                            <p className="text-primary text-lg font-semibold">
+                              ₱{order.product?.price?.toFixed(2) || '0.00'}
+                            </p>
+                            <div className="flex items-center gap-4">
+                              <span className="text-gray-600">Quantity: {order.qty || 0}</span>
+                              <span className="text-gray-600">
+                                Total: ₱{order.overall_pay?.toFixed(2) || '0.00'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Cancellation Reason */}
+                      <div className="mt-2 text-red-600 text-sm">
+                        Reason: {order.cancellationReason}
+                      </div>
+
+                      {/* Status Badge */}
+                      <div className="flex justify-end mt-4">
+                        <div className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">
+                          Cancelled
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            }
+          />
+
+          <Route
+            path="/refunded"
+            element={
+              <div className="flex flex-col gap-4 mt-4">
+                {refundedOrders && refundedOrders.length > 0 ? (
+                  refundedOrders.map((order, index) => (
+                    <div key={index}>
+                      <div className="bg-white rounded-lg p-4">
+                        {/* Store Name Header */}
+                        <div className="flex justify-between items-center mb-4">
+                          <h2 className="text-lg font-semibold">{order.business?.name}</h2>
+                          <div className="flex items-center gap-2">
+                            <span className="text-yellow-400">★</span>
+                            <span>4.9</span>
+                            <span className="text-gray-400">|</span>
+                            <span className="text-gray-600">1250 sold</span>
+                          </div>
+                        </div>
+
+                        {/* Product Details */}
+                        <div className="flex gap-4">
+                          <img
+                            src="/path/to/default-image.jpg"
+                            alt={order.product?.prod_name}
+                            className="w-24 h-24 object-cover rounded-md"
+                          />
+                          <div className="flex-1">
+                            <h3 className="text-lg font-medium">{order.product?.prod_name}</h3>
+                            <p className="text-gray-600">{order.product?.description}</p>
+                            <div className="flex justify-between items-end mt-2">
+                              <p className="text-primary text-lg font-semibold">
+                                ₱{order.product?.price?.toFixed(2) || '0.00'}
+                              </p>
+                              <div className="flex items-center gap-4">
+                                <span className="text-gray-600">Quantity: {order.qty || 0}</span>
+                                <span className="text-gray-600">
+                                  Total: ₱{order.overall_pay?.toFixed(2) || '0.00'}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Refund Information */}
+                        <div className="mt-2">
+                          <p className="text-yellow-600 text-sm">
+                            Reason: {order.refundReason}
+                          </p>
+                          <p className="text-gray-500 text-sm">
+                            Refunded on: {new Date(order.refundDate).toLocaleDateString()}
+                          </p>
+                        </div>
+
+                        {/* Status Badge */}
+                        <div className="flex justify-end mt-4">
+                          <div className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
+                            Refunded
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <p>No refunded orders</p>
+                  </div>
+                )}
+              </div>
+            }
+          />
         </Routes>
       </div>
 
