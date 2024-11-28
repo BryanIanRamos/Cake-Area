@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import Rating from "./Rating";
 
-const BakerBusinessCard = ({ selectedFilter }) => {
+const BakerBusinessCard = ({ selectedFilter, openLoginModal }) => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [businesses, setBusinesses] = useState([]);
@@ -16,9 +16,9 @@ const BakerBusinessCard = ({ selectedFilter }) => {
       try {
         // Fetch all necessary data in parallel
         const [businessesRes, profilesRes, addressesRes] = await Promise.all([
-          fetch('http://localhost:3000/businesses'),
-          fetch('http://localhost:3000/profiles'),
-          fetch('http://localhost:3000/addresses')
+          fetch("http://localhost:3000/businesses"),
+          fetch("http://localhost:3000/profiles"),
+          fetch("http://localhost:3000/addresses"),
         ]);
 
         const businessesData = await businessesRes.json();
@@ -27,23 +27,26 @@ const BakerBusinessCard = ({ selectedFilter }) => {
 
         // Combine the data
         const combinedData = businessesData
-          .filter(business => business.is_active)
-          .map(business => {
+          .filter((business) => business.is_active)
+          .map((business) => {
             const businessAddress = addressesData.find(
-              address => address.user_id === business.user_id && address.type === 1
+              (address) =>
+                address.user_id === business.user_id && address.type === 1
             );
-            
+
             const businessProfile = profilesData.find(
-              profile => profile.user_id === business.user_id
+              (profile) => profile.user_id === business.user_id
             );
-            
+
             return {
               ...business,
-              location: businessAddress ? businessAddress.location : "Location not available",
+              location: businessAddress
+                ? businessAddress.location
+                : "Location not available",
               profileImage: businessProfile ? businessProfile.img : null,
-              ownerName: businessProfile 
+              ownerName: businessProfile
                 ? `${businessProfile.first_name} ${businessProfile.last_name}`
-                : "Unknown Owner"
+                : "Unknown Owner",
             };
           });
 
@@ -101,10 +104,18 @@ const BakerBusinessCard = ({ selectedFilter }) => {
   };
 
   // Calculate the start and end page numbers for the current group of buttons
-  const startPage = Math.floor((currentPage - 1) / buttonsPerPage) * buttonsPerPage + 1;
+  const startPage =
+    Math.floor((currentPage - 1) / buttonsPerPage) * buttonsPerPage + 1;
   const endPage = Math.min(startPage + buttonsPerPage - 1, totalPages);
 
   const handleCardClick = (userId) => {
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+    if (!isLoggedIn) {
+      openLoginModal();
+      return;
+    }
+
     navigate(`/store/${userId}`);
   };
 
@@ -120,8 +131,10 @@ const BakerBusinessCard = ({ selectedFilter }) => {
             cursor-pointer rounded-lg border border-transparent hover:border-gray-200"
           >
             {/* Profile image - now using image from profile data */}
-            <div className="col-span-2 hidden sm:flex justify-center items-center lg:p-3 
-              transition-transform duration-300 hover:scale-105">
+            <div
+              className="col-span-2 hidden sm:flex justify-center items-center lg:p-3 
+              transition-transform duration-300 hover:scale-105"
+            >
               <img
                 src={baker.profileImage}
                 alt={`${baker.ownerName}'s profile`}
@@ -142,9 +155,11 @@ const BakerBusinessCard = ({ selectedFilter }) => {
               </div>
 
               {/* Description */}
-              <div className="font-[NotoSerif] sm:h-[6vw] lg:h-[5vw] xl:h-[6vw] w-full overflow-hidden 
+              <div
+                className="font-[NotoSerif] sm:h-[6vw] lg:h-[5vw] xl:h-[6vw] w-full overflow-hidden 
                 text-ellipsis text-[10px] sm:text-[1.5vw] md:text-[1.3vw] lg:text-[1.3vw] xl:text-[1.4vw] 2xl:text-[1.5vw] 
-                leading-[15px] sm:leading-[12px] md:leading-[13px] lg:leading-[15px] xl:leading-[22px] 2xl:leading-[25px]">
+                leading-[15px] sm:leading-[12px] md:leading-[13px] lg:leading-[15px] xl:leading-[22px] 2xl:leading-[25px]"
+              >
                 <p className="m-0 overflow-hidden text-ellipsis line-clamp-3">
                   {baker.description}
                 </p>
@@ -171,7 +186,10 @@ const BakerBusinessCard = ({ selectedFilter }) => {
                   <div className="group-hover:font-semibold transition-all duration-300">
                     {baker.available_items} Available |
                   </div>
-                  <Rating clickable={false} initialRating={baker.service_rating} />
+                  <Rating
+                    clickable={false}
+                    initialRating={baker.service_rating}
+                  />
                   <span className="group-hover:font-semibold">
                     ({baker.service_rating} Service)
                   </span>

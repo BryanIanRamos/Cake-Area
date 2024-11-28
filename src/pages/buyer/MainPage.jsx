@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Cake_BG from "../../assets/Cake_BG.png";
 import BakerBusinessCard from "../../components/buyer/BakerBusinessCard";
 import SelectAccount from "../../components/buyer/SelectAccount";
@@ -18,10 +18,22 @@ const MainPage = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
+  const [userId, setUserId] = useState(null);
 
   const [showFeedback, setShowFeedback] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [feedbackType, setFeedbackType] = useState("success");
+
+  useEffect(() => {
+    // Check login state from localStorage on component mount
+    const storedIsLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    const storedUserName = localStorage.getItem("userName") || "";
+    const storedUserId = localStorage.getItem("userId") || null;
+
+    setIsLoggedIn(storedIsLoggedIn);
+    setUserName(storedUserName);
+    setUserId(storedUserId);
+  }, []);
 
   // Function to open the modal
   // account type
@@ -56,12 +68,18 @@ const MainPage = () => {
       );
 
       setIsLoggedIn(true);
-      // Set username as full name from profile
+      setUserId(user.id);
       setUserName(
         userProfile
           ? `${userProfile.first_name} ${userProfile.last_name}`
           : user.email
       );
+
+      // Store login state in localStorage
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("userId", user.id);
+      localStorage.setItem("userName", userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : user.email);
+
       closeLoginModal();
 
       // Show success feedback
@@ -79,6 +97,12 @@ const MainPage = () => {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUserName("");
+    setUserId(null);
+
+    // Clear login state from localStorage
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userId");
 
     // Show feedback
     setFeedbackMessage("Successfully logged out!");
@@ -263,7 +287,10 @@ const MainPage = () => {
 
         <div className="w-full border border-gray-400 "></div>
         {/* Baker Business Card  */}
-        <BakerBusinessCard selectedFilter={selectedFilter} />
+        <BakerBusinessCard 
+          selectedFilter={selectedFilter} 
+          openLoginModal={openLoginModal}
+        />
       </section>
     </div>
   );
