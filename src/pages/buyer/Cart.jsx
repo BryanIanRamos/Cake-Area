@@ -69,72 +69,37 @@ const Cart = () => {
   const [cancelledOrders, setCancelledOrders] = useState([]);
   const [refundOrders, setRefundOrders] = useState([]);
 
-  // Modified useEffect to load from localStorage
+  // Modified useEffect to properly use the order data from db.json
   useEffect(() => {
-    const loadCartItems = async () => {
-      setIsLoading(true);
+    const fetchData = async () => {
       try {
-        console.log("All orders:", ordersData); // Debug log
+        const response = await fetch("http://localhost:3000/orders");
+        const orders = await response.json();
 
-        // Get pending/cart items with business rating info
-        const pendingItems = ordersData
-          .filter(
-            (order) => order.status === "Pending" || order.status === "Cart"
-          )
-          .map((order) => ({
-            ...order,
-            business: {
-              ...order.business,
-              name: order.business?.name || "Unknown Store",
-              rating: order.business?.rating || 4.5,
-              total_sold: order.business?.total_sold || 0,
-            },
-            // Ensure products array exists and has price
-            products:
-              order.products?.map((product) => ({
-                ...product,
-                price: product.price || 0,
-                quantity: product.quantity || 1,
-              })) || [],
-          }));
-        setCartItems(pendingItems);
+        // Filter orders for customer_id 2
+        const userOrders = orders.filter((order) => order.customer_id === 2);
 
-        // Get processing orders
-        const processing = ordersData.filter(
-          (order) => order.status === "Processing"
+        // Set orders based on their status
+        setCartItems(userOrders.filter((order) => order.status === "Pending"));
+        setProcessingOrders(
+          userOrders.filter((order) => order.status === "Processing")
         );
-        setProcessingOrders(processing);
-
-        // Get to-receive orders
-        const toReceive = ordersData.filter(
-          (order) => order.status === "To Receive"
+        setToReceiveOrders(
+          userOrders.filter((order) => order.status === "To Receive")
         );
-        setToReceiveOrders(toReceive);
-
-        // Get completed orders
-        const completed = ordersData.filter(
-          (order) => order.status === "Completed"
+        setCompletedOrders(
+          userOrders.filter((order) => order.status === "Completed")
         );
-        setCompletedOrders(completed);
-
-        // Get cancelled orders
-        const cancelled = ordersData.filter(
-          (order) => order.status === "Cancelled"
+        setCancelledOrders(
+          userOrders.filter((order) => order.status === "Cancelled")
         );
-        setCancelledOrders(cancelled);
-
-        // Get refund orders (only "Refund" status)
-        const refund = ordersData.filter((order) => order.status === "Refund");
-        setRefundOrders(refund);
       } catch (error) {
-        console.error("Error loading orders:", error);
+        console.error("Error fetching orders:", error);
         toast.error("Failed to load orders");
-      } finally {
-        setIsLoading(false);
       }
     };
 
-    loadCartItems();
+    fetchData();
   }, []);
 
   // Save cart items whenever they change
@@ -535,13 +500,19 @@ const Cart = () => {
                 {isLoading ? (
                   <div>Loading...</div>
                 ) : cartItems && cartItems.length > 0 ? (
-                  cartItems.map((order, index) => (
+                  cartItems.map((order) => (
                     <StoreOrderCard
-                      key={index}
-                      storeData={order}
+                      key={order.id}
+                      storeData={{
+                        business: order.business,
+                        products: order.products,
+                        total_amount: order.total_amount,
+                        status: order.status,
+                        created_at: order.created_at,
+                      }}
                       selectedItems={selectedItems}
                       onSelectItem={handleSelectItem}
-                      onSelectAll={handleSelectAll}
+                      onSelectAll={() => handleSelectAll(order.business_id)}
                       onUpdateQuantity={handleQuantityChange}
                     />
                   ))
@@ -557,9 +528,8 @@ const Cart = () => {
             path="/in-process"
             element={
               <div className="flex flex-col gap-4 mt-4">
-                {processingOrders.map((order, index) => (
-                  <div key={index} className="bg-white rounded-lg p-4">
-                    {/* Store Name Header */}
+                {processingOrders.map((order) => (
+                  <div key={order.id} className="bg-white rounded-lg p-4">
                     <div className="flex justify-between items-center mb-4">
                       <h2 className="text-lg font-semibold">
                         {order.business?.name}
@@ -574,16 +544,10 @@ const Cart = () => {
                       </div>
                     </div>
 
-                    {/* Order Date */}
-                    <div className="text-sm text-gray-500 mb-3">
-                      Order Date: {new Date(order.created_at).toLocaleDateString()}
-                    </div>
-
-                    {/* Products List */}
-                    {order.products?.map((product, prodIndex) => (
-                      <div key={prodIndex} className="flex gap-4 mt-4 border-t pt-4 first:border-t-0 first:pt-0">
+                    {order.products.map((product) => (
+                      <div key={product.prod_id} className="flex gap-4 mt-4">
                         <img
-                          src={order.images?.[0]?.link || CakeSample}
+                          src={product.images}
                           alt={product.prod_name}
                           className="w-24 h-24 object-cover rounded-md"
                           onError={(e) => {
@@ -595,19 +559,18 @@ const Cart = () => {
                           <h3 className="text-lg font-medium">
                             {product.prod_name}
                           </h3>
-                          <p className="text-gray-600">
-                            {product.description}
-                          </p>
+                          <p className="text-gray-600">{product.description}</p>
                           <div className="flex justify-between items-end mt-2">
                             <p className="text-primary text-lg font-semibold">
-                              ₱{(product.price || 0).toFixed(2)}
+                              ₱{product.price.toFixed(2)}
                             </p>
                             <div className="flex items-center gap-4">
                               <span className="text-gray-600">
-                                Quantity: {product.quantity}
+                                Quantity: {product.qty}
                               </span>
                               <span className="text-gray-600">
-                                Total: ₱{((product.price || 0) * (product.quantity || 0)).toFixed(2)}
+                                Total: ₱
+                                {(product.price * product.qty).toFixed(2)}
                               </span>
                             </div>
                           </div>
@@ -615,18 +578,19 @@ const Cart = () => {
                       </div>
                     ))}
 
-                    {/* Order Total */}
                     <div className="mt-4 pt-4 border-t flex justify-between items-center">
                       <div className="text-gray-600">
-                        <p>Down Payment (50%): ₱{(order.downPayment || 0).toFixed(2)}</p>
-                        <p>Remaining Payment: ₱{(order.remainingPayment || 0).toFixed(2)}</p>
+                        <p>Down Payment: ₱{order.downPayment.toFixed(2)}</p>
+                        <p>
+                          Remaining Payment: ₱
+                          {order.remainingPayment.toFixed(2)}
+                        </p>
                       </div>
                       <div className="text-lg font-semibold">
-                        Total Amount: ₱{(order.total_amount || 0).toFixed(2)}
+                        Total Amount: ₱{order.total_amount.toFixed(2)}
                       </div>
                     </div>
 
-                    {/* Status Badge */}
                     <div className="flex justify-end mt-4">
                       <div className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
                         Processing
