@@ -1,7 +1,7 @@
 {
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "email": "david.admin@email.com",
       "password": "hashedPasswordDEF",
       "created_at": "2024-02-28",
@@ -9,7 +9,7 @@
       "is_Login": true
     },
     {
-      "id": 2,
+      "id": "2",
       "email": "sarah.baker@email.com",
       "password": "hashedPassword456",
       "created_at": "2024-01-20",
@@ -17,23 +17,23 @@
       "is_Login": false
     },
     {
-      "id": 3,
+      "id": "3",
       "email": "lisa.baker@email.com",
       "password": "hashedPasswordGHI",
       "created_at": "2024-03-05",
       "role": 2,
-      "is_Login": false
+      "is_Login": true
     },
     {
-      "id": 4,
+      "id": "4",
       "email": "mike.customer@email.com",
       "password": "hashedPassword789",
       "created_at": "2024-02-01",
       "role": 3,
-      "is_Login": false
+      "is_Login": true
     },
     {
-      "id": 5,
+      "id": "5",
       "email": "emma.wilson@email.com",
       "password": "hashedPasswordABC",
       "created_at": "2024-02-15",
@@ -43,7 +43,7 @@
   ],
   "profiles": [
     {
-      "id": 1,
+      "id": "1",
       "user_id": 1,
       "first_name": "David",
       "last_name": "Admin",
@@ -52,16 +52,16 @@
       "img": "dummy_profile_url"
     },
     {
-      "id": 2,
+      "id": "2",
       "user_id": 2,
       "first_name": "Sarah",
       "last_name": "Baker",
       "age": "28",
       "sex": "Female",
-      "img": "dummy_profile_url"
+      "img": "../assets/profile/Sarah_Baker.png"
     },
     {
-      "id": 3,
+      "id": "3",
       "user_id": 3,
       "first_name": "Lisa",
       "last_name": "Baker",
@@ -70,7 +70,7 @@
       "img": "dummy_profile_url"
     },
     {
-      "id": 4,
+      "id": "4",
       "user_id": 4,
       "first_name": "Mike",
       "last_name": "Customer",
@@ -79,7 +79,7 @@
       "img": "dummy_profile_url"
     },
     {
-      "id": 5,
+      "id": "5",
       "user_id": 5,
       "first_name": "Emma",
       "last_name": "Wilson",
@@ -90,7 +90,7 @@
   ],
   "addresses": [
     {
-      "id": 1,
+      "id": "1",
       "user_id": 1,
       "first_name": "David",
       "last_name": "Admin",
@@ -100,7 +100,7 @@
       "type": 0
     },
     {
-      "id": 2,
+      "id": "2",
       "user_id": 2,
       "first_name": "Sarah",
       "last_name": "Baker",
@@ -110,7 +110,7 @@
       "type": 1
     },
     {
-      "id": 3,
+      "id": "3",
       "user_id": 3,
       "first_name": "Lisa",
       "last_name": "Baker",
@@ -120,7 +120,7 @@
       "type": 0
     },
     {
-      "id": 4,
+      "id": "4",
       "user_id": 4,
       "first_name": "Mike",
       "last_name": "Customer",
@@ -130,7 +130,7 @@
       "type": 0
     },
     {
-      "id": 5,
+      "id": "5",
       "user_id": 5,
       "first_name": "Emma",
       "last_name": "Wilson",
@@ -142,10 +142,10 @@
   ],
   "businesses": [
     {
-      "id": 1,
+      "id": "1",
       "user_id": 2,
       "name": "Sarah's Sweet Creations",
-      "description": "Welcome to Sarah's Sweet Creations! We specialize in creating delicious, handcrafted baked goods using only the finest ingredients.",
+      "description": "Welcome to Sarah's Sweet Creations! We specialize in creating delicious, handcrafted baked goods using only the finest ingredients. From custom cakes to fresh pastries, we put love and care into every creation.",
       "no_visits": 1250,
       "is_active": true,
       "store_rating": 4.8,
@@ -154,10 +154,10 @@
       "available_items": 45
     },
     {
-      "id": 2,
+      "id": "2",
       "user_id": 3,
       "name": "Lisa's Artisan Bakery",
-      "description": "Welcome to Lisa's Artisan Bakery! We're dedicated to bringing you authentic, artisanal baked goods made from scratch daily.",
+      "description": "Welcome to Lisa's Artisan Bakery! We're dedicated to bringing you authentic, artisanal baked goods made from scratch daily. Our selection ranges from rustic breads to elegant pastries.",
       "no_visits": 980,
       "is_active": true,
       "store_rating": 4.5,
@@ -166,47 +166,477 @@
       "available_items": 32
     }
   ],
+  "categories": [
+    {
+      "cat_id": 1,
+      "name": "Cakes"
+    },
+    {
+      "cat_id": 2,
+      "name": "Cupcakes"
+    },
+    {
+      "cat_id": 3,
+      "name": "Pastries"
+    },
+    {
+      "cat_id": 4,
+      "name": "Breads"
+    }
+  ],
   "products": [
     {
-      "id": 1,
+      "id": "1",
       "business_id": 1,
-      "name": "Classic Vanilla Celebration Cake",
+      "cat_id": 1,
+      "prod_name": "Classic Vanilla Celebration Cake",
       "description": "Light and fluffy vanilla cake with buttercream frosting",
       "price": 499.99,
-      "category": "Cakes",
-      "available": true
+      "rate": 4.8,
+      "qty": 10,
+      "images": [
+        "../assets/cake1.png",
+        "../assets/cake1.png",
+        "../assets/cake1.png"
+      ],
+      "is_available": true
     },
     {
-      "id": 2,
+      "id": "2",
       "business_id": 1,
-      "name": "Chocolate Dream Layer Cake",
-      "description": "Rich chocolate layers with dark chocolate ganache",
+      "cat_id": 1,
+      "prod_name": "Black Forest Cake",
+      "description": "Rich chocolate layers with cherries and cream",
       "price": 549.99,
-      "category": "Cakes",
-      "available": true
+      "rate": 4.9,
+      "qty": 8,
+      "images": [
+        "../assets/BlackForestCakev1.jpg",
+        "../assets/BlackForestCakev2.jpg",
+        "../assets/BlackForestCakev3.jpg"
+      ],
+      "is_available": true
     },
     {
-      "id": 3,
+      "id": "3",
+      "business_id": 1,
+      "cat_id": 1,
+      "prod_name": "Carrot Spice Cake",
+      "description": "Spiced carrot cake with cream cheese frosting",
+      "price": 479.99,
+      "rate": 4.7,
+      "qty": 12,
+      "images": [
+        "../assets/CarrotSpiceCakev1.jpg",
+        "../assets/CarrotSpiceCakev2.jpg",
+        "../assets/CarrotSpiceCakev3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "4",
+      "business_id": 1,
+      "cat_id": 1,
+      "prod_name": "Black Forest Special",
+      "description": "Premium Black Forest cake with dark chocolate shavings",
+      "price": 599.99,
+      "rate": 4.8,
+      "qty": 6,
+      "images": [
+        "../assets/BlackForestCakev1.jpg",
+        "../assets/BlackForestCakev2.jpg",
+        "../assets/BlackForestCakev3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "5",
+      "business_id": 1,
+      "cat_id": 1,
+      "prod_name": "Carrot Cake Deluxe",
+      "description": "Premium carrot cake with extra nuts and spices",
+      "price": 529.99,
+      "rate": 4.6,
+      "qty": 8,
+      "images": [
+        "../assets/CarrotSpiceCakev1.jpg",
+        "../assets/CarrotSpiceCakev2.jpg",
+        "../assets/CarrotSpiceCakev3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "6",
+      "business_id": 1,
+      "cat_id": 1,
+      "prod_name": "Black Forest Supreme",
+      "description": "Deluxe Black Forest with premium cherries",
+      "price": 649.99,
+      "rate": 4.9,
+      "qty": 5,
+      "images": [
+        "../assets/BlackForestCakev1.jpg",
+        "../assets/BlackForestCakev2.jpg",
+        "../assets/BlackForestCakev3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "7",
+      "business_id": 1,
+      "cat_id": 1,
+      "prod_name": "Carrot Cake Supreme",
+      "description": "Supreme carrot cake with premium ingredients",
+      "price": 579.99,
+      "rate": 4.8,
+      "qty": 7,
+      "images": [
+        "../assets/CarrotSpiceCakev2.jpg",
+        "../assets/CarrotSpiceCakev1.jpg",
+        "../assets/CarrotSpiceCakev3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "8",
+      "business_id": 1,
+      "cat_id": 2,
+      "prod_name": "Chocolate Babka Classic",
+      "description": "Traditional chocolate twisted bread",
+      "price": 299.99,
+      "rate": 4.7,
+      "qty": 15,
+      "images": [
+        "../assets/ChocolateBabkav1.jpg",
+        "../assets/ChocolateBabkav2.jpg",
+        "../assets/ChocolateBabkav3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "9",
+      "business_id": 1,
+      "cat_id": 2,
+      "prod_name": "Chocolate Babka Special",
+      "description": "Special chocolate babka with extra filling",
+      "price": 349.99,
+      "rate": 4.8,
+      "qty": 12,
+      "images": [
+        "../assets/ChocolateBabkav1.jpg",
+        "../assets/ChocolateBabkav2.jpg",
+        "../assets/ChocolateBabkav3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "10",
+      "business_id": 1,
+      "cat_id": 2,
+      "prod_name": "Chocolate Babka Supreme",
+      "description": "Premium chocolate babka with deluxe chocolate",
+      "price": 399.99,
+      "rate": 4.9,
+      "qty": 10,
+      "images": [
+        "../assets/ChocolateBabkav1.jpg",
+        "../assets/ChocolateBabkav2.jpg",
+        "../assets/ChocolateBabkav3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "11",
       "business_id": 2,
-      "name": "Traditional Sourdough Bread",
-      "description": "Traditional sourdough with perfect crust",
+      "cat_id": 2,
+      "prod_name": "Classic Banana Bread",
+      "description": "Traditional banana bread with walnuts",
+      "price": 299.99,
+      "rate": 4.6,
+      "qty": 15,
+      "images": [
+        "../assets/ArtisanalBananaBreadv1.jpg",
+        "../assets/ArtisanalBananaBreadv2.jpg",
+        "../assets/ArtisanalBananaBreadv3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "12",
+      "business_id": 2,
+      "cat_id": 2,
+      "prod_name": "Premium Banana Bread",
+      "description": "Premium banana bread with extra nuts",
+      "price": 349.99,
+      "rate": 4.7,
+      "qty": 12,
+      "images": [
+        "../assets/ArtisanalBananaBreadv1.jpg",
+        "../assets/ArtisanalBananaBreadv2.jpg",
+        "../assets/ArtisanalBananaBreadv3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "13",
+      "business_id": 2,
+      "cat_id": 2,
+      "prod_name": "Deluxe Banana Bread",
+      "description": "Deluxe banana bread with premium ingredients",
+      "price": 399.99,
+      "rate": 4.8,
+      "qty": 10,
+      "images": [
+        "../assets/ArtisanalBananaBreadv1.jpg",
+        "../assets/ArtisanalBananaBreadv2.jpg",
+        "../assets/ArtisanalBananaBreadv3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "14",
+      "business_id": 2,
+      "cat_id": 3,
+      "prod_name": "Classic Butter Croissant",
+      "description": "Traditional buttery croissant",
+      "price": 89.99,
+      "rate": 4.7,
+      "qty": 20,
+      "images": [
+        "../assets/ButterCroissantv1.jpg",
+        "../assets/ButterCroissantv2.jpg",
+        "../assets/ButterCroissantv3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "15",
+      "business_id": 2,
+      "cat_id": 3,
+      "prod_name": "Premium Butter Croissant",
+      "description": "Premium butter croissant with extra layers",
+      "price": 99.99,
+      "rate": 4.8,
+      "qty": 18,
+      "images": [
+        "../assets/ButterCroissantv1.jpg",
+        "../assets/ButterCroissantv2.jpg",
+        "../assets/ButterCroissantv3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "16",
+      "business_id": 2,
+      "cat_id": 3,
+      "prod_name": "Deluxe Butter Croissant",
+      "description": "Deluxe butter croissant with premium butter",
+      "price": 109.99,
+      "rate": 4.9,
+      "qty": 15,
+      "images": [
+        "../assets/ButterCroissantv1.jpg",
+        "../assets/ButterCroissantv2.jpg",
+        "../assets/ButterCroissantv3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "17",
+      "business_id": 2,
+      "cat_id": 3,
+      "prod_name": "Classic Almond Croissant",
+      "description": "Traditional almond filled croissant",
+      "price": 99.99,
+      "rate": 4.7,
+      "qty": 18,
+      "images": [
+        "../assets/AlmondCroissantv1.jpg",
+        "../assets/AlmondCroissantv2.jpg",
+        "../assets/AlmondCroissantv3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "18",
+      "business_id": 2,
+      "cat_id": 3,
+      "prod_name": "Premium Almond Croissant",
+      "description": "Premium almond croissant with extra filling",
+      "price": 109.99,
+      "rate": 4.8,
+      "qty": 15,
+      "images": [
+        "../assets/AlmondCroissantv1.jpg",
+        "../assets/AlmondCroissantv2.jpg",
+        "../assets/AlmondCroissantv3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "19",
+      "business_id": 2,
+      "cat_id": 3,
+      "prod_name": "Deluxe Almond Croissant",
+      "description": "Deluxe almond croissant with premium almonds",
+      "price": 119.99,
+      "rate": 4.9,
+      "qty": 12,
+      "images": [
+        "../assets/AlmondCroissantv1.jpg",
+        "../assets/AlmondCroissantv2.jpg",
+        "../assets/AlmondCroissantv3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "20",
+      "business_id": 2,
+      "cat_id": 3,
+      "prod_name": "Classic Focaccia",
+      "description": "Traditional Italian focaccia",
+      "price": 169.99,
+      "rate": 4.7,
+      "qty": 10,
+      "images": [
+        "../assets/ArtisanalFocacciav1.jpg",
+        "../assets/ArtisanalFocacciav2.jpg",
+        "../assets/ArtisanalFocacciav3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "21",
+      "business_id": 3,
+      "cat_id": 3,
+      "prod_name": "Premium Focaccia",
+      "description": "Premium Italian focaccia with herbs",
       "price": 189.99,
-      "category": "Breads",
-      "available": true
+      "rate": 4.8,
+      "qty": 8,
+      "images": [
+        "../assets/ArtisanalFocacciav1.jpg",
+        "../assets/ArtisanalFocacciav2.jpg",
+        "../assets/ArtisanalFocacciav3.jpg"
+      ],
+      "is_available": true
     },
     {
-      "id": 4,
-      "business_id": 2,
-      "name": "Assorted Cupcakes Box",
-      "description": "12 pieces of assorted flavored cupcakes",
-      "price": 449.99,
-      "category": "Cupcakes",
-      "available": true
+      "id": "22",
+      "business_id": 3,
+      "cat_id": 3,
+      "prod_name": "Deluxe Focaccia",
+      "description": "Deluxe focaccia with premium olive oil",
+      "price": 209.99,
+      "rate": 4.9,
+      "qty": 6,
+      "images": [
+        "../assets/ArtisanalFocacciav1.jpg",
+        "../assets/ArtisanalFocacciav2.jpg",
+        "../assets/ArtisanalFocacciav3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "23",
+      "business_id": 3,
+      "cat_id": 1,
+      "prod_name": "Classic Black Forest",
+      "description": "Traditional Black Forest cake",
+      "price": 549.99,
+      "rate": 4.7,
+      "qty": 8,
+      "images": [
+        "../assets/BlackForestCakev1.jpg",
+        "../assets/BlackForestCakev2.jpg",
+        "../assets/BlackForestCakev3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "24",
+      "business_id": 3,
+      "cat_id": 1,
+      "prod_name": "Premium Black Forest",
+      "description": "Premium Black Forest with extra cherries",
+      "price": 599.99,
+      "rate": 4.8,
+      "qty": 6,
+      "images": [
+        "../assets/BlackForestCakev1.jpg",
+        "../assets/BlackForestCakev2.jpg",
+        "../assets/BlackForestCakev3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "25",
+      "business_id": 3,
+      "cat_id": 1,
+      "prod_name": "Deluxe Black Forest",
+      "description": "Deluxe Black Forest with premium chocolate",
+      "price": 649.99,
+      "rate": 4.9,
+      "qty": 4,
+      "images": [
+        "../assets/BlackForestCakev1.jpg",
+        "../assets/BlackForestCakev2.jpg",
+        "../assets/BlackForestCakev3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "26",
+      "business_id": 3,
+      "cat_id": 1,
+      "prod_name": "Classic Carrot Cake",
+      "description": "Traditional carrot cake",
+      "price": 479.99,
+      "rate": 4.7,
+      "qty": 10,
+      "images": [
+        "../assets/CarrotSpiceCakev1.jpg",
+        "../assets/CarrotSpiceCakev2.jpg",
+        "../assets/CarrotSpiceCakev3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "27",
+      "business_id": 3,
+      "cat_id": 1,
+      "prod_name": "Premium Carrot Cake",
+      "description": "Premium carrot cake with extra spices",
+      "price": 529.99,
+      "rate": 4.8,
+      "qty": 8,
+      "images": [
+        "../assets/CarrotSpiceCakev1.jpg",
+        "../assets/CarrotSpiceCakev2.jpg",
+        "../assets/CarrotSpiceCakev3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "28",
+      "business_id": 3,
+      "cat_id": 1,
+      "prod_name": "Deluxe Carrot Cake",
+      "description": "Deluxe carrot cake with premium ingredients",
+      "price": 579.99,
+      "rate": 4.9,
+      "qty": 6,
+      "images": [
+        "../assets/CarrotSpiceCakev1.jpg",
+        "../assets/CarrotSpiceCakev2.jpg",
+        "../assets/CarrotSpiceCakev3.jpg"
+      ],
+      "is_available": true
     }
   ],
   "orders": [
     {
-      "id": 1,
+      "id": "1",
       "order_id": "ORD001",
       "customer_id": 4,
       "business_id": 1,
@@ -232,7 +662,7 @@
       "paymentStatus": "Partial - Down Payment Received"
     },
     {
-      "id": 2,
+      "id": "2",
       "order_id": "ORD002",
       "customer_id": 5,
       "business_id": 2,
@@ -256,6 +686,58 @@
       "downPayment": 829.97,
       "remainingPayment": 0,
       "paymentStatus": "Paid"
+    }
+  ],
+  "tags": [
+    {
+      "id": 1,
+      "name": "Custom Cakes",
+      "business_id": 1
+    },
+    {
+      "id": 2,
+      "name": "Wedding Cakes",
+      "business_id": 1
+    },
+    {
+      "id": 3,
+      "name": "Birthday Cakes",
+      "business_id": 1
+    },
+    {
+      "id": 4,
+      "name": "Local Delivery",
+      "business_id": 1
+    },
+    {
+      "id": 5,
+      "name": "Special Events",
+      "business_id": 1
+    },
+    {
+      "id": 6,
+      "name": "Fresh Daily",
+      "business_id": 2
+    },
+    {
+      "id": 7,
+      "name": "Artisanal Bread",
+      "business_id": 2
+    },
+    {
+      "id": 8,
+      "name": "Organic",
+      "business_id": 2
+    },
+    {
+      "id": 9,
+      "name": "Gluten-Free Options",
+      "business_id": 2
+    },
+    {
+      "id": 10,
+      "name": "Wholesale Available",
+      "business_id": 2
     }
   ]
 }

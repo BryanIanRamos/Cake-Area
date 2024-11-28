@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Toaster, toast } from 'sonner';
+import { Toaster, toast } from "sonner";
 import Navbar from "../../components/buyer/Navbar";
 import CakeSample from "../../assets/CakeSample.png";
 import Rating from "../../components/buyer/Rating";
@@ -12,107 +12,109 @@ import Pagination from "../../components/buyer/Pagination";
 import { productData } from "../../data/productDataTbl";
 import { imagesData } from "../../data/imagesDataTbl";
 import OrderConfirmation from "../../components/buyer/modals/OrderConfirmation";
-import { FiAlertCircle } from 'react-icons/fi';
+import { FiAlertCircle } from "react-icons/fi";
 
 const Product = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
 
-  // Get the product data based on the route parameter
-  const product = productData.products.find(
-    (p) => p.prod_id === parseInt(productId)
-  );
-
-  // Get product images for this specific product
-  const productImages = imagesData.images.filter(
-    (img) => img.prod_id === parseInt(productId)
-  );
-
-  console.log("Product ID:", productId);
-  console.log("Found Images:", productImages);
-
-  // If product not found, show error
-  if (!product) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <h1 className="text-2xl font-bold text-gray-800">Product not found</h1>
-        <button
-          onClick={() => navigate("/")}
-          className="mt-4 px-4 py-2 bg-primary text-white rounded-lg"
-        >
-          Return to Home
-        </button>
-      </div>
-    );
-  }
-
-  console.log("Product:", product); // Debug log
-  console.log("Product Images:", productImages); // Debug log
-
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const commentsPerPage = 3;
-  const [selectedFilter, setSelectedFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("newest");
   const [orderConfirmOpen, setOrderConfirmOpen] = useState(false);
+  const [recommendedProducts, setRecommendedProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [likedComments, setLikedComments] = useState(new Set());
+  const [comments, setComments] = useState(commentData);
+  const [filterOption, setFilterOption] = useState('newest');
+  const commentsPerPage = 5;
 
-  const downPayment = product.price * 0.5;
+  // Filter comments based on selected option
+  useEffect(() => {
+    let filteredComments = [...commentData];
+    
+    switch (filterOption) {
+      case 'newest':
+        filteredComments.sort((a, b) => new Date(b.date) - new Date(a.date));
+        break;
+      case 'oldest':
+        filteredComments.sort((a, b) => new Date(a.date) - new Date(b.date));
+        break;
+      case 'highest':
+        filteredComments.sort((a, b) => b.rating - a.rating);
+        break;
+      case 'lowest':
+        filteredComments.sort((a, b) => a.rating - b.rating);
+        break;
+      case 'mostLiked':
+        filteredComments.sort((a, b) => b.likes - a.likes);
+        break;
+      default:
+        break;
+    }
+    
+    setComments(filteredComments);
+    setCurrentPage(1); // Reset to first page when filter changes
+  }, [filterOption]);
 
-  const indexOfLastComment = currentPage * commentsPerPage;
-  const indexOfFirstComment = indexOfLastComment - commentsPerPage;
+  // Fetch product data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/products");
+        const products = await response.json();
+        const foundProduct = products.find(
+          (p) => String(p.id) === String(productId)
+        );
 
-  const getFilteredComments = () => {
-    let filtered =
-      selectedFilter === "all"
-        ? commentData
-        : commentData.filter(
-            (comment) => Math.floor(comment.rating) === parseInt(selectedFilter)
-          );
+        if (!foundProduct) {
+          throw new Error("Product not found");
+        }
 
-    return filtered.sort((a, b) => {
-      switch (sortBy) {
-        case "newest":
-          return new Date(b.date) - new Date(a.date);
-        case "oldest":
-          return new Date(a.date) - new Date(b.date);
-        case "highest":
-          return b.rating - a.rating;
-        case "lowest":
-          return a.rating - b.rating;
-        case "mostLiked":
-          return b.likes - a.likes;
-        default:
-          return 0;
+        // Find recommended products (same category, excluding current product)
+        const recommended = products
+          .filter(
+            (p) =>
+              p.cat_id === foundProduct.cat_id &&
+              String(p.id) !== String(productId)
+          )
+          .slice(0, 4); // Get up to 4 recommended products
+
+        console.log("Found product:", foundProduct);
+        console.log("Recommended products:", recommended);
+
+        setProduct(foundProduct);
+        setRecommendedProducts(recommended);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error:", err);
+        setError(err.message);
+        setLoading(false);
       }
-    });
-  };
+    };
 
-  const filteredComments = getFilteredComments();
-  const totalPages = Math.ceil(filteredComments.length / commentsPerPage);
-  const currentComments = filteredComments.slice(
-    indexOfFirstComment,
-    indexOfLastComment
-  );
+    fetchData();
+  }, [productId]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!product) return <div>Product not found</div>;
 
   const handleQuantityChange = (newValue) => {
     let value = parseInt(newValue);
-    
-    if (isNaN(value)) {
-      value = 1;
-    }
-    
+    if (isNaN(value)) value = 1;
     if (value < 1) value = 1;
     if (value > product.qty) value = product.qty;
-    
     setQuantity(value);
   };
 
   const handleAddToCart = () => {
-    toast.success('Added to cart successfully!', {
+    toast.success("Added to cart successfully!", {
       icon: <FiAlertCircle className="text-lg" />,
-      className: 'font-[Oswald]',
-      position: 'bottom-right',
+      className: "font-[Oswald]",
+      position: "bottom-right",
       duration: 2000,
     });
   };
@@ -122,99 +124,96 @@ const Product = () => {
   };
 
   const handleConfirmOrder = (receiveDate) => {
-    const orderDetails = {
-      ...product,
-      qty: quantity,
-      status: "Processing",
-      checkoutDate: new Date().toISOString(),
-      receiveDate: receiveDate.toISOString(),
-      totalAmount: product.price * quantity,
-      downPayment: product.price * quantity * 0.5,
-      remainingPayment: product.price * quantity * 0.5,
-      paymentStatus: "Partial - Down Payment Received"
-    };
-
     navigate("/cart/in-process");
-    toast.success('Order placed successfully!', {
+    toast.success("Order placed successfully!", {
       icon: <FiAlertCircle className="text-lg" />,
-      className: 'font-[Oswald]',
-      position: 'bottom-right',
+      className: "font-[Oswald]",
+      position: "bottom-right",
       duration: 2000,
     });
   };
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+  // Handle like click
+  const handleLike = (commentId) => {
+    setComments((prevComments) =>
+      prevComments.map((comment) =>
+        comment.id === commentId
+          ? {
+              ...comment,
+              likes: likedComments.has(commentId)
+                ? comment.likes - 1
+                : comment.likes + 1,
+            }
+          : comment
+      )
+    );
+
+    setLikedComments((prevLiked) => {
+      const newLiked = new Set(prevLiked);
+      if (newLiked.has(commentId)) {
+        newLiked.delete(commentId);
+      } else {
+        newLiked.add(commentId);
+      }
+      return newLiked;
+    });
   };
 
-  const handleFilterChange = (filter) => {
-    setSelectedFilter(filter);
-    setCurrentPage(1);
+  // Handle report click
+  const handleReport = (commentId) => {
+    // You can implement your report logic here
+    alert(`Comment ${commentId} has been reported`);
   };
 
-  const handleSort = (sortType) => {
-    setSortBy(sortType);
-    setCurrentPage(1);
-  };
+  // Calculate the current comments to display
+  const indexOfLastComment = currentPage * commentsPerPage;
+  const indexOfFirstComment = indexOfLastComment - commentsPerPage;
+  const currentComments = comments.slice(
+    indexOfFirstComment,
+    indexOfLastComment
+  );
 
-  const handleImageClick = (index) => {
-    setSelectedImageIndex(index);
-  };
-
-  const handleProductClick = (productId) => {
-    navigate(`/product/${productId}`);
-    window.scrollTo(0, 0);
-  };
-
-  const handleStoreClick = (busId) => {
-    navigate(`/store/${busId}`);
-  };
-
-  const recommendedProducts = useMemo(() => {
-    return productData.products
-      .filter(p => p.bus_id === product.bus_id && p.prod_id !== product.prod_id)
-      .slice(0, 4); // Show up to 4 recommended products
-  }, [product.bus_id, product.prod_id]);
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="flex flex-col items-center justify-start h-full w-full px-4 py-6 md:px-10 md:py-8">
       <Toaster richColors position="bottom-right" />
-      <Navbar businessId={product.bus_id} />
+      <Navbar businessId={product.business_id} />
 
       {orderConfirmOpen && (
-        <OrderConfirmation 
+        <OrderConfirmation
           isOpen={orderConfirmOpen}
           closeModal={() => setOrderConfirmOpen(false)}
           totalAmount={product.price * quantity}
-          selectedItems={[{
-            ...product,
-            qty: quantity,
-            overall_pay: product.price * quantity
-          }]}
+          selectedItems={[
+            {
+              ...product,
+              qty: quantity,
+              overall_pay: product.price * quantity,
+            },
+          ]}
           onConfirm={handleConfirmOrder}
         />
       )}
 
       <div className="w-full h-fit max-w-6xl mx-auto flex flex-col gap-2 mt-[5%]">
-        {/* Top Content */}
         <div className="bg-white grid grid-cols-1 md:grid-cols-3 w-full gap-4 p-4 rounded-lg shadow-md">
           {/* Image Section */}
           <div className="w-full h-[400px]">
             <div className="w-full h-full">
-              {/* Main Large Image */}
               <div className="w-full h-[75%] mb-2">
                 <img
-                  src={productImages[selectedImageIndex]?.link || CakeSample}
+                  src={product.images[selectedImageIndex]}
                   alt={product.prod_name}
                   className="w-full h-full object-cover rounded-lg"
                 />
               </div>
-              {/* Thumbnail Images */}
               <div className="grid grid-cols-3 h-[23%] gap-2">
-                {productImages.slice(0, 3).map((image, index) => (
+                {product.images.map((image, index) => (
                   <div
-                    key={image.image_id}
-                    onClick={() => handleImageClick(index)}
+                    key={index}
+                    onClick={() => setSelectedImageIndex(index)}
                     className={`cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-200 ${
                       selectedImageIndex === index
                         ? "border-primary"
@@ -222,7 +221,7 @@ const Product = () => {
                     }`}
                   >
                     <img
-                      src={image.link}
+                      src={image}
                       alt={`${product.prod_name} view ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
@@ -248,22 +247,9 @@ const Product = () => {
                   <span className="text-lg font-semibold">
                     {product.price.toFixed(2)}
                   </span>
-                  <span className="text-gray-500 text-sm">Price</span>
                 </div>
-                <div className="h-5 w-[1px] bg-gray-300"></div>
-                <div className="flex items-center gap-1">
-                  <span className="text-gray-500 text-sm">₱</span>
-                  <span className="text-lg font-semibold">
-                    {downPayment.toFixed(2)}
-                  </span>
-                  <span className="text-gray-500 text-sm">Down payment</span>
-                </div>
-                <span className="bg-[#F4A340] text-white text-sm px-4 py-1 rounded">
-                  50%
-                </span>
               </div>
 
-              {/* Rating and Sold Count */}
               <div className="flex items-center gap-2">
                 <span className="text-[#F4A340] font-bold">{product.rate}</span>
                 <Rating
@@ -277,13 +263,12 @@ const Product = () => {
                 </span>
               </div>
 
-              {/* Quantity Section */}
               <div className="space-y-1">
                 <span className="text-gray-600 text-sm">Quantity</span>
                 <div className="flex items-center gap-2">
                   <button
+                    onClick={() => handleQuantityChange(quantity - 1)}
                     className="w-7 h-7 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-100 transition-colors"
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   >
                     −
                   </button>
@@ -293,18 +278,17 @@ const Product = () => {
                     onChange={(e) => handleQuantityChange(e.target.value)}
                     className="w-14 h-7 border border-gray-300 rounded text-center text-sm"
                     min="1"
-                    max={product.qty || 99}
+                    max={product.qty}
                   />
                   <button
+                    onClick={() => handleQuantityChange(quantity + 1)}
                     className="w-7 h-7 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-100 transition-colors"
-                    onClick={() => setQuantity(Math.min(product.qty || 99, quantity + 1))}
                   >
                     +
                   </button>
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={handleOrderNow}
@@ -323,137 +307,222 @@ const Product = () => {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Recommended Products Section */}
-        <div className="w-full bg-white max-w-6xl h-[210px] mx-auto p-4 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold mb-4">Recommend</h3>
-          <div className="flex gap-4 overflow-x-auto pb-4">
-            {recommendedProducts.map((recommendedProduct) => (
-              <div 
-                key={recommendedProduct.prod_id}
-                onClick={() => handleProductClick(recommendedProduct.prod_id)}
-                className="cursor-pointer transform transition-transform duration-200 hover:scale-105"
+      {/* Updated recommended products section with white background */}
+      <div className="w-full h-fit max-w-6xl mx-auto mt-8">
+        <div className="bg-white p-4 rounded-lg shadow-md">
+          <h2 className="text-2xl font-bold mb-4">Recommended Products</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {recommendedProducts.map((recProduct) => (
+              <div
+                key={recProduct.id}
+                onClick={() => navigate(`/product/${recProduct.id}`)}
+                className="cursor-pointer bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300"
               >
-                <ProductCard
-                  productId={recommendedProduct.prod_id}
-                  name={recommendedProduct.prod_name}
-                  price={recommendedProduct.price}
-                  image={imagesData.images.find(
-                    img => img.prod_id === recommendedProduct.prod_id
-                  )?.link || CakeSample}
-                  className="min-w-[200px]"
-                />
+                <div className="w-full h-48">
+                  <img
+                    src={recProduct.images[0]}
+                    alt={recProduct.prod_name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold mb-2 truncate">
+                    {recProduct.prod_name}
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-2 line-clamp-2">
+                    {recProduct.description}
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <span className="text-primary font-bold">
+                      ₱{recProduct.price.toFixed(2)}
+                    </span>
+                    <div className="flex items-center">
+                      <Rating
+                        icon="ph:star-fill"
+                        clickable={false}
+                        initialRating={recProduct.rate}
+                        className="text-[#F4A340]"
+                      />
+                      <span className="text-gray-600 ml-1">
+                        ({recProduct.rate})
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </div>
+      </div>
 
-        {/* Bottom Content */}
-        <div className="flex justify-center items-center w-full bg-white max-w-6xl mx-auto p-4">
-          <div className="w-full">
-            <h2 className="text-xl font-semibold">Product Rating</h2>
-            <div className="items-center gap-2 bg-[#FAF3EB] w-full h-[180px] mt-3 p-5 grid grid-cols-1 md:grid-cols-4 rounded-lg shadow-md">
-              {/* Rating Section */}
-              <div className="w-full h-full col-span-1 font-[Oswald] flex justify-center items-center">
-                <div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-[34px] font-semibold">3.4</span>
-                    <p className="text-[28px]">out of 5</p>
-                  </div>
-                  <div className="flex justify-center items-center w-full">
-                    <Rating
-                      icon="ph:star-fill"
-                      clickable={false}
-                      initialRating={3.4}
-                      className="text-[#F4A340] text-[20%]"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="w-full h-full col-span-3">
-                <div className="font-[Oswald] grid grid-cols-2 md:grid-cols-4 gap-4 p-5">
-                  <div className="flex justify-center items-center px-4">
-                    <button
-                      className={`border py-2 px-4 rounded-md w-full h-fit text-center transition-colors ${
-                        selectedFilter === "all"
-                          ? "bg-primary text-white"
-                          : "border-gray-400 text-gray-400 hover:bg-gray-50"
-                      }`}
-                      onClick={() => handleFilterChange("all")}
-                    >
-                      All
-                    </button>
-                  </div>
-                  {[5, 4, 3, 2, 1].map((rating) => (
-                    <div
-                      key={rating}
-                      className="flex justify-center items-center px-4"
-                    >
-                      <button
-                        className={`border py-2 px-4 rounded-md w-full h-fit text-center transition-colors ${
-                          selectedFilter === rating.toString()
-                            ? "bg-primary text-white"
-                            : "border-gray-400 text-gray-400 hover:bg-gray-50"
-                        }`}
-                        onClick={() => handleFilterChange(rating.toString())}
-                      >
-                        {rating} star
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
+      {/* Comments Section */}
+      <div className="w-full h-fit max-w-6xl mx-auto mt-8 mb-8">
+        <div className="bg-white p-4 rounded-lg shadow-md">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold">Customer Reviews</h2>
+            
+            {/* Filter Dropdown */}
+            <div className="relative">
+              <select
+                value={filterOption}
+                onChange={(e) => setFilterOption(e.target.value)}
+                className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+              >
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="highest">Highest Rating</option>
+                <option value="lowest">Lowest Rating</option>
+                <option value="mostLiked">Most Liked</option>
+              </select>
+              <Icon 
+                icon="mdi:chevron-down" 
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"
+              />
             </div>
-            {/* Add Sort Dropdown before Comments Section */}
-            <div className="flex justify-between items-center mt-6 mb-4">
-              <h3 className="text-lg font-semibold">Customer Reviews</h3>
-              <div className="relative">
-                <select
-                  value={sortBy}
-                  onChange={(e) => handleSort(e.target.value)}
-                  className="appearance-none bg-white border border-gray-300 rounded-md px-4 py-2 pr-8 text-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50"
-                >
-                  <option value="newest">Newest First</option>
-                  <option value="oldest">Oldest First</option>
-                  <option value="highest">Highest Rating</option>
-                  <option value="lowest">Lowest Rating</option>
-                  <option value="mostLiked">Most Liked</option>
-                </select>
-                <Icon
-                  icon="mdi:chevron-down"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"
-                />
-              </div>
-            </div>
-            {/* Comments Section */}
-            <div id="comments-section" className="space-y-4">
-              {currentComments.length > 0 ? (
-                <>
-                  {currentComments.map((comment) => (
-                    <CommentCard
-                      key={comment.id}
-                      user={comment.user}
-                      rating={comment.rating}
-                      date={comment.date}
-                      comment={comment.comment}
-                      images={comment.images}
-                      likes={comment.likes}
-                    />
-                  ))}
+          </div>
 
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
+          {/* Review Summary */}
+          <div className="bg-gray-50 p-4 rounded-lg mb-4">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-bold text-primary">
+                  {(comments.reduce((acc, curr) => acc + curr.rating, 0) / comments.length).toFixed(1)}
+                </span>
+                <div className="flex flex-col">
+                  <Rating
+                    icon="ph:star-fill"
+                    clickable={false}
+                    initialRating={Number((comments.reduce((acc, curr) => acc + curr.rating, 0) / comments.length).toFixed(1))}
+                    className="text-[#F4A340]"
                   />
-                </>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  No reviews found for this rating
+                  <span className="text-sm text-gray-500">
+                    Based on {comments.length} reviews
+                  </span>
                 </div>
-              )}
+              </div>
+              
+              {/* Rating Distribution */}
+              <div className="flex flex-col gap-1">
+                {[5, 4, 3, 2, 1].map((rating) => {
+                  const count = comments.filter(c => Math.floor(c.rating) === rating).length;
+                  const percentage = (count / comments.length) * 100;
+                  return (
+                    <div key={rating} className="flex items-center gap-2">
+                      <span className="text-sm text-gray-500 w-8">{rating}★</span>
+                      <div className="w-32 h-2 bg-gray-200 rounded-full">
+                        <div
+                          className="h-full bg-primary rounded-full"
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
+                      <span className="text-sm text-gray-500">{count}</span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-            <hr className="border-gray-400 my-3" />
+          </div>
+
+          {/* Comments List */}
+          <div className="space-y-4">
+            {currentComments.map((comment) => (
+              <div key={comment.id} className="border-b border-gray-200 pb-4">
+                <div className="flex justify-between items-start mb-2">
+                  <div className="flex items-start gap-3">
+                    {/* Profile Picture */}
+                    <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+                      <img
+                        src={comment.user.profilePic}
+                        alt={comment.user.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+
+                    {/* User Info and Rating */}
+                    <div>
+                      <h3 className="font-semibold text-lg">
+                        {comment.user.name}
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <Rating
+                          icon="ph:star-fill"
+                          clickable={false}
+                          initialRating={comment.rating}
+                          className="text-[#F4A340]"
+                        />
+                        <span className="text-gray-500 text-sm">
+                          {new Date(comment.date).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Report Button */}
+                  <button
+                    onClick={() => handleReport(comment.id)}
+                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <Icon icon="mdi:flag-outline" className="text-xl" />
+                  </button>
+                </div>
+
+                <p className="text-gray-600 mb-3 ml-13">{comment.comment}</p>
+
+                {/* Comment Images */}
+                {comment.images && comment.images.length > 0 && (
+                  <div className="flex gap-2 mt-2 ml-13">
+                    {comment.images.map((image, index) => (
+                      <div key={index} className="w-20 h-20">
+                        <img
+                          src={image}
+                          alt={`Review ${index + 1}`}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Like Button and Count */}
+                <div className="flex items-center gap-2 mt-3 ml-13">
+                  <button
+                    onClick={() => handleLike(comment.id)}
+                    className={`flex items-center gap-1 px-3 py-1 rounded-full border ${
+                      likedComments.has(comment.id)
+                        ? "border-primary text-primary bg-primary/10"
+                        : "border-gray-300 text-gray-600 hover:bg-gray-50"
+                    } transition-colors`}
+                  >
+                    <Icon
+                      icon={
+                        likedComments.has(comment.id)
+                          ? "mdi:heart"
+                          : "mdi:heart-outline"
+                      }
+                      className="text-lg"
+                    />
+                    <span>{comment.likes}</span>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Pagination */}
+          <div className="flex justify-center mt-4">
+            {Array.from({ length: Math.ceil(comments.length / commentsPerPage) }, (_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentPage(index + 1)}
+                className={`px-3 py-1 mx-1 rounded ${
+                  currentPage === index + 1 ? 'bg-primary text-white' : 'bg-gray-200'
+                }`}
+              >
+                {index + 1}
+              </button>
+            ))}
           </div>
         </div>
       </div>

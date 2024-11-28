@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { useNavigate, useParams } from "react-router-dom";
 import StoreProductCard from "../../components/buyer/StoreProductCard";
@@ -13,15 +13,92 @@ const Store = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
   
-  // Get business data for this user
-  const business = businessData.businesses.find(b => b.user_id === parseInt(userId));
-  const profile = profileData.profiles.find(p => p.user_id === parseInt(userId));
-  
-  // Get products for this business
-  const storeProducts = productData.products.filter(p => p.bus_id === business?.bus_id);
+  // Group all useState declarations together at the top
+  const [business, setBusiness] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [storeProducts, setStoreProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("popular");
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 8;
 
-  // If no business found, show error
-  if (!business || !profile) {
+  // Fetch data when component mounts
+  useEffect(() => {
+    const fetchStoreData = async () => {
+      try {
+        // Fetch all necessary data in parallel
+        const [businessesRes, profilesRes, productsRes, categoriesRes] = await Promise.all([
+          fetch(`http://localhost:3000/businesses`),
+          fetch(`http://localhost:3000/profiles`),
+          fetch(`http://localhost:3000/products`),
+          fetch(`http://localhost:3000/categories`)
+        ]);
+
+        const businessesData = await businessesRes.json();
+        const profilesData = await profilesRes.json();
+        const productsData = await productsRes.json();
+        const categoriesData = await categoriesRes.json();
+
+        // Find the business for this user
+        const businessData = businessesData.find(b => b.user_id === parseInt(userId));
+        const profileData = profilesData.find(p => p.user_id === parseInt(userId));
+        
+        // Get products for this business - Fix: Convert string ID to number
+        const businessProducts = productsData.filter(p => 
+          parseInt(p.business_id) === parseInt(businessData?.id)
+        );
+
+        console.log('Business Data:', businessData);
+        console.log('Products:', productsData);
+        console.log('Filtered Products:', businessProducts);
+
+        setBusiness(businessData);
+        setProfile(profileData);
+        setStoreProducts(businessProducts);
+
+        // Create categories array with counts
+        const categoryList = [
+          {
+            name: "All",
+            count: businessProducts.length
+          },
+          ...categoriesData.map(category => ({
+            ...category,
+            name: category.name,
+            count: businessProducts.filter(product => 
+              parseInt(product.cat_id) === parseInt(category.cat_id)
+            ).length
+          })).filter(cat => cat.count > 0)
+        ];
+        setCategories(categoryList);
+        
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError("Failed to load store data");
+        setLoading(false);
+      }
+    };
+
+    fetchStoreData();
+  }, [userId]);
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h1 className="text-2xl font-bold text-gray-800">Loading...</h1>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error || !business || !profile) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <h1 className="text-2xl font-bold text-gray-800">Store not found</h1>
@@ -35,32 +112,13 @@ const Store = () => {
     );
   }
 
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("popular");
-  const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 8;
-
-  // Create categories array with counts for this store's products
-  const categories = [
-    {
-      name: "All",
-      count: storeProducts.length
-    },
-    ...categoryData.categories.map(category => ({
-      name: category.name,
-      count: storeProducts.filter(product => product.cat_id === category.cat_id).length
-    })).filter(cat => cat.count > 0) // Only show categories with products
-  ];
-
-  // Filter and sort products
+  // Update the getFilteredAndSortedProducts function to use the new data structure
   const getFilteredAndSortedProducts = () => {
     let filtered = storeProducts;
 
     // Filter by category
     if (activeCategory !== "All") {
-      const categoryId = categoryData.categories.find(
+      const categoryId = categories.find(
         cat => cat.name === activeCategory
       )?.cat_id;
       filtered = filtered.filter(product => product.cat_id === categoryId);
@@ -86,7 +144,7 @@ const Store = () => {
           return b.rate - a.rate;
         case "popular":
         default:
-          return b.qty - a.qty; // Using qty as a proxy for popularity
+          return b.qty - a.qty;
       }
     });
   };
@@ -263,15 +321,20 @@ const Store = () => {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                   {currentProducts.map((product) => (
-                    <StoreProductCard
-                      key={product.prod_id}
-                      id={product.prod_id}
-                      image={CakeSample}
-                      title={product.prod_name}
-                      description={product.description}
-                      price={product.price}
-                      rating={product.rate}
-                    />
+                    <div 
+                      key={product.id}
+                      onClick={() => navigate(`/product/${product.id}`)}
+                      className="cursor-pointer"
+                    >
+                      <StoreProductCard
+                        id={product.id}
+                        image={product.images?.[0] || CakeSample}
+                        title={product.prod_name}
+                        description={product.description}
+                        price={product.price}
+                        rating={product.rate}
+                      />
+                    </div>
                   ))}
                 </div>
 

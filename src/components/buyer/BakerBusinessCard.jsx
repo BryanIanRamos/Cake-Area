@@ -1,45 +1,66 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { businessData } from "../../data/businessDataTbl";
-import { userData } from "../../data/userDataTbl";
-import { addressData } from "../../data/addressDataTbl";
-import { profileData } from "../../data/profileDataTbl";
 import { Icon } from "@iconify/react";
 import Rating from "./Rating";
 
 const BakerBusinessCard = ({ selectedFilter }) => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  
-  // Get only active businesses and combine with their address and profile data
-  const getBusinessesWithDetails = () => {
-    return businessData.businesses
-      .filter(business => business.is_active)
-      .map(business => {
-        // Find business owner's work address
-        const businessAddress = addressData.addresses.find(
-          address => address.user_id === business.user_id && address.type === 1
-        );
-        
-        // Find business owner's profile
-        const businessProfile = profileData.profiles.find(
-          profile => profile.user_id === business.user_id
-        );
-        
-        return {
-          ...business,
-          location: businessAddress ? businessAddress.location : "Location not available",
-          profileImage: businessProfile ? businessProfile.img : null,
-          ownerName: businessProfile 
-            ? `${businessProfile.first_name} ${businessProfile.last_name}`
-            : "Unknown Owner"
-        };
-      });
-  };
+  const [businesses, setBusinesses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch businesses and related data
+  useEffect(() => {
+    const fetchBusinessData = async () => {
+      try {
+        // Fetch all necessary data in parallel
+        const [businessesRes, profilesRes, addressesRes] = await Promise.all([
+          fetch('http://localhost:3000/businesses'),
+          fetch('http://localhost:3000/profiles'),
+          fetch('http://localhost:3000/addresses')
+        ]);
+
+        const businessesData = await businessesRes.json();
+        const profilesData = await profilesRes.json();
+        const addressesData = await addressesRes.json();
+
+        // Combine the data
+        const combinedData = businessesData
+          .filter(business => business.is_active)
+          .map(business => {
+            const businessAddress = addressesData.find(
+              address => address.user_id === business.user_id && address.type === 1
+            );
+            
+            const businessProfile = profilesData.find(
+              profile => profile.user_id === business.user_id
+            );
+            
+            return {
+              ...business,
+              location: businessAddress ? businessAddress.location : "Location not available",
+              profileImage: businessProfile ? businessProfile.img : null,
+              ownerName: businessProfile 
+                ? `${businessProfile.first_name} ${businessProfile.last_name}`
+                : "Unknown Owner"
+            };
+          });
+
+        setBusinesses(combinedData);
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to load baker data");
+        setLoading(false);
+      }
+    };
+
+    fetchBusinessData();
+  }, []);
 
   // Add filtering logic
   const getFilteredBakers = () => {
-    const businesses = getBusinessesWithDetails();
+    if (!businesses) return [];
     if (!selectedFilter) return businesses;
 
     return [...businesses].sort((a, b) => {

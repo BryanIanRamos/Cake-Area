@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Icon } from "@iconify/react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import { userData } from "../../data/userDataTbl";
 
 const LoginModal = ({ isOpen, closeModal, onLogin }) => {
   const navigate = useNavigate();
@@ -16,32 +15,68 @@ const LoginModal = ({ isOpen, closeModal, onLogin }) => {
     setIsLoading(true);
     setLoginMessage("Logging in...");
     
-    // Simulate network delay for smooth transition
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const user = userData.users.find(
-      (user) => user.email === email && user.password === password
-    );
+    try {
+      // Fetch user data from json-server
+      const response = await fetch(`http://localhost:3000/users?email=${email}&password=${password}`);
+      const users = await response.json();
+      const user = users[0]; // Get first matching user
 
-    if (user && user.role === 1) {
-      setLoginMessage("Admin login not allowed here");
-      setIsLoading(false);
-      onLogin(email, password);
-      return;
-    }
+      // Simulate network delay for smooth transition
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-    if (user && user.role === 2) {
-      setLoginMessage("Welcome back, baker!");
-      onLogin(email, password);
-      await new Promise(resolve => setTimeout(resolve, 500));
+      if (!user) {
+        setLoginMessage("Invalid email or password");
+        setIsLoading(false);
+        onLogin(email, password); // This will trigger error feedback in MainPage
+        return;
+      }
+
+      if (user.role === 1) {
+        setLoginMessage("Admin login not allowed here");
+        setIsLoading(false);
+        onLogin(email, password);
+        return;
+      }
+
+      if (user.role === 2) {
+        setLoginMessage("Welcome back, baker!");
+        // Update user login status
+        await fetch(`http://localhost:3000/users/${user.id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ is_Login: true }),
+        });
+        
+        onLogin(email, password); // This will trigger success feedback
+        await new Promise(resolve => setTimeout(resolve, 500));
+        closeModal();
+        navigate('/dashboard');
+        return;
+      }
+
+      // For regular customers
+      setLoginMessage("Login successful!");
+      // Update user login status
+      await fetch(`http://localhost:3000/users/${user.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ is_Login: true }),
+      });
+      
+      onLogin(email, password); // This will trigger success feedback
       closeModal();
-      navigate('/dashboard');
-      return;
-    }
 
-    // For regular customers or invalid login
-    onLogin(email, password);
-    setIsLoading(false);
+    } catch (error) {
+      console.error('Login error:', error);
+      setLoginMessage("An error occurred during login");
+      onLogin(email, password); // This will trigger error feedback
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
