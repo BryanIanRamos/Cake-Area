@@ -28,33 +28,33 @@ const Product = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [likedComments, setLikedComments] = useState(new Set());
   const [comments, setComments] = useState(commentData);
-  const [filterOption, setFilterOption] = useState('newest');
+  const [filterOption, setFilterOption] = useState("newest");
   const commentsPerPage = 5;
 
   // Filter comments based on selected option
   useEffect(() => {
     let filteredComments = [...commentData];
-    
+
     switch (filterOption) {
-      case 'newest':
+      case "newest":
         filteredComments.sort((a, b) => new Date(b.date) - new Date(a.date));
         break;
-      case 'oldest':
+      case "oldest":
         filteredComments.sort((a, b) => new Date(a.date) - new Date(b.date));
         break;
-      case 'highest':
+      case "highest":
         filteredComments.sort((a, b) => b.rating - a.rating);
         break;
-      case 'lowest':
+      case "lowest":
         filteredComments.sort((a, b) => a.rating - b.rating);
         break;
-      case 'mostLiked':
+      case "mostLiked":
         filteredComments.sort((a, b) => b.likes - a.likes);
         break;
       default:
         break;
     }
-    
+
     setComments(filteredComments);
     setCurrentPage(1); // Reset to first page when filter changes
   }, [filterOption]);
@@ -242,11 +242,26 @@ const Product = () => {
 
             <div className="space-y-3">
               <div className="flex items-center gap-4 py-2 border-y border-gray-200 w-fit">
-                <div className="flex items-center gap-1">
-                  <span className="text-gray-500 text-sm">₱</span>
-                  <span className="text-lg font-semibold">
-                    {product.price.toFixed(2)}
-                  </span>
+                {/* Price and Down Payment Section */}
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1">
+                    <span className="text-gray-500 text-sm">₱</span>
+                    <span className="text-lg font-semibold">
+                      {product.price.toFixed(2)}
+                    </span>
+                    <span className="text-gray-500 text-sm">Price</span>
+                  </div>
+                  <div className="text-gray-300">|</div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-gray-500 text-sm">₱</span>
+                    <span className="text-lg font-semibold">
+                      {(product.price * 0.5).toFixed(2)}
+                    </span>
+                    <span className="text-gray-500 text-sm">Down payment</span>
+                  </div>
+                  <div className="bg-[#F4A340] text-white px-2 py-1 rounded">
+                    50%
+                  </div>
                 </div>
               </div>
 
@@ -362,7 +377,7 @@ const Product = () => {
         <div className="bg-white p-4 rounded-lg shadow-md">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold">Customer Reviews</h2>
-            
+
             {/* Filter Dropdown */}
             <div className="relative">
               <select
@@ -376,8 +391,8 @@ const Product = () => {
                 <option value="lowest">Lowest Rating</option>
                 <option value="mostLiked">Most Liked</option>
               </select>
-              <Icon 
-                icon="mdi:chevron-down" 
+              <Icon
+                icon="mdi:chevron-down"
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"
               />
             </div>
@@ -388,13 +403,21 @@ const Product = () => {
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <span className="text-2xl font-bold text-primary">
-                  {(comments.reduce((acc, curr) => acc + curr.rating, 0) / comments.length).toFixed(1)}
+                  {(
+                    comments.reduce((acc, curr) => acc + curr.rating, 0) /
+                    comments.length
+                  ).toFixed(1)}
                 </span>
                 <div className="flex flex-col">
                   <Rating
                     icon="ph:star-fill"
                     clickable={false}
-                    initialRating={Number((comments.reduce((acc, curr) => acc + curr.rating, 0) / comments.length).toFixed(1))}
+                    initialRating={Number(
+                      (
+                        comments.reduce((acc, curr) => acc + curr.rating, 0) /
+                        comments.length
+                      ).toFixed(1)
+                    )}
                     className="text-[#F4A340]"
                   />
                   <span className="text-sm text-gray-500">
@@ -402,15 +425,19 @@ const Product = () => {
                   </span>
                 </div>
               </div>
-              
+
               {/* Rating Distribution */}
               <div className="flex flex-col gap-1">
                 {[5, 4, 3, 2, 1].map((rating) => {
-                  const count = comments.filter(c => Math.floor(c.rating) === rating).length;
+                  const count = comments.filter(
+                    (c) => Math.floor(c.rating) === rating
+                  ).length;
                   const percentage = (count / comments.length) * 100;
                   return (
                     <div key={rating} className="flex items-center gap-2">
-                      <span className="text-sm text-gray-500 w-8">{rating}★</span>
+                      <span className="text-sm text-gray-500 w-8">
+                        {rating}★
+                      </span>
                       <div className="w-32 h-2 bg-gray-200 rounded-full">
                         <div
                           className="h-full bg-primary rounded-full"
@@ -512,17 +539,22 @@ const Product = () => {
 
           {/* Pagination */}
           <div className="flex justify-center mt-4">
-            {Array.from({ length: Math.ceil(comments.length / commentsPerPage) }, (_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentPage(index + 1)}
-                className={`px-3 py-1 mx-1 rounded ${
-                  currentPage === index + 1 ? 'bg-primary text-white' : 'bg-gray-200'
-                }`}
-              >
-                {index + 1}
-              </button>
-            ))}
+            {Array.from(
+              { length: Math.ceil(comments.length / commentsPerPage) },
+              (_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentPage(index + 1)}
+                  className={`px-3 py-1 mx-1 rounded ${
+                    currentPage === index + 1
+                      ? "bg-primary text-white"
+                      : "bg-gray-200"
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              )
+            )}
           </div>
         </div>
       </div>
