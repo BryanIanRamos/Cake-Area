@@ -188,329 +188,41 @@
     {
       "id": "1",
       "business_id": 1,
-      "cat_id": 1,
-      "prod_name": "Classic Vanilla Celebration Cake",
-      "description": "Light and fluffy vanilla cake with buttercream frosting",
-      "price": 499.99,
+      "cat_id": 3,
+      "prod_name": "Premium Almond Croissant",
+      "description": "Flaky croissant filled with rich almond cream and topped with sliced almonds",
+      "price": 119.99,
       "rate": 4.8,
-      "qty": 10,
+      "qty": 15,
       "images": [
-        "../assets/cake1.png",
-        "../assets/cake1.png",
-        "../assets/cake1.png"
+        "../assets/AlmondCroissantv1.jpg",
+        "../assets/AlmondCroissantv2.jpg",
+        "../assets/AlmondCroissantv3.jpg"
       ],
       "is_available": true
     },
     {
       "id": "2",
       "business_id": 1,
-      "cat_id": 1,
-      "prod_name": "Black Forest Cake",
-      "description": "Rich chocolate layers with cherries and cream",
-      "price": 549.99,
-      "rate": 4.9,
-      "qty": 8,
+      "cat_id": 2,
+      "prod_name": "Artisanal Banana Bread",
+      "description": "Moist banana bread with premium ingredients and walnuts",
+      "price": 349.99,
+      "rate": 4.7,
+      "qty": 12,
       "images": [
-        "../assets/BlackForestCakev1.jpg",
-        "../assets/BlackForestCakev2.jpg",
-        "../assets/BlackForestCakev3.jpg"
+        "../assets/ArtisanalBananaBreadv1.jpg",
+        "../assets/ArtisanalBananaBreadv2.jpg",
+        "../assets/ArtisanalBananaBreadv3.jpg"
       ],
       "is_available": true
     },
     {
       "id": "3",
       "business_id": 1,
-      "cat_id": 1,
-      "prod_name": "Carrot Spice Cake",
-      "description": "Spiced carrot cake with cream cheese frosting",
-      "price": 479.99,
-      "rate": 4.7,
-      "qty": 12,
-      "images": [
-        "../assets/CarrotSpiceCakev1.jpg",
-        "../assets/CarrotSpiceCakev2.jpg",
-        "../assets/CarrotSpiceCakev3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "4",
-      "business_id": 1,
-      "cat_id": 1,
-      "prod_name": "Black Forest Special",
-      "description": "Premium Black Forest cake with dark chocolate shavings",
-      "price": 599.99,
-      "rate": 4.8,
-      "qty": 6,
-      "images": [
-        "../assets/BlackForestCakev1.jpg",
-        "../assets/BlackForestCakev2.jpg",
-        "../assets/BlackForestCakev3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "5",
-      "business_id": 1,
-      "cat_id": 1,
-      "prod_name": "Carrot Cake Deluxe",
-      "description": "Premium carrot cake with extra nuts and spices",
-      "price": 529.99,
-      "rate": 4.6,
-      "qty": 8,
-      "images": [
-        "../assets/CarrotSpiceCakev1.jpg",
-        "../assets/CarrotSpiceCakev2.jpg",
-        "../assets/CarrotSpiceCakev3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "6",
-      "business_id": 1,
-      "cat_id": 1,
-      "prod_name": "Black Forest Supreme",
-      "description": "Deluxe Black Forest with premium cherries",
-      "price": 649.99,
-      "rate": 4.9,
-      "qty": 5,
-      "images": [
-        "../assets/BlackForestCakev1.jpg",
-        "../assets/BlackForestCakev2.jpg",
-        "../assets/BlackForestCakev3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "7",
-      "business_id": 1,
-      "cat_id": 1,
-      "prod_name": "Carrot Cake Supreme",
-      "description": "Supreme carrot cake with premium ingredients",
-      "price": 579.99,
-      "rate": 4.8,
-      "qty": 7,
-      "images": [
-        "../assets/CarrotSpiceCakev2.jpg",
-        "../assets/CarrotSpiceCakev1.jpg",
-        "../assets/CarrotSpiceCakev3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "8",
-      "business_id": 1,
-      "cat_id": 2,
-      "prod_name": "Chocolate Babka Classic",
-      "description": "Traditional chocolate twisted bread",
-      "price": 299.99,
-      "rate": 4.7,
-      "qty": 15,
-      "images": [
-        "../assets/ChocolateBabkav1.jpg",
-        "../assets/ChocolateBabkav2.jpg",
-        "../assets/ChocolateBabkav3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "9",
-      "business_id": 1,
-      "cat_id": 2,
-      "prod_name": "Chocolate Babka Special",
-      "description": "Special chocolate babka with extra filling",
-      "price": 349.99,
-      "rate": 4.8,
-      "qty": 12,
-      "images": [
-        "../assets/ChocolateBabkav1.jpg",
-        "../assets/ChocolateBabkav2.jpg",
-        "../assets/ChocolateBabkav3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "10",
-      "business_id": 1,
-      "cat_id": 2,
-      "prod_name": "Chocolate Babka Supreme",
-      "description": "Premium chocolate babka with deluxe chocolate",
-      "price": 399.99,
-      "rate": 4.9,
-      "qty": 10,
-      "images": [
-        "../assets/ChocolateBabkav1.jpg",
-        "../assets/ChocolateBabkav2.jpg",
-        "../assets/ChocolateBabkav3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "11",
-      "business_id": 2,
-      "cat_id": 2,
-      "prod_name": "Classic Banana Bread",
-      "description": "Traditional banana bread with walnuts",
-      "price": 299.99,
-      "rate": 4.6,
-      "qty": 15,
-      "images": [
-        "../assets/ArtisanalBananaBreadv1.jpg",
-        "../assets/ArtisanalBananaBreadv2.jpg",
-        "../assets/ArtisanalBananaBreadv3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "12",
-      "business_id": 2,
-      "cat_id": 2,
-      "prod_name": "Premium Banana Bread",
-      "description": "Premium banana bread with extra nuts",
-      "price": 349.99,
-      "rate": 4.7,
-      "qty": 12,
-      "images": [
-        "../assets/ArtisanalBananaBreadv1.jpg",
-        "../assets/ArtisanalBananaBreadv2.jpg",
-        "../assets/ArtisanalBananaBreadv3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "13",
-      "business_id": 2,
-      "cat_id": 2,
-      "prod_name": "Deluxe Banana Bread",
-      "description": "Deluxe banana bread with premium ingredients",
-      "price": 399.99,
-      "rate": 4.8,
-      "qty": 10,
-      "images": [
-        "../assets/ArtisanalBananaBreadv1.jpg",
-        "../assets/ArtisanalBananaBreadv2.jpg",
-        "../assets/ArtisanalBananaBreadv3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "14",
-      "business_id": 2,
-      "cat_id": 3,
-      "prod_name": "Classic Butter Croissant",
-      "description": "Traditional buttery croissant",
-      "price": 89.99,
-      "rate": 4.7,
-      "qty": 20,
-      "images": [
-        "../assets/ButterCroissantv1.jpg",
-        "../assets/ButterCroissantv2.jpg",
-        "../assets/ButterCroissantv3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "15",
-      "business_id": 2,
-      "cat_id": 3,
-      "prod_name": "Premium Butter Croissant",
-      "description": "Premium butter croissant with extra layers",
-      "price": 99.99,
-      "rate": 4.8,
-      "qty": 18,
-      "images": [
-        "../assets/ButterCroissantv1.jpg",
-        "../assets/ButterCroissantv2.jpg",
-        "../assets/ButterCroissantv3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "16",
-      "business_id": 2,
-      "cat_id": 3,
-      "prod_name": "Deluxe Butter Croissant",
-      "description": "Deluxe butter croissant with premium butter",
-      "price": 109.99,
-      "rate": 4.9,
-      "qty": 15,
-      "images": [
-        "../assets/ButterCroissantv1.jpg",
-        "../assets/ButterCroissantv2.jpg",
-        "../assets/ButterCroissantv3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "17",
-      "business_id": 2,
-      "cat_id": 3,
-      "prod_name": "Classic Almond Croissant",
-      "description": "Traditional almond filled croissant",
-      "price": 99.99,
-      "rate": 4.7,
-      "qty": 18,
-      "images": [
-        "../assets/AlmondCroissantv1.jpg",
-        "../assets/AlmondCroissantv2.jpg",
-        "../assets/AlmondCroissantv3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "18",
-      "business_id": 2,
-      "cat_id": 3,
-      "prod_name": "Premium Almond Croissant",
-      "description": "Premium almond croissant with extra filling",
-      "price": 109.99,
-      "rate": 4.8,
-      "qty": 15,
-      "images": [
-        "../assets/AlmondCroissantv1.jpg",
-        "../assets/AlmondCroissantv2.jpg",
-        "../assets/AlmondCroissantv3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "19",
-      "business_id": 2,
-      "cat_id": 3,
-      "prod_name": "Deluxe Almond Croissant",
-      "description": "Deluxe almond croissant with premium almonds",
-      "price": 119.99,
-      "rate": 4.9,
-      "qty": 12,
-      "images": [
-        "../assets/AlmondCroissantv1.jpg",
-        "../assets/AlmondCroissantv2.jpg",
-        "../assets/AlmondCroissantv3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "20",
-      "business_id": 2,
-      "cat_id": 3,
-      "prod_name": "Classic Focaccia",
-      "description": "Traditional Italian focaccia",
-      "price": 169.99,
-      "rate": 4.7,
-      "qty": 10,
-      "images": [
-        "../assets/ArtisanalFocacciav1.jpg",
-        "../assets/ArtisanalFocacciav2.jpg",
-        "../assets/ArtisanalFocacciav3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "21",
-      "business_id": 3,
-      "cat_id": 3,
-      "prod_name": "Premium Focaccia",
-      "description": "Premium Italian focaccia with herbs",
+      "cat_id": 4,
+      "prod_name": "Artisanal Focaccia",
+      "description": "Italian herb-infused focaccia with premium olive oil",
       "price": 189.99,
       "rate": 4.8,
       "qty": 8,
@@ -522,45 +234,13 @@
       "is_available": true
     },
     {
-      "id": "22",
-      "business_id": 3,
-      "cat_id": 3,
-      "prod_name": "Deluxe Focaccia",
-      "description": "Deluxe focaccia with premium olive oil",
-      "price": 209.99,
-      "rate": 4.9,
-      "qty": 6,
-      "images": [
-        "../assets/ArtisanalFocacciav1.jpg",
-        "../assets/ArtisanalFocacciav2.jpg",
-        "../assets/ArtisanalFocacciav3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "23",
-      "business_id": 3,
+      "id": "4",
+      "business_id": 1,
       "cat_id": 1,
-      "prod_name": "Classic Black Forest",
-      "description": "Traditional Black Forest cake",
-      "price": 549.99,
-      "rate": 4.7,
-      "qty": 8,
-      "images": [
-        "../assets/BlackForestCakev1.jpg",
-        "../assets/BlackForestCakev2.jpg",
-        "../assets/BlackForestCakev3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "24",
-      "business_id": 3,
-      "cat_id": 1,
-      "prod_name": "Premium Black Forest",
-      "description": "Premium Black Forest with extra cherries",
+      "prod_name": "Black Forest Cake",
+      "description": "Premium Black Forest cake with cherries and dark chocolate",
       "price": 599.99,
-      "rate": 4.8,
+      "rate": 4.9,
       "qty": 6,
       "images": [
         "../assets/BlackForestCakev1.jpg",
@@ -570,43 +250,27 @@
       "is_available": true
     },
     {
-      "id": "25",
-      "business_id": 3,
-      "cat_id": 1,
-      "prod_name": "Deluxe Black Forest",
-      "description": "Deluxe Black Forest with premium chocolate",
-      "price": 649.99,
-      "rate": 4.9,
-      "qty": 4,
+      "id": "5",
+      "business_id": 1,
+      "cat_id": 3,
+      "prod_name": "Classic Butter Croissant",
+      "description": "Traditional French butter croissant with flaky layers",
+      "price": 109.99,
+      "rate": 4.8,
+      "qty": 20,
       "images": [
-        "../assets/BlackForestCakev1.jpg",
-        "../assets/BlackForestCakev2.jpg",
-        "../assets/BlackForestCakev3.jpg"
+        "../assets/ButterCroissantv1.jpg",
+        "../assets/ButterCroissantv2.jpg",
+        "../assets/ButterCroissantv3.jpg"
       ],
       "is_available": true
     },
     {
-      "id": "26",
-      "business_id": 3,
+      "id": "6",
+      "business_id": 1,
       "cat_id": 1,
-      "prod_name": "Classic Carrot Cake",
-      "description": "Traditional carrot cake",
-      "price": 479.99,
-      "rate": 4.7,
-      "qty": 10,
-      "images": [
-        "../assets/CarrotSpiceCakev1.jpg",
-        "../assets/CarrotSpiceCakev2.jpg",
-        "../assets/CarrotSpiceCakev3.jpg"
-      ],
-      "is_available": true
-    },
-    {
-      "id": "27",
-      "business_id": 3,
-      "cat_id": 1,
-      "prod_name": "Premium Carrot Cake",
-      "description": "Premium carrot cake with extra spices",
+      "prod_name": "Carrot Spice Cake",
+      "description": "Premium carrot cake with warm spices and cream cheese frosting",
       "price": 529.99,
       "rate": 4.8,
       "qty": 8,
@@ -618,18 +282,226 @@
       "is_available": true
     },
     {
-      "id": "28",
-      "business_id": 3,
+      "id": "7",
+      "business_id": 1,
+      "cat_id": 2,
+      "prod_name": "Chocolate Babka",
+      "description": "Rich chocolate-swirled babka bread",
+      "price": 349.99,
+      "rate": 4.8,
+      "qty": 10,
+      "images": [
+        "../assets/ChocolateBabkav1.jpg",
+        "../assets/ChocolateBabkav2.jpg",
+        "../assets/ChocolateBabkav3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "8",
+      "business_id": 1,
+      "cat_id": 2,
+      "prod_name": "Chocolate Chip Muffins",
+      "description": "Fresh-baked muffins loaded with premium chocolate chips",
+      "price": 89.99,
+      "rate": 4.7,
+      "qty": 24,
+      "images": [
+        "../assets/ChocolateChipMuffinsv1.jpg",
+        "../assets/ChocolateChipMuffinsv2.jpg",
+        "../assets/ChocolateChipMuffinsv3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "9",
+      "business_id": 1,
       "cat_id": 1,
-      "prod_name": "Deluxe Carrot Cake",
-      "description": "Deluxe carrot cake with premium ingredients",
-      "price": 579.99,
+      "prod_name": "Chocolate Dream Layer Cake",
+      "description": "Decadent chocolate layer cake with rich ganache",
+      "price": 649.99,
       "rate": 4.9,
       "qty": 6,
       "images": [
-        "../assets/CarrotSpiceCakev1.jpg",
-        "../assets/CarrotSpiceCakev2.jpg",
-        "../assets/CarrotSpiceCakev3.jpg"
+        "../assets/ChocolateDreamLayerCakev1.jpg",
+        "../assets/ChocolateDreamLayerCakev2.jpg",
+        "../assets/ChocolateDreamLayerCakev3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "10",
+      "business_id": 1,
+      "cat_id": 1,
+      "prod_name": "Chocolate Mousse Cake",
+      "description": "Light and airy chocolate mousse cake with dark chocolate shavings",
+      "price": 579.99,
+      "rate": 4.8,
+      "qty": 8,
+      "images": [
+        "../assets/ChocolateMousseCakev1.jpg",
+        "../assets/ChocolateMousseCakev2.jpg",
+        "../assets/ChocolateMousseCakev3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "11",
+      "business_id": 2,
+      "cat_id": 2,
+      "prod_name": "Chocolate Profiteroles",
+      "description": "Light choux pastry filled with cream and topped with chocolate",
+      "price": 299.99,
+      "rate": 4.8,
+      "qty": 15,
+      "images": [
+        "../assets/ChocolateProfiterolesv1.jpg",
+        "../assets/ChocolateProfiterolesv2.jpg",
+        "../assets/ChocolateProfiterolesv3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "12",
+      "business_id": 2,
+      "cat_id": 2,
+      "prod_name": "Chocolate Truffle Tart",
+      "description": "Rich chocolate ganache tart with cocoa dusting",
+      "price": 449.99,
+      "rate": 4.9,
+      "qty": 8,
+      "images": [
+        "../assets/ChocolateTruffleTartv1.jpg",
+        "../assets/ChocolateTruffleTartv2.jpg",
+        "../assets/ChocolateTruffleTartv3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "13",
+      "business_id": 2,
+      "cat_id": 2,
+      "prod_name": "Classic Apple Pie",
+      "description": "Traditional apple pie with buttery crust and spiced filling",
+      "price": 399.99,
+      "rate": 4.8,
+      "qty": 10,
+      "images": [
+        "../assets/ClassicApplePiev1.jpg",
+        "../assets/ClassicApplePiev2.jpg",
+        "../assets/ClassicApplePiev3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "14",
+      "business_id": 2,
+      "cat_id": 3,
+      "prod_name": "Classic Brioche",
+      "description": "Buttery French brioche bread with golden crust",
+      "price": 199.99,
+      "rate": 4.7,
+      "qty": 12,
+      "images": [
+        "../assets/ClassicBriochev1.jpg",
+        "../assets/ClassicBriochev2.jpg",
+        "../assets/ClassicBriochev3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "15",
+      "business_id": 2,
+      "cat_id": 1,
+      "prod_name": "Classic Cheesecake",
+      "description": "New York style cheesecake with graham cracker crust",
+      "price": 549.99,
+      "rate": 4.9,
+      "qty": 8,
+      "images": [
+        "../assets/ClassicCheesecakev1.jpg",
+        "../assets/ClassicCheesecakev2.jpg",
+        "../assets/ClassicCheesecakev3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "16",
+      "business_id": 2,
+      "cat_id": 2,
+      "prod_name": "Classic Chocolate Chip Cookies",
+      "description": "Traditional chocolate chip cookies with premium chocolate",
+      "price": 149.99,
+      "rate": 4.7,
+      "qty": 24,
+      "images": [
+        "../assets/ClassicChocolateChipCookiesv1.jpg",
+        "../assets/ClassicChocolateChipCookiesv2.jpeg",
+        "../assets/ClassicChocolateChipCookiesv3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "17",
+      "business_id": 2,
+      "cat_id": 2,
+      "prod_name": "Classic Cream Puff",
+      "description": "Light choux pastry filled with vanilla cream",
+      "price": 249.99,
+      "rate": 4.8,
+      "qty": 20,
+      "images": [
+        "../assets/ClassicCreamPuffv1.jpg",
+        "../assets/ClassicCreamPuffv2.jpg",
+        "../assets/ClassicCreamPuffv3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "18",
+      "business_id": 2,
+      "cat_id": 3,
+      "prod_name": "Classic French Croissant",
+      "description": "Traditional French croissant with perfect layers",
+      "price": 99.99,
+      "rate": 4.8,
+      "qty": 25,
+      "images": [
+        "../assets/ClassicFrenchCroissantv1.jpg",
+        "../assets/ClassicFrenchCroissantv2.jpg",
+        "../assets/ClassicFrenchCroissantv3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "19",
+      "business_id": 2,
+      "cat_id": 2,
+      "prod_name": "Classic Mille-feuille",
+      "description": "Layered puff pastry with vanilla cream and fondant",
+      "price": 399.99,
+      "rate": 4.9,
+      "qty": 10,
+      "images": [
+        "../assets/ClassicMille-feuillev1.jpg",
+        "../assets/ClassicMille-feuillev2.jpg",
+        "../assets/ClassicMille-feuillev3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "20",
+      "business_id": 2,
+      "cat_id": 2,
+      "prod_name": "Classic Palmier",
+      "description": "Caramelized puff pastry cookies in heart shape",
+      "price": 179.99,
+      "rate": 4.7,
+      "qty": 20,
+      "images": [
+        "../assets/ClassicPalmierv1.jpg",
+        "../assets/ClassicPalmierv2.jpg",
+        "../assets/ClassicPalmierv3.jpg"
       ],
       "is_available": true
     }
