@@ -518,23 +518,21 @@
       "business_id": 1,
       "products": [
         {
-          "prod_id": 1,
-          "quantity": 1,
-          "price": 499.99
+          "prod_id": "4",
+          "quantity": 2
         },
         {
-          "prod_id": 2,
-          "quantity": 2,
-          "price": 549.99
+          "prod_id": "6",
+          "quantity": 1
         }
       ],
-      "total_amount": 1599.97,
+      "total_amount": 1729.97,
       "status": "Pending",
       "created_at": "2024-03-18T15:30:00Z",
       "checkoutDate": "2024-03-18T15:30:00Z",
       "receiveDate": "2024-03-25T15:00:00Z",
-      "downPayment": 800,
-      "remainingPayment": 799.97,
+      "downPayment": 865.0,
+      "remainingPayment": 864.97,
       "paymentStatus": "Partial - Down Payment Received"
     },
     {
@@ -544,22 +542,44 @@
       "business_id": 2,
       "products": [
         {
-          "prod_id": 3,
-          "quantity": 2,
-          "price": 189.99
+          "prod_id": "15",
+          "quantity": 1
         },
         {
-          "prod_id": 4,
-          "quantity": 1,
-          "price": 449.99
+          "prod_id": "12",
+          "quantity": 2
         }
       ],
-      "total_amount": 829.97,
+      "total_amount": 1449.97,
       "status": "Processing",
       "created_at": "2024-03-17T10:30:00Z",
       "checkoutDate": "2024-03-17T10:30:00Z",
       "receiveDate": "2024-03-24T10:00:00Z",
-      "downPayment": 829.97,
+      "downPayment": 1449.97,
+      "remainingPayment": 0,
+      "paymentStatus": "Paid"
+    },
+    {
+      "id": "3",
+      "order_id": "ORD003",
+      "customer_id": 4,
+      "business_id": 1,
+      "products": [
+        {
+          "prod_id": "9",
+          "quantity": 1
+        },
+        {
+          "prod_id": "1",
+          "quantity": 2
+        }
+      ],
+      "total_amount": 889.97,
+      "status": "Completed",
+      "created_at": "2024-03-16T14:30:00Z",
+      "checkoutDate": "2024-03-16T14:30:00Z",
+      "receiveDate": "2024-03-23T14:00:00Z",
+      "downPayment": 889.97,
       "remainingPayment": 0,
       "paymentStatus": "Paid"
     }
