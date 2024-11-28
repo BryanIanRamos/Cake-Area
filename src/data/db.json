@@ -1,0 +1,261 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "david.admin@email.com",
+      "password": "hashedPasswordDEF",
+      "created_at": "2024-02-28",
+      "role": 1,
+      "is_Login": true
+    },
+    {
+      "id": 2,
+      "email": "sarah.baker@email.com",
+      "password": "hashedPassword456",
+      "created_at": "2024-01-20",
+      "role": 2,
+      "is_Login": false
+    },
+    {
+      "id": 3,
+      "email": "lisa.baker@email.com",
+      "password": "hashedPasswordGHI",
+      "created_at": "2024-03-05",
+      "role": 2,
+      "is_Login": false
+    },
+    {
+      "id": 4,
+      "email": "mike.customer@email.com",
+      "password": "hashedPassword789",
+      "created_at": "2024-02-01",
+      "role": 3,
+      "is_Login": false
+    },
+    {
+      "id": 5,
+      "email": "emma.wilson@email.com",
+      "password": "hashedPasswordABC",
+      "created_at": "2024-02-15",
+      "role": 3,
+      "is_Login": true
+    }
+  ],
+  "profiles": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "first_name": "David",
+      "last_name": "Admin",
+      "age": "45",
+      "sex": "Male",
+      "img": "dummy_profile_url"
+    },
+    {
+      "id": 2,
+      "user_id": 2,
+      "first_name": "Sarah",
+      "last_name": "Baker",
+      "age": "28",
+      "sex": "Female",
+      "img": "dummy_profile_url"
+    },
+    {
+      "id": 3,
+      "user_id": 3,
+      "first_name": "Lisa",
+      "last_name": "Baker",
+      "age": "31",
+      "sex": "Female",
+      "img": "dummy_profile_url"
+    },
+    {
+      "id": 4,
+      "user_id": 4,
+      "first_name": "Mike",
+      "last_name": "Customer",
+      "age": "23",
+      "sex": "Male",
+      "img": "dummy_profile_url"
+    },
+    {
+      "id": 5,
+      "user_id": 5,
+      "first_name": "Emma",
+      "last_name": "Wilson",
+      "age": "29",
+      "sex": "Female",
+      "img": "dummy_profile_url"
+    }
+  ],
+  "addresses": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "first_name": "David",
+      "last_name": "Admin",
+      "location": "Bonbon",
+      "postal_code": 10001,
+      "description": "Near Town Hall",
+      "type": 0
+    },
+    {
+      "id": 2,
+      "user_id": 2,
+      "first_name": "Sarah",
+      "last_name": "Baker",
+      "location": "Buhangin Poblacion",
+      "postal_code": 10002,
+      "description": "Behind Central Market",
+      "type": 1
+    },
+    {
+      "id": 3,
+      "user_id": 3,
+      "first_name": "Lisa",
+      "last_name": "Baker",
+      "location": "Camahayan",
+      "postal_code": 10003,
+      "description": "Near Public School",
+      "type": 0
+    },
+    {
+      "id": 4,
+      "user_id": 4,
+      "first_name": "Mike",
+      "last_name": "Customer",
+      "location": "Doongan",
+      "postal_code": 10004,
+      "description": "Beside Church",
+      "type": 0
+    },
+    {
+      "id": 5,
+      "user_id": 5,
+      "first_name": "Emma",
+      "last_name": "Wilson",
+      "location": "Florida",
+      "postal_code": 10005,
+      "description": "Main Street",
+      "type": 1
+    }
+  ],
+  "businesses": [
+    {
+      "id": 1,
+      "user_id": 2,
+      "name": "Sarah's Sweet Creations",
+      "description": "Welcome to Sarah's Sweet Creations! We specialize in creating delicious, handcrafted baked goods using only the finest ingredients.",
+      "no_visits": 1250,
+      "is_active": true,
+      "store_rating": 4.8,
+      "service_rating": 4.9,
+      "total_sold": 856,
+      "available_items": 45
+    },
+    {
+      "id": 2,
+      "user_id": 3,
+      "name": "Lisa's Artisan Bakery",
+      "description": "Welcome to Lisa's Artisan Bakery! We're dedicated to bringing you authentic, artisanal baked goods made from scratch daily.",
+      "no_visits": 980,
+      "is_active": true,
+      "store_rating": 4.5,
+      "service_rating": 4.7,
+      "total_sold": 654,
+      "available_items": 32
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "business_id": 1,
+      "name": "Classic Vanilla Celebration Cake",
+      "description": "Light and fluffy vanilla cake with buttercream frosting",
+      "price": 499.99,
+      "category": "Cakes",
+      "available": true
+    },
+    {
+      "id": 2,
+      "business_id": 1,
+      "name": "Chocolate Dream Layer Cake",
+      "description": "Rich chocolate layers with dark chocolate ganache",
+      "price": 549.99,
+      "category": "Cakes",
+      "available": true
+    },
+    {
+      "id": 3,
+      "business_id": 2,
+      "name": "Traditional Sourdough Bread",
+      "description": "Traditional sourdough with perfect crust",
+      "price": 189.99,
+      "category": "Breads",
+      "available": true
+    },
+    {
+      "id": 4,
+      "business_id": 2,
+      "name": "Assorted Cupcakes Box",
+      "description": "12 pieces of assorted flavored cupcakes",
+      "price": 449.99,
+      "category": "Cupcakes",
+      "available": true
+    }
+  ],
+  "orders": [
+    {
+      "id": 1,
+      "order_id": "ORD001",
+      "customer_id": 4,
+      "business_id": 1,
+      "products": [
+        {
+          "prod_id": 1,
+          "quantity": 1,
+          "price": 499.99
+        },
+        {
+          "prod_id": 2,
+          "quantity": 2,
+          "price": 549.99
+        }
+      ],
+      "total_amount": 1599.97,
+      "status": "Pending",
+      "created_at": "2024-03-18T15:30:00Z",
+      "checkoutDate": "2024-03-18T15:30:00Z",
+      "receiveDate": "2024-03-25T15:00:00Z",
+      "downPayment": 800,
+      "remainingPayment": 799.97,
+      "paymentStatus": "Partial - Down Payment Received"
+    },
+    {
+      "id": 2,
+      "order_id": "ORD002",
+      "customer_id": 5,
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": 3,
+          "quantity": 2,
+          "price": 189.99
+        },
+        {
+          "prod_id": 4,
+          "quantity": 1,
+          "price": 449.99
+        }
+      ],
+      "total_amount": 829.97,
+      "status": "Processing",
+      "created_at": "2024-03-17T10:30:00Z",
+      "checkoutDate": "2024-03-17T10:30:00Z",
+      "receiveDate": "2024-03-24T10:00:00Z",
+      "downPayment": 829.97,
+      "remainingPayment": 0,
+      "paymentStatus": "Paid"
+    }
+  ]
+}
