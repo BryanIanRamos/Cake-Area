@@ -66,42 +66,58 @@ const Cart = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const [ordersResponse, businessResponse] = await Promise.all([
-          fetch('http://localhost:3000/orders'),
-          fetch('http://localhost:3000/businesses')
-        ]);
-        
+        const [ordersResponse, businessResponse, productsResponse] =
+          await Promise.all([
+            fetch("http://localhost:3000/orders"),
+            fetch("http://localhost:3000/businesses"),
+            fetch("http://localhost:3000/products"),
+          ]);
+
         const orders = await ordersResponse.json();
         const businesses = await businessResponse.json();
-        
+        const products = await productsResponse.json();
+
         // Filter orders for customer_id 2
-        const userOrders = orders.filter(order => order.customer_id === 2);
+        const userOrders = orders.filter((order) => order.customer_id === 2);
 
-        // Map orders with business details
-        const ordersWithBusinessDetails = userOrders.map(order => {
-          const business = businesses.find(b => b.id === order.business_id.toString());
-          return {
-            ...order,
-            business: {
-              name: business?.name || "Unknown Store",
-              store_rating: business?.store_rating || 0,
-              service_rating: business?.service_rating || 0,
-              total_sold: business?.total_sold || 0,
-              description: business?.description || ""
-            }
-          };
-        });
+        // Map orders with business details and correct product images
+        const ordersWithDetails = userOrders.map((order) => ({
+          ...order,
+          business: businesses.find(
+            (b) => b.id === order.business_id.toString()
+          ),
+          products: order.products.map((orderProduct) => {
+            // Find the matching product from products array
+            const fullProduct = products.find(
+              (p) => p.id === orderProduct.prod_id
+            );
+            return {
+              ...orderProduct,
+              // Use the first image from the product's images array
+              images: fullProduct ? fullProduct.images[0] : orderProduct.images,
+            };
+          }),
+        }));
 
-        // Set orders based on their status
-        setCartItems(ordersWithBusinessDetails.filter(order => order.status === "Pending"));
-        setProcessingOrders(ordersWithBusinessDetails.filter(order => order.status === "Processing"));
-        setToReceiveOrders(ordersWithBusinessDetails.filter(order => order.status === "To Receive"));
-        setCompletedOrders(ordersWithBusinessDetails.filter(order => order.status === "Completed"));
-        setCancelledOrders(ordersWithBusinessDetails.filter(order => order.status === "Cancelled"));
-        
+        // Set cart items (Pending orders)
+        setCartItems(
+          ordersWithDetails.filter((order) => order.status === "Pending")
+        );
+        setProcessingOrders(
+          ordersWithDetails.filter((order) => order.status === "Processing")
+        );
+        setToReceiveOrders(
+          ordersWithDetails.filter((order) => order.status === "To Receive")
+        );
+        setCompletedOrders(
+          ordersWithDetails.filter((order) => order.status === "Completed")
+        );
+        setCancelledOrders(
+          ordersWithDetails.filter((order) => order.status === "Cancelled")
+        );
       } catch (error) {
-        console.error('Error fetching data:', error);
-        toast.error('Failed to load orders');
+        console.error("Error fetching data:", error);
+        toast.error("Failed to load orders");
       } finally {
         setIsLoading(false);
       }
@@ -351,7 +367,8 @@ const Cart = () => {
           <div className="flex justify-between items-start">
             <h2 className="text-lg font-semibold">{order.business?.name}</h2>
             <div className="text-sm text-gray-500">
-              Service Rating: {order.business?.service_rating.toFixed(1)} | {order.business?.total_sold} sold
+              Service Rating: {order.business?.service_rating.toFixed(1)} |{" "}
+              {order.business?.total_sold} sold
             </div>
           </div>
         </div>
@@ -399,12 +416,17 @@ const Cart = () => {
 
         {/* Order Status */}
         <div className="flex justify-end mt-4">
-          <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-            order.status === "Processing" ? "bg-yellow-100 text-yellow-800" :
-            order.status === "To Receive" ? "bg-blue-100 text-blue-800" :
-            order.status === "Completed" ? "bg-green-100 text-green-800" :
-            "bg-red-100 text-red-800"
-          }`}>
+          <div
+            className={`px-3 py-1 rounded-full text-sm font-medium ${
+              order.status === "Processing"
+                ? "bg-yellow-100 text-yellow-800"
+                : order.status === "To Receive"
+                ? "bg-blue-100 text-blue-800"
+                : order.status === "Completed"
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
+            }`}
+          >
             {order.status}
           </div>
         </div>
@@ -488,7 +510,9 @@ const Cart = () => {
                 {isLoading ? (
                   <div>Loading...</div>
                 ) : processingOrders.length > 0 ? (
-                  processingOrders.map(order => renderSimplifiedOrderCard(order))
+                  processingOrders.map((order) =>
+                    renderSimplifiedOrderCard(order)
+                  )
                 ) : (
                   <div className="text-center py-8">No orders in process</div>
                 )}
@@ -502,7 +526,9 @@ const Cart = () => {
                 {isLoading ? (
                   <div>Loading...</div>
                 ) : toReceiveOrders.length > 0 ? (
-                  toReceiveOrders.map(order => renderSimplifiedOrderCard(order))
+                  toReceiveOrders.map((order) =>
+                    renderSimplifiedOrderCard(order)
+                  )
                 ) : (
                   <div className="text-center py-8">No orders to receive</div>
                 )}
@@ -517,7 +543,9 @@ const Cart = () => {
                 {isLoading ? (
                   <div>Loading...</div>
                 ) : completedOrders.length > 0 ? (
-                  completedOrders.map(order => renderSimplifiedOrderCard(order))
+                  completedOrders.map((order) =>
+                    renderSimplifiedOrderCard(order)
+                  )
                 ) : (
                   <div className="text-center py-8">No completed orders</div>
                 )}
@@ -532,7 +560,9 @@ const Cart = () => {
                 {isLoading ? (
                   <div>Loading...</div>
                 ) : cancelledOrders.length > 0 ? (
-                  cancelledOrders.map(order => renderSimplifiedOrderCard(order))
+                  cancelledOrders.map((order) =>
+                    renderSimplifiedOrderCard(order)
+                  )
                 ) : (
                   <div className="text-center py-8">No cancelled orders</div>
                 )}

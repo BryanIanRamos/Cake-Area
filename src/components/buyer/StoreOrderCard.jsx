@@ -78,7 +78,7 @@ const StoreOrderCard = ({ storeData, selectedItems, onSelectItem, onSelectAll, o
             />
             <div className="flex gap-4 flex-1">
               <img
-                src={product.images?.[0]?.link || CakeSample}
+                src={product.images || CakeSample}
                 alt={product.prod_name}
                 className="w-24 h-24 object-cover rounded-md"
                 onError={(e) => {
