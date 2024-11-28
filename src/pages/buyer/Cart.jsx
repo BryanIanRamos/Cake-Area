@@ -61,36 +61,47 @@ const Cart = () => {
   const [completedOrders, setCompletedOrders] = useState([]);
   const [cancelledOrders, setCancelledOrders] = useState([]);
 
-  // Modified useEffect with error handling
+  // Modified useEffect to fetch both orders and business data
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch("http://localhost:3000/orders");
-        const orders = await response.json();
-
+        const [ordersResponse, businessResponse] = await Promise.all([
+          fetch('http://localhost:3000/orders'),
+          fetch('http://localhost:3000/businesses')
+        ]);
+        
+        const orders = await ordersResponse.json();
+        const businesses = await businessResponse.json();
+        
         // Filter orders for customer_id 2
-        const userOrders = orders.filter((order) => order.customer_id === 2);
+        const userOrders = orders.filter(order => order.customer_id === 2);
+
+        // Map orders with business details
+        const ordersWithBusinessDetails = userOrders.map(order => {
+          const business = businesses.find(b => b.id === order.business_id.toString());
+          return {
+            ...order,
+            business: {
+              name: business?.name || "Unknown Store",
+              store_rating: business?.store_rating || 0,
+              service_rating: business?.service_rating || 0,
+              total_sold: business?.total_sold || 0,
+              description: business?.description || ""
+            }
+          };
+        });
 
         // Set orders based on their status
-        setCartItems(
-          userOrders.filter((order) => order.status === "Pending") || []
-        );
-        setProcessingOrders(
-          userOrders.filter((order) => order.status === "Processing") || []
-        );
-        setToReceiveOrders(
-          userOrders.filter((order) => order.status === "To Receive") || []
-        );
-        setCompletedOrders(
-          userOrders.filter((order) => order.status === "Completed") || []
-        );
-        setCancelledOrders(
-          userOrders.filter((order) => order.status === "Cancelled") || []
-        );
+        setCartItems(ordersWithBusinessDetails.filter(order => order.status === "Pending"));
+        setProcessingOrders(ordersWithBusinessDetails.filter(order => order.status === "Processing"));
+        setToReceiveOrders(ordersWithBusinessDetails.filter(order => order.status === "To Receive"));
+        setCompletedOrders(ordersWithBusinessDetails.filter(order => order.status === "Completed"));
+        setCancelledOrders(ordersWithBusinessDetails.filter(order => order.status === "Cancelled"));
+        
       } catch (error) {
-        console.error("Error fetching orders:", error);
-        toast.error("Failed to load orders");
+        console.error('Error fetching data:', error);
+        toast.error('Failed to load orders');
       } finally {
         setIsLoading(false);
       }
@@ -331,6 +342,76 @@ const Cart = () => {
     );
   };
 
+  // Simplified order card rendering for In Process, To Receive, Completed, and Cancelled
+  const renderSimplifiedOrderCard = (order) => {
+    return (
+      <div key={order.id} className="bg-white rounded-lg p-4 shadow-sm">
+        {/* Business Header - Simplified */}
+        <div className="border-b pb-4 mb-4">
+          <div className="flex justify-between items-start">
+            <h2 className="text-lg font-semibold">{order.business?.name}</h2>
+            <div className="text-sm text-gray-500">
+              Service Rating: {order.business?.service_rating.toFixed(1)} | {order.business?.total_sold} sold
+            </div>
+          </div>
+        </div>
+
+        {/* Products */}
+        {order.products.map((product) => (
+          <div key={product.prod_id} className="flex gap-4 mt-4">
+            <img
+              src={product.images}
+              alt={product.prod_name}
+              className="w-24 h-24 object-cover rounded-md"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "";
+              }}
+            />
+            <div className="flex-1">
+              <h3 className="text-lg font-medium">{product.prod_name}</h3>
+              <p className="text-gray-600">{product.description}</p>
+              <div className="flex justify-between items-end mt-2">
+                <p className="text-primary text-lg font-semibold">
+                  ₱{product.price.toFixed(2)}
+                </p>
+                <div className="flex items-center gap-4">
+                  <span className="text-gray-600">Quantity: {product.qty}</span>
+                  <span className="text-gray-600">
+                    Total: ₱{(product.price * product.qty).toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {/* Order Summary */}
+        <div className="mt-4 pt-4 border-t flex justify-between items-center">
+          <div className="text-gray-600">
+            <p>Down Payment: ₱{order.downPayment.toFixed(2)}</p>
+            <p>Remaining Payment: ₱{order.remainingPayment.toFixed(2)}</p>
+          </div>
+          <div className="text-lg font-semibold">
+            Total Amount: ₱{order.total_amount.toFixed(2)}
+          </div>
+        </div>
+
+        {/* Order Status */}
+        <div className="flex justify-end mt-4">
+          <div className={`px-3 py-1 rounded-full text-sm font-medium ${
+            order.status === "Processing" ? "bg-yellow-100 text-yellow-800" :
+            order.status === "To Receive" ? "bg-blue-100 text-blue-800" :
+            order.status === "Completed" ? "bg-green-100 text-green-800" :
+            "bg-red-100 text-red-800"
+          }`}>
+            {order.status}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen flex flex-col pb-20">
       <Toaster richColors closeButton position="top-center" />
@@ -406,83 +487,10 @@ const Cart = () => {
               <div className="flex flex-col gap-4 mt-4">
                 {isLoading ? (
                   <div>Loading...</div>
-                ) : processingOrders?.length > 0 ? (
-                  processingOrders.map((order) => (
-                    <div key={order.id} className="bg-white rounded-lg p-4">
-                      <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-lg font-semibold">
-                          {order.business?.name}
-                        </h2>
-                        <div className="flex items-center gap-2">
-                          <span className="text-yellow-400">★</span>
-                          <span>{order.business?.rating}</span>
-                          <span className="text-gray-400">|</span>
-                          <span className="text-gray-600">
-                            {order.business?.total_sold} sold
-                          </span>
-                        </div>
-                      </div>
-
-                      {order.products.map((product) => (
-                        <div key={product.prod_id} className="flex gap-4 mt-4">
-                          <img
-                            src={product.images}
-                            alt={product.prod_name}
-                            className="w-24 h-24 object-cover rounded-md"
-                            onError={(e) => {
-                              e.target.src = CakeSample;
-                              e.target.onerror = null;
-                            }}
-                          />
-                          <div className="flex-1">
-                            <h3 className="text-lg font-medium">
-                              {product.prod_name}
-                            </h3>
-                            <p className="text-gray-600">
-                              {product.description}
-                            </p>
-                            <div className="flex justify-between items-end mt-2">
-                              <p className="text-primary text-lg font-semibold">
-                                ₱{product.price.toFixed(2)}
-                              </p>
-                              <div className="flex items-center gap-4">
-                                <span className="text-gray-600">
-                                  Quantity: {product.qty}
-                                </span>
-                                <span className="text-gray-600">
-                                  Total: ₱
-                                  {(product.price * product.qty).toFixed(2)}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-
-                      <div className="mt-4 pt-4 border-t flex justify-between items-center">
-                        <div className="text-gray-600">
-                          <p>Down Payment: ₱{order.downPayment.toFixed(2)}</p>
-                          <p>
-                            Remaining Payment: ₱
-                            {order.remainingPayment.toFixed(2)}
-                          </p>
-                        </div>
-                        <div className="text-lg font-semibold">
-                          Total Amount: ₱{order.total_amount.toFixed(2)}
-                        </div>
-                      </div>
-
-                      <div className="flex justify-end mt-4">
-                        <div className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
-                          Processing
-                        </div>
-                      </div>
-                    </div>
-                  ))
+                ) : processingOrders.length > 0 ? (
+                  processingOrders.map(order => renderSimplifiedOrderCard(order))
                 ) : (
-                  <div className="text-center py-8">
-                    <p>No orders in process</p>
-                  </div>
+                  <div className="text-center py-8">No orders in process</div>
                 )}
               </div>
             }
@@ -493,83 +501,10 @@ const Cart = () => {
               <div className="flex flex-col gap-4 mt-4">
                 {isLoading ? (
                   <div>Loading...</div>
-                ) : toReceiveOrders?.length > 0 ? (
-                  toReceiveOrders.map((order) => (
-                    <div key={order.id} className="bg-white rounded-lg p-4">
-                      <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-lg font-semibold">
-                          {order.business?.name}
-                        </h2>
-                        <div className="flex items-center gap-2">
-                          <span className="text-yellow-400">★</span>
-                          <span>{order.business?.rating}</span>
-                          <span className="text-gray-400">|</span>
-                          <span className="text-gray-600">
-                            {order.business?.total_sold} sold
-                          </span>
-                        </div>
-                      </div>
-
-                      {order.products.map((product) => (
-                        <div key={product.prod_id} className="flex gap-4 mt-4">
-                          <img
-                            src={product.images}
-                            alt={product.prod_name}
-                            className="w-24 h-24 object-cover rounded-md"
-                            onError={(e) => {
-                              e.target.src = CakeSample;
-                              e.target.onerror = null;
-                            }}
-                          />
-                          <div className="flex-1">
-                            <h3 className="text-lg font-medium">
-                              {product.prod_name}
-                            </h3>
-                            <p className="text-gray-600">
-                              {product.description}
-                            </p>
-                            <div className="flex justify-between items-end mt-2">
-                              <p className="text-primary text-lg font-semibold">
-                                ₱{product.price.toFixed(2)}
-                              </p>
-                              <div className="flex items-center gap-4">
-                                <span className="text-gray-600">
-                                  Quantity: {product.qty}
-                                </span>
-                                <span className="text-gray-600">
-                                  Total: ₱
-                                  {(product.price * product.qty).toFixed(2)}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-
-                      <div className="mt-4 pt-4 border-t flex justify-between items-center">
-                        <div className="text-gray-600">
-                          <p>Down Payment: ₱{order.downPayment.toFixed(2)}</p>
-                          <p>
-                            Remaining Payment: ₱
-                            {order.remainingPayment.toFixed(2)}
-                          </p>
-                        </div>
-                        <div className="text-lg font-semibold">
-                          Total Amount: ₱{order.total_amount.toFixed(2)}
-                        </div>
-                      </div>
-
-                      <div className="flex justify-end mt-4">
-                        <div className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
-                          Ready for Pickup
-                        </div>
-                      </div>
-                    </div>
-                  ))
+                ) : toReceiveOrders.length > 0 ? (
+                  toReceiveOrders.map(order => renderSimplifiedOrderCard(order))
                 ) : (
-                  <div className="text-center py-8">
-                    <p>No orders to receive</p>
-                  </div>
+                  <div className="text-center py-8">No orders to receive</div>
                 )}
               </div>
             }
@@ -581,83 +516,10 @@ const Cart = () => {
               <div className="flex flex-col gap-4 mt-4">
                 {isLoading ? (
                   <div>Loading...</div>
-                ) : completedOrders?.length > 0 ? (
-                  completedOrders.map((order) => (
-                    <div key={order.id} className="bg-white rounded-lg p-4">
-                      <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-lg font-semibold">
-                          {order.business?.name}
-                        </h2>
-                        <div className="flex items-center gap-2">
-                          <span className="text-yellow-400">★</span>
-                          <span>{order.business?.rating}</span>
-                          <span className="text-gray-400">|</span>
-                          <span className="text-gray-600">
-                            {order.business?.total_sold} sold
-                          </span>
-                        </div>
-                      </div>
-
-                      {order.products.map((product) => (
-                        <div key={product.prod_id} className="flex gap-4 mt-4">
-                          <img
-                            src={product.images}
-                            alt={product.prod_name}
-                            className="w-24 h-24 object-cover rounded-md"
-                            onError={(e) => {
-                              e.target.src = CakeSample;
-                              e.target.onerror = null;
-                            }}
-                          />
-                          <div className="flex-1">
-                            <h3 className="text-lg font-medium">
-                              {product.prod_name}
-                            </h3>
-                            <p className="text-gray-600">
-                              {product.description}
-                            </p>
-                            <div className="flex justify-between items-end mt-2">
-                              <p className="text-primary text-lg font-semibold">
-                                ₱{product.price.toFixed(2)}
-                              </p>
-                              <div className="flex items-center gap-4">
-                                <span className="text-gray-600">
-                                  Quantity: {product.qty}
-                                </span>
-                                <span className="text-gray-600">
-                                  Total: ₱
-                                  {(product.price * product.qty).toFixed(2)}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-
-                      <div className="mt-4 pt-4 border-t flex justify-between items-center">
-                        <div className="text-gray-600">
-                          <p>Down Payment: ₱{order.downPayment.toFixed(2)}</p>
-                          <p>
-                            Remaining Payment: ₱
-                            {order.remainingPayment.toFixed(2)}
-                          </p>
-                        </div>
-                        <div className="text-lg font-semibold">
-                          Total Amount: ₱{order.total_amount.toFixed(2)}
-                        </div>
-                      </div>
-
-                      <div className="flex justify-end mt-4">
-                        <div className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                          Completed
-                        </div>
-                      </div>
-                    </div>
-                  ))
+                ) : completedOrders.length > 0 ? (
+                  completedOrders.map(order => renderSimplifiedOrderCard(order))
                 ) : (
-                  <div className="text-center py-8">
-                    <p>No completed orders</p>
-                  </div>
+                  <div className="text-center py-8">No completed orders</div>
                 )}
               </div>
             }
@@ -669,83 +531,10 @@ const Cart = () => {
               <div className="flex flex-col gap-4 mt-4">
                 {isLoading ? (
                   <div>Loading...</div>
-                ) : cancelledOrders?.length > 0 ? (
-                  cancelledOrders.map((order) => (
-                    <div key={order.id} className="bg-white rounded-lg p-4">
-                      <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-lg font-semibold">
-                          {order.business?.name}
-                        </h2>
-                        <div className="flex items-center gap-2">
-                          <span className="text-yellow-400">★</span>
-                          <span>{order.business?.rating}</span>
-                          <span className="text-gray-400">|</span>
-                          <span className="text-gray-600">
-                            {order.business?.total_sold} sold
-                          </span>
-                        </div>
-                      </div>
-
-                      {order.products.map((product) => (
-                        <div key={product.prod_id} className="flex gap-4 mt-4">
-                          <img
-                            src={product.images}
-                            alt={product.prod_name}
-                            className="w-24 h-24 object-cover rounded-md"
-                            onError={(e) => {
-                              e.target.src = CakeSample;
-                              e.target.onerror = null;
-                            }}
-                          />
-                          <div className="flex-1">
-                            <h3 className="text-lg font-medium">
-                              {product.prod_name}
-                            </h3>
-                            <p className="text-gray-600">
-                              {product.description}
-                            </p>
-                            <div className="flex justify-between items-end mt-2">
-                              <p className="text-primary text-lg font-semibold">
-                                ₱{product.price.toFixed(2)}
-                              </p>
-                              <div className="flex items-center gap-4">
-                                <span className="text-gray-600">
-                                  Quantity: {product.qty}
-                                </span>
-                                <span className="text-gray-600">
-                                  Total: ₱
-                                  {(product.price * product.qty).toFixed(2)}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-
-                      <div className="mt-4 pt-4 border-t flex justify-between items-center">
-                        <div className="text-gray-600">
-                          <p>Down Payment: ₱{order.downPayment.toFixed(2)}</p>
-                          <p>
-                            Remaining Payment: ₱
-                            {order.remainingPayment.toFixed(2)}
-                          </p>
-                        </div>
-                        <div className="text-lg font-semibold">
-                          Total Amount: ₱{order.total_amount.toFixed(2)}
-                        </div>
-                      </div>
-
-                      <div className="flex justify-end mt-4">
-                        <div className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">
-                          Cancelled
-                        </div>
-                      </div>
-                    </div>
-                  ))
+                ) : cancelledOrders.length > 0 ? (
+                  cancelledOrders.map(order => renderSimplifiedOrderCard(order))
                 ) : (
-                  <div className="text-center py-8">
-                    <p>No cancelled orders</p>
-                  </div>
+                  <div className="text-center py-8">No cancelled orders</div>
                 )}
               </div>
             }
