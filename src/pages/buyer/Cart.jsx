@@ -406,7 +406,7 @@ const Cart = () => {
         {/* Order Summary */}
         <div className="mt-4 pt-4 border-t flex justify-between items-center">
           <div className="text-gray-600">
-            <p>Down Payment: ₱{order.downPayment.toFixed(2)}</p>
+            <p>Down Payments: ₱{order.downPayment.toFixed(2)}</p>
             <p>Remaining Payment: ₱{order.remainingPayment.toFixed(2)}</p>
           </div>
           <div className="text-lg font-semibold">
@@ -439,7 +439,7 @@ const Cart = () => {
       <Toaster richColors closeButton position="top-center" />
       <CartHeader />
 
-      {/* Main content area */}
+      {/* Main content area - matched padding with parent container */}
       <div className="flex-1 px-4 md:px-8 lg:px-12 xl:px-32 2xl:px-72 mb-24">
         {" "}
         {/* Added mb-24 for CartSummary space */}
@@ -572,13 +572,15 @@ const Cart = () => {
         </Routes>
       </div>
 
-      {/* CartSummary at the bottom */}
-      <div className="fixed bottom-0 left-0 right-0">
-        <CartSummary
-          totalAmount={totalAmount}
-          itemCount={selectedItems.length}
-          onCheckout={handleCheckout}
-        />
+      {/* CartSummary container - matched padding with parent */}
+      <div className="fixed bottom-0 left-0 right-0 shadow-lg ">
+        <div className="px-4 md:px-8 lg:px-12 xl:px-32 2xl:px-72">
+          <CartSummary
+            totalAmount={totalAmount}
+            itemCount={selectedItems.length}
+            onCheckout={handleCheckout}
+          />
+        </div>
       </div>
     </div>
   );

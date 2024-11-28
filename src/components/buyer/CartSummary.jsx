@@ -3,6 +3,7 @@ import { FiChevronUp, FiChevronDown, FiInfo } from "react-icons/fi";
 
 const CartSummary = ({ totalAmount, itemCount, onCheckout }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState('GCash');
   const deliveryFee = 50;
   const serviceFee = 100;
   const subtotal = totalAmount;
@@ -90,10 +91,24 @@ const CartSummary = ({ totalAmount, itemCount, onCheckout }) => {
               >
                 Cash on Delivery (Not Available)
               </button>
-              <button className="px-4 py-2 border rounded-lg hover:border-primary hover:text-primary transition-colors">
+              <button 
+                onClick={() => setSelectedPayment('GCash')}
+                className={`px-4 py-2 border rounded-lg transition-colors ${
+                  selectedPayment === 'GCash' 
+                    ? 'border-primary text-primary bg-primary/5' 
+                    : 'hover:border-primary hover:text-primary'
+                }`}
+              >
                 GCash
               </button>
-              <button className="px-4 py-2 border rounded-lg hover:border-primary hover:text-primary transition-colors">
+              <button 
+                onClick={() => setSelectedPayment('Credit Card')}
+                className={`px-4 py-2 border rounded-lg transition-colors ${
+                  selectedPayment === 'Credit Card' 
+                    ? 'border-primary text-primary bg-primary/5' 
+                    : 'hover:border-primary hover:text-primary'
+                }`}
+              >
                 Credit Card
               </button>
             </div>

@@ -541,9 +541,9 @@
       "total_amount": 569.95,
       "status": "Pending",
       "created_at": "2024-03-18T15:30:00Z",
-      "checkoutDate": "2024-03-18T15:30:00Z",
-      "receiveDate": "2024-03-25T15:00:00Z",
-      "downPayment": 285.00,
+      "checkoutDate": "null",
+      "receiveDate": "null",
+      "downPayment": 285.0,
       "remainingPayment": 284.95,
       "paymentStatus": "Partial - Down Payment Received"
     },
@@ -641,7 +641,7 @@
       "created_at": "2024-03-19T09:30:00Z",
       "checkoutDate": "2024-03-19T09:30:00Z",
       "receiveDate": "2024-03-26T09:00:00Z",
-      "downPayment": 275.00,
+      "downPayment": 275.0,
       "remainingPayment": 274.99,
       "paymentStatus": "Partial - Down Payment Received"
     },
@@ -725,4 +725,3 @@
     }
   ]
 }
-
