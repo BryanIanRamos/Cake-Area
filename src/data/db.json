@@ -67,7 +67,7 @@
       "last_name": "Baker",
       "age": "31",
       "sex": "Female",
-      "img": "dummy_profile_url"
+      "img": "../assets/profile/Lisa_Baker.png"
     },
     {
       "id": "4",

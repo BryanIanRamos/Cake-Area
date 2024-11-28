@@ -130,7 +130,7 @@ const BakerBusinessCard = ({ selectedFilter, openLoginModal }) => {
             transform transition-all duration-300 hover:shadow-xl hover:scale-[1.02] hover:bg-white 
             cursor-pointer rounded-lg border border-transparent hover:border-gray-200"
           >
-            {/* Profile image - now using image from profile data */}
+            {/* Profile image - updated to be a perfect circle */}
             <div
               className="col-span-2 hidden sm:flex justify-center items-center lg:p-3 
               transition-transform duration-300 hover:scale-105"
@@ -138,7 +138,7 @@ const BakerBusinessCard = ({ selectedFilter, openLoginModal }) => {
               <img
                 src={baker.profileImage}
                 alt={`${baker.ownerName}'s profile`}
-                className="rounded-lg hover:shadow-md transition-all duration-300"
+                className="w-24 h-24 object-cover rounded-full hover:shadow-md transition-all duration-300"
               />
             </div>
 
