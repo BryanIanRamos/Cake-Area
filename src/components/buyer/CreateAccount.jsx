@@ -68,15 +68,31 @@ const CreateAccount = ({ goBackToSelect }) => {
 
   // Handle form submission
   const handleSubmit = () => {
-    console.log("Next button clicked");
-    setShowAddressModal(true);
-    console.log("showAddressModal set to:", true);
+    if (validateForm()) {
+      setShowAddressModal(true);
+      console.log("showAddressModal set to:", true);
+    } else {
+      console.log("Form validation failed");
+    }
   };
 
   // Handle address submission
   const handleAddressSubmit = (addressData) => {
     console.log("Address submitted:", addressData);
     setShowAddressModal(false);
+  };
+
+  // Add this new function to check if form is complete
+  const isFormComplete = () => {
+    return (
+      formData.firstName.trim() !== "" &&
+      formData.lastName.trim() !== "" &&
+      formData.email.trim() !== "" &&
+      formData.password.trim() !== "" &&
+      formData.confirmPassword.trim() !== "" &&
+      formData.birthDate !== null &&
+      isChecked
+    );
   };
 
   return (
@@ -313,7 +329,12 @@ const CreateAccount = ({ goBackToSelect }) => {
           <div className="flex justify-center gap-3 mt-6">
             <button
               onClick={handleSubmit}
-              className="px-6 py-1.5 bg-primary text-white text-sm rounded hover:bg-primary/90 transition-colors"
+              disabled={!isFormComplete()}
+              className={`px-6 py-1.5 text-sm rounded transition-colors ${
+                isFormComplete()
+                  ? "bg-primary text-white hover:bg-primary/90"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
             >
               Next
             </button>
