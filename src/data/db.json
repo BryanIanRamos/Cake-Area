@@ -146,6 +146,10 @@
       "user_id": 2,
       "name": "Sarah's Sweet Creations",
       "description": "Welcome to Sarah's Sweet Creations! We specialize in creating delicious, handcrafted baked goods using only the finest ingredients. From custom cakes to fresh pastries, we put love and care into every creation.",
+      "location": {
+        "municipality": "Cabadbaran",
+        "street_address": "123 Baker's Lane, Sweet Corner Building"
+      },
       "no_visits": 1250,
       "is_active": true,
       "store_rating": 4.8,
@@ -158,12 +162,32 @@
       "user_id": 3,
       "name": "Lisa's Artisan Bakery",
       "description": "Welcome to Lisa's Artisan Bakery! We're dedicated to bringing you authentic, artisanal baked goods made from scratch daily. Our selection ranges from rustic breads to elegant pastries.",
+      "location": {
+        "municipality": "Nasipit",
+        "street_address": "45 Main Street, Flour Mill Complex"
+      },
       "no_visits": 980,
       "is_active": true,
       "store_rating": 4.5,
       "service_rating": 4.7,
       "total_sold": 654,
       "available_items": 32
+    },
+    {
+      "id": "3",
+      "user_id": 0,
+      "name": "Sweet Haven Cakes & Pastries",
+      "description": "Welcome to Sweet Haven! We create delightful cakes and pastries perfect for any occasion. Our baked goods are made fresh daily using premium ingredients, bringing you the perfect blend of traditional recipes and modern flavors.",
+      "location": {
+        "municipality": "Butuan City",
+        "street_address": "Km. 3 National Highway, Ampayon"
+      },
+      "no_visits": 850,
+      "is_active": true,
+      "store_rating": 4.6,
+      "service_rating": 4.8,
+      "total_sold": 723,
+      "available_items": 38
     }
   ],
   "categories": [

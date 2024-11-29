@@ -14,35 +14,29 @@ const BakerBusinessCard = ({ selectedFilter, openLoginModal }) => {
   useEffect(() => {
     const fetchBusinessData = async () => {
       try {
-        // Fetch all necessary data in parallel
-        const [businessesRes, profilesRes, addressesRes] = await Promise.all([
+        // Fetch businesses and profiles in parallel
+        const [businessesRes, profilesRes] = await Promise.all([
           fetch("http://localhost:3000/businesses"),
           fetch("http://localhost:3000/profiles"),
-          fetch("http://localhost:3000/addresses"),
         ]);
 
         const businessesData = await businessesRes.json();
         const profilesData = await profilesRes.json();
-        const addressesData = await addressesRes.json();
 
         // Combine the data
         const combinedData = businessesData
           .filter((business) => business.is_active)
           .map((business) => {
-            const businessAddress = addressesData.find(
-              (address) =>
-                address.user_id === business.user_id && address.type === 1
-            );
-
             const businessProfile = profilesData.find(
               (profile) => profile.user_id === business.user_id
             );
 
             return {
               ...business,
-              location: businessAddress
-                ? businessAddress.location
-                : "Location not available",
+              // Only display the municipality
+              formattedLocation: business.location ? 
+                business.location.municipality : 
+                "Location not available",
               profileImage: businessProfile ? businessProfile.img : null,
               ownerName: businessProfile
                 ? `${businessProfile.first_name} ${businessProfile.last_name}`
@@ -124,7 +118,7 @@ const BakerBusinessCard = ({ selectedFilter, openLoginModal }) => {
       <div className="space-y-4">
         {currentBakers.map((baker) => (
           <div
-            key={baker.bus_id}
+            key={baker.id}
             onClick={() => handleCardClick(baker.user_id)}
             className="p-4 bg-gray-100 shadow-md text-lg text-gray-800 grid grid-cols-12 items-start gap-5 
             transform transition-all duration-300 hover:shadow-xl hover:scale-[1.02] hover:bg-white 
@@ -150,7 +144,7 @@ const BakerBusinessCard = ({ selectedFilter, openLoginModal }) => {
                 </div>
                 <div className="font-[NotoSerif] flex items-center gap-1 text-[8px] sm:text-[1.5vw] md:text-[1.5vw] xl:text-[1.4vw]">
                   <Icon icon="lsicon:location-outline" />
-                  <p>{baker.location}</p>
+                  <p>{baker.formattedLocation}</p>
                 </div>
               </div>
 
