@@ -344,7 +344,7 @@ const Orders = () => {
             <h1 className="text-2xl font-bold text-gray-800 mb-2">
               Manage Your Orders
             </h1>
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center mb-4">
               <p className="text-gray-600">
                 Keep track of all your bakery orders and their status in one
                 place.
@@ -359,6 +359,7 @@ const Orders = () => {
                 <span className="text-gray-600">Filter</span>
               </button>
             </div>
+            <hr className="border-gray-200" />
           </div>
 
           {/* Rest of the content */}
