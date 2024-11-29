@@ -72,8 +72,8 @@
     {
       "id": "4",
       "user_id": 4,
-      "first_name": "Mike",
-      "last_name": "Customer",
+      "first_name": "Mike ",
+      "last_name": "Tyson",
       "age": "23",
       "sex": "Male",
       "img": "dummy_profile_url"
