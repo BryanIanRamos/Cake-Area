@@ -163,8 +163,9 @@ const Cart = () => {
   const handleConfirmCheckout = (receiveDate) => {
     // Create new orders in "Processing" status
     const newOrders = cartItems.reduce((acc, order) => {
-      const selectedProducts = order.products.filter((p) =>
-        selectedItems.includes(p.prod_id)
+      // Filter products that were selected for this order
+      const selectedProducts = order.products.filter(product => 
+        selectedItems.includes(`${order.order_id}_${product.prod_id}`)
       );
 
       if (selectedProducts.length > 0) {
@@ -182,12 +183,14 @@ const Cart = () => {
           created_at: new Date().toISOString(),
           checkoutDate: new Date().toISOString(),
           receiveDate: receiveDate.toISOString(),
-          downPayment:
-            selectedProducts.reduce((sum, p) => sum + p.price * p.quantity, 0) *
-            0.5,
-          remainingPayment:
-            selectedProducts.reduce((sum, p) => sum + p.price * p.quantity, 0) *
-            0.5,
+          downPayment: selectedProducts.reduce(
+            (sum, p) => sum + p.price * p.quantity,
+            0
+          ) * 0.5,
+          remainingPayment: selectedProducts.reduce(
+            (sum, p) => sum + p.price * p.quantity,
+            0
+          ) * 0.5,
           paymentStatus: "Partial - Down Payment Received",
         });
       }
@@ -195,19 +198,33 @@ const Cart = () => {
     }, []);
 
     // Add to processing orders
-    setProcessingOrders((prev) => [...prev, ...newOrders]);
+    setProcessingOrders(prev => [...prev, ...newOrders]);
 
     // Remove selected items from cart
-    setCartItems((prev) =>
-      prev
-        .map((order) => ({
-          ...order,
-          products: order.products.filter(
-            (p) => !selectedItems.includes(p.prod_id)
-          ),
-        }))
-        .filter((order) => order.products.length > 0)
-    );
+    setCartItems(prev => {
+      const updatedCart = prev.map(order => {
+        // Filter out products that were selected for checkout
+        const remainingProducts = order.products.filter(
+          product => !selectedItems.includes(`${order.order_id}_${product.prod_id}`)
+        );
+        
+        // If order still has products, return updated order
+        if (remainingProducts.length > 0) {
+          return {
+            ...order,
+            products: remainingProducts,
+            total_amount: remainingProducts.reduce(
+              (sum, p) => sum + p.price * p.quantity,
+              0
+            )
+          };
+        }
+        // If no products remain, filter out this order entirely
+        return null;
+      }).filter(Boolean); // Remove null entries (orders with no remaining products)
+
+      return updatedCart;
+    });
 
     // Reset selections and close modal
     setSelectedItems([]);
@@ -219,29 +236,47 @@ const Cart = () => {
   };
 
   // Update handleSelectAll for business groups
-  const handleSelectAll = (businessId) => {
-    const businessProducts =
-      cartItems.find((order) => order.business?.bus_id === businessId)
-        ?.products || [];
-
-    const allProductIds = businessProducts.map((p) => p.prod_id);
-    const allSelected = allProductIds.every((id) => selectedItems.includes(id));
-
-    setSelectedItems((prev) => {
+  const handleSelectAll = (businessId, orderId) => {
+    console.log('Select all for business:', businessId, 'order:', orderId); // Debug log
+    
+    const businessOrders = cartItems.filter(
+      order => order.business_id === businessId && order.order_id === orderId
+    );
+    
+    const allOrderProductIds = businessOrders.flatMap(order => 
+      order.products.map(product => `${order.order_id}_${product.prod_id}`)
+    );
+    
+    console.log('All product IDs for business:', allOrderProductIds); // Debug log
+    
+    const allSelected = allOrderProductIds.every(id => selectedItems.includes(id));
+    
+    setSelectedItems(prev => {
       if (allSelected) {
-        return prev.filter((id) => !allProductIds.includes(id));
+        // Unselect all items from this order
+        return prev.filter(id => !allOrderProductIds.includes(id));
+      } else {
+        // Select all items from this order
+        const newSelections = [...new Set([...prev, ...allOrderProductIds])];
+        console.log('New selections:', newSelections); // Debug log
+        return newSelections;
       }
-      return [...new Set([...prev, ...allProductIds])];
     });
   };
 
   // Update handleSelectItem
-  const handleSelectItem = (prodId) => {
-    setSelectedItems((prev) => {
-      if (prev.includes(prodId)) {
-        return prev.filter((id) => id !== prodId);
+  const handleSelectItem = (orderId, prodId) => {
+    console.log('Selecting item:', orderId, prodId); // Debug log
+    const selectionId = `${orderId}_${prodId}`;
+    
+    setSelectedItems(prev => {
+      if (prev.includes(selectionId)) {
+        console.log('Removing item:', selectionId); // Debug log
+        return prev.filter(id => id !== selectionId);
+      } else {
+        console.log('Adding item:', selectionId); // Debug log
+        return [...prev, selectionId];
       }
-      return [...prev, prodId];
     });
   };
 
@@ -262,10 +297,9 @@ const Cart = () => {
   useEffect(() => {
     const newTotal = cartItems.reduce((sum, order) => {
       const orderTotal = order.products
-        .filter((product) => selectedItems.includes(product.prod_id))
+        .filter(product => selectedItems.includes(`${order.order_id}_${product.prod_id}`))
         .reduce(
-          (orderSum, product) =>
-            orderSum + (product.price || 0) * (product.quantity || 1),
+          (orderSum, product) => orderSum + (product.price || 0) * (product.quantity || 1),
           0
         );
       return sum + orderTotal;
@@ -479,8 +513,9 @@ const Cart = () => {
                 ) : cartItems?.length > 0 ? (
                   cartItems.map((order) => (
                     <StoreOrderCard
-                      key={order.id}
+                      key={order.order_id}
                       storeData={{
+                        order_id: order.order_id,
                         business: order.business,
                         products: order.products,
                         total_amount: order.total_amount,
@@ -489,7 +524,7 @@ const Cart = () => {
                       }}
                       selectedItems={selectedItems}
                       onSelectItem={handleSelectItem}
-                      onSelectAll={() => handleSelectAll(order.business_id)}
+                      onSelectAll={handleSelectAll}
                       onUpdateQuantity={handleQuantityChange}
                     />
                   ))

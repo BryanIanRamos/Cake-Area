@@ -675,23 +675,23 @@
       "id": "6",
       "order_id": "ORD006",
       "customer_id": 2,
-      "business_id": 2,
+      "business_id": 1,
       "products": [
         {
-          "prod_id": "11",
+          "prod_id": "8",
           "cat_id": 2,
-          "prod_name": "Chocolate Profiteroles",
-          "description": "Light choux pastry filled with cream and topped with chocolate",
-          "price": 299.99,
-          "rate": 4.8,
+          "prod_name": "Chocolate Chip Muffins",
+          "description": "Fresh-baked muffins loaded with premium chocolate chips",
+          "price": 89.99,
+          "rate": 4.7,
           "qty": 1,
-          "images": "../assets/ChocolateProfiterolesv3.jpg"
+          "images": "../assets/ChocolateChipMuffinsv3.jpg"
         }
       ],
-      "total_amount": 299.99,
+      "total_amount": 89.99,
       "status": "Processing",
-      "created_at": "2024-11-29T01:21:50.217Z",
-      "checkoutDate": "2024-11-29T01:21:50.217Z",
+      "created_at": "2024-11-29T01:41:10.056Z",
+      "checkoutDate": "2024-11-29T01:41:10.056Z",
       "receiveDate": "null",
       "downPayment": 0,
       "remainingPayment": 0,
@@ -716,64 +716,12 @@
       ],
       "total_amount": 89.99,
       "status": "Pending",
-      "created_at": "2024-11-29T01:26:07.553Z",
+      "created_at": "2024-11-29T01:41:36.535Z",
       "checkoutDate": "null",
       "receiveDate": "null",
       "downPayment": 0,
       "remainingPayment": 89.99,
       "paymentStatus": "null"
-    },
-    {
-      "id": "8",
-      "order_id": "ORD008",
-      "customer_id": 2,
-      "business_id": 1,
-      "products": [
-        {
-          "prod_id": "8",
-          "cat_id": 2,
-          "prod_name": "Chocolate Chip Muffins",
-          "description": "Fresh-baked muffins loaded with premium chocolate chips",
-          "price": 89.99,
-          "rate": 4.7,
-          "qty": 1,
-          "images": "../assets/ChocolateChipMuffinsv3.jpg"
-        }
-      ],
-      "total_amount": 89.99,
-      "status": "Pending",
-      "created_at": "2024-11-29T01:31:18.060Z",
-      "checkoutDate": "null",
-      "receiveDate": "null",
-      "downPayment": 0,
-      "remainingPayment": 89.99,
-      "paymentStatus": "null"
-    },
-    {
-      "id": "9",
-      "order_id": "ORD009",
-      "customer_id": 2,
-      "business_id": 1,
-      "products": [
-        {
-          "prod_id": "8",
-          "cat_id": 2,
-          "prod_name": "Chocolate Chip Muffins",
-          "description": "Fresh-baked muffins loaded with premium chocolate chips",
-          "price": 89.99,
-          "rate": 4.7,
-          "qty": 1,
-          "images": "../assets/ChocolateChipMuffinsv3.jpg"
-        }
-      ],
-      "total_amount": 89.99,
-      "status": "Processing",
-      "created_at": "2024-11-29T01:31:34.738Z",
-      "checkoutDate": "2024-11-29T01:31:34.738Z",
-      "receiveDate": "null",
-      "downPayment": 0,
-      "remainingPayment": 0,
-      "paymentStatus": "paid"
     }
   ],
   "tags": [

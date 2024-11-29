@@ -15,7 +15,7 @@ const StoreOrderCard = ({
 
   const allSelected =
     products.length > 0 &&
-    products.every((product) => selectedItems.includes(product.prod_id));
+    products.every((product) => selectedItems.includes(`${storeData.order_id}_${product.prod_id}`));
 
   const handleQuantityChange = (orderId, newQty) => {
     if (newQty >= 1) {
@@ -55,7 +55,7 @@ const StoreOrderCard = ({
           <input
             type="checkbox"
             checked={allSelected}
-            onChange={() => onSelectAll(business?.bus_id)}
+            onChange={() => onSelectAll(business?.bus_id, storeData.order_id)}
             className="w-5 h-5"
           />
           <h2 className="text-lg font-semibold">
@@ -76,13 +76,13 @@ const StoreOrderCard = ({
       <div className="space-y-4">
         {products.map((product, index) => (
           <div
-            key={index}
+            key={`${storeData.order_id}_${product.prod_id}`}
             className="flex gap-4 border-t pt-4 first:border-t-0 first:pt-0"
           >
             <input
               type="checkbox"
-              checked={selectedItems.includes(product.prod_id)}
-              onChange={() => onSelectItem(product.prod_id)}
+              checked={selectedItems.includes(`${storeData.order_id}_${product.prod_id}`)}
+              onChange={() => onSelectItem(storeData.order_id, product.prod_id)}
               className="w-5 h-5 mt-8"
             />
             <div className="flex gap-4 flex-1">
