@@ -562,7 +562,7 @@
         }
       ],
       "total_amount": 89.99,
-      "status": "Processing",
+      "status": "Cancelled",
       "created_at": "2024-11-29T11:53:31.621Z",
       "checkoutDate": "2024-11-29T11:53:56.454Z",
       "receiveDate": "2024-12-03T11:53:45.668Z",
@@ -595,13 +595,20 @@
         }
       ],
       "total_amount": 349.99,
-      "status": "Pending",
+      "status": "Completed",
       "created_at": "2024-11-29T11:55:25.176Z",
-      "checkoutDate": "null",
-      "receiveDate": "null",
-      "downPayment": 0,
-      "remainingPayment": 349.99,
-      "paymentStatus": "null"
+      "checkoutDate": "2024-11-29T11:59:53.877Z",
+      "receiveDate": "2024-12-03T11:59:50.539Z",
+      "downPayment": 174.995,
+      "remainingPayment": 174.995,
+      "paymentStatus": "paid",
+      "placedAddress": {
+        "fullName": "Anna Santos",
+        "phoneNumber": "(+63) 0912345678",
+        "cityBarangay": "Ampayon, Butuan City, Agusan del Norte, Mindanao",
+        "postalCode": "8600",
+        "streetAddress": "Blk 10 Lot 5, Riverside Village"
+      }
     },
     {
       "id": "4",
@@ -654,10 +661,142 @@
         }
       ],
       "total_amount": 449.99,
-      "status": "Processing",
+      "status": "To Receive",
       "created_at": "2024-11-29T11:55:50.707Z",
       "checkoutDate": "2024-11-29T11:56:02.389Z",
       "receiveDate": "2024-12-03T11:55:59.485Z",
+      "downPayment": 224.995,
+      "remainingPayment": 224.995,
+      "paymentStatus": "paid",
+      "placedAddress": {
+        "fullName": "Bryan Ramos",
+        "phoneNumber": "(+63) 0987654321",
+        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
+        "postalCode": "8600",
+        "streetAddress": "P-3C Rigners Boarding House"
+      }
+    },
+    {
+      "id": "6",
+      "order_id": "ORD006",
+      "customer_id": 2,
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "12",
+          "cat_id": 2,
+          "prod_name": "Chocolate Truffle Tart",
+          "description": "Rich chocolate ganache tart with cocoa dusting",
+          "price": 449.99,
+          "rate": 4.9,
+          "qty": 1,
+          "images": "../assets/ChocolateTruffleTartv3.jpg"
+        }
+      ],
+      "total_amount": 449.99,
+      "status": "Processing",
+      "created_at": "2024-11-29T12:11:18.944Z",
+      "checkoutDate": "2024-11-29T12:12:04.626Z",
+      "receiveDate": "2024-12-03T12:11:58.984Z",
+      "downPayment": 224.995,
+      "remainingPayment": 224.995,
+      "paymentStatus": "paid",
+      "placedAddress": {
+        "fullName": "Bryan Ramos",
+        "phoneNumber": "(+63) 0987654321",
+        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
+        "postalCode": "8600",
+        "streetAddress": "P-3C Rigners Boarding House"
+      }
+    },
+    {
+      "id": "7",
+      "order_id": "ORD007",
+      "customer_id": 2,
+      "business_id": 1,
+      "products": [
+        {
+          "prod_id": "8",
+          "cat_id": 2,
+          "prod_name": "Chocolate Chip Muffins",
+          "description": "Fresh-baked muffins loaded with premium chocolate chips",
+          "price": 89.99,
+          "rate": 4.7,
+          "qty": 1,
+          "images": "../assets/ChocolateChipMuffinsv2.jpg"
+        }
+      ],
+      "total_amount": 89.99,
+      "status": "Processing",
+      "created_at": "2024-11-29T12:11:22.463Z",
+      "checkoutDate": "2024-11-29T12:11:47.880Z",
+      "receiveDate": "2024-12-03T12:11:47.081Z",
+      "downPayment": 44.995,
+      "remainingPayment": 44.995,
+      "paymentStatus": "paid",
+      "placedAddress": {
+        "fullName": "Bryan Ramos",
+        "phoneNumber": "(+63) 0987654321",
+        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
+        "postalCode": "8600",
+        "streetAddress": "P-3C Rigners Boarding House"
+      }
+    },
+    {
+      "id": "8",
+      "order_id": "ORD008",
+      "customer_id": 2,
+      "business_id": 1,
+      "products": [
+        {
+          "prod_id": "7",
+          "cat_id": 2,
+          "prod_name": "Chocolate Babka",
+          "description": "Rich chocolate-swirled babka bread",
+          "price": 349.99,
+          "rate": 4.8,
+          "qty": 1,
+          "images": "../assets/ChocolateBabkav3.jpg"
+        }
+      ],
+      "total_amount": 349.99,
+      "status": "Processing",
+      "created_at": "2024-11-29T12:11:26.119Z",
+      "checkoutDate": "2024-11-29T12:11:38.940Z",
+      "receiveDate": "2024-12-03T12:11:38.044Z",
+      "downPayment": 174.995,
+      "remainingPayment": 174.995,
+      "paymentStatus": "paid",
+      "placedAddress": {
+        "fullName": "Bryan Ramos",
+        "phoneNumber": "(+63) 0987654321",
+        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
+        "postalCode": "8600",
+        "streetAddress": "P-3C Rigners Boarding House"
+      }
+    },
+    {
+      "id": "9",
+      "order_id": "ORD009",
+      "customer_id": 2,
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "12",
+          "cat_id": 2,
+          "prod_name": "Chocolate Truffle Tart",
+          "description": "Rich chocolate ganache tart with cocoa dusting",
+          "price": 449.99,
+          "rate": 4.9,
+          "qty": 1,
+          "images": "../assets/ChocolateTruffleTartv2.jpg"
+        }
+      ],
+      "total_amount": 449.99,
+      "status": "Processing",
+      "created_at": "2024-11-29T12:11:30.249Z",
+      "checkoutDate": "2024-11-29T12:12:17.870Z",
+      "receiveDate": "2024-12-28T12:12:11.000Z",
       "downPayment": 224.995,
       "remainingPayment": 224.995,
       "paymentStatus": "paid",

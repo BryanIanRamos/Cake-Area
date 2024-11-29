@@ -60,6 +60,7 @@ const Cart = () => {
   const [toReceiveOrders, setToReceiveOrders] = useState([]);
   const [completedOrders, setCompletedOrders] = useState([]);
   const [cancelledOrders, setCancelledOrders] = useState([]);
+  const [businesses, setBusinesses] = useState([]);
 
   // Modified useEffect to fetch both orders and business data
   useEffect(() => {
@@ -76,6 +77,9 @@ const Cart = () => {
         const orders = await ordersResponse.json();
         const businesses = await businessResponse.json();
         const products = await productsResponse.json();
+
+        // Store businesses in state
+        setBusinesses(businesses);
 
         // Filter orders for customer_id 2
         const userOrders = orders.filter((order) => order.customer_id === 2);
@@ -341,6 +345,11 @@ const Cart = () => {
   };
 
   const getOrderCount = () => {
+      // "/cart": "Pending",              // Items in cart, not yet checked out
+      // "/cart/in-process": "Processing", // Orders being prepared by the baker
+      // "/cart/to-receive": "To Receive", // Orders ready for delivery/pickup
+      // "/cart/completed": "Completed",   // Successfully delivered/received orders
+      // "/cart/cancelled": "Cancelled"    // Cancelled orders
     switch (location.pathname) {
       case "/cart":
         return cartItems.length;
@@ -394,15 +403,19 @@ const Cart = () => {
 
   // Simplified order card rendering for In Process, To Receive, Completed, and Cancelled
   const renderSimplifiedOrderCard = (order) => {
+    // Find the business details from the businesses array
+    const business = businesses.find(b => b.id === order.business_id.toString());
+
     return (
       <div key={order.id} className="bg-white rounded-lg p-4 shadow-sm">
-        {/* Business Header - Simplified */}
+        {/* Business Header */}
         <div className="border-b pb-4 mb-4">
           <div className="flex justify-between items-start">
-            <h2 className="text-lg font-semibold">{order.business?.name}</h2>
+            <h2 className="text-lg font-semibold">
+              {business?.name || "Business Name Not Found"}
+            </h2>
             <div className="text-sm text-gray-500">
-              Service Rating: {order.business?.service_rating.toFixed(1)} |{" "}
-              {order.business?.total_sold} sold
+              Service Rating: {business?.service_rating?.toFixed(1) || 'N/A'} | {business?.total_sold || 0} sold
             </div>
           </div>
         </div>
