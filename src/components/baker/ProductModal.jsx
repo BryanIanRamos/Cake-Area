@@ -23,7 +23,7 @@ const ProductModal = ({ isOpen, onClose, order }) => {
           </div>
           <div>
             <p className="text-sm text-gray-600">Customer Name</p>
-            <p className="font-medium">{order.customer_name}</p>
+            <p className="font-medium">{order.placedAddress.fullName}</p>
           </div>
           <div>
             <p className="text-sm text-gray-600">Status</p>
@@ -33,15 +33,27 @@ const ProductModal = ({ isOpen, onClose, order }) => {
             <p className="text-sm text-gray-600">Order Date</p>
             <p className="font-medium">{new Date(order.created_at).toLocaleDateString()}</p>
           </div>
+          <div>
+            <p className="text-sm text-gray-600">Receive Date</p>
+            <p className="font-medium">{new Date(order.receiveDate).toLocaleDateString()}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-600">Payment Status</p>
+            <p className="font-medium">{order.paymentStatus}</p>
+          </div>
         </div>
 
-        {/* Cancellation Reason - Only show for cancelled orders */}
-        {order.status === "Cancelled" && order.cancel_reason && (
-          <div className="mb-6 p-4 bg-red-50 rounded-lg border border-red-100">
-            <p className="text-sm text-gray-600 mb-1">Cancellation Reason</p>
-            <p className="text-red-600">{order.cancel_reason}</p>
+        {/* Customer Address */}
+        <div className="mb-6">
+          <h3 className="font-medium mb-2">Delivery Address</h3>
+          <div className="bg-gray-50 p-3 rounded">
+            <p>{order.placedAddress.fullName}</p>
+            <p>{order.placedAddress.phoneNumber}</p>
+            <p>{order.placedAddress.streetAddress}</p>
+            <p>{order.placedAddress.cityBarangay}</p>
+            <p>{order.placedAddress.postalCode}</p>
           </div>
-        )}
+        </div>
 
         {/* Products List */}
         <div className="mb-6">
@@ -50,28 +62,34 @@ const ProductModal = ({ isOpen, onClose, order }) => {
             {order.products.map((product, index) => (
               <div key={index} className="flex items-center gap-4 border-b pb-4">
                 <img
-                  src={order.images[0].link}
+                  src={product.images}
                   alt={product.prod_name}
                   className="w-16 h-16 rounded-lg object-cover"
                 />
                 <div className="flex-1">
                   <p className="font-medium">{product.prod_name}</p>
-                  <p className="text-sm text-gray-600">Quantity: {product.quantity}</p>
+                  <p className="text-sm text-gray-600">Quantity: {product.qty}</p>
                   <p className="text-sm text-gray-600">Price: ₱{product.price.toFixed(2)}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-medium">₱{(product.price * product.quantity).toFixed(2)}</p>
+                  <p className="font-medium">₱{(product.price * product.qty).toFixed(2)}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Order Summary */}
+        {/* Payment Information */}
         <div className="border-t pt-4">
-          <div className="flex justify-between items-center">
-            <p className="font-medium">Total Amount</p>
-            <p className="font-medium text-lg">₱{order.total_amount.toFixed(2)}</p>
+          <div className="space-y-2">
+            <div className="flex justify-between">
+              <p>Down Payment</p>
+              <p>₱{order.downPayment.toFixed(2)}</p>
+            </div>
+            <div className="flex justify-between">
+              <p>Total Amount</p>
+              <p>₱{order.total_amount.toFixed(2)}</p>
+            </div>
           </div>
         </div>
       </div>

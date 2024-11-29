@@ -1,26 +1,24 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/baker/Sidebar";
-import { ordersData, updateOrder } from "../../data/orderDataTbl";
+import Toast from "../../components/baker/Toast";
 import ProductModal from "../../components/baker/ProductModal";
 import AcceptOrderModal from "../../components/baker/AcceptOrderModal";
-import Toast from "../../components/baker/Toast";
 import MarkAsDoneModal from "../../components/baker/MarkAsDoneModal";
 import MarkAsDeliveredModal from "../../components/baker/MarkAsDeliveredModal";
-import { saveToLocalStorage, loadFromLocalStorage } from "../../data/localStorage";
 import CancelOrderModal from "../../components/baker/CancelOrderModal";
 
 const Orders = () => {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState("pending");
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
-  const [activeTab, setActiveTab] = useState(() => {
-    return localStorage.getItem("activeOrderTab") || "pending"
-  });
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
   const [selectedOrderForAccept, setSelectedOrderForAccept] = useState(null);
-  const [orders, setOrders] = useState(ordersData);
   const [toast, setToast] = useState({
     show: false,
     message: "",
@@ -33,35 +31,37 @@ const Orders = () => {
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [selectedOrderForCancel, setSelectedOrderForCancel] = useState(null);
 
-  // Filter orders based on active tab and search query
-  const filteredOrders = orders.filter((order) => {
-    const matchesSearch = searchQuery 
-      ? order.products.some(product =>
-          product.prod_name.toLowerCase().includes(searchQuery.toLowerCase())
-        ) || order.order_id.toLowerCase().includes(searchQuery.toLowerCase())
-      : true;
+  useEffect(() => {
+    setLoading(true);
+    fetch('http://localhost:3000/orders')
+      .then(response => response.json())
+      .then(data => {
+        setOrders(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching orders:', error);
+        setError(error);
+        setLoading(false);
+      });
+  }, []);
 
-    // Strict status matching based on tab
-    const statusMatch = (() => {
-      switch(activeTab) {
-        case 'pending':
-          return order.status === 'Pending';
-        case 'processing':
-          return order.status === 'Processing';
-        case 'to receive':
-          return order.status === 'To Receive';
-        case 'completed':
-          return order.status === 'Completed';
-        case 'cancelled':
-          return order.status === 'Cancelled';
-        case 'refunded':
-          return order.status === 'Refunded';
-        default:
-          return false;
-      }
-    })();
-
-    return matchesSearch && statusMatch;
+  // Filter orders based on active tab
+  const filteredOrders = orders.filter(order => {
+    switch (activeTab) {
+      case "pending":
+        return order.status === "Pending";
+      case "processing":
+        return order.status === "Processing";
+      case "to receive":
+        return order.status === "To Receive";
+      case "completed":
+        return order.status === "Completed";
+      case "cancelled":
+        return order.status === "Cancelled";
+      default:
+        return true;
+    }
   });
 
   // Save activeTab to localStorage whenever it changes
@@ -279,6 +279,14 @@ const Orders = () => {
     }
   };
 
+  if (loading) {
+    return <div className="p-4">Loading orders...</div>;
+  }
+
+  if (error) {
+    return <div className="p-4 text-red-500">Error loading orders: {error.message}</div>;
+  }
+
   return (
     <div className="flex h-screen bg-[#F5F5F5]">
       <Sidebar
@@ -363,33 +371,42 @@ const Orders = () => {
                     <th className="text-left p-4">Products</th>
                     <th className="text-left p-4">Total</th>
                     <th className="text-left p-4">Status</th>
+                    <th className="text-left p-4">Receive at</th>
                     <th className="text-left p-4">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredOrders.map((order) => (
-                    <tr key={order.order_id} className="border-t hover:bg-gray-50">
+                    <tr key={order.id} className="border-t hover:bg-gray-50">
                       <td className="p-4">{order.order_id}</td>
-                      <td className="p-4">{order.customer_name}</td>
                       <td className="p-4">
-                        {order.products.map((product, index) => (
+                        {order.placedAddress?.fullName || 'N/A'}
+                      </td>
+                      <td className="p-4">
+                        {order.products?.map((product, index) => (
                           <div key={index} className="flex items-center gap-2 mb-2">
                             <img
-                              src={order.images[0].link}
+                              src={product.images}
                               alt={product.prod_name}
                               className="w-10 h-10 rounded-lg object-cover"
                             />
                             <div>
                               <p className="font-medium">{product.prod_name}</p>
                               <p className="text-sm text-gray-500">
-                                Qty: {product.quantity}
+                                Qty: {product.qty}
                               </p>
                             </div>
                           </div>
-                        ))}
+                        )) || 'No products'}
                       </td>
-                      <td className="p-4">₱{order.total_amount.toFixed(2)}</td>
-                      <td className="p-4">{order.status}</td>
+                      <td className="p-4">₱{order.total_amount?.toFixed(2) || '0.00'}</td>
+                      <td className="p-4">{order.status || 'Unknown'}</td>
+                      <td className="p-4">
+                        {order.receiveDate ? 
+                          new Date(order.receiveDate).toLocaleDateString() : 
+                          'Not set'
+                        }
+                      </td>
                       <td className="p-4">
                         {renderActionButtons(order)}
                       </td>
