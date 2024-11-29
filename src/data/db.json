@@ -866,6 +866,141 @@
       "downPayment": 0,
       "remainingPayment": 349.99,
       "paymentStatus": "null"
+    },
+    {
+      "id": "11",
+      "order_id": "ORD011",
+      "customer_id": 2,
+      "business_id": 1,
+      "products": [
+        {
+          "prod_id": "5",
+          "cat_id": 3,
+          "prod_name": "Classic Butter Croissant",
+          "description": "Traditional French butter croissant with flaky layers",
+          "price": 109.99,
+          "rate": 4.8,
+          "qty": 1,
+          "images": "../assets/ButterCroissantv2.jpg"
+        }
+      ],
+      "total_amount": 109.99,
+      "status": "Processing",
+      "created_at": "2024-11-29T18:52:33.765Z",
+      "checkoutDate": "2024-11-29T18:52:59.393Z",
+      "receiveDate": "2024-12-03T18:52:58.214Z",
+      "downPayment": 54.995,
+      "remainingPayment": 54.995,
+      "paymentStatus": "paid",
+      "placedAddress": {
+        "fullName": "Bryan Ramos",
+        "phoneNumber": "(+63) 0987654321",
+        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
+        "postalCode": "8600",
+        "streetAddress": "P-3C Rigners Boarding House"
+      }
+    },
+    {
+      "id": "12",
+      "order_id": "ORD012",
+      "customer_id": 2,
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "14",
+          "cat_id": 3,
+          "prod_name": "Classic Brioche",
+          "description": "Buttery French brioche bread with golden crust",
+          "price": 199.99,
+          "rate": 4.7,
+          "qty": 1,
+          "images": "../assets/ClassicBriochev3.jpg"
+        }
+      ],
+      "total_amount": 199.99,
+      "status": "Processing",
+      "created_at": "2024-11-29T18:52:37.437Z",
+      "checkoutDate": "2024-11-29T18:52:59.415Z",
+      "receiveDate": "2024-12-03T18:52:58.214Z",
+      "downPayment": 99.995,
+      "remainingPayment": 99.995,
+      "paymentStatus": "paid",
+      "placedAddress": {
+        "fullName": "Bryan Ramos",
+        "phoneNumber": "(+63) 0987654321",
+        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
+        "postalCode": "8600",
+        "streetAddress": "P-3C Rigners Boarding House"
+      }
+    },
+    {
+      "id": "13",
+      "order_id": "ORD013",
+      "customer_id": 2,
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "14",
+          "cat_id": 3,
+          "prod_name": "Classic Brioche",
+          "description": "Buttery French brioche bread with golden crust",
+          "price": 199.99,
+          "rate": 4.7,
+          "qty": 1,
+          "images": "../assets/ClassicBriochev1.jpg"
+        },
+        {
+          "prod_id": "14",
+          "cat_id": 3,
+          "prod_name": "Classic Brioche",
+          "description": "Buttery French brioche bread with golden crust",
+          "price": 199.99,
+          "rate": 4.7,
+          "qty": 1,
+          "images": "../assets/ClassicBriochev3.jpg"
+        }
+      ],
+      "total_amount": 199.99,
+      "status": "Processing",
+      "created_at": "2024-11-29T18:52:39.867Z",
+      "checkoutDate": "2024-11-29T18:52:59.551Z",
+      "receiveDate": "2024-12-03T18:52:58.214Z",
+      "downPayment": 99.995,
+      "remainingPayment": 99.995,
+      "paymentStatus": "paid",
+      "placedAddress": {
+        "fullName": "Bryan Ramos",
+        "phoneNumber": "(+63) 0987654321",
+        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
+        "postalCode": "8600",
+        "streetAddress": "P-3C Rigners Boarding House"
+      }
+    },
+    {
+      "id": "14",
+      "order_id": "ORD014",
+      "customer_id": 2,
+      "business_id": 1,
+      "products": [
+        {
+          "prod_id": "1",
+          "cat_id": 3,
+          "prod_name": "Premium Almond Croissant",
+          "description": "Flaky croissant filled with rich almond cream and topped with sliced almonds",
+          "price": 119.99,
+          "rate": 4.8,
+          "qty": 1,
+          "images": "../assets/AlmondCroissantv2.jpg"
+        }
+      ],
+      "total_amount": 119.99,
+      "status": "Pending",
+      "created_at": "2024-11-29T18:52:43.944Z",
+      "checkoutDate": "null",
+      "receiveDate": "null",
+      "downPayment": 0,
+      "remainingPayment": 119.99,
+      "paymentStatus": "null"
     }
   ],
   "tags": [
