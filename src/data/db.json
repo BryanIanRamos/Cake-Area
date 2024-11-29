@@ -543,7 +543,7 @@
       "created_at": "2024-03-18T15:30:00Z",
       "checkoutDate": "null",
       "receiveDate": "null",
-      "downPayment": 285.0,
+      "downPayment": 285,
       "remainingPayment": 284.95,
       "paymentStatus": "Partial - Down Payment Received"
     },
@@ -641,7 +641,7 @@
       "created_at": "2024-03-19T09:30:00Z",
       "checkoutDate": "2024-03-19T09:30:00Z",
       "receiveDate": "2024-03-26T09:00:00Z",
-      "downPayment": 275.0,
+      "downPayment": 275,
       "remainingPayment": 274.99,
       "paymentStatus": "Partial - Down Payment Received"
     },
@@ -670,6 +670,32 @@
       "downPayment": 0,
       "remainingPayment": 179.98,
       "paymentStatus": "Cancelled - No Payment"
+    },
+    {
+      "id": "6",
+      "order_id": "ORD006",
+      "customer_id": 2,
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "11",
+          "cat_id": 2,
+          "prod_name": "Chocolate Profiteroles",
+          "description": "Light choux pastry filled with cream and topped with chocolate",
+          "price": 299.99,
+          "rate": 4.8,
+          "qty": 1,
+          "images": "../assets/ChocolateProfiterolesv3.jpg"
+        }
+      ],
+      "total_amount": 299.99,
+      "status": "Pending",
+      "created_at": "2024-11-29T00:51:53.333Z",
+      "checkoutDate": "null",
+      "receiveDate": "null",
+      "downPayment": 0,
+      "remainingPayment": 299.99,
+      "paymentStatus": "null"
     }
   ],
   "tags": [

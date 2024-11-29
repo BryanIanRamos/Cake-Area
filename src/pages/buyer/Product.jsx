@@ -13,6 +13,7 @@ import { productData } from "../../data/productDataTbl";
 import { imagesData } from "../../data/imagesDataTbl";
 import OrderConfirmation from "../../components/buyer/modals/OrderConfirmation";
 import { FiAlertCircle } from "react-icons/fi";
+import AddToCartModal from "../../components/buyer/modals/AddToCartModal";
 
 const Product = () => {
   const { productId } = useParams();
@@ -30,6 +31,7 @@ const Product = () => {
   const [comments, setComments] = useState(commentData);
   const [filterOption, setFilterOption] = useState("newest");
   const commentsPerPage = 5;
+  const [addToCartModalOpen, setAddToCartModalOpen] = useState(false);
 
   // Filter comments based on selected option
   useEffect(() => {
@@ -111,12 +113,29 @@ const Product = () => {
   };
 
   const handleAddToCart = () => {
-    toast.success("Added to cart successfully!", {
-      icon: <FiAlertCircle className="text-lg" />,
-      className: "font-[Oswald]",
-      position: "bottom-right",
-      duration: 2000,
-    });
+    // Validate product availability
+    if (!product.is_available) {
+      toast.error("This product is currently unavailable", {
+        icon: <FiAlertCircle className="text-lg" />,
+        className: "font-[Oswald]",
+        position: "bottom-right",
+        duration: 2000,
+      });
+      return;
+    }
+
+    // Validate quantity
+    if (quantity > product.qty) {
+      toast.error("Selected quantity exceeds available stock", {
+        icon: <FiAlertCircle className="text-lg" />,
+        className: "font-[Oswald]",
+        position: "bottom-right",
+        duration: 2000,
+      });
+      return;
+    }
+
+    setAddToCartModalOpen(true);
   };
 
   const handleOrderNow = () => {
@@ -175,6 +194,87 @@ const Product = () => {
 
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const handleConfirmAddToCart = async (selectedImageIndex) => {
+    try {
+      console.log('Starting handleConfirmAddToCart...'); // Debug log
+      
+      // Get existing orders to determine next ID
+      const response = await fetch('http://localhost:3000/orders');
+      console.log('Fetched existing orders response:', response); // Debug log
+      
+      const existingOrders = await response.json();
+      console.log('Existing orders:', existingOrders); // Debug log
+      
+      const nextId = (existingOrders.length + 1).toString();
+      const nextOrderId = `ORD${nextId.padStart(3, '0')}`;
+
+      // Create new order object
+      const newOrder = {
+        id: nextId,
+        order_id: nextOrderId,
+        customer_id: 2,
+        business_id: product.business_id,
+        products: [
+          {
+            prod_id: product.id,
+            cat_id: product.cat_id,
+            prod_name: product.prod_name,
+            description: product.description,
+            price: product.price,
+            rate: product.rate,
+            qty: quantity,
+            images: product.images[selectedImageIndex]
+          }
+        ],
+        total_amount: product.price * quantity,
+        status: "Pending",
+        created_at: new Date().toISOString(),
+        checkoutDate: "null",
+        receiveDate: "null",
+        downPayment: 0,
+        remainingPayment: product.price * quantity,
+        paymentStatus: "null"
+      };
+
+      console.log('New order to be added:', newOrder); // Debug log
+
+      // Add new order to json-server
+      const addOrderResponse = await fetch('http://localhost:3000/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newOrder)
+      });
+
+      console.log('Add order response:', addOrderResponse); // Debug log
+
+      if (!addOrderResponse.ok) {
+        throw new Error('Failed to add order');
+      }
+
+      // Close modal
+      setAddToCartModalOpen(false);
+
+      // Show success toast
+      toast.success("Added to cart successfully!", {
+        icon: <FiAlertCircle className="text-lg" />,
+        className: "font-[Oswald]",
+        position: "bottom-right",
+        duration: 2000,
+      });
+
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      toast.error("Failed to add to cart. Please try again.", {
+        icon: <FiAlertCircle className="text-lg" />,
+        className: "font-[Oswald]",
+        position: "bottom-right",
+        duration: 2000,
+      });
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-start h-full w-full px-4 py-6 md:px-10 md:py-8">
@@ -558,6 +658,16 @@ const Product = () => {
           </div>
         </div>
       </div>
+
+      {addToCartModalOpen && (
+        <AddToCartModal
+          isOpen={addToCartModalOpen}
+          closeModal={() => setAddToCartModalOpen(false)}
+          product={product}
+          quantity={quantity}
+          onConfirm={handleConfirmAddToCart}
+        />
+      )}
     </div>
   );
 };
