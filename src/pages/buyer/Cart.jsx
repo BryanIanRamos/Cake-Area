@@ -93,8 +93,6 @@ const Cart = () => {
             );
             return {
               ...orderProduct,
-              // Use the first image from the product's images array
-              images: fullProduct ? fullProduct.images[0] : orderProduct.images,
             };
           }),
         }));
