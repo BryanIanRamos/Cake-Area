@@ -326,17 +326,15 @@ const Orders = () => {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-gray-100">
       <Sidebar
         isExpanded={isSidebarExpanded}
         setIsExpanded={setIsSidebarExpanded}
       />
 
-      <main
-        className={`flex-1 bg-gray-100 ${
-          isSidebarExpanded ? "ml-64" : "ml-20"
-        } transition-all duration-300`}
-      >
+      <main className={`flex-1 ${
+        isSidebarExpanded ? 'ml-64' : 'ml-20'
+      } transition-all duration-300`}>
         <div className="p-8">
           {/* Welcome Section */}
           <div className="mb-8">
