@@ -62,6 +62,16 @@ const SecurityForm = ({ formData, handleInputChange }) => {
           <li>Must contain at least one special character</li>
         </ul>
       </div>
+
+      <div className="mt-8 flex justify-end">
+        <button
+          type="submit"
+          className="bg-[#E88F2A] text-white px-6 py-2.5 rounded-lg hover:bg-[#E88F2A]/90 
+            transition-colors duration-200 shadow-sm"
+        >
+          Update
+        </button>
+      </div>
     </div>
   );
 };
