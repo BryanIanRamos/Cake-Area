@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify/react";
+import { useNavigate } from "react-router-dom";
 import CreateAccount from "./CreateAccount";
 import PropTypes from "prop-types";
 
 const SelectAccount = ({ isOpen, closeModal }) => {
-  const [modalView, setModalView] = useState("select"); // Track which view is open
+  const navigate = useNavigate();
+  const [modalView, setModalView] = useState("select");
 
   // Function to switch to the Customer view
   const openCustomerView = () => {
@@ -13,7 +15,8 @@ const SelectAccount = ({ isOpen, closeModal }) => {
 
   // Function to switch to the Baker view
   const openBakerView = () => {
-    setModalView("baker");
+    closeModal();
+    navigate("/baker/register");
   };
 
   // Reset to the Select Account view
