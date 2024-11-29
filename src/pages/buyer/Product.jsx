@@ -146,8 +146,7 @@ const Product = () => {
 
   const handleConfirmProductOrder = async (paymentMethod, selectedImageIndex) => {
     try {
-      console.log('Selected image index:', selectedImageIndex); // Debug log
-      console.log('Selected image URL:', product.images[selectedImageIndex]); // Debug log
+      console.log('Starting order creation with image index:', selectedImageIndex);
       
       // Get existing orders to determine next ID
       const response = await fetch('http://localhost:3000/orders');
@@ -157,7 +156,9 @@ const Product = () => {
 
       const currentDate = new Date().toISOString();
 
-      // Create new order object with the specified format
+      // Log the selected image before creating order
+      console.log('Selected image URL:', product.images[selectedImageIndex]);
+
       const newOrder = {
         id: nextId,
         order_id: nextOrderId,
@@ -185,7 +186,8 @@ const Product = () => {
         paymentStatus: "paid"
       };
 
-      console.log('Order being created:', newOrder); // Debug log to verify image
+      // Log the final order before sending
+      console.log('Final order being sent:', newOrder);
 
       // Add new order to json-server
       const addOrderResponse = await fetch('http://localhost:3000/orders', {
@@ -214,7 +216,7 @@ const Product = () => {
       navigate("/cart/in-process");
 
     } catch (error) {
-      console.error('Error placing order:', error);
+      console.error('Error with order creation:', error);
       toast.error("Failed to place order. Please try again.", {
         icon: <FiAlertCircle className="text-lg" />,
         className: "font-[Oswald]",

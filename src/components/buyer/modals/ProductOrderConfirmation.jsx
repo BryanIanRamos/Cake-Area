@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Icon } from "@iconify/react";
 import { FiAlertCircle } from "react-icons/fi";
 
@@ -6,6 +6,17 @@ const ProductOrderConfirmation = ({ isOpen, closeModal, product, quantity, onCon
   const [selectedPayment, setSelectedPayment] = useState('gcash');
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedImageIndex(0);
+    }
+  }, [isOpen]);
+
+  const handleImageSelect = (index) => {
+    console.log('Image selected:', index);
+    setSelectedImageIndex(index);
+  };
+
   if (!isOpen) return null;
 
   const totalAmount = product.price * quantity;
@@ -59,7 +70,7 @@ const ProductOrderConfirmation = ({ isOpen, closeModal, product, quantity, onCon
             {product.images.map((image, index) => (
               <div
                 key={index}
-                onClick={() => setSelectedImageIndex(index)}
+                onClick={() => handleImageSelect(index)}
                 className={`cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-200 ${
                   selectedImageIndex === index
                     ? 'border-primary'
@@ -120,7 +131,7 @@ const ProductOrderConfirmation = ({ isOpen, closeModal, product, quantity, onCon
         <div className="flex gap-3">
           <button
             onClick={() => {
-              console.log('Confirming with image index:', selectedImageIndex);
+              console.log('Confirming order with image:', selectedImageIndex);
               onConfirm(selectedPayment, selectedImageIndex);
             }}
             className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
