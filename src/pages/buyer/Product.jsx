@@ -14,6 +14,7 @@ import { imagesData } from "../../data/imagesDataTbl";
 import OrderConfirmation from "../../components/buyer/modals/OrderConfirmation";
 import { FiAlertCircle } from "react-icons/fi";
 import AddToCartModal from "../../components/buyer/modals/AddToCartModal";
+import ProductOrderConfirmation from "../../components/buyer/modals/ProductOrderConfirmation";
 
 const Product = () => {
   const { productId } = useParams();
@@ -32,6 +33,7 @@ const Product = () => {
   const [filterOption, setFilterOption] = useState("newest");
   const commentsPerPage = 5;
   const [addToCartModalOpen, setAddToCartModalOpen] = useState(false);
+  const [productOrderConfirmOpen, setProductOrderConfirmOpen] = useState(false);
 
   // Filter comments based on selected option
   useEffect(() => {
@@ -139,17 +141,87 @@ const Product = () => {
   };
 
   const handleOrderNow = () => {
-    setOrderConfirmOpen(true);
+    setProductOrderConfirmOpen(true);
   };
 
-  const handleConfirmOrder = (receiveDate) => {
-    navigate("/cart/in-process");
-    toast.success("Order placed successfully!", {
-      icon: <FiAlertCircle className="text-lg" />,
-      className: "font-[Oswald]",
-      position: "bottom-right",
-      duration: 2000,
-    });
+  const handleConfirmProductOrder = async (paymentMethod, selectedImageIndex) => {
+    try {
+      console.log('Selected image index:', selectedImageIndex); // Debug log
+      console.log('Selected image URL:', product.images[selectedImageIndex]); // Debug log
+      
+      // Get existing orders to determine next ID
+      const response = await fetch('http://localhost:3000/orders');
+      const existingOrders = await response.json();
+      const nextId = (existingOrders.length + 1).toString();
+      const nextOrderId = `ORD${nextId.padStart(3, '0')}`;
+
+      const currentDate = new Date().toISOString();
+
+      // Create new order object with the specified format
+      const newOrder = {
+        id: nextId,
+        order_id: nextOrderId,
+        customer_id: 2,
+        business_id: product.business_id,
+        products: [
+          {
+            prod_id: product.id,
+            cat_id: product.cat_id,
+            prod_name: product.prod_name,
+            description: product.description,
+            price: product.price,
+            rate: product.rate,
+            qty: quantity,
+            images: product.images[selectedImageIndex]
+          }
+        ],
+        total_amount: product.price * quantity,
+        status: "Processing",
+        created_at: currentDate,
+        checkoutDate: currentDate,
+        receiveDate: "null",
+        downPayment: 0,
+        remainingPayment: 0,
+        paymentStatus: "paid"
+      };
+
+      console.log('Order being created:', newOrder); // Debug log to verify image
+
+      // Add new order to json-server
+      const addOrderResponse = await fetch('http://localhost:3000/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newOrder)
+      });
+
+      if (!addOrderResponse.ok) {
+        throw new Error('Failed to add order');
+      }
+
+      setProductOrderConfirmOpen(false);
+
+      // Show success toast
+      toast.success("Order placed successfully!", {
+        icon: <FiAlertCircle className="text-lg" />,
+        className: "font-[Oswald]",
+        position: "bottom-right",
+        duration: 2000,
+      });
+
+      // Navigate to orders page
+      navigate("/cart/in-process");
+
+    } catch (error) {
+      console.error('Error placing order:', error);
+      toast.error("Failed to place order. Please try again.", {
+        icon: <FiAlertCircle className="text-lg" />,
+        className: "font-[Oswald]",
+        position: "bottom-right",
+        duration: 2000,
+      });
+    }
   };
 
   // Handle like click
@@ -197,17 +269,17 @@ const Product = () => {
 
   const handleConfirmAddToCart = async (selectedImageIndex) => {
     try {
-      console.log('Starting handleConfirmAddToCart...'); // Debug log
-      
+      console.log("Starting handleConfirmAddToCart..."); // Debug log
+
       // Get existing orders to determine next ID
-      const response = await fetch('http://localhost:3000/orders');
-      console.log('Fetched existing orders response:', response); // Debug log
-      
+      const response = await fetch("http://localhost:3000/orders");
+      console.log("Fetched existing orders response:", response); // Debug log
+
       const existingOrders = await response.json();
-      console.log('Existing orders:', existingOrders); // Debug log
-      
+      console.log("Existing orders:", existingOrders); // Debug log
+
       const nextId = (existingOrders.length + 1).toString();
-      const nextOrderId = `ORD${nextId.padStart(3, '0')}`;
+      const nextOrderId = `ORD${nextId.padStart(3, "0")}`;
 
       // Create new order object
       const newOrder = {
@@ -224,8 +296,8 @@ const Product = () => {
             price: product.price,
             rate: product.rate,
             qty: quantity,
-            images: product.images[selectedImageIndex]
-          }
+            images: product.images[selectedImageIndex],
+          },
         ],
         total_amount: product.price * quantity,
         status: "Pending",
@@ -234,24 +306,24 @@ const Product = () => {
         receiveDate: "null",
         downPayment: 0,
         remainingPayment: product.price * quantity,
-        paymentStatus: "null"
+        paymentStatus: "null",
       };
 
-      console.log('New order to be added:', newOrder); // Debug log
+      console.log("New order to be added:", newOrder); // Debug log
 
       // Add new order to json-server
-      const addOrderResponse = await fetch('http://localhost:3000/orders', {
-        method: 'POST',
+      const addOrderResponse = await fetch("http://localhost:3000/orders", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(newOrder)
+        body: JSON.stringify(newOrder),
       });
 
-      console.log('Add order response:', addOrderResponse); // Debug log
+      console.log("Add order response:", addOrderResponse); // Debug log
 
       if (!addOrderResponse.ok) {
-        throw new Error('Failed to add order');
+        throw new Error("Failed to add order");
       }
 
       // Close modal
@@ -264,9 +336,8 @@ const Product = () => {
         position: "bottom-right",
         duration: 2000,
       });
-
     } catch (error) {
-      console.error('Error adding to cart:', error);
+      console.error("Error adding to cart:", error);
       toast.error("Failed to add to cart. Please try again.", {
         icon: <FiAlertCircle className="text-lg" />,
         className: "font-[Oswald]",
@@ -281,21 +352,13 @@ const Product = () => {
       <Toaster richColors position="bottom-right" />
       <Navbar businessId={product.business_id} />
 
-      {orderConfirmOpen && (
-        <OrderConfirmation
-          isOpen={orderConfirmOpen}
-          closeModal={() => setOrderConfirmOpen(false)}
-          totalAmount={product.price * quantity}
-          selectedItems={[
-            {
-              ...product,
-              qty: quantity,
-              overall_pay: product.price * quantity,
-            },
-          ]}
-          onConfirm={handleConfirmOrder}
-        />
-      )}
+      <ProductOrderConfirmation
+        isOpen={productOrderConfirmOpen}
+        closeModal={() => setProductOrderConfirmOpen(false)}
+        product={product}
+        quantity={quantity}
+        onConfirm={handleConfirmProductOrder}
+      />
 
       <div className="w-full h-fit max-w-6xl mx-auto flex flex-col gap-2 mt-[5%]">
         <div className="bg-white grid grid-cols-1 md:grid-cols-3 w-full gap-4 p-4 rounded-lg shadow-md">

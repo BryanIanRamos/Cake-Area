@@ -689,13 +689,13 @@
         }
       ],
       "total_amount": 299.99,
-      "status": "Pending",
-      "created_at": "2024-11-29T00:51:53.333Z",
-      "checkoutDate": "null",
+      "status": "Processing",
+      "created_at": "2024-11-29T01:21:50.217Z",
+      "checkoutDate": "2024-11-29T01:21:50.217Z",
       "receiveDate": "null",
       "downPayment": 0,
-      "remainingPayment": 299.99,
-      "paymentStatus": "null"
+      "remainingPayment": 0,
+      "paymentStatus": "paid"
     }
   ],
   "tags": [
