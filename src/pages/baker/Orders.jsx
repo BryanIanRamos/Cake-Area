@@ -6,6 +6,7 @@ import AcceptOrderModal from "../../components/baker/AcceptOrderModal";
 import MarkAsDoneModal from "../../components/baker/MarkAsDoneModal";
 import MarkAsDeliveredModal from "../../components/baker/MarkAsDeliveredModal";
 import CancelOrderModal from "../../components/baker/CancelOrderModal";
+import { Icon } from "@iconify/react";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -332,19 +333,32 @@ const Orders = () => {
         setIsExpanded={setIsSidebarExpanded}
       />
 
-      <main className={`flex-1 ${
-        isSidebarExpanded ? 'ml-64' : 'ml-20'
-      } transition-all duration-300`}>
+      <main
+        className={`flex-1 ${
+          isSidebarExpanded ? "ml-64" : "ml-20"
+        } transition-all duration-300`}
+      >
         <div className="p-8">
-          {/* Welcome Section */}
-          <div className="mb-8">
+          {/* Welcome Section with Filter Button */}
+          <div className="mb-4">
             <h1 className="text-2xl font-bold text-gray-800 mb-2">
               Manage Your Orders
             </h1>
-            <p className="text-gray-600">
-              Keep track of all your bakery orders and their status in one
-              place.
-            </p>
+            <div className="flex justify-between items-center">
+              <p className="text-gray-600">
+                Keep track of all your bakery orders and their status in one
+                place.
+              </p>
+              <button
+                className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                onClick={() => {
+                  /* Add filter logic here */
+                }}
+              >
+                <Icon icon="uil:filter" className="text-gray-600" />
+                <span className="text-gray-600">Filter</span>
+              </button>
+            </div>
           </div>
 
           {/* Rest of the content */}
