@@ -28,7 +28,17 @@ const OrderConfirmation = ({
   const downPaymentAmount = total * 0.5;
 
   const handleConfirm = () => {
-    onConfirm(selectedDate);
+    // Create address object from selected address
+    const placedAddress = {
+      fullName: selectedAddress.name,
+      phoneNumber: selectedAddress.phone,
+      cityBarangay: selectedAddress.address.line2,
+      postalCode: selectedAddress.address.postalCode || "8600",
+      streetAddress: selectedAddress.address.line1
+    };
+
+    // Pass both the date and address to the onConfirm handler
+    onConfirm(selectedDate, placedAddress);
   };
 
   if (!isOpen) return null;

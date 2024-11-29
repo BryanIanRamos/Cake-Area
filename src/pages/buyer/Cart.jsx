@@ -159,17 +159,17 @@ const Cart = () => {
     }, {});
   };
 
-  // Update handleConfirmCheckout
-  const handleConfirmCheckout = async (receiveDate) => {
+  // Update handleConfirmCheckout to include address
+  const handleConfirmCheckout = async (receiveDate, placedAddress) => {
     try {
-      const selectedOrders = cartItems.filter(order =>
-        order.products.some(product => 
+      const selectedOrders = cartItems.filter((order) =>
+        order.products.some((product) =>
           selectedItems.includes(`${order.order_id}_${product.prod_id}`)
         )
       );
 
       for (const order of selectedOrders) {
-        // Create clean order object with receiveDate
+        // Create clean order object with receiveDate and address
         const updatedOrder = {
           id: order.id,
           order_id: order.order_id,
@@ -180,35 +180,40 @@ const Cart = () => {
           status: "Processing",
           created_at: order.created_at,
           checkoutDate: new Date().toISOString(),
-          receiveDate: receiveDate.toISOString(), // Use the selected receive date
+          receiveDate: receiveDate.toISOString(),
           downPayment: order.total_amount * 0.5,
           remainingPayment: order.total_amount * 0.5,
-          paymentStatus: "paid"
+          paymentStatus: "paid",
+          placedAddress: placedAddress,
         };
 
-        console.log('Updating order with data:', updatedOrder);
+        console.log("Updating order with data:", updatedOrder);
 
         // Update order in the database
-        const response = await fetch(`http://localhost:3000/orders/${order.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(updatedOrder)
-        });
+        const response = await fetch(
+          `http://localhost:3000/orders/${order.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedOrder),
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`Failed to update order ${order.id}`);
         }
 
         // Update local state with clean order object
-        setProcessingOrders(prev => [...prev, updatedOrder]);
+        setProcessingOrders((prev) => [...prev, updatedOrder]);
       }
 
       // Remove processed orders from cart
-      setCartItems(prev => 
-        prev.filter(order => 
-          !selectedOrders.some(processed => processed.id === order.id)
+      setCartItems((prev) =>
+        prev.filter(
+          (order) =>
+            !selectedOrders.some((processed) => processed.id === order.id)
         )
       );
 
@@ -217,11 +222,12 @@ const Cart = () => {
       setCheckOutConfirm(false);
 
       // Show success message and navigate
-      toast.success("Down payment received! Order has been placed successfully!");
+      toast.success(
+        "Down payment received! Order has been placed successfully!"
+      );
       navigate("/cart/in-process");
-
     } catch (error) {
-      console.error('Error processing checkout:', error);
+      console.error("Error processing checkout:", error);
       toast.error("Failed to process payment. Please try again.");
     }
   };
