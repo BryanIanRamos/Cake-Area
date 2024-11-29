@@ -539,13 +539,13 @@
         }
       ],
       "total_amount": 569.95,
-      "status": "Pending",
+      "status": "Processing",
       "created_at": "2024-03-18T15:30:00Z",
-      "checkoutDate": "null",
+      "checkoutDate": "2024-11-29T03:32:56.128Z",
       "receiveDate": "null",
-      "downPayment": 285,
-      "remainingPayment": 284.95,
-      "paymentStatus": "Partial - Down Payment Received"
+      "downPayment": 284.975,
+      "remainingPayment": 284.975,
+      "paymentStatus": "paid"
     },
     {
       "id": "2",
@@ -691,37 +691,115 @@
       "total_amount": 89.99,
       "status": "Processing",
       "created_at": "2024-11-29T01:41:10.056Z",
-      "checkoutDate": "2024-11-29T01:41:10.056Z",
+      "checkoutDate": "2024-11-29T03:35:44.514Z",
       "receiveDate": "null",
-      "downPayment": 0,
-      "remainingPayment": 0,
+      "downPayment": 44.995,
+      "remainingPayment": 44.995,
       "paymentStatus": "paid"
     },
     {
       "id": "7",
       "order_id": "ORD007",
       "customer_id": 2,
-      "business_id": 1,
+      "business_id": 2,
       "products": [
         {
-          "prod_id": "8",
+          "prod_id": "19",
           "cat_id": 2,
-          "prod_name": "Chocolate Chip Muffins",
-          "description": "Fresh-baked muffins loaded with premium chocolate chips",
-          "price": 89.99,
-          "rate": 4.7,
+          "prod_name": "Classic Mille-feuille",
+          "description": "Layered puff pastry with vanilla cream and fondant",
+          "price": 399.99,
+          "rate": 4.9,
           "qty": 1,
-          "images": "../assets/ChocolateChipMuffinsv2.jpg"
+          "images": "../assets/ClassicMille-feuillev2.jpg"
         }
       ],
-      "total_amount": 89.99,
-      "status": "Pending",
-      "created_at": "2024-11-29T01:41:36.535Z",
-      "checkoutDate": "null",
+      "total_amount": 399.99,
+      "status": "Processing",
+      "created_at": "2024-11-29T03:36:11.728Z",
+      "checkoutDate": "2024-11-29T03:36:34.283Z",
       "receiveDate": "null",
-      "downPayment": 0,
-      "remainingPayment": 89.99,
-      "paymentStatus": "null"
+      "downPayment": 199.995,
+      "remainingPayment": 199.995,
+      "paymentStatus": "paid"
+    },
+    {
+      "id": "8",
+      "order_id": "ORD008",
+      "customer_id": 2,
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "13",
+          "cat_id": 2,
+          "prod_name": "Classic Apple Pie",
+          "description": "Traditional apple pie with buttery crust and spiced filling",
+          "price": 399.99,
+          "rate": 4.8,
+          "qty": 1,
+          "images": "../assets/ClassicApplePiev2.jpg"
+        }
+      ],
+      "total_amount": 399.99,
+      "status": "Processing",
+      "created_at": "2024-11-29T03:38:47.946Z",
+      "checkoutDate": "2024-11-29T03:38:54.207Z",
+      "receiveDate": "null",
+      "downPayment": 199.995,
+      "remainingPayment": 199.995,
+      "paymentStatus": "paid"
+    },
+    {
+      "id": "9",
+      "order_id": "ORD009",
+      "customer_id": 2,
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "13",
+          "cat_id": 2,
+          "prod_name": "Classic Apple Pie",
+          "description": "Traditional apple pie with buttery crust and spiced filling",
+          "price": 399.99,
+          "rate": 4.8,
+          "qty": 1,
+          "images": "../assets/ClassicApplePiev3.jpg"
+        }
+      ],
+      "total_amount": 399.99,
+      "status": "Processing",
+      "created_at": "2024-11-29T03:39:22.153Z",
+      "checkoutDate": "2024-11-29T03:54:45.911Z",
+      "receiveDate": "null",
+      "downPayment": 199.995,
+      "remainingPayment": 199.995,
+      "paymentStatus": "paid"
+    },
+    {
+      "id": "10",
+      "order_id": "ORD010",
+      "customer_id": 2,
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "18",
+          "cat_id": 3,
+          "prod_name": "Classic French Croissant",
+          "description": "Traditional French croissant with perfect layers",
+          "price": 99.99,
+          "rate": 4.8,
+          "qty": 1,
+          "images": "../assets/ClassicFrenchCroissantv2.jpg"
+        }
+      ],
+      "total_amount": 99.99,
+      "status": "Processing",
+      "created_at": "2024-11-29T03:56:51.699Z",
+      "checkoutDate": "2024-11-29T04:01:12.014Z",
+      "receiveDate": "2024-12-13T04:01:08.000Z",
+      "downPayment": 49.995,
+      "remainingPayment": 49.995,
+      "paymentStatus": "paid"
     }
   ],
   "tags": [

@@ -160,105 +160,98 @@ const Cart = () => {
   };
 
   // Update handleConfirmCheckout
-  const handleConfirmCheckout = (receiveDate) => {
-    // Create new orders in "Processing" status
-    const newOrders = cartItems.reduce((acc, order) => {
-      // Filter products that were selected for this order
-      const selectedProducts = order.products.filter(product => 
-        selectedItems.includes(`${order.order_id}_${product.prod_id}`)
+  const handleConfirmCheckout = async (receiveDate) => {
+    try {
+      const selectedOrders = cartItems.filter(order =>
+        order.products.some(product => 
+          selectedItems.includes(`${order.order_id}_${product.prod_id}`)
+        )
       );
 
-      if (selectedProducts.length > 0) {
-        acc.push({
-          order_id: `ORD${Date.now()}-${order.business.bus_id}`,
-          business_id: order.business.bus_id,
-          business: order.business,
-          products: selectedProducts,
-          images: order.images,
-          total_amount: selectedProducts.reduce(
-            (sum, p) => sum + p.price * p.quantity,
-            0
-          ),
+      for (const order of selectedOrders) {
+        // Create clean order object with receiveDate
+        const updatedOrder = {
+          id: order.id,
+          order_id: order.order_id,
+          customer_id: order.customer_id,
+          business_id: order.business_id,
+          products: order.products,
+          total_amount: order.total_amount,
           status: "Processing",
-          created_at: new Date().toISOString(),
+          created_at: order.created_at,
           checkoutDate: new Date().toISOString(),
-          receiveDate: receiveDate.toISOString(),
-          downPayment: selectedProducts.reduce(
-            (sum, p) => sum + p.price * p.quantity,
-            0
-          ) * 0.5,
-          remainingPayment: selectedProducts.reduce(
-            (sum, p) => sum + p.price * p.quantity,
-            0
-          ) * 0.5,
-          paymentStatus: "Partial - Down Payment Received",
+          receiveDate: receiveDate.toISOString(), // Use the selected receive date
+          downPayment: order.total_amount * 0.5,
+          remainingPayment: order.total_amount * 0.5,
+          paymentStatus: "paid"
+        };
+
+        console.log('Updating order with data:', updatedOrder);
+
+        // Update order in the database
+        const response = await fetch(`http://localhost:3000/orders/${order.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedOrder)
         });
-      }
-      return acc;
-    }, []);
 
-    // Add to processing orders
-    setProcessingOrders(prev => [...prev, ...newOrders]);
-
-    // Remove selected items from cart
-    setCartItems(prev => {
-      const updatedCart = prev.map(order => {
-        // Filter out products that were selected for checkout
-        const remainingProducts = order.products.filter(
-          product => !selectedItems.includes(`${order.order_id}_${product.prod_id}`)
-        );
-        
-        // If order still has products, return updated order
-        if (remainingProducts.length > 0) {
-          return {
-            ...order,
-            products: remainingProducts,
-            total_amount: remainingProducts.reduce(
-              (sum, p) => sum + p.price * p.quantity,
-              0
-            )
-          };
+        if (!response.ok) {
+          throw new Error(`Failed to update order ${order.id}`);
         }
-        // If no products remain, filter out this order entirely
-        return null;
-      }).filter(Boolean); // Remove null entries (orders with no remaining products)
 
-      return updatedCart;
-    });
+        // Update local state with clean order object
+        setProcessingOrders(prev => [...prev, updatedOrder]);
+      }
 
-    // Reset selections and close modal
-    setSelectedItems([]);
-    setCheckOutConfirm(false);
+      // Remove processed orders from cart
+      setCartItems(prev => 
+        prev.filter(order => 
+          !selectedOrders.some(processed => processed.id === order.id)
+        )
+      );
 
-    // Show success message and navigate
-    toast.success("Down payment received! Order has been placed successfully!");
-    navigate("/cart/in-process");
+      // Reset selections and close modal
+      setSelectedItems([]);
+      setCheckOutConfirm(false);
+
+      // Show success message and navigate
+      toast.success("Down payment received! Order has been placed successfully!");
+      navigate("/cart/in-process");
+
+    } catch (error) {
+      console.error('Error processing checkout:', error);
+      toast.error("Failed to process payment. Please try again.");
+    }
   };
 
   // Update handleSelectAll for business groups
   const handleSelectAll = (businessId, orderId) => {
-    console.log('Select all for business:', businessId, 'order:', orderId); // Debug log
-    
+    console.log("Select all for business:", businessId, "order:", orderId); // Debug log
+
     const businessOrders = cartItems.filter(
-      order => order.business_id === businessId && order.order_id === orderId
+      (order) => order.business_id === businessId && order.order_id === orderId
     );
-    
-    const allOrderProductIds = businessOrders.flatMap(order => 
-      order.products.map(product => `${order.order_id}_${product.prod_id}`)
+
+    const allOrderProductIds = businessOrders.flatMap((order) =>
+      order.products.map((product) => `${order.order_id}_${product.prod_id}`)
     );
-    
-    console.log('All product IDs for business:', allOrderProductIds); // Debug log
-    
-    const allSelected = allOrderProductIds.every(id => selectedItems.includes(id));
-    
-    setSelectedItems(prev => {
+
+    console.log("All product IDs for business:", allOrderProductIds); // Debug log
+
+    const allSelected = allOrderProductIds.every((id) =>
+      selectedItems.includes(id)
+    );
+
+    setSelectedItems((prev) => {
       if (allSelected) {
         // Unselect all items from this order
-        return prev.filter(id => !allOrderProductIds.includes(id));
+        return prev.filter((id) => !allOrderProductIds.includes(id));
       } else {
         // Select all items from this order
         const newSelections = [...new Set([...prev, ...allOrderProductIds])];
-        console.log('New selections:', newSelections); // Debug log
+        console.log("New selections:", newSelections); // Debug log
         return newSelections;
       }
     });
@@ -266,15 +259,15 @@ const Cart = () => {
 
   // Update handleSelectItem
   const handleSelectItem = (orderId, prodId) => {
-    console.log('Selecting item:', orderId, prodId); // Debug log
+    console.log("Selecting item:", orderId, prodId); // Debug log
     const selectionId = `${orderId}_${prodId}`;
-    
-    setSelectedItems(prev => {
+
+    setSelectedItems((prev) => {
       if (prev.includes(selectionId)) {
-        console.log('Removing item:', selectionId); // Debug log
-        return prev.filter(id => id !== selectionId);
+        console.log("Removing item:", selectionId); // Debug log
+        return prev.filter((id) => id !== selectionId);
       } else {
-        console.log('Adding item:', selectionId); // Debug log
+        console.log("Adding item:", selectionId); // Debug log
         return [...prev, selectionId];
       }
     });
@@ -297,9 +290,12 @@ const Cart = () => {
   useEffect(() => {
     const newTotal = cartItems.reduce((sum, order) => {
       const orderTotal = order.products
-        .filter(product => selectedItems.includes(`${order.order_id}_${product.prod_id}`))
+        .filter((product) =>
+          selectedItems.includes(`${order.order_id}_${product.prod_id}`)
+        )
         .reduce(
-          (orderSum, product) => orderSum + (product.price || 0) * (product.quantity || 1),
+          (orderSum, product) =>
+            orderSum + (product.price || 0) * (product.quantity || 1),
           0
         );
       return sum + orderTotal;
