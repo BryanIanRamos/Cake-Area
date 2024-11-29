@@ -22,6 +22,12 @@ const CreateAccount = ({ goBackToSelect }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // Add focus states for validation feedback
+  const [isFirstNameFocused, setIsFirstNameFocused] = useState(false);
+  const [isLastNameFocused, setIsLastNameFocused] = useState(false);
+  const [isEmailFocused, setIsEmailFocused] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+
   // Handle input changes
   const handleInputChange = (field) => (event) => {
     setFormData({ ...formData, [field]: event.target.value });
@@ -90,88 +96,164 @@ const CreateAccount = ({ goBackToSelect }) => {
         <div className="space-y-4">
           {/* Name Fields */}
           <div className="grid grid-cols-2 gap-3">
-            <TextInput
-              label="First Name"
-              value={formData.firstName}
-              onChange={handleInputChange("firstName")}
-              placeholder="Enter your first name"
-              error={errors.firstName}
-            />
-            <TextInput
-              label="Last Name"
-              value={formData.lastName}
-              onChange={handleInputChange("lastName")}
-              placeholder="Enter your last name"
-              error={errors.lastName}
-            />
+            <div className="relative">
+              <TextInput
+                label="First Name"
+                value={formData.firstName}
+                onChange={handleInputChange("firstName")}
+                placeholder="Enter your first name"
+                error={errors.firstName}
+                required={true}
+              />
+            </div>
+
+            <div className="relative">
+              <TextInput
+                label="Last Name"
+                value={formData.lastName}
+                onChange={handleInputChange("lastName")}
+                placeholder="Enter your last name"
+                error={errors.lastName}
+                required={true}
+              />
+            </div>
           </div>
 
           {/* Email Field */}
-          <TextInput
-            label="Email Address"
-            value={formData.email}
-            onChange={handleInputChange("email")}
-            placeholder="Enter your email"
-            error={errors.email}
-          />
+          <div className="relative">
+            <TextInput
+              label="Email"
+              value={formData.email}
+              onChange={handleInputChange("email")}
+              placeholder="Enter your email"
+              error={errors.email}
+              required={true}
+              onFocus={() => setIsEmailFocused(true)}
+              onBlur={() => setIsEmailFocused(false)}
+            />
+            {isEmailFocused && (
+              <div className="absolute left-full ml-4 top-0 w-48 bg-white p-3 rounded-md shadow-lg border text-sm">
+                <h4 className="font-semibold mb-2">Email requirements:</h4>
+                <ul className="space-y-1">
+                  <li
+                    className={`flex items-center gap-2 ${
+                      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+                      ? "✓"
+                      : "×"}
+                    Valid email format
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
 
           {/* Password Fields */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <label className="block text-xs font-medium text-gray-700">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={formData.password}
-                  onChange={handleInputChange("password")}
-                  className={`w-full px-3 pr-10 py-1.5 text-sm border rounded-lg
-                  focus:ring-2 focus:ring-primary/50 focus:border-primary
-                  ${errors.password ? 'border-red-500' : 'border-gray-300'}`}
+          <div className="space-y-3">
+            <div className="relative">
+              <TextInput
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={handleInputChange("password")}
+                error={errors.password}
+                required={true}
+                onFocus={() => setIsPasswordFocused(true)}
+                onBlur={() => setIsPasswordFocused(false)}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-[30px] text-gray-500 hover:text-gray-700"
+              >
+                <Icon
+                  icon={showPassword ? "ph:eye-slash" : "ph:eye"}
+                  className="w-4 h-4"
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                >
-                  <Icon 
-                    icon={showPassword ? "ph:eye-slash" : "ph:eye"} 
-                    className="w-4 h-4"
-                  />
-                </button>
-              </div>
-              {errors.password && (
-                <p className="text-xs text-red-600">{errors.password}</p>
+              </button>
+              {isPasswordFocused && (
+                <div className="absolute left-full ml-4 top-0 w-48 bg-white p-3 rounded-md shadow-lg border text-sm">
+                  <h4 className="font-semibold mb-2">Password requirements:</h4>
+                  <ul className="space-y-1">
+                    <li
+                      className={`flex items-center gap-2 ${
+                        formData.password.length >= 8
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {formData.password.length >= 8 ? "✓" : "×"} At least 8
+                      characters
+                    </li>
+                    <li
+                      className={`flex items-center gap-2 ${
+                        /[A-Z]/.test(formData.password)
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {/[A-Z]/.test(formData.password) ? "✓" : "×"} One
+                      uppercase letter
+                    </li>
+                    <li
+                      className={`flex items-center gap-2 ${
+                        /[a-z]/.test(formData.password)
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {/[a-z]/.test(formData.password) ? "✓" : "×"} One
+                      lowercase letter
+                    </li>
+                    <li
+                      className={`flex items-center gap-2 ${
+                        /\d/.test(formData.password)
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {/\d/.test(formData.password) ? "✓" : "×"} One number
+                    </li>
+                  </ul>
+                </div>
               )}
             </div>
 
-            <div className="space-y-1">
-              <label className="block text-xs font-medium text-gray-700">
-                Confirm Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange("confirmPassword")}
-                  className={`w-full px-3 pr-10 py-1.5 text-sm border rounded-lg
-                  focus:ring-2 focus:ring-primary/50 focus:border-primary
-                  ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'}`}
+            <div className="relative">
+              <TextInput
+                label="Confirm Password"
+                type={showConfirmPassword ? "text" : "password"}
+                value={formData.confirmPassword}
+                onChange={handleInputChange("confirmPassword")}
+                error={errors.confirmPassword}
+                required={true}
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-[30px] text-gray-500 hover:text-gray-700"
+              >
+                <Icon
+                  icon={showConfirmPassword ? "ph:eye-slash" : "ph:eye"}
+                  className="w-4 h-4"
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              </button>
+              {formData.confirmPassword && (
+                <p
+                  className={`text-xs mt-1 ${
+                    formData.password === formData.confirmPassword
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
                 >
-                  <Icon 
-                    icon={showConfirmPassword ? "ph:eye-slash" : "ph:eye"} 
-                    className="w-4 h-4"
-                  />
-                </button>
-              </div>
-              {errors.confirmPassword && (
-                <p className="text-xs text-red-600">{errors.confirmPassword}</p>
+                  {formData.password === formData.confirmPassword
+                    ? "✓ Passwords match"
+                    : "× Passwords do not match"}
+                </p>
               )}
             </div>
           </div>
