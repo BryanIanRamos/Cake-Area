@@ -43,38 +43,40 @@ const Settings = () => {
         className={`transition-all duration-300 flex-1 overflow-y-auto p-6
           ${isSidebarExpanded ? "ml-64" : "ml-20"}`}
       >
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto bg-[#f0eeee] rounded-xl shadow-md">
           <ProfileHeader
             profileImage={profileImage}
             storeName={formData.storeName}
             verified={formData.verified}
           />
-          
-          <form onSubmit={handleSubmit}>
-            <SettingsTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-            
-            {activeTab === "profile" && (
-              <PersonalInfoForm
-                formData={formData}
-                handleInputChange={handleInputChange}
-              />
-            )}
 
-            {/* Add BusinessInfoForm and SecurityForm components later */}
-            
-            <div className="mt-6 flex justify-end">
-              <button
-                type="submit"
-                className="bg-[#E88F2A] text-white px-6 py-2 rounded-lg hover:bg-[#E88F2A]/90"
-              >
-                Update
-              </button>
-            </div>
-          </form>
+          <div className="mt-6 bg-[#f0eeee] rounded-xl p-8 shadow-md">
+            <form onSubmit={handleSubmit}>
+              <SettingsTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+
+              {activeTab === "profile" && (
+                <PersonalInfoForm
+                  formData={formData}
+                  handleInputChange={handleInputChange}
+                />
+              )}
+
+              {/* Add BusinessInfoForm and SecurityForm components later */}
+
+              <div className="mt-6 flex justify-end">
+                <button
+                  type="submit"
+                  className="bg-[#E88F2A] text-white px-6 py-2 rounded-lg hover:bg-[#E88F2A]/90"
+                >
+                  Update
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </main>
     </div>
   );
 };
 
-export default Settings; 
+export default Settings;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { Icon } from "@iconify/react";
 
 const ProfileHeader = ({ profileImage, storeName, verified }) => {
@@ -6,14 +6,14 @@ const ProfileHeader = ({ profileImage, storeName, verified }) => {
     <div className="relative mb-20 bg-white rounded-lg shadow-sm">
       <div className="h-48 bg-gray-200 rounded-t-lg overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1607478900766-efe13248b125"
+          src="../../../../public/assets/bg/Cake_BG.png"
           alt="Cover"
           className="w-full h-full object-cover"
         />
-        <button className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-white/90 transition-colors">
+        {/* <button className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-white/90 transition-colors">
           <Icon icon="material-symbols:edit" />
           Edit cover photo
-        </button>
+        </button> */}
       </div>
       <div className="absolute -bottom-16 left-8">
         <div className="relative">
@@ -39,4 +39,4 @@ const ProfileHeader = ({ profileImage, storeName, verified }) => {
   );
 };
 
-export default ProfileHeader; 
+export default ProfileHeader;
