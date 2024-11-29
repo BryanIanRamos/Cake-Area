@@ -337,56 +337,70 @@ const Orders = () => {
           isSidebarExpanded ? "ml-64" : "ml-20"
         } transition-all duration-300`}
       >
-        <div className="p-4">
-          {/* Tabs */}
-          <div className="mb-4 border-b border-gray-200">
-            <nav className="flex space-x-4">
-              {[
-                "pending",
-                "processing",
-                "to receive",
-                "completed",
-                "cancelled",
-              ].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => handleTabClick(tab)}
-                  className={`px-3 py-2 text-sm font-medium capitalize ${
-                    activeTab === tab
-                      ? "border-b-2 border-[#E88F2A] text-[#E88F2A]"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </nav>
+        <div className="p-8">
+          {/* Welcome Section */}
+          <div className="mb-8">
+            <h1 className="text-2xl font-bold text-gray-800 mb-2">
+              Manage Your Orders
+            </h1>
+            <p className="text-gray-600">
+              Keep track of all your bakery orders and their status in one
+              place.
+            </p>
           </div>
 
-          {/* Search */}
-          <div className="mb-4">
-            <input
-              type="text"
-              placeholder="Search orders..."
-              className="w-full px-4 py-2 border rounded"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+          {/* Rest of the content */}
+          <div className="bg-white rounded-lg shadow p-6">
+            {/* Tabs */}
+            <div className="mb-4 border-b border-gray-200">
+              <nav className="flex space-x-4">
+                {[
+                  "pending",
+                  "processing",
+                  "to receive",
+                  "completed",
+                  "cancelled",
+                ].map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => handleTabClick(tab)}
+                    className={`px-3 py-2 text-sm font-medium capitalize ${
+                      activeTab === tab
+                        ? "border-b-2 border-[#E88F2A] text-[#E88F2A]"
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </nav>
+            </div>
 
-          {/* Orders List */}
-          <div className="space-y-2">
-            {loading ? (
-              <p>Loading...</p>
-            ) : error ? (
-              <p>Error: {error.message}</p>
-            ) : filteredOrders.length === 0 ? (
-              <p>No orders found.</p>
-            ) : (
-              filteredOrders.map((order) => (
-                <OrderCard key={order.id} order={order} />
-              ))
-            )}
+            {/* Search */}
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Search orders..."
+                className="w-full px-4 py-2 border rounded"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+
+            {/* Orders List */}
+            <div className="space-y-2">
+              {loading ? (
+                <p>Loading...</p>
+              ) : error ? (
+                <p>Error: {error.message}</p>
+              ) : filteredOrders.length === 0 ? (
+                <p>No orders found.</p>
+              ) : (
+                filteredOrders.map((order) => (
+                  <OrderCard key={order.id} order={order} />
+                ))
+              )}
+            </div>
           </div>
         </div>
 
