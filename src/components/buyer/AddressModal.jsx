@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import TextInput from "./TextInput";
+import { Icon } from "@iconify/react";
 
 const AddressModal = ({ isOpen, onClose, onSubmit }) => {
   const [addressData, setAddressData] = useState({
@@ -11,6 +12,7 @@ const AddressModal = ({ isOpen, onClose, onSubmit }) => {
     streetAddress: "",
   });
   const [errors, setErrors] = useState({});
+  const [isPhoneFocused, setIsPhoneFocused] = useState(false);
 
   const handleInputChange = (field) => (event) => {
     setAddressData({ ...addressData, [field]: event.target.value });
@@ -56,6 +58,12 @@ const AddressModal = ({ isOpen, onClose, onSubmit }) => {
     }
   };
 
+  // Validate Philippine phone number
+  const validatePhoneNumber = (phone) => {
+    const cleanPhone = phone.replace(/\D/g, "");
+    return /^09\d{9}$/.test(cleanPhone);
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -83,17 +91,54 @@ const AddressModal = ({ isOpen, onClose, onSubmit }) => {
                 error={errors.fullName}
                 required={true}
               />
-              <TextInput
-                label="Phone Number"
-                value={addressData.phoneNumber}
-                onChange={handleNumberInput("phoneNumber", 11)}
-                placeholder="Enter 11-digit phone number"
-                error={errors.phoneNumber}
-                required={true}
-                type="number"
-                pattern="\d*"
-                maxLength="11"
-              />
+              <div className="relative">
+                <TextInput
+                  label="Phone Number"
+                  value={addressData.phoneNumber}
+                  onChange={handleNumberInput("phoneNumber", 11)}
+                  placeholder="Enter 11-digit phone number"
+                  error={errors.phoneNumber}
+                  required={true}
+                  type="number"
+                  pattern="\d*"
+                  maxLength="11"
+                  onFocus={() => setIsPhoneFocused(true)}
+                  onBlur={() => setIsPhoneFocused(false)}
+                />
+                
+                {/* Phone Number Requirements Popup */}
+                {isPhoneFocused && (
+                  <div className="absolute left-full ml-4 top-0 w-48 bg-white p-3 rounded-md shadow-lg border text-sm">
+                    <h4 className="font-semibold mb-2">Phone number format:</h4>
+                    <ul className="space-y-1">
+                      <li className={`flex items-center gap-2 ${
+                        validatePhoneNumber(addressData.phoneNumber) 
+                          ? "text-green-600" 
+                          : "text-red-600"
+                      }`}>
+                        {validatePhoneNumber(addressData.phoneNumber) ? "✓" : "×"} 
+                        Must start with 09
+                      </li>
+                      <li className={`flex items-center gap-2 ${
+                        addressData.phoneNumber.length === 11 
+                          ? "text-green-600" 
+                          : "text-red-600"
+                      }`}>
+                        {addressData.phoneNumber.length === 11 ? "✓" : "×"} 
+                        Must be 11 digits
+                      </li>
+                      <li className={`flex items-center gap-2 ${
+                        /^\d+$/.test(addressData.phoneNumber) 
+                          ? "text-green-600" 
+                          : "text-red-600"
+                      }`}>
+                        {/^\d+$/.test(addressData.phoneNumber) ? "✓" : "×"} 
+                        Numbers only
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* City, Barangay, and Postal Code */}

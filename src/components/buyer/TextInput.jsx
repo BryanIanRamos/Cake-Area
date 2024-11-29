@@ -12,7 +12,9 @@ const TextInput = ({
   icon,
   required = false,
   pattern,
-  maxLength
+  maxLength,
+  onFocus,
+  onBlur,
 }) => {
   return (
     <div className="space-y-1">
@@ -36,9 +38,13 @@ const TextInput = ({
           placeholder={placeholder}
           pattern={pattern}
           maxLength={maxLength}
-          className={`w-full px-3 ${icon ? 'pl-10' : 'pl-4'} py-1.5 text-sm border rounded-lg
+          onFocus={onFocus}
+          onBlur={onBlur}
+          className={`w-full px-3 ${
+            icon ? "pl-10" : "pl-4"
+          } py-1.5 text-sm border rounded-lg
           focus:ring-2 focus:ring-primary/50 focus:border-primary
-          ${error ? 'border-red-500' : 'border-gray-300'}
+          ${error ? "border-red-500" : "border-gray-300"}
           [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
         />
       </div>
