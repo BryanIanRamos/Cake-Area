@@ -19,6 +19,8 @@ const CreateAccount = ({ goBackToSelect }) => {
   const [isChecked, setIsChecked] = useState(false);
   const [errors, setErrors] = useState({});
   const [showAddressModal, setShowAddressModal] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Handle input changes
   const handleInputChange = (field) => (event) => {
@@ -72,22 +74,22 @@ const CreateAccount = ({ goBackToSelect }) => {
   };
 
   return (
-    <div className="bg-white p-6 w-[90vw] max-w-2xl mx-auto">
-      <div className="border-2 border-primary p-8">
+    <div className="bg-white p-4 w-[90vw] max-w-xl mx-auto">
+      <div className="border-2 border-primary p-6">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h2 className="text-primary font-bold text-2xl mb-2">
+        <div className="text-center mb-6">
+          <h2 className="text-primary font-bold text-xl mb-1">
             Create Account
           </h2>
-          <p className="text-gray-600 text-sm">
+          <p className="text-gray-600 text-xs">
             Please fill in your information to get started
           </p>
         </div>
 
         {/* Form Content */}
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Name Fields */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <TextInput
               label="First Name"
               value={formData.firstName}
@@ -114,26 +116,69 @@ const CreateAccount = ({ goBackToSelect }) => {
           />
 
           {/* Password Fields */}
-          <div className="grid grid-cols-2 gap-4">
-            <TextInput
-              label="Password"
-              type="password"
-              value={formData.password}
-              onChange={handleInputChange("password")}
-              error={errors.password}
-            />
-            <TextInput
-              label="Confirm Password"
-              type="password"
-              value={formData.confirmPassword}
-              onChange={handleInputChange("confirmPassword")}
-              error={errors.confirmPassword}
-            />
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-gray-700">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={formData.password}
+                  onChange={handleInputChange("password")}
+                  className={`w-full px-3 pr-10 py-1.5 text-sm border rounded-lg
+                  focus:ring-2 focus:ring-primary/50 focus:border-primary
+                  ${errors.password ? 'border-red-500' : 'border-gray-300'}`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                  <Icon 
+                    icon={showPassword ? "ph:eye-slash" : "ph:eye"} 
+                    className="w-4 h-4"
+                  />
+                </button>
+              </div>
+              {errors.password && (
+                <p className="text-xs text-red-600">{errors.password}</p>
+              )}
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-gray-700">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange("confirmPassword")}
+                  className={`w-full px-3 pr-10 py-1.5 text-sm border rounded-lg
+                  focus:ring-2 focus:ring-primary/50 focus:border-primary
+                  ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'}`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                  <Icon 
+                    icon={showConfirmPassword ? "ph:eye-slash" : "ph:eye"} 
+                    className="w-4 h-4"
+                  />
+                </button>
+              </div>
+              {errors.confirmPassword && (
+                <p className="text-xs text-red-600">{errors.confirmPassword}</p>
+              )}
+            </div>
           </div>
 
           {/* Birth Date */}
           <div className="space-y-1">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-xs font-medium text-gray-700">
               Birth Date
             </label>
             <DatePicker
@@ -141,50 +186,58 @@ const CreateAccount = ({ goBackToSelect }) => {
               onChange={(date) => setFormData({ ...formData, birthDate: date })}
               dateFormat="MM/dd/yyyy"
               placeholderText="Select your birth date"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary"
+              className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary"
               showYearDropdown
               yearDropdownItemNumber={100}
               scrollableYearDropdown
             />
             {errors.birthDate && (
-              <p className="text-sm text-red-600">{errors.birthDate}</p>
+              <p className="text-xs text-red-600">{errors.birthDate}</p>
             )}
           </div>
 
           {/* Terms and Conditions */}
-          <div className="flex items-start gap-2">
-            <div className="mt-1">
-              <OrangeCheckbox
-                isChecked={isChecked}
-                onChange={(e) => setIsChecked(e.target.checked)}
-              />
+          <div className="space-y-3">
+            {/* Terms Description with Checkbox */}
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <div className="flex items-start gap-2">
+                <div className="mt-0.5">
+                  <OrangeCheckbox
+                    isChecked={isChecked}
+                    onChange={(e) => setIsChecked(e.target.checked)}
+                  />
+                </div>
+                <p className="text-xs text-gray-600 leading-relaxed">
+                  By creating an account, you agree to our{" "}
+                  <a href="#" className="text-primary hover:underline">
+                    Terms of Service
+                  </a>{" "}
+                  and{" "}
+                  <a href="#" className="text-primary hover:underline">
+                    Privacy Policy
+                  </a>
+                  . You are responsible for your account and any activity under
+                  it. We may suspend or terminate accounts for violations of our
+                  terms.
+                </p>
+              </div>
+              {errors.terms && (
+                <p className="text-xs text-red-600 ml-7 mt-1">{errors.terms}</p>
+              )}
             </div>
-            <p className="text-sm text-gray-600">
-              I agree to the{" "}
-              <a href="#" className="text-primary hover:underline">
-                Terms of Service
-              </a>{" "}
-              and{" "}
-              <a href="#" className="text-primary hover:underline">
-                Privacy Policy
-              </a>
-            </p>
           </div>
-          {errors.terms && (
-            <p className="text-sm text-red-600 mt-1">{errors.terms}</p>
-          )}
 
           {/* Action Buttons */}
-          <div className="flex justify-center gap-4 mt-8">
+          <div className="flex justify-center gap-3 mt-6">
             <button
               onClick={handleSubmit}
-              className="px-8 py-2 bg-primary text-white rounded hover:bg-primary/90 transition-colors"
+              className="px-6 py-1.5 bg-primary text-white text-sm rounded hover:bg-primary/90 transition-colors"
             >
               Next
             </button>
             <button
               onClick={goBackToSelect}
-              className="px-8 py-2 border border-primary text-primary rounded hover:bg-primary hover:text-white transition-colors"
+              className="px-6 py-1.5 border border-primary text-primary text-sm rounded hover:bg-primary hover:text-white transition-colors"
             >
               Back
             </button>
