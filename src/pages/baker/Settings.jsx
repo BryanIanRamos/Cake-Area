@@ -4,6 +4,8 @@ import profileImage from "../../assets/Dummy_Profile.png";
 import ProfileHeader from "../../components/baker/settings/ProfileHeader";
 import SettingsTabs from "../../components/baker/settings/SettingsTabs";
 import PersonalInfoForm from "../../components/baker/settings/PersonalInfoForm";
+import BusinessInfoForm from "../../components/baker/settings/BusinessInfoForm";
+import SecurityForm from "../../components/baker/settings/SecurityForm";
 
 const Settings = () => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
@@ -18,6 +20,12 @@ const Settings = () => {
     newPassword: "",
     storeName: "Bryan's Bakeria",
     verified: true,
+    businessName: "Bryan's Bakeria",
+    businessEmail: "business@bryansbakeria.com",
+    businessDescription:
+      "A premium bakery offering delicious pastries and custom cakes for all occasions.",
+    currentPassword: "",
+    confirmPassword: "",
   });
 
   const handleInputChange = (e) => {
@@ -61,7 +69,19 @@ const Settings = () => {
                 />
               )}
 
-              {/* Add BusinessInfoForm and SecurityForm components later */}
+              {activeTab === "business" && (
+                <BusinessInfoForm
+                  formData={formData}
+                  handleInputChange={handleInputChange}
+                />
+              )}
+
+              {activeTab === "security" && (
+                <SecurityForm
+                  formData={formData}
+                  handleInputChange={handleInputChange}
+                />
+              )}
 
               <div className="mt-6 flex justify-end">
                 <button
