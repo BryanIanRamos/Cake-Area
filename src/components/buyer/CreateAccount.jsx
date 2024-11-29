@@ -72,46 +72,49 @@ const CreateAccount = ({ goBackToSelect }) => {
   };
 
   return (
-    <div className="border h-fit p-3 sm:p-6 lg:p-7 bg-white w-[85vw] sm:w-[88vw] md:w-[75vw] lg:w-[55vw] xl:w-[48vw] 2xl:w-[40vw]">
-      <div className="text-center w-full border-[3px] border-primary h-full p-5">
+    <div className="bg-white p-6 w-[90vw] max-w-2xl mx-auto">
+      <div className="border-2 border-primary p-8">
         {/* Header */}
-        <div className="mb-6">
-          <h2 className="text-primary font-bold text-[18px] sm:text-[1.6rem] 2xl:text-[2rem]">
+        <div className="text-center mb-8">
+          <h2 className="text-primary font-bold text-2xl mb-2">
             Create Account
           </h2>
-          <p className="text-gray-600 text-[12px] sm:text-[14px] lg:text-[16px]">
-            Let's set up your account! Please fill in your information to get
-            started.
+          <p className="text-gray-600 text-sm">
+            Please fill in your information to get started
           </p>
         </div>
 
-        {/* Form Grid */}
-        <div className="sm:grid grid-cols-2 gap-6">
-          {/* Left Column - Personal Info */}
-          <div className="space-y-4">
-            <div className="sm:flex gap-3">
-              <TextInput
-                label="First Name"
-                value={formData.firstName}
-                onChange={handleInputChange("firstName")}
-                placeholder="Ex. Bryan"
-                error={errors.firstName}
-              />
-              <TextInput
-                label="Last Name"
-                value={formData.lastName}
-                onChange={handleInputChange("lastName")}
-                placeholder="Ex. Ramos"
-                error={errors.lastName}
-              />
-            </div>
+        {/* Form Content */}
+        <div className="space-y-6">
+          {/* Name Fields */}
+          <div className="grid grid-cols-2 gap-4">
             <TextInput
-              label="Email"
-              value={formData.email}
-              onChange={handleInputChange("email")}
-              placeholder="Ex. Sample@gmail.com"
-              error={errors.email}
+              label="First Name"
+              value={formData.firstName}
+              onChange={handleInputChange("firstName")}
+              placeholder="Enter your first name"
+              error={errors.firstName}
             />
+            <TextInput
+              label="Last Name"
+              value={formData.lastName}
+              onChange={handleInputChange("lastName")}
+              placeholder="Enter your last name"
+              error={errors.lastName}
+            />
+          </div>
+
+          {/* Email Field */}
+          <TextInput
+            label="Email Address"
+            value={formData.email}
+            onChange={handleInputChange("email")}
+            placeholder="Enter your email"
+            error={errors.email}
+          />
+
+          {/* Password Fields */}
+          <div className="grid grid-cols-2 gap-4">
             <TextInput
               label="Password"
               type="password"
@@ -128,90 +131,68 @@ const CreateAccount = ({ goBackToSelect }) => {
             />
           </div>
 
-          {/* Right Column - Birth Date & Terms */}
-          <div className="flex flex-col items-start sm:items-center justify-center space-y-4 mt-4 sm:mt-0">
-            {/* Birth Date Section */}
-            <div className="w-full space-y-3 flex flex-col items-start p-4">
-              {/* DatePicker Container with Header */}
-              <div className="relative w-full space-y-3 flex flex-col items-start">
-                {/* Birthday Header */}
-                <div className="flex items-center gap-2 text-primary  self-start w-fit px-2">
-                  <Icon
-                    icon="ri:cake-3-line"
-                    className="text-[20px] sm:text-[24px] lg:text-[28px]"
-                  />
-                  <h3 className="font-semibold text-[14px] sm:text-[16px] lg:text-[18px]">
-                    Birth date
-                  </h3>
-                </div>
+          {/* Birth Date */}
+          <div className="space-y-1">
+            <label className="block text-sm font-medium text-gray-700">
+              Birth Date
+            </label>
+            <DatePicker
+              selected={formData.birthDate}
+              onChange={(date) => setFormData({ ...formData, birthDate: date })}
+              dateFormat="MM/dd/yyyy"
+              placeholderText="Select your birth date"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary"
+              showYearDropdown
+              yearDropdownItemNumber={100}
+              scrollableYearDropdown
+            />
+            {errors.birthDate && (
+              <p className="text-sm text-red-600">{errors.birthDate}</p>
+            )}
+          </div>
 
-                {/* DatePicker Input */}
-                <div className="w-full flex flex-col items-start">
-                  <DatePicker
-                    selected={formData.birthDate}
-                    onChange={(date) =>
-                      setFormData({ ...formData, birthDate: date })
-                    }
-                    dateFormat="MM/d/yyyy"
-                    placeholderText="Select your birth date"
-                    className="w-full border border-primary rounded py-1.5 px-3 text-[12px] sm:text-[14px] lg:text-[16px] text-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                    showYearDropdown
-                    yearDropdownItemNumber={100}
-                    scrollableYearDropdown
-                  />
-                  {errors.birthDate && (
-                    <p className="text-red-500 text-[10px] sm:text-[12px] mt-1 self-start">
-                      {errors.birthDate}
-                    </p>
-                  )}
-                </div>
-              </div>
+          {/* Terms and Conditions */}
+          <div className="flex items-start gap-2">
+            <div className="mt-1">
+              <OrangeCheckbox
+                isChecked={isChecked}
+                onChange={(e) => setIsChecked(e.target.checked)}
+              />
             </div>
+            <p className="text-sm text-gray-600">
+              I agree to the{" "}
+              <a href="#" className="text-primary hover:underline">
+                Terms of Service
+              </a>{" "}
+              and{" "}
+              <a href="#" className="text-primary hover:underline">
+                Privacy Policy
+              </a>
+            </p>
+          </div>
+          {errors.terms && (
+            <p className="text-sm text-red-600 mt-1">{errors.terms}</p>
+          )}
 
-            {/* Terms and Conditions */}
-            <div className="w-full px-4">
-              <div className="flex items-start gap-1">
-                <div className="mt-1">
-                  <OrangeCheckbox
-                    isChecked={isChecked}
-                    onChange={(e) => setIsChecked(e.target.checked)}
-                  />
-                </div>
-                <p className="text-gray-600 text-sm">
-                  By creating this account, you agree to our{" "}
-                  <a href="#" className="text-primary hover:underline">
-                    Terms of Service
-                  </a>{" "}
-                  and{" "}
-                  <a href="#" className="text-primary hover:underline">
-                    Privacy Policy
-                  </a>
-                  .
-                </p>
-              </div>
-              {errors.terms && (
-                <p className="text-red-500 text-xs mt-1">{errors.terms}</p>
-              )}
-            </div>
+          {/* Action Buttons */}
+          <div className="flex justify-center gap-4 mt-8">
+            <button
+              onClick={handleSubmit}
+              className="px-8 py-2 bg-primary text-white rounded hover:bg-primary/90 transition-colors"
+            >
+              Next
+            </button>
+            <button
+              onClick={goBackToSelect}
+              className="px-8 py-2 border border-primary text-primary rounded hover:bg-primary hover:text-white transition-colors"
+            >
+              Back
+            </button>
           </div>
         </div>
-
-        {/* Action Buttons */}
-        <div className="flex justify-center gap-4 mt-6">
-          <button
-            onClick={handleSubmit}
-            className="px-8 py-2 bg-primary text-white rounded hover:bg-primary/90 transition-colors"
-          >
-            Next
-          </button>
-          <button
-            onClick={goBackToSelect}
-            className="px-8 py-2 border border-primary text-primary rounded hover:bg-primary hover:text-white transition-colors"
-          >
-            Back
-          </button>
-        </div>
       </div>
+
+      {/* Address Modal */}
       <AddressModal
         isOpen={showAddressModal}
         onClose={() => setShowAddressModal(false)}
