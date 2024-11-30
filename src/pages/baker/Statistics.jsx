@@ -212,21 +212,61 @@ const Statistics = () => {
             <div className="bg-white p-4 rounded-lg shadow-md">
               <h3 className="text-lg font-semibold mb-4">Best Selling Products</h3>
               <div className="space-y-4">
-                {[1, 2, 3, 4, 5].map((item) => (
+                {[
+                  {
+                    id: "1",
+                    name: "Premium Almond Croissant",
+                    orders: 63,
+                    price: 119.99,
+                    image: "../assets/AlmondCroissantv2.jpg"
+                  },
+                  {
+                    id: "2",
+                    name: "Classic Brioche",
+                    orders: 45,
+                    price: 199.99,
+                    image: "../assets/ClassicBriochev3.jpg"
+                  },
+                  {
+                    id: "3",
+                    name: "Chocolate Dream Layer Cake",
+                    orders: 38,
+                    price: 299.99,
+                    image: "../assets/ChocolateDreamLayerCakev1.jpg"
+                  },
+                  {
+                    id: "4",
+                    name: "Classic Butter Croissant",
+                    orders: 35,
+                    price: 89.99,
+                    image: "../assets/ButterCroissantv1.jpg"
+                  },
+                  {
+                    id: "5",
+                    name: "Carrot Spice Cake",
+                    orders: 28,
+                    price: 249.99,
+                    image: "../assets/CarrotSpiceCakev1.jpg"
+                  }
+                ].map((product) => (
                   <div
-                    key={item}
+                    key={product.id}
                     className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gray-200 rounded-lg"></div>
+                      <img 
+                        src={product.image} 
+                        alt={product.name}
+                        className="w-10 h-10 object-cover rounded-lg"
+                      />
                       <div>
-                        <p className="font-medium">Product {item}</p>
+                        <p className="font-medium">{product.name}</p>
                         <p className="text-sm text-gray-500">
-                          {Math.floor(Math.random() * 100)} orders
+                          {product.orders} orders
                         </p>
                       </div>
                     </div>
-                    <p className="font-medium">₱{(Math.random() * 1000).toFixed(2)}</p>
+                    <p className="font-medium">₱{product.price.toFixed(2)}</p>
                   </div>
                 ))}
               </div>
