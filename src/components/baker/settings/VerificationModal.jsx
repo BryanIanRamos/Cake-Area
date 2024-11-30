@@ -86,6 +86,10 @@ const VerificationModal = ({ isOpen, onClose }) => {
                 accept="image/*"
                 required
               />
+              <p className="mt-4 text-sm text-gray-600 italic">
+                Once verified, your business will be visible to customers in the
+                public Bakers' Area
+              </p>
             </div>
 
             <div className="flex gap-4 justify-center mt-8">

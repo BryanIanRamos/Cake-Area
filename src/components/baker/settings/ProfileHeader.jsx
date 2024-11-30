@@ -27,20 +27,37 @@ const ProfileHeader = ({ profileImage, storeName, verified }) => {
             </button>
           </div>
         </div>
-        <div className="absolute -bottom-16 left-44 flex items-center gap-5">
+        <div className="flex justify-between items-center absolute -bottom-16 left-44 right-8">
           <div className="flex flex-col pt-2">
-            <h2 className="text-xl font-bold">Bryan Ian C. Ramos</h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl font-bold">Bryan Ian C. Ramos</h2>
+              <div className="relative group">
+                <Icon
+                  icon="codicon:verified-filled"
+                  className="text-gray-400 text-xl cursor-help"
+                />
+                <div className="absolute left-0 w-64 p-2 mt-2 text-sm text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+                  Your business won't be visible in the public Bakers' Area
+                  until verified
+                </div>
+              </div>
+            </div>
             <div className="flex items-center gap-2">
               <Icon icon="uil:store-alt" />
-              <p className="text-md ">{storeName}</p>
+              <p className="text-md">{storeName}</p>
             </div>
           </div>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-[#E88F2A] text-white text-sm px-3 py-1 rounded hover:bg-[#da852b]"
-          >
-            Get Verified
-          </button>
+          <div className="relative group">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-[#E88F2A] text-white text-sm px-3 py-1 rounded hover:bg-[#da852b]"
+            >
+              Get Verified
+            </button>
+            <div className="absolute right-0 w-40 p-2 mt-2 text-sm text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+              Verify your business now
+            </div>
+          </div>
         </div>
       </div>
 
