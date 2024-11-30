@@ -12,6 +12,7 @@ import Test from "./pages/buyer/test.jsx";
 import Register from "./pages/baker/Register.jsx";
 
 import Dashboard from "./pages/baker/Dashboard.jsx";
+
 import Settings from "./pages/baker/Settings.jsx";
 
 import "./App.css";

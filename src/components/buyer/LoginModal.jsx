@@ -9,6 +9,7 @@ const LoginModal = ({ isOpen, closeModal, onLogin }) => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [loginMessage, setLoginMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,14 +18,14 @@ const LoginModal = ({ isOpen, closeModal, onLogin }) => {
 
     try {
       // Get all users and find matching email (case-insensitive)
-      const response = await fetch('http://localhost:3000/users');
+      const response = await fetch("http://localhost:3000/users");
       const users = await response.json();
-      const user = users.find(u => 
-        u.email.toLowerCase().trim() === email.toLowerCase().trim()
+      const user = users.find(
+        (u) => u.email.toLowerCase().trim() === email.toLowerCase().trim()
       );
 
       // Simulate network delay for smooth transition
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       if (!user) {
         setLoginMessage("Invalid email or password");
@@ -34,7 +35,8 @@ const LoginModal = ({ isOpen, closeModal, onLogin }) => {
       }
 
       // Check if the password matches
-      if (user.password !== password) {  // Direct comparison since we're using the full hashed password
+      if (user.password !== password) {
+        // Direct comparison since we're using the full hashed password
         setLoginMessage("Invalid email or password");
         setIsLoading(false);
         onLogin(email, password);
@@ -120,14 +122,26 @@ const LoginModal = ({ isOpen, closeModal, onLogin }) => {
                   className="border border-gray-300 p-2 rounded text-[2vw] sm:text-[1.5vw] lg:text-[1vw]"
                   required
                 />
-                <input
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="border border-gray-300 p-2 rounded text-[2vw] sm:text-[1.5vw] lg:text-[1vw]"
-                  required
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="border border-gray-300 p-2 rounded text-[2vw] sm:text-[1.5vw] lg:text-[1vw] w-full"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    <Icon
+                      icon={showPassword ? "mdi:eye-off" : "mdi:eye"}
+                      className="text-[2vw] sm:text-[1.5vw] lg:text-[1vw]"
+                    />
+                  </button>
+                </div>
               </div>
               <div className="flex justify-between text-[1.8vw] sm:text-[1.3vw] lg:text-[0.9vw] text-gray-600">
                 <label className="flex items-center gap-2">
