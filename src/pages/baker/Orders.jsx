@@ -233,7 +233,10 @@ const Orders = () => {
         {/* Header - Date and Status */}
         <div className="flex justify-between items-center mb-2">
           <p className="text-sm text-gray-600">
-            {new Date(order.receiveDate).toLocaleDateString()}
+            Checkout: {new Date(order.checkoutDate).toLocaleDateString()}
+          </p>
+          <p className="text-sm text-gray-600">
+            Receive By: {new Date(order.receiveDate).toLocaleDateString()}
           </p>
           <span
             className={`px-3 py-1 rounded-full text-sm ${
