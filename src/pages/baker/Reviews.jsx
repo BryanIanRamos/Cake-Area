@@ -20,6 +20,7 @@ const Reviews = () => {
       helpful: 12,
       reply: "",
       image: "../assets/ChocolateDreamLayerCakev1.jpg",
+      image_profile: "../../../public/assets/profile/Mike_customer.jpg",
     },
     {
       id: 2,
@@ -33,6 +34,7 @@ const Reviews = () => {
       reply:
         "Thank you for your feedback! We'll take note of the frosting sweetness.",
       image: "../assets/ButterCroissantv1.jpg",
+      image_profile: "/assets/profile/Lisa_Baker.png",
     },
     {
       id: 3,
@@ -45,6 +47,7 @@ const Reviews = () => {
       helpful: 15,
       reply: "Thank you for your kind words! We're glad you enjoyed it.",
       image: "../assets/AlmondCroissantv1.jpg",
+      image_profile: "/assets/profile/Sarah_Baker.png",
     },
     {
       id: 4,
@@ -56,6 +59,7 @@ const Reviews = () => {
       helpful: 10,
       reply: "",
       image: "../assets/ChocolateBabkav2.jpg",
+      image_profile: "/assets/profile/Sweet_Baker.jpg",
     },
     {
       id: 5,
@@ -69,6 +73,7 @@ const Reviews = () => {
       reply:
         "Thanks for the suggestion! We'll consider adjusting our spice blend.",
       image: "../assets/CarrotSpiceCakev1.jpg",
+      image_profile: "/assets/profile/Mike_customer.jpg",
     },
   ];
 
@@ -191,7 +196,7 @@ const Reviews = () => {
                 <div className="flex justify-between mb-4">
                   <div className="flex items-center gap-4">
                     <img
-                      src={profileImage}
+                      src={review.image_profile}
                       alt={review.customerName}
                       className="w-12 h-12 rounded-full"
                     />
