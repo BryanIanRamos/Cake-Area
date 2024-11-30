@@ -1124,6 +1124,32 @@
       "downPayment": 0,
       "remainingPayment": 119.99,
       "paymentStatus": "null"
+    },
+    {
+      "id": "15",
+      "order_id": "ORD015",
+      "customer_id": 2,
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "18",
+          "cat_id": 3,
+          "prod_name": "Classic French Croissant",
+          "description": "Traditional French croissant with perfect layers",
+          "price": 99.99,
+          "rate": 4.8,
+          "qty": 1,
+          "images": "../assets/ClassicFrenchCroissantv3.jpg"
+        }
+      ],
+      "total_amount": 99.99,
+      "status": "Pending",
+      "created_at": "2024-11-30T07:35:41.587Z",
+      "checkoutDate": "null",
+      "receiveDate": "null",
+      "downPayment": 0,
+      "remainingPayment": 99.99,
+      "paymentStatus": "null"
     }
   ],
   "tags": [

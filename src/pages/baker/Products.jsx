@@ -503,13 +503,6 @@ const Products = () => {
           {/* Header Section */}
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold">Keep an Eye on Your Stock</h1>
-            <button
-              onClick={() => setIsAddModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-[#E88F2A] text-white rounded-lg hover:bg-[#E88F2A]/90"
-            >
-              <Icon icon="mdi:plus" />
-              Add Goods
-            </button>
           </div>
 
           {/* Categories */}
@@ -547,39 +540,48 @@ const Products = () => {
                 className="absolute left-3 top-2.5 text-gray-400 text-xl"
               />
             </div>
-
-            {/* Sort Dropdown */}
-            <div className="relative">
+            {/* Adjusted the layout to bring the button closer to the sort dropdown */}
+            <div className="flex items-center gap-2">
               <button
-                className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-50"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                onClick={() => setIsAddModalOpen(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-[#E88F2A] text-white rounded-lg hover:bg-[#E88F2A]/90"
               >
-                <Icon icon="material-symbols:sort" />
-                Sort By:{" "}
-                {sortOptions.find((option) => option.value === sortBy)?.label}
+                <Icon icon="mdi:plus" />
+                Add Goods
               </button>
 
-              {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border z-10">
-                  {sortOptions.map((option) => (
-                    <button
-                      key={option.value}
-                      className={`w-full px-4 py-2 text-left flex items-center gap-2 hover:bg-gray-50 ${
-                        sortBy === option.value
-                          ? "text-[#E88F2A]"
-                          : "text-gray-700"
-                      }`}
-                      onClick={() => {
-                        setSortBy(option.value);
-                        setIsDropdownOpen(false);
-                      }}
-                    >
-                      <Icon icon={option.icon} className="text-lg" />
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-              )}
+              {/* Sort Dropdown */}
+              <div className="relative">
+                <button
+                  className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-50"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                >
+                  <Icon icon="material-symbols:sort" />
+                  Sort By:{" "}
+                  {sortOptions.find((option) => option.value === sortBy)?.label}
+                </button>
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border z-10">
+                    {sortOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        className={`w-full px-4 py-2 text-left flex items-center gap-2 hover:bg-gray-50 ${
+                          sortBy === option.value
+                            ? "text-[#E88F2A]"
+                            : "text-gray-700"
+                        }`}
+                        onClick={() => {
+                          setSortBy(option.value);
+                          setIsDropdownOpen(false);
+                        }}
+                      >
+                        <Icon icon={option.icon} className="text-lg" />
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -623,7 +625,7 @@ const Products = () => {
                   >
                     Edit
                   </button>
-                  <button 
+                  <button
                     onClick={() => handleDeleteClick(product)}
                     className="text-red-500 hover:text-red-700"
                   >
@@ -1096,7 +1098,8 @@ const Products = () => {
           <div className="bg-white rounded-lg w-full max-w-md p-6">
             <h2 className="text-xl font-bold mb-4">Delete Product</h2>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to delete "{productToDelete?.prod_name}"? This action cannot be undone.
+              Are you sure you want to delete "{productToDelete?.prod_name}"?
+              This action cannot be undone.
             </p>
             <div className="flex justify-end gap-2">
               <button

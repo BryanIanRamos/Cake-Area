@@ -418,7 +418,7 @@ const Register = () => {
             onFocus={() => setIsBusinessEmailFocused(true)}
             onBlur={() => setIsBusinessEmailFocused(false)}
             className={`w-full border-2 py-1 px-2 rounded-md ${
-              formData.businessEmail && formData.businessEmail.includes('@')
+              formData.businessEmail && formData.businessEmail.includes("@")
                 ? "border-green-500"
                 : formData.businessEmail
                 ? "border-red-500"
@@ -435,12 +435,13 @@ const Register = () => {
             <ul className="space-y-1">
               <li
                 className={`flex items-center gap-2 ${
-                  formData.businessEmail.includes('@')
+                  formData.businessEmail.includes("@")
                     ? "text-green-600"
                     : "text-red-600"
                 }`}
               >
-                {formData.businessEmail.includes('@') ? "✓" : "×"} Must be a valid email format
+                {formData.businessEmail.includes("@") ? "✓" : "×"} Must be a
+                valid email format
               </li>
             </ul>
           </div>
@@ -590,7 +591,7 @@ const Register = () => {
       case 1:
         return (
           <div className="h-full flex flex-col justify-center items-center text-white p-8">
-            <h2 className="text-3xl font-bold mb-4">Welcome to BakeHub</h2>
+            <h2 className="text-3xl font-bold mb-4">Welcome to Bakers' Area</h2>
             <p className="text-center text-lg">
               Create your account and start your journey as a baker
             </p>

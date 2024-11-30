@@ -34,6 +34,7 @@ const Product = () => {
   const commentsPerPage = 5;
   const [addToCartModalOpen, setAddToCartModalOpen] = useState(false);
   const [productOrderConfirmOpen, setProductOrderConfirmOpen] = useState(false);
+  const [businessOwner, setBusinessOwner] = useState(null);
 
   // Filter comments based on selected option
   useEffect(() => {
@@ -101,6 +102,32 @@ const Product = () => {
 
     fetchData();
   }, [productId]);
+
+  // Add this effect to fetch business owner details
+  useEffect(() => {
+    const fetchBusinessOwner = async () => {
+      if (!product) return;
+      
+      try {
+        // First get the business details
+        const businessResponse = await fetch(`http://localhost:3000/businesses/${product.business_id}`);
+        const business = await businessResponse.json();
+        
+        // Then get the profile using the business's user_id
+        const profileResponse = await fetch(`http://localhost:3000/profiles`);
+        const profiles = await profileResponse.json();
+        const ownerProfile = profiles.find(profile => profile.user_id === business.user_id);
+        
+        if (ownerProfile) {
+          setBusinessOwner(ownerProfile);
+        }
+      } catch (err) {
+        console.error("Error fetching business owner:", err);
+      }
+    };
+
+    fetchBusinessOwner();
+  }, [product]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -405,6 +432,14 @@ const Product = () => {
           <div className="col-span-2 p-4 space-y-3">
             <div>
               <h2 className="text-2xl font-bold mb-2">{product.prod_name}</h2>
+              {businessOwner && (
+                <div className="mb-2 flex items-center gap-2">
+                  <Icon icon="mdi:chef-hat" className="text-gray-600 text-lg" />
+                  <p className="text-sm text-gray-600">
+                    {businessOwner.first_name} {businessOwner.last_name}
+                  </p>
+                </div>
+              )}
               <p className="text-gray-600 text-base h-[120px]">
                 {product.description}
               </p>
