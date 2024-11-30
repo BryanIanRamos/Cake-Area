@@ -8,31 +8,68 @@ const Reviews = () => {
   const [selectedRating, setSelectedRating] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Sample review data
+  // Updated review data using existing customers and product images
   const reviews = [
     {
       id: 1,
-      customerName: "John Doe",
-      productName: "Choco-Berry Surprise Cake",
+      customerName: "Mike Tyson",
+      productName: "Chocolate Dream Layer Cake",
       rating: 5,
       comment: "Amazing cake! The taste was perfect and delivery was on time.",
       date: "2024-03-10",
       helpful: 12,
       reply: "",
-      image: "/cakes/choco-berry.jpg",
+      image: "../assets/ChocolateDreamLayerCakev1.jpg",
     },
     {
       id: 2,
-      customerName: "Alice Smith",
-      productName: "Vanilla Dream Cake",
+      customerName: "Emma Wilson",
+      productName: "Classic Butter Croissant",
       rating: 4,
-      comment: "Great cake but the frosting was a bit too sweet for my taste.",
+      comment:
+        "Great pastry but the frosting was a bit too sweet for my taste.",
       date: "2024-03-09",
       helpful: 8,
-      reply: "Thank you for your feedback! We'll take note of the frosting sweetness.",
-      image: "/cakes/vanilla-dream.jpg",
+      reply:
+        "Thank you for your feedback! We'll take note of the frosting sweetness.",
+      image: "../assets/ButterCroissantv1.jpg",
     },
-    // Add more reviews...
+    {
+      id: 3,
+      customerName: "Bryan Ramos",
+      productName: "Premium Almond Croissant",
+      rating: 5,
+      comment:
+        "Best almond croissant in town! Perfectly flaky and not too sweet.",
+      date: "2024-03-08",
+      helpful: 15,
+      reply: "Thank you for your kind words! We're glad you enjoyed it.",
+      image: "../assets/AlmondCroissantv1.jpg",
+    },
+    {
+      id: 4,
+      customerName: "Anna Santos",
+      productName: "Chocolate Babka",
+      rating: 5,
+      comment: "The chocolate swirl is perfect! Will definitely order again.",
+      date: "2024-03-07",
+      helpful: 10,
+      reply: "",
+      image: "../assets/ChocolateBabkav2.jpg",
+    },
+    {
+      id: 5,
+      customerName: "Mike Tyson",
+      productName: "Carrot Spice Cake",
+      rating: 4,
+      comment:
+        "Love the cream cheese frosting! Could use a bit more spice though.",
+      date: "2024-03-06",
+      helpful: 7,
+      reply:
+        "Thanks for the suggestion! We'll consider adjusting our spice blend.",
+      image: "../assets/CarrotSpiceCakev1.jpg",
+    },
   ];
 
   // Calculate rating statistics
@@ -40,12 +77,12 @@ const Reviews = () => {
     total: reviews.length,
     average: reviews.reduce((acc, rev) => acc + rev.rating, 0) / reviews.length,
     distribution: {
-      5: reviews.filter(r => r.rating === 5).length,
-      4: reviews.filter(r => r.rating === 4).length,
-      3: reviews.filter(r => r.rating === 3).length,
-      2: reviews.filter(r => r.rating === 2).length,
-      1: reviews.filter(r => r.rating === 1).length,
-    }
+      5: reviews.filter((r) => r.rating === 5).length,
+      4: reviews.filter((r) => r.rating === 4).length,
+      3: reviews.filter((r) => r.rating === 3).length,
+      2: reviews.filter((r) => r.rating === 2).length,
+      1: reviews.filter((r) => r.rating === 1).length,
+    },
   };
 
   return (
@@ -112,7 +149,9 @@ const Reviews = () => {
                       <div
                         className="h-full bg-[#E88F2A]"
                         style={{
-                          width: `${(stats.distribution[rating] / stats.total) * 100}%`,
+                          width: `${
+                            (stats.distribution[rating] / stats.total) * 100
+                          }%`,
                         }}
                       ></div>
                     </div>
@@ -145,7 +184,10 @@ const Reviews = () => {
           {/* Reviews List */}
           <div className="space-y-4">
             {reviews.map((review) => (
-              <div key={review.id} className="bg-white p-6 rounded-lg shadow-sm">
+              <div
+                key={review.id}
+                className="bg-white p-6 rounded-lg shadow-sm"
+              >
                 <div className="flex justify-between mb-4">
                   <div className="flex items-center gap-4">
                     <img
@@ -215,4 +257,4 @@ const Reviews = () => {
   );
 };
 
-export default Reviews; 
+export default Reviews;
