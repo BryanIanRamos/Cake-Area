@@ -27,8 +27,14 @@ const ProfileHeader = ({ profileImage, storeName, verified }) => {
             </button>
           </div>
         </div>
-        <div className="absolute -bottom-16 left-44 flex items-center gap-2">
-          <h2 className="text-2xl font-bold">{storeName}</h2>
+        <div className="absolute -bottom-16 left-44 flex items-center gap-5">
+          <div className="flex flex-col pt-2">
+            <h2 className="text-xl font-bold">Bryan Ian C. Ramos</h2>
+            <div className="flex items-center gap-2">
+              <Icon icon="uil:store-alt" />
+              <p className="text-md ">{storeName}</p>
+            </div>
+          </div>
           <button
             onClick={() => setIsModalOpen(true)}
             className="bg-[#E88F2A] text-white text-sm px-3 py-1 rounded hover:bg-[#da852b]"
