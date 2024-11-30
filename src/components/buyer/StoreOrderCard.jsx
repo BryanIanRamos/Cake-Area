@@ -1,15 +1,21 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import CakeSample from '../../assets/CakeSample.png';
-import { FiMinus, FiPlus } from 'react-icons/fi';
+import React from "react";
+import { Link } from "react-router-dom";
+import CakeSample from "../../assets/CakeSample.png";
+import { FiMinus, FiPlus } from "react-icons/fi";
 
-const StoreOrderCard = ({ storeData, selectedItems, onSelectItem, onSelectAll, onUpdateQuantity }) => {
+const StoreOrderCard = ({
+  storeData,
+  selectedItems,
+  onSelectItem,
+  onSelectAll,
+  onUpdateQuantity,
+}) => {
   const products = storeData?.products || [];
   const business = storeData?.business;
 
-  const allSelected = products.length > 0 && products.every(product => 
-    selectedItems.includes(product.prod_id)
-  );
+  const allSelected =
+    products.length > 0 &&
+    products.every((product) => selectedItems.includes(`${storeData.order_id}_${product.prod_id}`));
 
   const handleQuantityChange = (orderId, newQty) => {
     if (newQty >= 1) {
@@ -43,13 +49,13 @@ const StoreOrderCard = ({ storeData, selectedItems, onSelectItem, onSelectAll, o
 
   return (
     <div className="bg-white rounded-lg p-4 mb-4">
-      {/* Store Header with Checkbox - keeping existing styles */}
+      {/* Store Header with Checkbox - updated rating display */}
       <div className="flex justify-between items-center mb-4 pb-3 border-b">
         <div className="flex items-center gap-2">
           <input
             type="checkbox"
             checked={allSelected}
-            onChange={() => onSelectAll(business?.bus_id)}
+            onChange={() => onSelectAll(business?.bus_id, storeData.order_id)}
             className="w-5 h-5"
           />
           <h2 className="text-lg font-semibold">
@@ -57,8 +63,8 @@ const StoreOrderCard = ({ storeData, selectedItems, onSelectItem, onSelectAll, o
           </h2>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-yellow-400">★</span>
-          <span>{business?.rating || "0.0"}</span>
+          <span className="text-gray-600">Service Rating:</span>
+          <span>{business?.service_rating || "0.0"}</span>
           <span className="text-gray-400">|</span>
           <span className="text-gray-600">
             {business?.total_sold || 0} sold
@@ -69,16 +75,19 @@ const StoreOrderCard = ({ storeData, selectedItems, onSelectItem, onSelectAll, o
       {/* Products List - keeping existing styles */}
       <div className="space-y-4">
         {products.map((product, index) => (
-          <div key={index} className="flex gap-4 border-t pt-4 first:border-t-0 first:pt-0">
+          <div
+            key={`${storeData.order_id}_${product.prod_id}`}
+            className="flex gap-4 border-t pt-4 first:border-t-0 first:pt-0"
+          >
             <input
               type="checkbox"
-              checked={selectedItems.includes(product.prod_id)}
-              onChange={() => onSelectItem(product.prod_id)}
+              checked={selectedItems.includes(`${storeData.order_id}_${product.prod_id}`)}
+              onChange={() => onSelectItem(storeData.order_id, product.prod_id)}
               className="w-5 h-5 mt-8"
             />
             <div className="flex gap-4 flex-1">
               <img
-                src={product.images?.[0]?.link || CakeSample}
+                src={product.images || CakeSample}
                 alt={product.prod_name}
                 className="w-24 h-24 object-cover rounded-md"
                 onError={(e) => {
@@ -87,12 +96,8 @@ const StoreOrderCard = ({ storeData, selectedItems, onSelectItem, onSelectAll, o
                 }}
               />
               <div className="flex-1">
-                <h3 className="text-lg font-medium">
-                  {product.prod_name}
-                </h3>
-                <p className="text-gray-600">
-                  {product.description}
-                </p>
+                <h3 className="text-lg font-medium">{product.prod_name}</h3>
+                <p className="text-gray-600">{product.description}</p>
                 <div className="flex justify-between items-end mt-2">
                   <p className="text-primary text-lg font-semibold">
                     ₱{(product.price || 0).toFixed(2)}
@@ -102,7 +107,12 @@ const StoreOrderCard = ({ storeData, selectedItems, onSelectItem, onSelectAll, o
                       <span className="text-gray-600">Quantity:</span>
                       <div className="flex items-center border rounded-lg">
                         <button
-                          onClick={() => onUpdateQuantity(product.prod_id, (product.quantity || 1) - 1)}
+                          onClick={() =>
+                            onUpdateQuantity(
+                              product.prod_id,
+                              (product.quantity || 1) - 1
+                            )
+                          }
                           className="px-2 py-1 hover:bg-gray-100 rounded-l-lg"
                         >
                           <FiMinus />
@@ -111,7 +121,12 @@ const StoreOrderCard = ({ storeData, selectedItems, onSelectItem, onSelectAll, o
                           {product.quantity || 1}
                         </span>
                         <button
-                          onClick={() => onUpdateQuantity(product.prod_id, (product.quantity || 1) + 1)}
+                          onClick={() =>
+                            onUpdateQuantity(
+                              product.prod_id,
+                              (product.quantity || 1) + 1
+                            )
+                          }
                           className="px-2 py-1 hover:bg-gray-100 rounded-r-lg"
                         >
                           <FiPlus />
@@ -119,7 +134,10 @@ const StoreOrderCard = ({ storeData, selectedItems, onSelectItem, onSelectAll, o
                       </div>
                     </div>
                     <span className="text-gray-600">
-                      Total: ₱{((product.price || 0) * (product.quantity || 1)).toFixed(2)}
+                      Total: ₱
+                      {((product.price || 0) * (product.quantity || 1)).toFixed(
+                        2
+                      )}
                     </span>
                   </div>
                 </div>
@@ -132,4 +150,4 @@ const StoreOrderCard = ({ storeData, selectedItems, onSelectItem, onSelectAll, o
   );
 };
 
-export default StoreOrderCard; 
+export default StoreOrderCard;

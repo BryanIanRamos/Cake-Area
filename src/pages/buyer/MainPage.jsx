@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Cake_BG from "../../assets/Cake_BG.png";
 import BakerBusinessCard from "../../components/buyer/BakerBusinessCard";
 import SelectAccount from "../../components/buyer/SelectAccount";
@@ -18,10 +18,22 @@ const MainPage = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
+  const [userId, setUserId] = useState(null);
 
   const [showFeedback, setShowFeedback] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [feedbackType, setFeedbackType] = useState("success");
+
+  useEffect(() => {
+    // Check login state from localStorage on component mount
+    const storedIsLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    const storedUserName = localStorage.getItem("userName") || "";
+    const storedUserId = localStorage.getItem("userId") || null;
+
+    setIsLoggedIn(storedIsLoggedIn);
+    setUserName(storedUserName);
+    setUserId(storedUserId);
+  }, []);
 
   // Function to open the modal
   // account type
@@ -56,12 +68,23 @@ const MainPage = () => {
       );
 
       setIsLoggedIn(true);
-      // Set username as full name from profile
+      setUserId(user.id);
       setUserName(
         userProfile
           ? `${userProfile.first_name} ${userProfile.last_name}`
           : user.email
       );
+
+      // Store login state in localStorage
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("userId", user.id);
+      localStorage.setItem(
+        "userName",
+        userProfile
+          ? `${userProfile.first_name} ${userProfile.last_name}`
+          : user.email
+      );
+
       closeLoginModal();
 
       // Show success feedback
@@ -79,6 +102,12 @@ const MainPage = () => {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUserName("");
+    setUserId(null);
+
+    // Clear login state from localStorage
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userId");
 
     // Show feedback
     setFeedbackMessage("Successfully logged out!");
@@ -93,8 +122,7 @@ const MainPage = () => {
     setShowFeedback(false);
   };
 
-  console.log("selectBarangay: ", selectBarangay);
-  console.log("selectStreet: ", selectMunicipality);
+  console.log("selectMunicipality: ", selectMunicipality);
 
   const handleBarangayOption = (event) => {
     setSelectBarangay(event.target.value);
@@ -160,47 +188,75 @@ const MainPage = () => {
               Local Bakeries!
             </h3>
             {/* Location Section  */}
-            <div className="flex flex-col justify-center items-center border-green-700 mt-[30px] sm:mt-[7vh]">
-              <div className=" border-red-400 h-[8vw] sm:h-[4vw] grid sm:grid-cols-3 w-[200px] sm:w-fit">
-                <div className="border bg-white grid grid-cols-3 sm:grid grid-rows-3-col justify-center items-center px-2 sm:px-5 gap-1 max-sm:py-2 ">
-                  <h3 className="text-primary font-semibold text-[9px] sm:text-[1vw] ml-1 col-span-1">
-                    {"  "}Municipality{"  "}
-                  </h3>
-                  <select
-                    value={selectMunicipality}
-                    onChange={handleMunicipalityOption}
-                    className="text-tertiary text-[1.7vw] sm:text-[1vw] col-span-2"
-                  >
-                    <option value={""} disabled>
-                      -- Choose an option --
-                    </option>
-                    <option value={"Barangay Ambago"}>Barangay Ambago</option>
-                    <option value={"Barangay Tiniwisan"}>
-                      Barangay Tiniwisan
-                    </option>
-                  </select>
+            <div className="flex flex-col justify-center items-center mt-[30px] sm:mt-[7vh]">
+              <div className="w-full max-w-xl">
+                <div className="flex items-center bg-white rounded-lg shadow-md overflow-hidden">
+                  {/* Location Icon and Municipality Select */}
+                  <div className="flex-1 flex items-center px-4 py-3">
+                    <svg
+                      className="w-5 h-5 text-gray-400 mr-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    <select
+                      value={selectMunicipality}
+                      onChange={handleMunicipalityOption}
+                      className="flex-1 text-gray-700 text-sm sm:text-base font-medium focus:outline-none"
+                    >
+                      <option value="" disabled>
+                        Select Municipality
+                      </option>
+                      <option value="Buenavista">Buenavista</option>
+                      <option value="Cabadbaran">Cabadbaran</option>
+                      <option value="Carmen">Carmen</option>
+                      <option value="Jabonga">Jabonga</option>
+                      <option value="Kitcharao">Kitcharao</option>
+                      <option value="Las Nieves">Las Nieves</option>
+                      <option value="Magallanes">Magallanes</option>
+                      <option value="Nasipit">Nasipit</option>
+                      <option value="Remedios T. Romualdez">Remedios T. Romualdez</option>
+                      <option value="Santiago">Santiago</option>
+                      <option value="Tubay">Tubay</option>
+                    </select>
+                  </div>
+
+                  {/* Search Button */}
+                  <button className="px-6 py-3 bg-primary hover:bg-primary-dark transition-colors duration-200 text-white font-semibold text-sm sm:text-base flex items-center gap-2">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                    <span>Search</span>
+                  </button>
                 </div>
-                <div className="border bg-white grid grid-cols-3 sm:grid grid-rows-3-col justify-center items-center px-2 sm:px-5 gap-1 max-sm:py-2 ">
-                  <h3 className="text-primary font-semibold text-[9px] sm:text-[1vw] ml-1 col-span-1">
-                    {"  "}Barangay{"  "}
-                  </h3>
-                  <select
-                    value={selectBarangay}
-                    onChange={handleBarangayOption}
-                    className="text-tertiary text-[1.7vw] sm:text-[1vw] col-span-2"
-                  >
-                    <option value={""} disabled>
-                      -- Choose an option --
-                    </option>
-                    <option value={"Barangay Ambago"}>Barangay Ambago</option>
-                    <option value={"Barangay Tiniwisan"}>
-                      Barangay Tiniwisan
-                    </option>
-                  </select>
-                </div>
-                <button className="bg-primary  text-[2vw] sm:text-[1.5vw] font-semibold text-white hover:text-primary hover:bg-white hover:border-l-2   max-sm:h-8">
-                  Search
-                </button>
+
+                {/* Optional: Add helper text below */}
+                <p className="text-white text-xs sm:text-sm mt-2 text-center opacity-80">
+                  Find bakeries and cake shops in your area
+                </p>
               </div>
             </div>
           </div>
@@ -263,7 +319,10 @@ const MainPage = () => {
 
         <div className="w-full border border-gray-400 "></div>
         {/* Baker Business Card  */}
-        <BakerBusinessCard selectedFilter={selectedFilter} />
+        <BakerBusinessCard
+          selectedFilter={selectedFilter}
+          openLoginModal={openLoginModal}
+        />
       </section>
     </div>
   );

@@ -18,7 +18,8 @@ const Register = () => {
 
     // Step 3 - Business Details
     businessName: "",
-    registrationNumber: "",
+    municipality: "",
+    streetAddress: "",
     businessEmail: "",
     description: "",
 
@@ -42,6 +43,7 @@ const Register = () => {
   });
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isEmailFocused, setIsEmailFocused] = useState(false);
+  const [isBusinessEmailFocused, setIsBusinessEmailFocused] = useState(false);
 
   const RequiredIndicator = () => <span className="text-red-500 ml-1">*</span>;
 
@@ -79,13 +81,15 @@ const Register = () => {
         newErrors.businessName = "Business name is required";
       if (!formData.businessEmail.trim())
         newErrors.businessEmail = "Business email is required";
+      if (!formData.description.trim())
+        newErrors.description = "Business description is required";
     } else if (step === 4) {
-      if (!formData.cityBarangay.trim())
-        newErrors.cityBarangay = "City and Barangay are required";
+      if (!formData.municipality)
+        newErrors.municipality = "Municipality is required";
+      if (!formData.streetAddress.trim())
+        newErrors.streetAddress = "Street address is required";
       if (!formData.postalCode.trim())
         newErrors.postalCode = "Postal code is required";
-      if (!formData.streetBuilding.trim())
-        newErrors.streetBuilding = "Street and building are required";
       if (!formData.locationType)
         newErrors.locationType = "Location type is required";
     }
@@ -385,7 +389,7 @@ const Register = () => {
   // Step 3 - Business Details
   const renderStep3 = () => (
     <div className="grid grid-cols-2 gap-2 mt-4">
-      <div className="col-span-2 flex flex-col gap-1">
+      <div className="col-span-1 flex flex-col gap-1">
         <label htmlFor="businessName">
           Business Name
           <RequiredIndicator />
@@ -399,36 +403,56 @@ const Register = () => {
           placeholder="Enter your business name"
         />
       </div>
-      <div className="col-span-2 flex flex-col gap-1">
-        <label htmlFor="registrationNumber">
-          Registration Number
-          <RequiredIndicator />
-        </label>
-        <input
-          type="text"
-          id="registrationNumber"
-          value={formData.registrationNumber}
-          onChange={handleInputChange}
-          className="border-2 py-1 px-2 border-tertiary rounded-md"
-          placeholder="Enter business registration number"
-        />
-      </div>
-      <div className="col-span-2 flex flex-col gap-1">
+
+      <div className="col-span-1 flex flex-col gap-1 relative">
         <label htmlFor="businessEmail">
           Business Email
           <RequiredIndicator />
         </label>
-        <input
-          type="email"
-          id="businessEmail"
-          value={formData.businessEmail}
-          onChange={handleInputChange}
-          className="border-2 py-1 px-2 border-tertiary rounded-md"
-          placeholder="Enter business email"
-        />
+        <div className="relative">
+          <input
+            type="email"
+            id="businessEmail"
+            value={formData.businessEmail}
+            onChange={handleInputChange}
+            onFocus={() => setIsBusinessEmailFocused(true)}
+            onBlur={() => setIsBusinessEmailFocused(false)}
+            className={`w-full border-2 py-1 px-2 rounded-md ${
+              formData.businessEmail && formData.businessEmail.includes("@")
+                ? "border-green-500"
+                : formData.businessEmail
+                ? "border-red-500"
+                : "border-tertiary"
+            }`}
+            placeholder="Enter business email"
+          />
+        </div>
+
+        {/* Business Email requirements feedback */}
+        {isBusinessEmailFocused && (
+          <div className="absolute left-full ml-4 top-0 w-48 bg-white p-3 rounded-md shadow-lg border text-sm">
+            <h4 className="font-semibold mb-2">Email requirements:</h4>
+            <ul className="space-y-1">
+              <li
+                className={`flex items-center gap-2 ${
+                  formData.businessEmail.includes("@")
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}
+              >
+                {formData.businessEmail.includes("@") ? "✓" : "×"} Must be a
+                valid email format
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
+
       <div className="col-span-2 flex flex-col gap-1">
-        <label htmlFor="description">Business Description</label>
+        <label htmlFor="description">
+          Business Description
+          <RequiredIndicator />
+        </label>
         <textarea
           id="description"
           value={formData.description}
@@ -441,84 +465,119 @@ const Register = () => {
     </div>
   );
 
-  // Step 4 - Address Details
+  // Add this CSS class to hide the number input spinners
+  const inputStyles = `
+    /* Hide number input spinners for Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Hide number input spinners for Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+  `;
+
+  // Step 4 - Location Details
   const renderStep4 = () => (
-    <div className="grid grid-cols-2 gap-2 mt-4">
-      <div className="col-span-2 flex flex-col gap-1">
-        <label htmlFor="cityBarangay">
-          City, Barangay
-          <RequiredIndicator />
-        </label>
-        <input
-          type="text"
-          id="cityBarangay"
-          value={formData.cityBarangay}
-          onChange={handleInputChange}
-          className="border-2 py-1 px-2 border-tertiary rounded-md"
-          placeholder="Enter city and barangay"
-        />
-      </div>
-      <div className="col-span-2 flex flex-col gap-1">
-        <label htmlFor="postalCode">
-          Postal Code
-          <RequiredIndicator />
-        </label>
-        <input
-          type="text"
-          id="postalCode"
-          value={formData.postalCode}
-          onChange={handleInputChange}
-          className="border-2 py-1 px-2 border-tertiary rounded-md"
-          placeholder="Enter postal code"
-        />
-      </div>
-      <div className="col-span-2 flex flex-col gap-1">
-        <label htmlFor="streetBuilding">
-          Street name, Building name
-          <RequiredIndicator />
-        </label>
-        <input
-          type="text"
-          id="streetBuilding"
-          value={formData.streetBuilding}
-          onChange={handleInputChange}
-          className="border-2 py-1 px-2 border-tertiary rounded-md"
-          placeholder="Enter street and building name"
-        />
-      </div>
-      <div className="col-span-2 flex flex-col gap-1 mt-2">
-        <label className="mb-1">
-          Business Location Type
-          <RequiredIndicator />
-        </label>
-        <div className="flex gap-4">
-          <button
-            type="button"
-            className={`flex-1 py-2 px-4 rounded-md border-2 transition-colors duration-200 
-              ${
-                formData.locationType === "home"
-                  ? "border-primary bg-primary text-white"
-                  : "border-tertiary text-gray-600 hover:bg-gray-50"
-              }`}
-            onClick={() => setFormData({ ...formData, locationType: "home" })}
+    <>
+      <style>{inputStyles}</style>
+      <div className="grid grid-cols-2 gap-2 mt-4">
+        <div className="col-span-2 flex flex-col gap-1">
+          <label htmlFor="municipality">
+            Municipality
+            <RequiredIndicator />
+          </label>
+          <select
+            id="municipality"
+            value={formData.municipality}
+            onChange={handleInputChange}
+            className="border-2 py-1 px-2 border-tertiary rounded-md"
           >
-            Home
-          </button>
-          <button
-            type="button"
-            className={`flex-1 py-2 px-4 rounded-md border-2 transition-colors duration-200 
-              ${
-                formData.locationType === "work"
-                  ? "border-primary bg-primary text-white"
-                  : "border-tertiary text-gray-600 hover:bg-gray-50"
-              }`}
-            onClick={() => setFormData({ ...formData, locationType: "work" })}
-          >
-            Work
-          </button>
+            <option value="" disabled>
+              Select Municipality
+            </option>
+            <option value="Buenavista">Buenavista</option>
+            <option value="Cabadbaran">Cabadbaran</option>
+            <option value="Carmen">Carmen</option>
+            <option value="Jabonga">Jabonga</option>
+            <option value="Kitcharao">Kitcharao</option>
+            <option value="Las Nieves">Las Nieves</option>
+            <option value="Magallanes">Magallanes</option>
+            <option value="Nasipit">Nasipit</option>
+            <option value="Remedios T. Romualdez">Remedios T. Romualdez</option>
+            <option value="Santiago">Santiago</option>
+            <option value="Tubay">Tubay</option>
+          </select>
+        </div>
+
+        <div className="col-span-2 flex flex-col gap-1">
+          <label htmlFor="streetAddress">
+            Street Address
+            <RequiredIndicator />
+          </label>
+          <input
+            type="text"
+            id="streetAddress"
+            value={formData.streetAddress}
+            onChange={handleInputChange}
+            className="border-2 py-1 px-2 border-tertiary rounded-md"
+            placeholder="Enter street name, building name/number"
+          />
+        </div>
+
+        <div className="col-span-2 flex flex-col gap-1">
+          <label htmlFor="postalCode">
+            Postal Code
+            <RequiredIndicator />
+          </label>
+          <input
+            type="number"
+            id="postalCode"
+            value={formData.postalCode}
+            onChange={handleInputChange}
+            className="border-2 py-1 px-2 border-tertiary rounded-md"
+            placeholder="Enter postal code"
+            pattern="\d*"
+          />
+        </div>
+
+        <div className="col-span-2 flex flex-col gap-1 mt-2">
+          <label className="mb-1">
+            Business Location Type
+            <RequiredIndicator />
+          </label>
+          <div className="flex gap-4">
+            <button
+              type="button"
+              className={`flex-1 py-2 px-4 rounded-md border-2 transition-colors duration-200 
+                ${
+                  formData.locationType === "home"
+                    ? "border-primary bg-primary text-white"
+                    : "border-tertiary text-gray-600 hover:bg-gray-50"
+                }`}
+              onClick={() => setFormData({ ...formData, locationType: "home" })}
+            >
+              Home
+            </button>
+            <button
+              type="button"
+              className={`flex-1 py-2 px-4 rounded-md border-2 transition-colors duration-200 
+                ${
+                  formData.locationType === "work"
+                    ? "border-primary bg-primary text-white"
+                    : "border-tertiary text-gray-600 hover:bg-gray-50"
+                }`}
+              onClick={() => setFormData({ ...formData, locationType: "work" })}
+            >
+              Work
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 
   const handleSubmit = () => {
@@ -532,7 +591,7 @@ const Register = () => {
       case 1:
         return (
           <div className="h-full flex flex-col justify-center items-center text-white p-8">
-            <h2 className="text-3xl font-bold mb-4">Welcome to BakeHub</h2>
+            <h2 className="text-3xl font-bold mb-4">Welcome to Bakers' Area</h2>
             <p className="text-center text-lg">
               Create your account and start your journey as a baker
             </p>
@@ -606,13 +665,14 @@ const Register = () => {
       case 3:
         return (
           formData.businessName.trim() !== "" &&
-          formData.businessEmail.trim() !== ""
+          formData.businessEmail.trim() !== "" &&
+          formData.description.trim() !== ""
         );
       case 4:
         return (
-          formData.cityBarangay.trim() !== "" &&
+          formData.municipality !== "" &&
+          formData.streetAddress.trim() !== "" &&
           formData.postalCode.trim() !== "" &&
-          formData.streetBuilding.trim() !== "" &&
           formData.locationType !== ""
         );
       default:

@@ -10,7 +10,7 @@ export const profileData = {
       age: "32",
       sex: "Male",
       img: DumProfile,
-      user_id: 1 // References john.doe@email.com (Admin)
+      user_id: 1, // References john.doe@email.com (Admin)
     },
     {
       acc_id: 2,
@@ -19,16 +19,16 @@ export const profileData = {
       age: "28",
       sex: "Female",
       img: DumProfile,
-      user_id: 2 // References sarah.baker@email.com (Baker)
+      user_id: 2, // References sarah.baker@email.com (Baker)
     },
     {
       acc_id: 3,
-      first_name: "Mike",
-      last_name: "Customer",
-      age: "35",
+      first_name: "Bryan Ian",
+      last_name: "Ramos",
+      age: "23",
       sex: "Male",
       img: DumProfile,
-      user_id: 3 // References mike.customer@email.com (Customer)
+      user_id: 3, // References mike.customer@email.com (Customer)
     },
     {
       acc_id: 4,
@@ -37,7 +37,7 @@ export const profileData = {
       age: "29",
       sex: "Female",
       img: DumProfile,
-      user_id: 4 // References emma.wilson@email.com (Customer)
+      user_id: 4, // References emma.wilson@email.com (Customer)
     },
     {
       acc_id: 5,
@@ -46,7 +46,7 @@ export const profileData = {
       age: "45",
       sex: "Male",
       img: DumProfile,
-      user_id: 5 // References david.admin@email.com (Admin)
+      user_id: 5, // References david.admin@email.com (Admin)
     },
     {
       acc_id: 6,
@@ -55,7 +55,7 @@ export const profileData = {
       age: "31",
       sex: "Female",
       img: DumProfile,
-      user_id: 6 // References lisa.baker@email.com (Baker)
+      user_id: 6, // References lisa.baker@email.com (Baker)
     },
     {
       acc_id: 7,
@@ -64,7 +64,7 @@ export const profileData = {
       age: "27",
       sex: "Male",
       img: DumProfile,
-      user_id: 7 // References tom.smith@email.com (Customer)
+      user_id: 7, // References tom.smith@email.com (Customer)
     },
     {
       acc_id: 8,
@@ -73,7 +73,7 @@ export const profileData = {
       age: "33",
       sex: "Female",
       img: DumProfile,
-      user_id: 8 // References anna.jones@email.com (Customer)
+      user_id: 8, // References anna.jones@email.com (Customer)
     },
     {
       acc_id: 9,
@@ -82,7 +82,7 @@ export const profileData = {
       age: "39",
       sex: "Male",
       img: DumProfile,
-      user_id: 9 // References peter.baker@email.com (Baker)
+      user_id: 9, // References peter.baker@email.com (Baker)
     },
     {
       acc_id: 10,
@@ -91,7 +91,7 @@ export const profileData = {
       age: "41",
       sex: "Female",
       img: DumProfile,
-      user_id: 10 // References mary.admin@email.com (Admin)
-    }
-  ]
+      user_id: 10, // References mary.admin@email.com (Admin)
+    },
+  ],
 };

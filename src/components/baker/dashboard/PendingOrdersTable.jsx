@@ -1,14 +1,14 @@
-import React from 'react';
+import React from "react";
 
-const PendingOrdersTable = ({ 
-  orders, 
-  tableLimit, 
-  setTableLimit, 
+const PendingOrdersTable = ({
+  orders,
+  tableLimit,
+  setTableLimit,
   setCurrentPage,
   startIndex,
   currentPage,
   totalPages,
-  totalOrders 
+  totalOrders,
 }) => {
   return (
     <div>
@@ -38,7 +38,7 @@ const PendingOrdersTable = ({
               <th className="text-left p-4">Location</th>
               <th className="text-left p-4">Price</th>
               <th className="text-left p-4">Quantity</th>
-              <th className="text-left p-4">Deadline</th>
+              <th className="text-left p-4">Received at</th>
             </tr>
           </thead>
           <tbody>
@@ -61,8 +61,8 @@ const PendingOrdersTable = ({
       <div className="flex justify-between items-center mt-4 text-sm">
         <div className="text-gray-600">
           Showing {startIndex + 1} to{" "}
-          {Math.min(startIndex + tableLimit, totalOrders)} of{" "}
-          {totalOrders} entries
+          {Math.min(startIndex + tableLimit, totalOrders)} of {totalOrders}{" "}
+          entries
         </div>
         <div className="flex gap-2">
           <button
@@ -95,4 +95,4 @@ const PendingOrdersTable = ({
   );
 };
 
-export default PendingOrdersTable; 
+export default PendingOrdersTable;

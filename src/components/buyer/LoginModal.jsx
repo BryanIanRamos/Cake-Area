@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Icon } from "@iconify/react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import { userData } from "../../data/userDataTbl";
 
 const LoginModal = ({ isOpen, closeModal, onLogin }) => {
   const navigate = useNavigate();
@@ -15,33 +14,78 @@ const LoginModal = ({ isOpen, closeModal, onLogin }) => {
     e.preventDefault();
     setIsLoading(true);
     setLoginMessage("Logging in...");
-    
-    // Simulate network delay for smooth transition
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const user = userData.users.find(
-      (user) => user.email === email && user.password === password
-    );
 
-    if (user && user.role === 1) {
-      setLoginMessage("Admin login not allowed here");
-      setIsLoading(false);
-      onLogin(email, password);
-      return;
-    }
+    try {
+      // Get all users and find matching email (case-insensitive)
+      const response = await fetch('http://localhost:3000/users');
+      const users = await response.json();
+      const user = users.find(u => 
+        u.email.toLowerCase().trim() === email.toLowerCase().trim()
+      );
 
-    if (user && user.role === 2) {
-      setLoginMessage("Welcome back, baker!");
-      onLogin(email, password);
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Simulate network delay for smooth transition
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      if (!user) {
+        setLoginMessage("Invalid email or password");
+        setIsLoading(false);
+        onLogin(email, password);
+        return;
+      }
+
+      // Check if the password matches
+      if (user.password !== password) {  // Direct comparison since we're using the full hashed password
+        setLoginMessage("Invalid email or password");
+        setIsLoading(false);
+        onLogin(email, password);
+        return;
+      }
+
+      if (user.role === 1) {
+        setLoginMessage("Admin login not allowed here");
+        setIsLoading(false);
+        onLogin(email, password);
+        return;
+      }
+
+      if (user.role === 2) {
+        setLoginMessage("Welcome back, baker!");
+        // Update user login status
+        await fetch(`http://localhost:3000/users/${user.id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ is_Login: true }),
+        });
+
+        onLogin(email, password); // This will trigger success feedback
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        closeModal();
+        navigate("/dashboard");
+        return;
+      }
+
+      // For regular customers
+      setLoginMessage("Login successful!");
+      // Update user login status
+      await fetch(`http://localhost:3000/users/${user.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ is_Login: true }),
+      });
+
+      onLogin(email, password); // This will trigger success feedback
       closeModal();
-      navigate('/dashboard');
-      return;
+    } catch (error) {
+      console.error("Login error:", error);
+      setLoginMessage("An error occurred during login");
+      onLogin(email, password); // This will trigger error feedback
+    } finally {
+      setIsLoading(false);
     }
-
-    // For regular customers or invalid login
-    onLogin(email, password);
-    setIsLoading(false);
   };
 
   return (
@@ -89,10 +133,7 @@ const LoginModal = ({ isOpen, closeModal, onLogin }) => {
                 <label className="flex items-center gap-2">
                   <input type="checkbox" /> Remember me
                 </label>
-                <button
-                  type="button"
-                  className="text-primary hover:underline"
-                >
+                <button type="button" className="text-primary hover:underline">
                   Forgot Password?
                 </button>
               </div>

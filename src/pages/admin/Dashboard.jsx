@@ -45,15 +45,46 @@ const Dashboard = () => {
       id: 3,
       user: "Sweet Delights",
       type: "Baker",
+      action: "Requested withdrawal of ₱5,000",
+      timestamp: "7 minutes ago"
+    },
+    {
+      id: 4,
+      user: "Cake Haven",
+      type: "Baker",
+      action: "Withdrawal of ₱3,500 approved",
+      timestamp: "8 minutes ago"
+    },
+    {
+      id: 5,
+      user: "Sweet Delights",
+      type: "Baker",
       action: "Updated shop status",
       timestamp: "10 minutes ago"
     },
-    // Add more activities
   ]);
 
   const [accountHistory] = useState([
     {
       id: 1,
+      name: "Sweet Delights",
+      type: "Baker",
+      action: "Withdrawal Request",
+      status: "Pending",
+      amount: "₱5,000",
+      timestamp: "2024-03-15 10:30"
+    },
+    {
+      id: 2,
+      name: "Cake Haven",
+      type: "Baker",
+      action: "Withdrawal",
+      status: "Completed",
+      amount: "₱3,500",
+      timestamp: "2024-03-15 10:15"
+    },
+    {
+      id: 3,
       name: "Mike Baker",
       type: "Baker",
       action: "Account created",
@@ -61,14 +92,13 @@ const Dashboard = () => {
       timestamp: "2024-03-15 09:30"
     },
     {
-      id: 2,
+      id: 4,
       name: "Lisa Customer",
       type: "Customer",
       action: "Profile updated",
       status: "Active",
       timestamp: "2024-03-15 09:15"
     },
-    // Add more history items
   ]);
 
   // Simulate real-time updates
@@ -177,7 +207,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Account History */}
+          {/* Updated Account History table */}
           <div className="bg-white rounded-lg shadow">
             <div className="px-6 py-4 border-b border-gray-200">
               <h2 className="text-lg font-medium text-gray-900">Account History</h2>
@@ -189,7 +219,9 @@ const Dashboard = () => {
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
                     </tr>
                   </thead>
@@ -198,12 +230,18 @@ const Dashboard = () => {
                       <tr key={item.id}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.name}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.type}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.action}</td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            item.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                            item.status === 'Active' || item.status === 'Completed' 
+                              ? 'bg-green-100 text-green-800' 
+                              : 'bg-yellow-100 text-yellow-800'
                           }`}>
                             {item.status}
                           </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {item.amount || '-'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.timestamp}</td>
                       </tr>

@@ -1,0 +1,184 @@
+{
+  "pendingOrders": [
+    {
+      "id": "P010924",
+      "name": "Choco-Berry",
+      "location": "Libuon P-3C",
+      "price": "₱ 782.00",
+      "quantity": 1,
+      "deadline": "9/9/2025",
+      "customerName": "Alice Martinez"
+    },
+    {
+      "id": "P010925",
+      "name": "Vanilla Supreme",
+      "location": "Poblacion",
+      "price": "₱ 650.00",
+      "quantity": 2,
+      "deadline": "9/10/2025",
+      "customerName": "Bob Wilson"
+    },
+    {
+      "id": "P010926",
+      "name": "Custom Rainbow",
+      "location": "San Vicente",
+      "price": "₱ 1200.00",
+      "quantity": 1,
+      "deadline": "9/11/2025",
+      "customerName": "Carol Thompson"
+    },
+    {
+      "id": "P010927",
+      "name": "Red Velvet",
+      "location": "Cogon",
+      "price": "₱ 920.00",
+      "quantity": 1,
+      "deadline": "9/12/2025",
+      "customerName": "Daniel Brown"
+    },
+    {
+      "id": "P010928",
+      "name": "Mocha Delight",
+      "location": "Tambisan",
+      "price": "₱ 880.00",
+      "quantity": 3,
+      "deadline": "9/13/2025",
+      "customerName": "Eva Garcia"
+    },
+    {
+      "id": "P010929",
+      "name": "Fruit Paradise",
+      "location": "San Roque",
+      "price": "₱ 950.00",
+      "quantity": 1,
+      "deadline": "9/14/2025",
+      "customerName": "Frank Lee"
+    },
+    {
+      "id": "P010930",
+      "name": "Chocolate Supreme",
+      "location": "Libuon P-3C",
+      "price": "₱ 850.00",
+      "quantity": 2,
+      "deadline": "9/15/2025",
+      "customerName": "Grace Wilson"
+    },
+    {
+      "id": "P010931",
+      "name": "Strawberry Bliss",
+      "location": "Poblacion",
+      "price": "₱ 782.00",
+      "quantity": 1,
+      "deadline": "9/16/2025",
+      "customerName": "Henry Davis"
+    },
+    {
+      "id": "P010932",
+      "name": "Ube Delight",
+      "location": "San Vicente",
+      "price": "₱ 890.00",
+      "quantity": 2,
+      "deadline": "9/17/2025",
+      "customerName": "Isabel Santos"
+    },
+    {
+      "id": "P010933",
+      "name": "Mango Symphony",
+      "location": "Cogon",
+      "price": "₱ 980.00",
+      "quantity": 1,
+      "deadline": "9/18/2025",
+      "customerName": "John Rivera"
+    },
+    {
+      "id": "P010934",
+      "name": "Cookies & Cream",
+      "location": "Tambisan",
+      "price": "₱ 750.00",
+      "quantity": 3,
+      "deadline": "9/19/2025",
+      "customerName": "Karen Lopez"
+    },
+    {
+      "id": "P010935",
+      "name": "Caramel Macchiato",
+      "location": "San Roque",
+      "price": "₱ 895.00",
+      "quantity": 1,
+      "deadline": "9/20/2025",
+      "customerName": "Luis Torres"
+    },
+    {
+      "id": "P010936",
+      "name": "Black Forest",
+      "location": "Libuon P-3C",
+      "price": "₱ 1100.00",
+      "quantity": 2,
+      "deadline": "9/21/2025",
+      "customerName": "Maria Cruz"
+    },
+    {
+      "id": "P010937",
+      "name": "Tiramisu Special",
+      "location": "Poblacion",
+      "price": "₱ 1250.00",
+      "quantity": 1,
+      "deadline": "9/22/2025",
+      "customerName": "Nathan Reyes"
+    },
+    {
+      "id": "P010938",
+      "name": "Blueberry Cheesecake",
+      "location": "San Vicente",
+      "price": "₱ 980.00",
+      "quantity": 2,
+      "deadline": "9/23/2025",
+      "customerName": "Olivia Gomez"
+    },
+    {
+      "id": "P010939",
+      "name": "Dulce de Leche",
+      "location": "Cogon",
+      "price": "₱ 890.00",
+      "quantity": 1,
+      "deadline": "9/24/2025",
+      "customerName": "Patrick Tan"
+    },
+    {
+      "id": "P010940",
+      "name": "Triple Chocolate",
+      "location": "Tambisan",
+      "price": "₱ 1150.00",
+      "quantity": 2,
+      "deadline": "9/25/2025",
+      "customerName": "Quinn Fernandez"
+    },
+    {
+      "id": "P010941",
+      "name": "Matcha Green Tea",
+      "location": "San Roque",
+      "price": "₱ 920.00",
+      "quantity": 1,
+      "deadline": "9/26/2025",
+      "customerName": "Rachel Santos"
+    },
+    {
+      "id": "P010942",
+      "name": "Butterscotch Dream",
+      "location": "Libuon P-3C",
+      "price": "₱ 850.00",
+      "quantity": 3,
+      "deadline": "9/27/2025",
+      "customerName": "Samuel Lim"
+    },
+    {
+      "id": "P010943",
+      "name": "Pandan Special",
+      "location": "Poblacion",
+      "price": "₱ 880.00",
+      "quantity": 2,
+      "deadline": "9/28/2025",
+      "customerName": "Teresa Garcia"
+    }
+  ]
+} 

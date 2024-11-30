@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import logo from "../../assets/cake_area_logo.png";
+import BALogo from "/assets/logo/BA-logo.png";
 import profile from "../../assets/Dummy_Profile.png";
 import { Icon } from "@iconify/react";
 import { Link, useLocation } from "react-router-dom";
@@ -8,12 +8,28 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
   const location = useLocation();
 
   const menuItems = [
-    { title: "Dashboard", icon: "material-symbols:dashboard", path: "/dashboard" },
+    {
+      title: "Dashboard",
+      icon: "material-symbols:dashboard",
+      path: "/dashboard",
+    },
     { title: "Orders", icon: "mdi:cart", path: "/dashboard/orders" },
     { title: "Products", icon: "mdi:cake", path: "/dashboard/products" },
-    { title: "Statistics", icon: "mdi:chart-bar", path: "/dashboard/statistics" },
-    { title: "Reviews", icon: "material-symbols:rate-review", path: "/dashboard/reviews" },
-    { title: "Settings", icon: "material-symbols:settings", path: "/dashboard/settings" },
+    {
+      title: "Statistics",
+      icon: "mdi:chart-bar",
+      path: "/dashboard/statistics",
+    },
+    {
+      title: "Reviews",
+      icon: "material-symbols:rate-review",
+      path: "/dashboard/reviews",
+    },
+    {
+      title: "Settings",
+      icon: "material-symbols:settings",
+      path: "/dashboard/settings",
+    },
   ];
 
   return (
@@ -34,11 +50,13 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
       </button>
 
       {/* Logo  */}
-      <div className="border w-fit h-fit text-center text-white">
+      <div className="w-fit h-fit text-center text-white">
         <img
-          src={logo}
+          src={BALogo}
           alt="logo"
-          className={`${isExpanded ? "w-[70px]" : "w-[40px]"} transition-all duration-300`}
+          className={`${
+            isExpanded ? "w-[90px]" : "w-[60px]"
+          } transition-all duration-300`}
         />
       </div>
 
@@ -99,4 +117,4 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
   );
 };
 
-export default Sidebar; 
+export default Sidebar;
