@@ -144,20 +144,26 @@ const Product = () => {
     setProductOrderConfirmOpen(true);
   };
 
-  const handleConfirmProductOrder = async (paymentMethod, selectedImageIndex) => {
+  const handleConfirmProductOrder = async (
+    paymentMethod,
+    selectedImageIndex
+  ) => {
     try {
-      console.log('Starting order creation with image index:', selectedImageIndex);
-      
+      console.log(
+        "Starting order creation with image index:",
+        selectedImageIndex
+      );
+
       // Get existing orders to determine next ID
-      const response = await fetch('http://localhost:3000/orders');
+      const response = await fetch("http://localhost:3000/orders");
       const existingOrders = await response.json();
       const nextId = (existingOrders.length + 1).toString();
-      const nextOrderId = `ORD${nextId.padStart(3, '0')}`;
+      const nextOrderId = `ORD${nextId.padStart(3, "0")}`;
 
       const currentDate = new Date().toISOString();
 
       // Log the selected image before creating order
-      console.log('Selected image URL:', product.images[selectedImageIndex]);
+      console.log("Selected image URL:", product.images[selectedImageIndex]);
 
       const newOrder = {
         id: nextId,
@@ -173,8 +179,8 @@ const Product = () => {
             price: product.price,
             rate: product.rate,
             qty: quantity,
-            images: product.images[selectedImageIndex]
-          }
+            images: product.images[selectedImageIndex],
+          },
         ],
         total_amount: product.price * quantity,
         status: "Processing",
@@ -183,23 +189,23 @@ const Product = () => {
         receiveDate: "null",
         downPayment: 0,
         remainingPayment: 0,
-        paymentStatus: "paid"
+        paymentStatus: "paid",
       };
 
       // Log the final order before sending
-      console.log('Final order being sent:', newOrder);
+      console.log("Final order being sent:", newOrder);
 
       // Add new order to json-server
-      const addOrderResponse = await fetch('http://localhost:3000/orders', {
-        method: 'POST',
+      const addOrderResponse = await fetch("http://localhost:3000/orders", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(newOrder)
+        body: JSON.stringify(newOrder),
       });
 
       if (!addOrderResponse.ok) {
-        throw new Error('Failed to add order');
+        throw new Error("Failed to add order");
       }
 
       setProductOrderConfirmOpen(false);
@@ -214,9 +220,8 @@ const Product = () => {
 
       // Navigate to orders page
       navigate("/cart/in-process");
-
     } catch (error) {
-      console.error('Error with order creation:', error);
+      console.error("Error with order creation:", error);
       toast.error("Failed to place order. Please try again.", {
         icon: <FiAlertCircle className="text-lg" />,
         className: "font-[Oswald]",
@@ -564,55 +569,51 @@ const Product = () => {
           </div>
 
           {/* Review Summary */}
-          <div className="bg-gray-50 p-4 rounded-lg mb-4">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl font-bold text-primary">
-                  {(
-                    comments.reduce((acc, curr) => acc + curr.rating, 0) /
-                    comments.length
-                  ).toFixed(1)}
-                </span>
-                <div className="flex flex-col">
-                  <Rating
-                    icon="ph:star-fill"
-                    clickable={false}
-                    initialRating={Number(
-                      (
-                        comments.reduce((acc, curr) => acc + curr.rating, 0) /
-                        comments.length
-                      ).toFixed(1)
-                    )}
-                    className="text-[#F4A340]"
-                  />
+          <div className="bg-gray-100 p-4 rounded-lg mb-4 ">
+            <div className="grid grid-cols-5 items-start gap-8 mx-10">
+              {/* Left side - Average Rating */}
+              <div className="flex flex-col items-center justify-center col-span-2  h-full">
+                <div className="flex flex-col items-center">
+                  <span className="text-5xl font-bold text-primary">4.6</span>
+                  <div className="flex items-center">
+                    <Rating
+                      icon="ph:star-fill"
+                      clickable={false}
+                      initialRating={4.6}
+                      className="text-[#F4A340]"
+                    />
+                  </div>
                   <span className="text-sm text-gray-500">
-                    Based on {comments.length} reviews
+                    Based on 5 reviews
                   </span>
                 </div>
               </div>
 
-              {/* Rating Distribution */}
-              <div className="flex flex-col gap-1">
-                {[5, 4, 3, 2, 1].map((rating) => {
-                  const count = comments.filter(
-                    (c) => Math.floor(c.rating) === rating
-                  ).length;
-                  const percentage = (count / comments.length) * 100;
-                  return (
-                    <div key={rating} className="flex items-center gap-2">
-                      <span className="text-sm text-gray-500 w-8">
-                        {rating}★
-                      </span>
-                      <div className="w-32 h-2 bg-gray-200 rounded-full">
-                        <div
-                          className="h-full bg-primary rounded-full"
-                          style={{ width: `${percentage}%` }}
-                        />
-                      </div>
-                      <span className="text-sm text-gray-500">{count}</span>
+              {/* Right side - Rating Distribution */}
+              <div className="flex-1 col-span-3">
+                {[5, 4, 3, 2, 1].map((stars) => (
+                  <div key={stars} className="flex items-center gap-2 mb-1">
+                    <span className="text-sm text-gray-600 w-16">
+                      {stars} stars
+                    </span>
+                    <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[#F4A340]"
+                        style={{
+                          width:
+                            stars === 5
+                              ? "60%" // 3 reviews
+                              : stars === 4
+                              ? "40%" // 2 reviews
+                              : "0%", // 0 reviews for 3,2,1 stars
+                        }}
+                      />
                     </div>
-                  );
-                })}
+                    <span className="text-sm text-gray-600 w-4">
+                      {stars === 5 ? "3" : stars === 4 ? "2" : "0"}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

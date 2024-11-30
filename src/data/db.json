@@ -39,6 +39,14 @@
       "created_at": "2024-02-15",
       "role": 3,
       "is_Login": true
+    },
+    {
+      "id": "6",
+      "email": "mary.sweet@email.com",
+      "password": "hashedPasswordJKL",
+      "created_at": "2024-03-10",
+      "role": 2,
+      "is_Login": false
     }
   ],
   "profiles": [
@@ -86,6 +94,15 @@
       "age": "29",
       "sex": "Female",
       "img": "dummy_profile_url"
+    },
+    {
+      "id": "6",
+      "user_id": 6,
+      "first_name": "Mary",
+      "last_name": "Sweet",
+      "age": "35",
+      "sex": "Female",
+      "img": "../../public/assets/profile/Sweet_Baker.jpg"
     }
   ],
   "addresses": [
@@ -138,6 +155,16 @@
       "postal_code": 10005,
       "description": "Main Street",
       "type": 1
+    },
+    {
+      "id": "6",
+      "user_id": 6,
+      "first_name": "Mary",
+      "last_name": "Sweet",
+      "location": "Ampayon",
+      "postal_code": 8600,
+      "description": "Km. 3 National Highway",
+      "type": 1
     }
   ],
   "businesses": [
@@ -181,7 +208,7 @@
     },
     {
       "id": "3",
-      "user_id": 0,
+      "user_id": 6,
       "name": "Sweet Haven Cakes & Pastries",
       "description": "Welcome to Sweet Haven! We create delightful cakes and pastries perfect for any occasion. Our baked goods are made fresh daily using premium ingredients, bringing you the perfect blend of traditional recipes and modern flavors.",
       "location": {
@@ -539,6 +566,102 @@
         "../assets/ClassicPalmierv1.jpg",
         "../assets/ClassicPalmierv2.jpg",
         "../assets/ClassicPalmierv3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "21",
+      "business_id": 3,
+      "cat_id": 1,
+      "prod_name": "Classic Cheesecake",
+      "description": "New York style cheesecake with graham cracker crust",
+      "price": 549.99,
+      "rate": 4.7,
+      "qty": 10,
+      "images": [
+        "../assets/ClassicCheesecakev1.jpg",
+        "../assets/ClassicCheesecakev2.jpg",
+        "../assets/ClassicCheesecakev3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "22",
+      "business_id": 3,
+      "cat_id": 1,
+      "prod_name": "Chocolate Dream Layer Cake",
+      "description": "Decadent chocolate layer cake with rich ganache",
+      "price": 649.99,
+      "rate": 4.8,
+      "qty": 8,
+      "images": [
+        "../assets/ChocolateDreamLayerCakev1.jpg",
+        "../assets/ChocolateDreamLayerCakev2.jpg",
+        "../assets/ChocolateDreamLayerCakev3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "23",
+      "business_id": 3,
+      "cat_id": 2,
+      "prod_name": "Classic Cream Puff",
+      "description": "Light choux pastry filled with vanilla cream",
+      "price": 249.99,
+      "rate": 4.7,
+      "qty": 15,
+      "images": [
+        "../assets/ClassicCreamPuffv1.jpg",
+        "../assets/ClassicCreamPuffv2.jpg",
+        "../assets/ClassicCreamPuffv3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "24",
+      "business_id": 3,
+      "cat_id": 2,
+      "prod_name": "Chocolate Profiteroles",
+      "description": "Light choux pastry filled with cream and topped with chocolate",
+      "price": 299.99,
+      "rate": 4.8,
+      "qty": 12,
+      "images": [
+        "../assets/ChocolateProfiterolesv1.jpg",
+        "../assets/ChocolateProfiterolesv2.jpg",
+        "../assets/ChocolateProfiterolesv3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "25",
+      "business_id": 3,
+      "cat_id": 3,
+      "prod_name": "Classic French Croissant",
+      "description": "Traditional French croissant with perfect layers",
+      "price": 99.99,
+      "rate": 4.7,
+      "qty": 20,
+      "images": [
+        "../assets/ClassicFrenchCroissantv1.jpg",
+        "../assets/ClassicFrenchCroissantv2.jpg",
+        "../assets/ClassicFrenchCroissantv3.jpg"
+      ],
+      "is_available": true
+    },
+    {
+      "id": "26",
+      "business_id": 3,
+      "cat_id": 4,
+      "prod_name": "Artisanal Focaccia",
+      "description": "Italian herb-infused focaccia with premium olive oil",
+      "price": 189.99,
+      "rate": 4.8,
+      "qty": 10,
+      "images": [
+        "../assets/ArtisanalFocacciav1.jpg",
+        "../assets/ArtisanalFocacciav2.jpg",
+        "../assets/ArtisanalFocacciav3.jpg"
       ],
       "is_available": true
     }
