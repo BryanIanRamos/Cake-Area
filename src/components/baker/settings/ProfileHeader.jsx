@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Icon } from "@iconify/react";
 import VerificationModal from "./VerificationModal";
 
-const ProfileHeader = ({ profileImage, storeName }) => {
+const ProfileHeader = ({ profileImage, fullName, storeName }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [isPending, setIsPending] = useState(false);
@@ -41,7 +41,7 @@ const ProfileHeader = ({ profileImage, storeName }) => {
         <div className="flex justify-between items-center absolute -bottom-16 left-44 right-8">
           <div className="flex flex-col pt-2">
             <div className="flex items-center gap-2">
-              <h2 className="text-xl font-bold">{storeName}</h2>
+              <h2 className="text-xl font-bold">{fullName}</h2>
               <div className="relative group">
                 <Icon
                   icon="codicon:verified-filled"

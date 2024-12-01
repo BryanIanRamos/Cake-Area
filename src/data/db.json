@@ -81,7 +81,8 @@
       "sex": "Female",
       "img": "../assets/profile/Lisa_Baker.png",
       "phone_number": "09345678901",
-      "date_of_birth": "1993-07-10"
+      "date_of_birth": "1993-07-10",
+      "email": "lisa.baker@email.com"
     },
     {
       "id": "4",

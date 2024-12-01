@@ -5,6 +5,12 @@ import PersonalInfoForm from "../../components/baker/settings/PersonalInfoForm";
 import BusinessInfoForm from "../../components/baker/settings/BusinessInfoForm";
 import SecurityForm from "../../components/baker/settings/SecurityForm";
 import DummyProfile from "../../assets/Dummy_Profile.png";
+import {
+  updateProfile,
+  updateBusiness,
+  updateSecurity,
+} from "../../utils/updateProfile";
+import SuccessModal from "../../components/common/SuccessModal";
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState("profile");
@@ -27,6 +33,7 @@ const Settings = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [successModal, setSuccessModal] = useState(null);
 
   useEffect(() => {
     const fetchBakerData = async () => {
@@ -93,9 +100,87 @@ const Settings = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+    // Update the form data immediately when input changes
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+    }));
+
+    // Optional: You can also update the database in real-time
+    // but it's generally better to wait for form submission
+    // to avoid too many API calls
+  };
+
+  const showSuccessModal = (message) => {
+    setSuccessModal(message);
+  };
+
+  const handleProfileUpdate = async (updates) => {
+    try {
+      const userId = localStorage.getItem("userId");
+      await updateProfile(userId, updates);
+
+      setFormData((prev) => ({
+        ...prev,
+        firstName: updates.first_name,
+        lastName: updates.last_name,
+        phone: updates.phone_number,
+        birthDate: updates.date_of_birth,
+        email: updates.email,
+      }));
+
+      showSuccessModal("Your profile has been successfully updated");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("Failed to update profile. Please try again.");
+    }
+  };
+
+  const handleBusinessUpdate = async (updates) => {
+    try {
+      const userId = localStorage.getItem("userId");
+      await updateBusiness(userId, updates);
+
+      setFormData((prev) => ({
+        ...prev,
+        businessName: updates.name,
+        businessEmail: updates.email,
+        businessDescription: updates.description,
+      }));
+
+      showSuccessModal(
+        "Your business information has been successfully updated"
+      );
+    } catch (error) {
+      console.error("Error updating business:", error);
+      alert("Failed to update business information. Please try again.");
+    }
+  };
+
+  const handleSecurityUpdate = async (updates) => {
+    try {
+      const userId = localStorage.getItem("userId");
+      await updateSecurity(userId, updates);
+
+      setFormData((prev) => ({
+        ...prev,
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      }));
+
+      showSuccessModal("Your password has been successfully updated");
+    } catch (error) {
+      console.error("Error updating security:", error);
+      alert("Failed to update password. Please try again.");
+    }
+  };
+
+  const handleImageUpdate = (tempImageUrl) => {
+    setFormData((prev) => ({
+      ...prev,
+      profileImage: tempImageUrl,
     }));
   };
 
@@ -156,8 +241,9 @@ const Settings = () => {
           <div className="bg-white rounded-xl border border-gray-200 p-6 mb-4">
             <ProfileHeader
               profileImage={formData.profileImage}
+              fullName={`${formData.firstName} ${formData.lastName}`}
               storeName={formData.storeName}
-              verified={formData.verified}
+              onImageUpdate={handleImageUpdate}
             />
           </div>
 
@@ -186,23 +272,26 @@ const Settings = () => {
             {/* Right Form Section */}
             <div className="flex-1">
               <div className="bg-white rounded-xl border border-gray-200 p-8">
-                <form>
+                <form onSubmit={(e) => e.preventDefault()}>
                   {activeTab === "profile" && (
                     <PersonalInfoForm
                       formData={formData}
                       handleInputChange={handleInputChange}
+                      onSubmit={handleProfileUpdate}
                     />
                   )}
                   {activeTab === "business" && (
                     <BusinessInfoForm
                       formData={formData}
                       handleInputChange={handleInputChange}
+                      onSubmit={handleBusinessUpdate}
                     />
                   )}
                   {activeTab === "security" && (
                     <SecurityForm
                       formData={formData}
                       handleInputChange={handleInputChange}
+                      onSubmit={handleSecurityUpdate}
                     />
                   )}
                 </form>
@@ -211,6 +300,12 @@ const Settings = () => {
           </div>
         </div>
       </div>
+      {successModal && (
+        <SuccessModal
+          message={successModal}
+          onClose={() => setSuccessModal(null)}
+        />
+      )}
     </BakerLayout>
   );
 };
