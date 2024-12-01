@@ -763,6 +763,32 @@ const ProductCard = ({ product, onEdit, onDelete, deleteMode }) => {
   const currentImageIndex = useImageCarousel(product.images, isHovered);
   const [isScaling, setIsScaling] = useState(false);
 
+  // Effect to handle scaling animation on hover
+  useEffect(() => {
+    if (isHovered) {
+      setIsScaling(true);
+      const timer = setTimeout(() => {
+        setIsScaling(false);
+      }, 4000); // Match this duration with the CSS transition duration
+
+      return () => clearTimeout(timer);
+    } else {
+      setIsScaling(false); // Reset scaling when not hovered
+    }
+  }, [isHovered]);
+
+  // Effect to reset scaling after the third image
+  useEffect(() => {
+    if (currentImageIndex === 2) {
+      // Check if it's the third image (index 2)
+      const timer = setTimeout(() => {
+        setIsScaling(false); // Reset to normal scale after 2 seconds
+      }, 2000); // 2 seconds delay
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentImageIndex]);
+
   return (
     <div className="bg-white rounded-lg shadow-md p-4 flex flex-col h-full">
       <div

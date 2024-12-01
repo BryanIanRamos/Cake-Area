@@ -42,26 +42,6 @@ export let categoryData = loadFromLocalStorage("categoryData", {
       cat_id: 10,
       name: "Specialty Desserts",
     },
-    // {
-    //   cat_id: 11,
-    //   name: "Rolls1",
-    // },
-    // {
-    //   cat_id: 12,
-    //   name: "Rolls2",
-    // },
-    // {
-    //   cat_id: 13,
-    //   name: "Rolls3",
-    // },
-    // {
-    //   cat_id: 14,
-    //   name: "Rolls4",
-    // },
-    // {
-    //   cat_id: 15,
-    //   name: "Rolls5",
-    // },
   ],
 });
 
