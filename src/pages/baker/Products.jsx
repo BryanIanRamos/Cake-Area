@@ -140,7 +140,7 @@ const Products = () => {
         case "ordered":
           return (b.num_orders || 0) - (a.num_orders || 0);
         case "viewed":
-          return (b.views || 0) - (a.views || 0);
+          return (b.num_visits || 0) - (a.num_visits || 0);
         default:
           return 0;
       }
@@ -369,7 +369,8 @@ const ProductCard = ({ product }) => {
 
   // Effect to reset scaling after the third image
   useEffect(() => {
-    if (currentImageIndex === 2) { // Check if it's the third image (index 2)
+    if (currentImageIndex === 2) {
+      // Check if it's the third image (index 2)
       const timer = setTimeout(() => {
         setIsScaling(false); // Reset to normal scale after 2 seconds
       }, 2000); // 2 seconds delay
@@ -379,7 +380,10 @@ const ProductCard = ({ product }) => {
   }, [currentImageIndex]);
 
   return (
-    <div key={product.id} className="bg-white rounded-lg shadow-md p-4">
+    <div
+      key={product.id}
+      className="bg-white rounded-lg shadow-md p-4 flex flex-col h-full"
+    >
       <div
         className="relative w-full h-40 mb-4 overflow-hidden"
         onMouseEnter={() => setIsHovered(true)}
@@ -391,7 +395,7 @@ const ProductCard = ({ product }) => {
           className={`
             w-full h-full object-cover rounded-lg 
             transition-transform duration-[4000ms]
-            ${isScaling ? 'scale-125' : 'scale-100'}
+            ${isScaling ? "scale-125" : "scale-100"}
           `}
         />
 
@@ -402,9 +406,10 @@ const ProductCard = ({ product }) => {
                 key={index}
                 className={`
                   w-1.5 h-1.5 rounded-full 
-                  ${currentImageIndex === index 
-                    ? 'bg-white scale-110' 
-                    : 'bg-white/50 scale-100'
+                  ${
+                    currentImageIndex === index
+                      ? "bg-white scale-110"
+                      : "bg-white/50 scale-100"
                   }
                 `}
               />
@@ -413,29 +418,39 @@ const ProductCard = ({ product }) => {
         )}
       </div>
 
-      {/* Rest of your product card content */}
-      <h3 className="font-medium text-lg mb-2">{product.prod_name}</h3>
-      <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
-        <div className="flex items-center gap-1">
+      {/* Product Info Section */}
+      <div className="flex-grow">
+        {/* Product Title */}
+        <h3 className="font-medium text-lg mb-2">{product.prod_name}</h3>
+
+        {/* Rating */}
+        <div className="flex items-center gap-1 text-sm text-gray-500">
           <Icon icon="ph:star-fill" className="text-[#F4A340]" />
-          {product.rate}
+          <span>{product.rate}</span>
         </div>
       </div>
 
-      <div className="flex justify-between text-sm text-gray-600 mt-3">
-        <div className="flex flex-col items-center">
-          <span>₱{product.price.toFixed(2)}</span>
-          <span className="text-xs">Price</span>
+      {/* Stats and Edit Button */}
+      <div className="flex justify-between items-center mt-3">
+        <div className="text-sm text-gray-600">
+          <div className="text-center">
+            <div>₱{product.price.toFixed(2)}</div>
+            <div className="text-xs">Price</div>
+          </div>
         </div>
 
-        <div className="flex flex-col items-center">
-          <span>{product.num_orders || 0}</span>
-          <span className="text-xs">Ordered</span>
+        <div className="text-sm text-gray-600">
+          <div className="text-center">
+            <div>{product.num_orders || 0}</div>
+            <div className="text-xs">Ordered</div>
+          </div>
         </div>
 
-        <div className="flex flex-col items-center">
-          <span>{product.num_visits || 0}</span>
-          <span className="text-xs">Viewed</span>
+        <div className="text-sm text-gray-600">
+          <div className="text-center">
+            <div>{product.num_visits || 0}</div>
+            <div className="text-xs">Viewed</div>
+          </div>
         </div>
 
         <button
