@@ -230,16 +230,10 @@ const Products = () => {
     e.preventDefault();
 
     try {
-      const tempImageUrls = selectedImages.map(file => URL.createObjectURL(file));
       const currentBusinessId = parseInt(localStorage.getItem('businessId'));
 
       if (editingProduct) {
-        // Handle Edit - require 3 images just like adding
-        if (selectedImages.length < 3) {
-          alert('Please select 3 images for the product');
-          return;
-        }
-
+        // Handle Edit
         const updatedProduct = {
           ...editingProduct,
           prod_name: newProduct.prod_name,
@@ -247,7 +241,7 @@ const Products = () => {
           price: parseFloat(newProduct.price),
           qty: parseInt(newProduct.qty),
           is_available: newProduct.is_available,
-          images: tempImageUrls  // Always use the newly selected images
+          images: editingProduct.images  // Use the images directly from editingProduct
         };
 
         setTempProducts(prev => 
@@ -272,7 +266,7 @@ const Products = () => {
           price: parseFloat(newProduct.price),
           rate: 0,
           qty: parseInt(newProduct.qty),
-          images: tempImageUrls,
+          images: selectedImages.map(file => URL.createObjectURL(file)),
           is_available: newProduct.is_available,
           num_visits: 0,
           num_orders: 0
@@ -523,58 +517,33 @@ const Products = () => {
               <div className="mt-2">
                 <p className="text-sm text-gray-600 mb-2">Selected Images</p>
                 <div className="grid grid-cols-3 gap-2">
-                  {editingProduct 
-                    ? editingProduct.images.map((imageUrl, index) => (
-                        <div key={index} className="relative">
-                          <img
-                            src={imageUrl}
-                            alt={`Preview ${index + 1}`}
-                            className="w-full h-20 object-cover rounded-lg"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const newImages = editingProduct.images.filter((_, i) => i !== index);
-                              setEditingProduct(prev => ({
-                                ...prev,
-                                images: newImages
-                              }));
-                              setNewProduct(prev => ({
-                                ...prev,
-                                images: newImages
-                              }));
-                              setSelectedImages(prev => prev.filter((_, i) => i !== index));
-                            }}
-                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                          >
-                            <Icon icon="mdi:close" className="text-xs" />
-                          </button>
-                        </div>
-                      ))
-                    : selectedImages.map((file, index) => (
-                        <div key={index} className="relative">
-                          <img
-                            src={URL.createObjectURL(file)}
-                            alt={`Preview ${index + 1}`}
-                            className="w-full h-20 object-cover rounded-lg"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const newImages = selectedImages.filter((_, i) => i !== index);
-                              setSelectedImages(newImages);
-                              setNewProduct(prev => ({
-                                ...prev,
-                                images: newImages.map(file => URL.createObjectURL(file))
-                              }));
-                            }}
-                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                          >
-                            <Icon icon="mdi:close" className="text-xs" />
-                          </button>
-                        </div>
-                      ))
-                  }
+                  {editingProduct && editingProduct.images.map((imageUrl, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={imageUrl}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-20 object-cover rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newImages = editingProduct.images.filter((_, i) => i !== index);
+                          setEditingProduct(prev => ({
+                            ...prev,
+                            images: newImages
+                          }));
+                          // Also update newProduct to keep states in sync
+                          setNewProduct(prev => ({
+                            ...prev,
+                            images: newImages
+                          }));
+                        }}
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                      >
+                        <Icon icon="mdi:close" className="text-xs" />
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -639,30 +608,28 @@ const ProductCard = ({ product, onEdit }) => {
       setIsScaling(true);
       const timer = setTimeout(() => {
         setIsScaling(false);
-      }, 4000);
+      }, 4000); // Match this duration with the CSS transition duration
 
       return () => clearTimeout(timer);
     } else {
-      setIsScaling(false);
+      setIsScaling(false); // Reset scaling when not hovered
     }
   }, [isHovered]);
 
   // Effect to reset scaling after the third image
   useEffect(() => {
     if (currentImageIndex === 2) {
+      // Check if it's the third image (index 2)
       const timer = setTimeout(() => {
-        setIsScaling(false);
-      }, 2000);
+        setIsScaling(false); // Reset to normal scale after 2 seconds
+      }, 2000); // 2 seconds delay
 
       return () => clearTimeout(timer);
     }
   }, [currentImageIndex]);
-
+  
   return (
-    <div
-      key={product.id}
-      className="bg-white rounded-lg shadow-md p-4 flex flex-col h-full"
-    >
+    <div className="bg-white rounded-lg shadow-md p-4 flex flex-col h-full">
       <div
         className="relative w-full h-40 mb-4 overflow-hidden"
         onMouseEnter={() => setIsHovered(true)}
@@ -685,7 +652,10 @@ const ProductCard = ({ product, onEdit }) => {
                 key={index}
                 className={`
                   w-1.5 h-1.5 rounded-full 
-                  ${currentImageIndex === index ? "bg-white scale-110" : "bg-white/50 scale-100"}
+                  ${currentImageIndex === index
+                    ? "bg-white scale-110"
+                    : "bg-white/50 scale-100"
+                  }
                 `}
               />
             ))}
