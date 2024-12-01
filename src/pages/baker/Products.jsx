@@ -30,7 +30,7 @@ const useImageCarousel = (images, hoverState) => {
 };
 
 const Products = () => {
-  // Add new state for products
+  // Group all useState declarations at the top
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [businessId, setBusinessId] = useState(null);
@@ -38,8 +38,19 @@ const Products = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("name");
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newProduct, setNewProduct] = useState({
+    prod_name: "",
+    description: "",
+    price: "",
+    qty: "",
+    rate: 0,
+    images: [],
+    is_available: true,
+  });
+  const [selectedImages, setSelectedImages] = useState([]);
 
-  // Add the missing ref
+  // Refs
   const categoriesRef = useRef(null);
 
   // Add useEffect to fetch categories
@@ -151,46 +162,84 @@ const Products = () => {
   const handleAddSubmit = async (e) => {
     e.preventDefault();
 
-    // ... existing validation ...
-
     try {
-      const productToAdd = {
-        ...newProduct,
-        business_id: businessId,
+      // Format product name for image filenames
+      const formattedName = newProduct.prod_name.replace(/\s+/g, '_');
+      
+      // Save images to public/assets
+      const imagePromises = selectedImages.map(async (file, index) => {
+        const extension = file.name.split('.').pop();
+        const newFileName = `${formattedName}${index + 1}.${extension}`;
+        const imagePath = `../assets/${newFileName}`;
+
+        // Create FormData to send image
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('filename', newFileName);
+
+        // Send image to server
+        await fetch('http://localhost:3000/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        return imagePath;
+      });
+
+      const savedImagePaths = await Promise.all(imagePromises);
+
+      // Get the latest product ID
+      const response = await fetch('http://localhost:3000/products');
+      const products = await response.json();
+      const lastId = Math.max(...products.map(p => parseInt(p.id)));
+      const newId = (lastId + 1).toString();
+
+      // Create new product object
+      const productData = {
+        id: newId,
+        business_id: parseInt(localStorage.getItem('businessId')), // Get from your auth context
+        cat_id: 1, // You might want to add category selection to your form
+        prod_name: newProduct.prod_name,
+        description: newProduct.description,
         price: parseFloat(newProduct.price),
-        cat_id: parseInt(newProduct.cat_id),
+        rate: 0, // Initial rating
+        qty: parseInt(newProduct.qty),
+        images: savedImagePaths,
+        is_available: newProduct.is_available,
+        num_visits: 0, // Initial visits
+        num_orders: 0  // Initial orders
       };
 
-      const response = await fetch("http://localhost:3000/products", {
-        method: "POST",
+      // Save product data to db.json
+      const saveResponse = await fetch('http://localhost:3000/products', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(productToAdd),
+        body: JSON.stringify(productData)
       });
 
-      if (!response.ok) throw new Error("Failed to add product");
-      const data = await response.json();
+      if (!saveResponse.ok) throw new Error('Failed to save product');
 
-      // Update local state
-      setProducts([...products, data]);
-
-      setIsAddModalOpen(false);
+      // Reset form and close modal
       setNewProduct({
         prod_name: "",
-        price: "",
         description: "",
-        cat_id: "",
-        images: [],
+        price: "",
+        qty: "",
         rate: 0,
-        views: 0,
-        num_orders: 0,
+        images: [],
+        is_available: true
       });
       setSelectedImages([]);
-      showToast("Product added successfully! 🎉");
+      setIsAddModalOpen(false);
+
+      // Refresh product list
+      fetchProducts();
+
     } catch (error) {
-      console.error("Error adding product:", error);
-      showToast("Error adding product. Please try again.", "error");
+      console.error('Error saving product:', error);
+      alert('Failed to save product. Please try again.');
     }
   };
 
@@ -263,7 +312,31 @@ const Products = () => {
     );
   }
 
-  // ... rest of your component remains the same ...
+  // Add this handler for image selection
+  const handleImageSelect = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    if (selectedImages.length >= 3) {
+      alert('You can only upload 3 images. Please remove an image first.');
+      return;
+    }
+
+    setSelectedImages(prev => [...prev, file]);
+    setNewProduct(prev => ({
+      ...prev,
+      images: [...prev.images, URL.createObjectURL(file)]
+    }));
+  };
+
+  // Add this handler for form input changes
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setNewProduct((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
 
   // Add the return statement to render the products
   return (
@@ -344,6 +417,161 @@ const Products = () => {
           </div>
         </div>
       </div>
+
+      {/* Add Modal */}
+      {isAddModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg p-6 max-w-xl w-full">
+            <h2 className="text-2xl text-center font-medium text-[#E88F2A] mb-2">Add New Product</h2>
+            <p className="text-center text-gray-600 mb-4">Please fill in the product information to get started</p>
+
+            <form onSubmit={handleAddSubmit} className="space-y-3">
+              {/* Product Name and Price */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700 mb-1 text-sm">
+                    Product Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="prod_name"
+                    placeholder="Enter product name"
+                    value={newProduct.prod_name}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-1.5 rounded-lg border border-gray-300 focus:outline-none focus:border-[#E88F2A] text-sm"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 mb-1 text-sm">
+                    Price <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    name="price"
+                    placeholder="Enter price"
+                    value={newProduct.price}
+                    onChange={handleInputChange}
+                    step="0.01"
+                    className="w-full px-3 py-1.5 rounded-lg border border-gray-300 focus:outline-none focus:border-[#E88F2A] text-sm"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block text-gray-700 mb-1 text-sm">
+                  Description <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  name="description"
+                  placeholder="Enter product description"
+                  value={newProduct.description}
+                  onChange={handleInputChange}
+                  rows="2"
+                  className="w-full px-3 py-1.5 rounded-lg border border-gray-300 focus:outline-none focus:border-[#E88F2A] text-sm"
+                  required
+                />
+              </div>
+
+              {/* Quantity and Images in One Row */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700 mb-1 text-sm">
+                    Quantity <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    name="qty"
+                    placeholder="Enter quantity"
+                    value={newProduct.qty}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-1.5 rounded-lg border border-gray-300 focus:outline-none focus:border-[#E88F2A] text-sm"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 mb-1 text-sm">
+                    Product Images <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageSelect}
+                    className="w-full px-3 py-1.5 rounded-lg border border-gray-300 focus:outline-none focus:border-[#E88F2A] text-sm"
+                    required
+                  />
+                  <p className="text-xs text-gray-500 mt-1">(Upload 3 images one by one)</p>
+                </div>
+              </div>
+
+              {/* Image Preview */}
+              <div className="mt-2">
+                <p className="text-sm text-gray-600 mb-2">
+                  Selected Images: {selectedImages.length}/3
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {selectedImages.map((file, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-20 object-cover rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newImages = selectedImages.filter((_, i) => i !== index);
+                          setSelectedImages(newImages);
+                          setNewProduct(prev => ({
+                            ...prev,
+                            images: newImages.map(file => URL.createObjectURL(file))
+                          }));
+                        }}
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                      >
+                        <Icon icon="mdi:close" className="text-xs" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Availability */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="is_available"
+                  checked={newProduct.is_available}
+                  onChange={handleInputChange}
+                  className="rounded border-gray-300 text-[#E88F2A] focus:ring-[#E88F2A]"
+                />
+                <label className="text-sm text-gray-700">Available for Sale</label>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex justify-center gap-4 mt-4">
+                <button
+                  type="button"
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="px-8 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50"
+                >
+                  Close
+                </button>
+                <button
+                  type="submit"
+                  disabled={selectedImages.length < 3}
+                  className={`px-8 py-2 rounded-lg bg-[#E88F2A] text-white hover:bg-[#E88F2A]/90 
+                    ${selectedImages.length < 3 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  Add
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </BakerLayout>
   );
 };
