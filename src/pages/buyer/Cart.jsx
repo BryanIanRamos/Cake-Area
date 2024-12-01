@@ -70,6 +70,12 @@ const Cart = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+          console.error("No user ID found");
+          return;
+        }
+
         const [ordersResponse, businessResponse, productsResponse] =
           await Promise.all([
             fetch("http://localhost:3000/orders"),
@@ -84,8 +90,13 @@ const Cart = () => {
         // Store businesses in state
         setBusinesses(businesses);
 
-        // Filter orders for customer_id 2
-        const userOrders = orders.filter((order) => order.customer_id === 2);
+        // Filter orders for the logged-in user (ensure both are numbers for comparison)
+        const userOrders = orders.filter((order) => 
+          order.customer_id === Number(userId)
+        );
+
+        console.log('User ID from localStorage:', userId);
+        console.log('Filtered orders:', userOrders);
 
         // Map orders with business details and correct product images
         const ordersWithDetails = userOrders.map((order) => ({
@@ -94,7 +105,6 @@ const Cart = () => {
             (b) => b.id === order.business_id.toString()
           ),
           products: order.products.map((orderProduct) => {
-            // Find the matching product from products array
             const fullProduct = products.find(
               (p) => p.id === orderProduct.prod_id
             );
@@ -104,7 +114,7 @@ const Cart = () => {
           }),
         }));
 
-        // Set cart items (Pending orders)
+        // Set orders based on status
         setCartItems(
           ordersWithDetails.filter((order) => order.status === "Pending")
         );
@@ -120,6 +130,9 @@ const Cart = () => {
         setCancelledOrders(
           ordersWithDetails.filter((order) => order.status === "Cancelled")
         );
+
+        console.log('Orders with details:', ordersWithDetails);
+
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Failed to load orders");
@@ -156,24 +169,17 @@ const Cart = () => {
   // Update the grouping logic
   const groupOrdersByBusiness = (orders) => {
     return orders.reduce((acc, order) => {
-      const busId = order.business?.bus_id;
+      const busId = order.business?.id;
       if (!busId) return acc;
 
       if (!acc[busId]) {
         acc[busId] = {
           business: order.business,
-          order_id: order.order_id,
-          products: [],
-          images: order.images,
-          status: order.status,
-          total_amount: 0,
+          orders: [],
         };
       }
 
-      // Add all products from this order
-      acc[busId].products = [...acc[busId].products, ...order.products];
-      acc[busId].total_amount += order.total_amount || 0;
-
+      acc[busId].orders.push(order);
       return acc;
     }, {});
   };

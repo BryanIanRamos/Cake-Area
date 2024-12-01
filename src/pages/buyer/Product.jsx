@@ -107,17 +107,21 @@ const Product = () => {
   useEffect(() => {
     const fetchBusinessOwner = async () => {
       if (!product) return;
-      
+
       try {
         // First get the business details
-        const businessResponse = await fetch(`http://localhost:3000/businesses/${product.business_id}`);
+        const businessResponse = await fetch(
+          `http://localhost:3000/businesses/${product.business_id}`
+        );
         const business = await businessResponse.json();
-        
+
         // Then get the profile using the business's user_id
         const profileResponse = await fetch(`http://localhost:3000/profiles`);
         const profiles = await profileResponse.json();
-        const ownerProfile = profiles.find(profile => profile.user_id === business.user_id);
-        
+        const ownerProfile = profiles.find(
+          (profile) => profile.user_id === business.user_id
+        );
+
         if (ownerProfile) {
           setBusinessOwner(ownerProfile);
         }
@@ -303,23 +307,27 @@ const Product = () => {
 
   const handleConfirmAddToCart = async (selectedImageIndex) => {
     try {
-      console.log("Starting handleConfirmAddToCart..."); // Debug log
+      console.log("Starting handleConfirmAddToCart...");
+
+      // Get userId from localStorage
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        throw new Error("User not logged in");
+      }
 
       // Get existing orders to determine next ID
       const response = await fetch("http://localhost:3000/orders");
-      console.log("Fetched existing orders response:", response); // Debug log
-
       const existingOrders = await response.json();
-      console.log("Existing orders:", existingOrders); // Debug log
-
       const nextId = (existingOrders.length + 1).toString();
       const nextOrderId = `ORD${nextId.padStart(3, "0")}`;
+
+      const currentDate = new Date().toISOString();
 
       // Create new order object
       const newOrder = {
         id: nextId,
         order_id: nextOrderId,
-        customer_id: 2,
+        customer_id: parseInt(userId),
         business_id: product.business_id,
         products: [
           {
@@ -335,15 +343,13 @@ const Product = () => {
         ],
         total_amount: product.price * quantity,
         status: "Pending",
-        created_at: new Date().toISOString(),
+        created_at: currentDate,
         checkoutDate: "null",
         receiveDate: "null",
         downPayment: 0,
         remainingPayment: product.price * quantity,
-        paymentStatus: "null",
+        paymentStatus: "unpaid"
       };
-
-      console.log("New order to be added:", newOrder); // Debug log
 
       // Add new order to json-server
       const addOrderResponse = await fetch("http://localhost:3000/orders", {
@@ -354,25 +360,21 @@ const Product = () => {
         body: JSON.stringify(newOrder),
       });
 
-      console.log("Add order response:", addOrderResponse); // Debug log
-
       if (!addOrderResponse.ok) {
         throw new Error("Failed to add order");
       }
 
-      // Close modal
       setAddToCartModalOpen(false);
-
-      // Show success toast
       toast.success("Added to cart successfully!", {
         icon: <FiAlertCircle className="text-lg" />,
         className: "font-[Oswald]",
         position: "bottom-right",
         duration: 2000,
       });
+
     } catch (error) {
       console.error("Error adding to cart:", error);
-      toast.error("Failed to add to cart. Please try again.", {
+      toast.error(error.message || "Failed to add to cart. Please try again.", {
         icon: <FiAlertCircle className="text-lg" />,
         className: "font-[Oswald]",
         position: "bottom-right",
