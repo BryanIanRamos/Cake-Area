@@ -1,10 +1,45 @@
 import { useState } from "react";
 import AdminLayout from "../../components/admin/AdminLayout";
 
+const FeedbackModal = ({ isOpen, onClose, onConfirm, action, requestId }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">
+          Confirm {action}
+        </h3>
+        <p className="text-gray-600 mb-6">
+          Are you sure you want to {action.toLowerCase()} refund request #
+          {requestId}? This action cannot be undone.
+        </p>
+        <div className="flex justify-end space-x-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className={`px-4 py-2 rounded-md text-white ${
+              action === "Reject"
+                ? "bg-red-600 hover:bg-red-700"
+                : "bg-green-600 hover:bg-green-700"
+            }`}
+          >
+            Confirm {action}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const RefundRequests = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
-
-  const refundRequests = [
+  const [refundRequests, setRefundRequests] = useState([
     {
       id: 1,
       orderNumber: "ORD001",
@@ -41,20 +76,63 @@ const RefundRequests = () => {
       product: "Carrot Spice Cake",
       evidence: "../assets/CarrotSpiceCakev1.jpg",
     },
-  ];
+  ]);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalAction, setModalAction] = useState("");
+  const [modalRequestId, setModalRequestId] = useState(null);
 
   const handleApprove = (id) => {
-    // Implement approve logic
-    console.log("Approved request:", id);
+    setModalAction("Approve");
+    setModalRequestId(id);
+    setModalOpen(true);
   };
 
   const handleReject = (id) => {
-    // Implement reject logic
-    console.log("Rejected request:", id);
+    setModalAction("Reject");
+    setModalRequestId(id);
+    setModalOpen(true);
+  };
+
+  const handleModalConfirm = () => {
+    const newStatus = modalAction === "Approve" ? "Approved" : "Rejected";
+
+    setRefundRequests((prevRequests) =>
+      prevRequests.map((request) =>
+        request.id === modalRequestId
+          ? { ...request, status: newStatus }
+          : request
+      )
+    );
+
+    if (selectedRequest?.id === modalRequestId) {
+      setSelectedRequest((prev) => ({ ...prev, status: newStatus }));
+    }
+
+    setModalOpen(false);
+  };
+
+  const getStatusBadgeClass = (status) => {
+    switch (status) {
+      case "Approved":
+        return "bg-green-100 text-green-800";
+      case "Rejected":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-yellow-100 text-yellow-800";
+    }
   };
 
   return (
     <AdminLayout>
+      <FeedbackModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={handleModalConfirm}
+        action={modalAction}
+        requestId={modalRequestId}
+      />
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Refund Requests List */}
         <div className="lg:col-span-2">
@@ -105,7 +183,11 @@ const RefundRequests = () => {
                         ₱{request.amount}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                        <span
+                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(
+                            request.status
+                          )}`}
+                        >
                           {request.status}
                         </span>
                       </td>
@@ -173,13 +255,23 @@ const RefundRequests = () => {
                   <div className="pt-4 flex space-x-3">
                     <button
                       onClick={() => handleApprove(selectedRequest.id)}
-                      className="flex-1 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+                      disabled={selectedRequest.status !== "Pending"}
+                      className={`flex-1 px-4 py-2 rounded-md ${
+                        selectedRequest.status === "Pending"
+                          ? "bg-green-600 hover:bg-green-700 text-white"
+                          : "bg-gray-300 cursor-not-allowed text-gray-500"
+                      }`}
                     >
                       Approve Refund
                     </button>
                     <button
                       onClick={() => handleReject(selectedRequest.id)}
-                      className="flex-1 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
+                      disabled={selectedRequest.status !== "Pending"}
+                      className={`flex-1 px-4 py-2 rounded-md ${
+                        selectedRequest.status === "Pending"
+                          ? "bg-red-600 hover:bg-red-700 text-white"
+                          : "bg-gray-300 cursor-not-allowed text-gray-500"
+                      }`}
                     >
                       Reject Refund
                     </button>

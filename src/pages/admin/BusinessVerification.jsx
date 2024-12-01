@@ -3,82 +3,99 @@ import AdminLayout from '../../components/admin/AdminLayout';
 import { busVerificationData, updateVerificationStatus } from '../../data/busVerificationData';
 import { userData } from '../../data/userDataTbl';
 
+const FeedbackModal = ({ isOpen, onClose, onConfirm, action, applicationId }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">
+          Confirm {action}
+        </h3>
+        <p className="text-gray-600 mb-6">
+          Are you sure you want to {action.toLowerCase()} application #{applicationId}? 
+          This action cannot be undone.
+        </p>
+        <div className="flex justify-end space-x-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className={`px-4 py-2 rounded-md text-white ${
+              action === 'Reject' ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'
+            }`}
+          >
+            Confirm {action}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const BusinessVerification = () => {
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [viewImage, setViewImage] = useState(null);
   const [verificationRequests, setVerificationRequests] = useState(
     busVerificationData.verificationRequests
   );
-
-  const showToast = (message, type) => {
-    setToast({
-      show: true,
-      message,
-      type
-    });
-
-    setTimeout(() => {
-      setToast(prev => ({ ...prev, show: false }));
-    }, 2000);
-  };
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalAction, setModalAction] = useState("");
+  const [modalApplicationId, setModalApplicationId] = useState(null);
 
   const handleVerification = (id, action) => {
     const request = verificationRequests.find(req => req.verification_id === id);
     
     if (!request || request.status !== 'Pending') {
-      showToast(
-        `This application has already been ${request.status.toLowerCase()}.`,
-        "warning"
-      );
       return;
     }
 
-    const newStatus = action === 'approve' ? 'Approved' : 'Rejected';
-    const success = updateVerificationStatus(id, newStatus);
+    setModalAction(action === 'approve' ? 'Approve' : 'Reject');
+    setModalApplicationId(id);
+    setModalOpen(true);
+  };
+
+  const handleModalConfirm = () => {
+    const newStatus = modalAction === 'Approve' ? 'Approved' : 'Rejected';
+    const success = updateVerificationStatus(modalApplicationId, newStatus);
     
     if (success) {
       setVerificationRequests(prevRequests =>
         prevRequests.map(request =>
-          request.verification_id === id
+          request.verification_id === modalApplicationId
             ? { ...request, status: newStatus }
             : request
         )
       );
 
-      if (selectedApplication && selectedApplication.verification_id === id) {
+      if (selectedApplication && selectedApplication.verification_id === modalApplicationId) {
         setSelectedApplication(prev => ({
           ...prev,
           status: newStatus
         }));
       }
-
-      showToast(
-        `Application ${id} has been ${action === 'approve' ? 'approved' : 'rejected'} successfully.`,
-        action === 'approve' ? "success" : "error"
-      );
     }
+    setModalOpen(false);
   };
 
   const handleImageView = (imageUrl) => {
     setViewImage(imageUrl);
   };
 
-  const [toast, setToast] = useState({
-    show: false,
-    message: "",
-    type: "success"
-  });
-
-  useEffect(() => {
-    return () => {
-      if (toast.show) {
-        setToast(prev => ({ ...prev, show: false }));
-      }
-    };
-  }, []);
-
   return (
     <AdminLayout>
+      <FeedbackModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={handleModalConfirm}
+        action={modalAction}
+        applicationId={modalApplicationId}
+      />
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow">
@@ -237,19 +254,6 @@ const BusinessVerification = () => {
               Close Preview
             </button>
           </div>
-        </div>
-      )}
-
-      {toast.show && (
-        <div 
-          className={`fixed bottom-4 right-4 px-4 py-2 rounded-lg shadow-lg
-            ${toast.type === 'success' ? 'bg-green-500' :
-              toast.type === 'error' ? 'bg-red-500' :
-              'bg-yellow-500'} 
-            text-white
-            transition-opacity duration-300 ease-in-out`}
-        >
-          <p>{toast.message}</p>
         </div>
       )}
     </AdminLayout>
