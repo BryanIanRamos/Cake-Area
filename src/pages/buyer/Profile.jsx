@@ -13,6 +13,17 @@ const Profile = ({ isLoggedIn, userName }) => {
   const [userData, setUserData] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [selectedGender, setSelectedGender] = useState("");
+  const [isEditing, setIsEditing] = useState({
+    email: false,
+    phone: false,
+    dateOfBirth: false
+  });
+  const [formData, setFormData] = useState({
+    email: "",
+    phone_number: "",
+    date_of_birth: "",
+    sex: ""
+  });
   const gender = ["Male", "Female", "Prefer not to say"];
 
   useEffect(() => {
@@ -20,8 +31,11 @@ const Profile = ({ isLoggedIn, userName }) => {
     if (userId) {
       // Fetch user data
       fetch(`http://localhost:3000/users/${userId}`)
-        .then((res) => res.json())
-        .then((data) => setUserData(data));
+        .then(res => res.json())
+        .then(data => {
+          setUserData(data);
+          setFormData(prev => ({ ...prev, email: data.email }));
+        });
 
       // Fetch profile data
       fetch(`http://localhost:3000/profiles?user_id=${userId}`)
@@ -30,7 +44,12 @@ const Profile = ({ isLoggedIn, userName }) => {
           if (data.length > 0) {
             setUserProfile(data[0]);
             setSelectedGender(data[0].sex || "");
-            // Set initial image if available
+            setFormData(prev => ({
+              ...prev,
+              phone_number: data[0].phone_number || "",
+              date_of_birth: data[0].date_of_birth || "",
+              sex: data[0].sex || ""
+            }));
             if (data[0].img && data[0].img !== "dummy_profile_url") {
               setImage(data[0].img);
             }
@@ -38,6 +57,67 @@ const Profile = ({ isLoggedIn, userName }) => {
         });
     }
   }, []);
+
+  const handleChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const toggleEdit = (field) => {
+    setIsEditing(prev => ({
+      ...prev,
+      [field]: !prev[field]
+    }));
+  };
+
+  const handleSave = async () => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) return;
+
+    try {
+      // Update user data (email)
+      await fetch(`http://localhost:3000/users/${userId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email
+        })
+      });
+
+      // Update profile data
+      const profileResponse = await fetch(`http://localhost:3000/profiles?user_id=${userId}`);
+      const profiles = await profileResponse.json();
+      if (profiles.length > 0) {
+        await fetch(`http://localhost:3000/profiles/${profiles[0].id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            phone_number: formData.phone_number,
+            date_of_birth: formData.date_of_birth,
+            sex: selectedGender
+          })
+        });
+      }
+
+      // Reset editing states
+      setIsEditing({
+        email: false,
+        phone: false,
+        dateOfBirth: false
+      });
+
+      // Refresh data
+      window.location.reload();
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
+  };
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -100,28 +180,46 @@ const Profile = ({ isLoggedIn, userName }) => {
                 <div className="grid grid-cols-3 gap-4 items-center">
                   <p className="text-end">Email</p>
                   <div className="col-span-2 flex gap-4">
-                    <div className="text-gray-800">
-                      <HideContact
-                        contact={userData?.email || ""}
-                        type={"email"}
+                    {isEditing.email ? (
+                      <input
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => handleChange('email', e.target.value)}
+                        className="border bg-gray-100 p-1 flex-grow"
                       />
-                    </div>
-                    <button className="underline text-blue-500 hover:text-blue-300">
-                      Change
+                    ) : (
+                      <div className="text-gray-800">
+                        <HideContact contact={userData?.email || ""} type={"email"} />
+                      </div>
+                    )}
+                    <button 
+                      className="underline text-blue-500 hover:text-blue-300"
+                      onClick={() => toggleEdit('email')}
+                    >
+                      {isEditing.email ? 'Cancel' : 'Change'}
                     </button>
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-4 items-center">
                   <p className="text-end">Phone Number</p>
-                  <div className="flex gap-4 col-span-2">
-                    <div>
-                      <HideContact
-                        contact={userProfile?.phone_number || ""}
-                        type={"phone"}
+                  <div className="col-span-2 flex gap-4">
+                    {isEditing.phone ? (
+                      <input
+                        type="tel"
+                        value={formData.phone_number}
+                        onChange={(e) => handleChange('phone_number', e.target.value)}
+                        className="border bg-gray-100 p-1 flex-grow"
                       />
-                    </div>
-                    <button className="underline text-blue-500 hover:text-blue-300">
-                      Change
+                    ) : (
+                      <div>
+                        <HideContact contact={userProfile?.phone_number || ""} type={"phone"} />
+                      </div>
+                    )}
+                    <button 
+                      className="underline text-blue-500 hover:text-blue-300"
+                      onClick={() => toggleEdit('phone')}
+                    >
+                      {isEditing.phone ? 'Cancel' : 'Change'}
                     </button>
                   </div>
                 </div>
@@ -131,24 +229,42 @@ const Profile = ({ isLoggedIn, userName }) => {
                     <RadioOption
                       options={gender}
                       defaultValue={selectedGender}
-                      onChange={(value) => setSelectedGender(value)}
+                      onChange={(value) => {
+                        setSelectedGender(value);
+                        handleChange('sex', value);
+                      }}
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-4 items-center">
                   <p className="text-end">Date of Birth</p>
                   <div className="col-span-2 flex gap-4 w-full">
-                    <input
-                      type="text"
-                      value={userProfile?.date_of_birth || ""}
-                      className="border bg-gray-100 p-1 flex-grow"
-                      readOnly
-                    />
+                    {isEditing.dateOfBirth ? (
+                      <input
+                        type="date"
+                        value={formData.date_of_birth}
+                        onChange={(e) => handleChange('date_of_birth', e.target.value)}
+                        className="border bg-gray-100 p-1 flex-grow"
+                      />
+                    ) : (
+                      <input
+                        type="text"
+                        value={userProfile?.date_of_birth || ""}
+                        className="border bg-gray-100 p-1 flex-grow"
+                        readOnly
+                      />
+                    )}
+                    <button 
+                      className="underline text-blue-500 hover:text-blue-300"
+                      onClick={() => toggleEdit('dateOfBirth')}
+                    >
+                      {isEditing.dateOfBirth ? 'Cancel' : 'Change'}
+                    </button>
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-4 items-center h-fit my-3">
                   <div></div>
-                  <Button label="Save" paddingX={2} paddingY={1} />
+                  <Button label="Save" paddingX={2} paddingY={1} onClick={handleSave} />
                   <div></div>
                 </div>
               </div>
