@@ -18,6 +18,11 @@ const Sidebar = ({ isExpanded, setIsExpanded, userName, profileImage }) => {
     { title: "Orders", icon: "mdi:cart", path: "/dashboard/orders" },
     { title: "Products", icon: "mdi:cake", path: "/dashboard/products" },
     {
+      title: "Messages",
+      icon: "material-symbols:chat",
+      path: "/dashboard/messages",
+    },
+    {
       title: "Statistics",
       icon: "mdi:chart-bar",
       path: "/dashboard/statistics",

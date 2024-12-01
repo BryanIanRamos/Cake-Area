@@ -30,6 +30,7 @@ import BusinessVerification from "./pages/admin/BusinessVerification";
 import ReportedContent from "./pages/admin/ReportedContent";
 import AccountManagement from "./pages/admin/AccountManagement";
 import AdminLogin from "./pages/admin/Login";
+import Messages from "./pages/baker/Messages";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -62,6 +63,7 @@ function App() {
         <Route path="/dashboard/reviews" element={<Reviews />} />
         <Route path="/dashboard/settings" element={<Settings />} />
         <Route path="/dashboard/statistics" element={<Statistics />} />
+        <Route path="/dashboard/messages" element={<Messages />} />
 
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />
