@@ -310,15 +310,24 @@ const Products = () => {
     const file = e.target.files[0];
     if (!file) return;
     
-    setSelectedImages(prev => [...prev, file]);
-    setNewProduct(prev => ({
-      ...prev,
-      images: [...prev.images, URL.createObjectURL(file)]
-    }));
-    setEditingProduct(prev => ({
-      ...prev,
-      images: [...prev.images, URL.createObjectURL(file)]
-    }));
+    const imageUrl = URL.createObjectURL(file);
+    
+    if (editingProduct) {
+      setEditingProduct(prev => ({
+        ...prev,
+        images: [...prev.images, imageUrl]
+      }));
+      setNewProduct(prev => ({
+        ...prev,
+        images: [...prev.images, imageUrl]
+      }));
+    } else {
+      setSelectedImages(prev => [...prev, file]);
+      setNewProduct(prev => ({
+        ...prev,
+        images: [...prev.images, imageUrl]
+      }));
+    }
   };
 
   // Add this handler for form input changes
@@ -517,33 +526,57 @@ const Products = () => {
               <div className="mt-2">
                 <p className="text-sm text-gray-600 mb-2">Selected Images</p>
                 <div className="grid grid-cols-3 gap-2">
-                  {editingProduct && editingProduct.images.map((imageUrl, index) => (
-                    <div key={index} className="relative">
-                      <img
-                        src={imageUrl}
-                        alt={`Preview ${index + 1}`}
-                        className="w-full h-20 object-cover rounded-lg"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const newImages = editingProduct.images.filter((_, i) => i !== index);
-                          setEditingProduct(prev => ({
-                            ...prev,
-                            images: newImages
-                          }));
-                          // Also update newProduct to keep states in sync
-                          setNewProduct(prev => ({
-                            ...prev,
-                            images: newImages
-                          }));
-                        }}
-                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                      >
-                        <Icon icon="mdi:close" className="text-xs" />
-                      </button>
-                    </div>
-                  ))}
+                  {editingProduct 
+                    ? editingProduct.images.map((imageUrl, index) => (
+                        <div key={index} className="relative">
+                          <img
+                            src={imageUrl}
+                            alt={`Preview ${index + 1}`}
+                            className="w-full h-20 object-cover rounded-lg"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newImages = editingProduct.images.filter((_, i) => i !== index);
+                              setEditingProduct(prev => ({
+                                ...prev,
+                                images: newImages
+                              }));
+                              setNewProduct(prev => ({
+                                ...prev,
+                                images: newImages
+                              }));
+                            }}
+                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                          >
+                            <Icon icon="mdi:close" className="text-xs" />
+                          </button>
+                        </div>
+                      ))
+                    : newProduct.images.map((imageUrl, index) => (
+                        <div key={index} className="relative">
+                          <img
+                            src={imageUrl}
+                            alt={`Preview ${index + 1}`}
+                            className="w-full h-20 object-cover rounded-lg"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newImages = newProduct.images.filter((_, i) => i !== index);
+                              setNewProduct(prev => ({
+                                ...prev,
+                                images: newImages
+                              }));
+                              setSelectedImages(prev => prev.filter((_, i) => i !== index));
+                            }}
+                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                          >
+                            <Icon icon="mdi:close" className="text-xs" />
+                          </button>
+                        </div>
+                      ))
+                  }
                 </div>
               </div>
 
