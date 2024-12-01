@@ -135,13 +135,15 @@ const Profile = ({ isLoggedIn, userName }) => {
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-4 items-center border">
-                  <p className="text-end border">Date of Birth</p>
-                  <div className="flex gap-4 border w-full">
-                    <p>{userProfile?.date_of_birth || ""}</p>
-                    <button className="underline text-blue-500 hover:text-blue-300 border">
-                      Change
-                    </button>
+                <div className="grid grid-cols-3 gap-4 items-center">
+                  <p className="text-end">Date of Birth</p>
+                  <div className="col-span-2 flex gap-4 w-full">
+                    <input
+                      type="text"
+                      value={userProfile?.date_of_birth || ""}
+                      className="border bg-gray-100 p-1 flex-grow"
+                      readOnly
+                    />
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-4 items-center h-fit my-3">
