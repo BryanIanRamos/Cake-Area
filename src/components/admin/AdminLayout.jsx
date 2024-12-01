@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { userData } from "../../data/userDataTbl";
 
 const AdminLayout = ({ children }) => {
   const navigate = useNavigate();
@@ -12,19 +11,43 @@ const AdminLayout = ({ children }) => {
   });
 
   useEffect(() => {
-    const adminData = localStorage.getItem("adminData");
-    if (adminData) {
-      const { admin_id } = JSON.parse(adminData);
-      const admin = userData.users.find((user) => user.user_id === admin_id);
-      if (admin) {
-        const name = admin.email.split("@")[0];
-        const formattedName = name
-          .split(".")
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(" ");
-        setAdminName(formattedName);
+    const fetchAdminData = async () => {
+      try {
+        const adminData = localStorage.getItem("adminData");
+        if (adminData) {
+          const { admin_id } = JSON.parse(adminData);
+
+          // Fetch user data from JSON server
+          const userResponse = await fetch(
+            `http://localhost:3000/users/${admin_id}`
+          );
+          const userData = await userResponse.json();
+
+          // Fetch profile data from JSON server
+          const profileResponse = await fetch(
+            `http://localhost:3000/profiles?user_id=${admin_id}`
+          );
+          const profiles = await profileResponse.json();
+
+          if (profiles.length > 0) {
+            const { first_name, last_name } = profiles[0];
+            setAdminName(`${first_name} ${last_name}`);
+          } else {
+            // Fallback to email if no profile found
+            const name = userData.email.split("@")[0];
+            const formattedName = name
+              .split(".")
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(" ");
+            setAdminName(formattedName);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching admin data:", error);
       }
-    }
+    };
+
+    fetchAdminData();
   }, []);
 
   const showToast = (message, type) => {
@@ -120,20 +143,52 @@ const AdminLayout = ({ children }) => {
         {/* Main Content */}
         <div className="flex-1 ml-64">
           <header className="bg-white shadow">
-            <div className="flex justify-between items-center px-6 py-4">
-              <h1 className="text-2xl font-semibold text-gray-900">
-                {navigation.find((item) => item.path === location.pathname)
-                  ?.name || "Dashboard"}
-              </h1>
-              <div className="flex items-center">
-                <span className="text-sm text-gray-500 mr-4">{adminName}</span>
-                <span
-                  className="text-red-600 cursor-pointer"
-                  onClick={handleLogout}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+              {/* Welcome Message - Left Side */}
+              <div className="flex items-center bg-purple-50 rounded-lg px-4 py-2">
+                <svg
+                  className="h-5 w-5 text-purple-600 mr-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  Logout
-                </span>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <div className="flex flex-col">
+                  <span className="text-xs text-purple-600 font-medium">
+                    Welcome back
+                  </span>
+                  <span className="text-sm text-purple-800 font-semibold">
+                    {adminName}
+                  </span>
+                </div>
               </div>
+
+              {/* Logout Button - Right Side */}
+              <button
+                className="flex items-center text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-2 rounded-lg transition-colors duration-150"
+                onClick={handleLogout}
+              >
+                <svg
+                  className="h-5 w-5 mr-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  />
+                </svg>
+                Logout
+              </button>
             </div>
           </header>
           <main className="p-6">{children}</main>

@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import BALogo from "/assets/logo/BA-logo.png";
 import profile from "../../assets/Dummy_Profile.png";
 import { Icon } from "@iconify/react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const Sidebar = ({ isExpanded, setIsExpanded }) => {
+const Sidebar = ({ isExpanded, setIsExpanded, userName, profileImage }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const defaultProfileImage = "../assets/profile/Sarah_Baker.png";
 
   const menuItems = [
     {
@@ -31,6 +33,17 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
       path: "/dashboard/settings",
     },
   ];
+
+  const handleLogout = () => {
+    // Clear all localStorage items
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userRole");
+
+    // Navigate to home page
+    navigate("/");
+  };
 
   return (
     <div
@@ -74,11 +87,11 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
         } mt-3`}
       >
         <img
-          src={profile}
+          src={profileImage || defaultProfileImage}
           alt="profile"
           className="rounded-full w-[40px] h-[40px] object-cover"
         />
-        {isExpanded && <p>Bryan Ramos</p>}
+        {isExpanded && <p className="truncate">{userName}</p>}
       </div>
 
       <hr className="w-full my-5 border-gray-600" />
@@ -106,6 +119,7 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
       {/* Logout Button */}
       <div className="mt-auto w-full">
         <button
+          onClick={handleLogout}
           className={`flex items-center gap-3 p-2 rounded-md text-gray-300 hover:bg-[#4a443f] hover:text-white transition-colors w-full
             ${isExpanded ? "px-4" : "px-2 justify-center"}`}
         >

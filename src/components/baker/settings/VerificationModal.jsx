@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify/react";
 
-const VerificationModal = ({ isOpen, onClose }) => {
+const VerificationModal = ({ isOpen, onClose, onVerificationSuccess }) => {
   const [formData, setFormData] = useState({
     businessType: "",
     yearsOperation: "",
@@ -28,9 +28,13 @@ const VerificationModal = ({ isOpen, onClose }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setShowSuccessModal(true);
+    
+    // Call the success callback to update parent component
+    onVerificationSuccess();
+    
     // Handle form submission here
     console.log(formData);
   };

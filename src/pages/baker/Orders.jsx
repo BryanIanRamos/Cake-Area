@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import Sidebar from "../../components/baker/Sidebar";
+import BakerLayout from "../../components/baker/BakerLayout";
 import Toast from "../../components/baker/Toast";
 import ProductModal from "../../components/baker/ProductModal";
 import AcceptOrderModal from "../../components/baker/AcceptOrderModal";
 import MarkAsDoneModal from "../../components/baker/MarkAsDoneModal";
 import MarkAsDeliveredModal from "../../components/baker/MarkAsDeliveredModal";
 import CancelOrderModal from "../../components/baker/CancelOrderModal";
+import MarkAsCompletedModal from "../../components/baker/MarkAsCompletedModal";
 import { Icon } from "@iconify/react";
 
 const Orders = () => {
@@ -13,9 +14,9 @@ const Orders = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("pending");
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
@@ -33,20 +34,53 @@ const Orders = () => {
     useState(null);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [selectedOrderForCancel, setSelectedOrderForCancel] = useState(null);
+  const [isMarkAsCompletedModalOpen, setIsMarkAsCompletedModalOpen] =
+    useState(false);
+  const [selectedOrderForCompleted, setSelectedOrderForCompleted] =
+    useState(null);
 
   useEffect(() => {
-    setLoading(true);
-    fetch("http://localhost:3000/orders")
-      .then((response) => response.json())
-      .then((data) => {
-        setOrders(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching orders:", error);
-        setError(error);
-        setLoading(false);
-      });
+    const businessId = localStorage.getItem("business_id");
+    let isSubscribed = true; // Flag to prevent updates if component unmounts
+
+    const fetchOrders = async () => {
+      if (!businessId) return; // Don't fetch if no businessId
+
+      try {
+        setLoading(true);
+        const response = await fetch("http://localhost:3000/orders");
+        const data = await response.json();
+
+        // Only update state if component is still mounted
+        if (isSubscribed) {
+          const businessOrders = data.filter(
+            (order) => order.business_id.toString() === businessId
+          );
+
+          console.log("Business ID:", businessId);
+          console.log("Filtered Orders:", businessOrders);
+
+          setOrders(businessOrders);
+          setLoading(false);
+        }
+      } catch (error) {
+        if (isSubscribed) {
+          console.error("Error fetching orders:", error);
+          setError(error);
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchOrders();
+    // Use a longer interval (e.g., 30 seconds) to prevent too frequent updates
+    const interval = setInterval(fetchOrders, 30000);
+
+    // Cleanup function
+    return () => {
+      isSubscribed = false;
+      clearInterval(interval);
+    };
   }, []);
 
   // Filter orders based on active tab
@@ -82,37 +116,54 @@ const Orders = () => {
     setIsAcceptModalOpen(true);
   };
 
-  const handleAcceptConfirm = (orderId) => {
-    const orderToUpdate = orders.find((order) => order.order_id === orderId);
-    if (orderToUpdate) {
-      const updatedOrder = {
-        ...orderToUpdate,
-        status: "Processing",
-        updated_at: new Date().toISOString(),
-      };
+  const handleAcceptConfirm = async (orderId) => {
+    try {
+      const orderToUpdate = orders.find((order) => order.order_id === orderId);
 
-      // Update in localStorage
-      updateOrder(updatedOrder);
+      if (orderToUpdate) {
+        const updatedOrder = {
+          ...orderToUpdate,
+          status: "Processing",
+          updated_at: new Date().toISOString(),
+        };
 
-      // Update local state
-      setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order.order_id === orderId ? updatedOrder : order
-        )
-      );
+        const response = await fetch(
+          `http://localhost:3000/orders/${orderToUpdate.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedOrder),
+          }
+        );
 
-      // Close the modal
-      setIsAcceptModalOpen(false);
+        if (!response.ok) {
+          throw new Error("Failed to accept order");
+        }
 
-      // Show toast notification using the toast object
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order.id === orderToUpdate.id ? updatedOrder : order
+          )
+        );
+
+        setIsAcceptModalOpen(false);
+        setToast({
+          show: true,
+          message: `Order ${orderId} has been accepted successfully!`,
+          type: "success",
+        });
+
+        setActiveTab("processing");
+      }
+    } catch (error) {
+      console.error("Error accepting order:", error);
       setToast({
         show: true,
-        message: `Order ${orderId} has been accepted successfully!`,
-        type: "success",
+        message: "Failed to accept order. Please try again.",
+        type: "error",
       });
-
-      // Switch to Processing tab
-      setActiveTab("processing");
     }
   };
 
@@ -121,68 +172,116 @@ const Orders = () => {
     setIsMarkAsDoneModalOpen(true);
   };
 
-  const handleMarkAsDoneConfirm = (orderId) => {
-    const orderToUpdate = orders.find((order) => order.order_id === orderId);
-    if (orderToUpdate) {
-      const updatedOrder = {
-        ...orderToUpdate,
-        status: "To Receive",
-        updated_at: new Date().toISOString(),
-      };
+  const handleMarkAsDoneConfirm = async (orderId) => {
+    try {
+      // Find the order to update
+      const orderToUpdate = orders.find((order) => order.order_id === orderId);
 
-      // Update in localStorage
-      updateOrder(updatedOrder);
+      if (orderToUpdate) {
+        // Prepare updated order data
+        const updatedOrder = {
+          ...orderToUpdate,
+          status: "To Receive",
+          updated_at: new Date().toISOString(),
+        };
 
-      // Update local state
-      setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order.order_id === orderId ? updatedOrder : order
-        )
-      );
+        // Send PUT request to update the order
+        const response = await fetch(
+          `http://localhost:3000/orders/${orderToUpdate.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedOrder),
+          }
+        );
 
-      setIsMarkAsDoneModalOpen(false);
+        if (!response.ok) {
+          throw new Error("Failed to update order status");
+        }
+
+        // Update local state
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order.id === orderToUpdate.id ? updatedOrder : order
+          )
+        );
+
+        // Close modal and show success message
+        setIsMarkAsDoneModalOpen(false);
+        setToast({
+          show: true,
+          message: `Order ${orderId} has been marked as done!`,
+          type: "success",
+        });
+
+        // Switch to "to receive" tab
+        setActiveTab("to receive");
+      }
+    } catch (error) {
+      console.error("Error updating order:", error);
       setToast({
         show: true,
-        message: `Order ${orderId} has been marked as done!`,
-        type: "success",
+        message: "Failed to update order status. Please try again.",
+        type: "error",
       });
-
-      setActiveTab("to receive");
     }
   };
 
   const handleMarkAsDelivered = (order) => {
-    setSelectedOrderForDelivered(order);
-    setIsMarkAsDeliveredModalOpen(true);
+    setSelectedOrderForCompleted(order);
+    setIsMarkAsCompletedModalOpen(true);
   };
 
-  const handleMarkAsDeliveredConfirm = (orderId) => {
-    const orderToUpdate = orders.find((order) => order.order_id === orderId);
-    if (orderToUpdate) {
-      const updatedOrder = {
-        ...orderToUpdate,
-        status: "Completed",
-        updated_at: new Date().toISOString(),
-      };
+  const handleMarkAsCompletedConfirm = async (orderId) => {
+    try {
+      const orderToUpdate = orders.find((order) => order.order_id === orderId);
 
-      // Update in localStorage
-      updateOrder(updatedOrder);
+      if (orderToUpdate) {
+        const updatedOrder = {
+          ...orderToUpdate,
+          status: "Completed",
+          updated_at: new Date().toISOString(),
+        };
 
-      // Update local state
-      setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order.order_id === orderId ? updatedOrder : order
-        )
-      );
+        const response = await fetch(
+          `http://localhost:3000/orders/${orderToUpdate.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedOrder),
+          }
+        );
 
-      setIsMarkAsDeliveredModalOpen(false);
+        if (!response.ok) {
+          throw new Error("Failed to update order status");
+        }
+
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order.id === orderToUpdate.id ? updatedOrder : order
+          )
+        );
+
+        setIsMarkAsCompletedModalOpen(false);
+        setToast({
+          show: true,
+          message: `Order ${orderId} has been marked as completed!`,
+          type: "success",
+        });
+
+        setActiveTab("completed");
+      }
+    } catch (error) {
+      console.error("Error updating order:", error);
       setToast({
         show: true,
-        message: `Order ${orderId} has been marked as delivered!`,
-        type: "success",
+        message: "Failed to update order status. Please try again.",
+        type: "error",
       });
-
-      setActiveTab("completed");
     }
   };
 
@@ -196,34 +295,61 @@ const Orders = () => {
     setIsCancelModalOpen(true);
   };
 
-  const handleCancelConfirm = (orderId, reason) => {
-    const orderToUpdate = orders.find((order) => order.order_id === orderId);
-    if (orderToUpdate) {
-      const updatedOrder = {
-        ...orderToUpdate,
-        status: "Cancelled",
-        cancel_reason: reason,
-        updated_at: new Date().toISOString(),
-      };
+  const handleCancelConfirm = async (orderId, cancelReason) => {
+    try {
+      // Find the order to update
+      const orderToUpdate = orders.find((order) => order.order_id === orderId);
 
-      // Update in localStorage
-      updateOrder(updatedOrder);
+      if (orderToUpdate) {
+        // Prepare updated order data
+        const updatedOrder = {
+          ...orderToUpdate,
+          status: "Cancelled",
+          cancelReason: cancelReason, // Add the cancellation reason
+          updated_at: new Date().toISOString(),
+        };
 
-      // Update local state
-      setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order.order_id === orderId ? updatedOrder : order
-        )
-      );
+        // Send PUT request to update the order
+        const response = await fetch(
+          `http://localhost:3000/orders/${orderToUpdate.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedOrder),
+          }
+        );
 
-      setIsCancelModalOpen(false);
+        if (!response.ok) {
+          throw new Error("Failed to cancel order");
+        }
+
+        // Update local state
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order.id === orderToUpdate.id ? updatedOrder : order
+          )
+        );
+
+        // Close modal and show success message
+        setIsCancelModalOpen(false);
+        setToast({
+          show: true,
+          message: `Order ${orderId} has been cancelled.`,
+          type: "success",
+        });
+
+        // Switch to "cancelled" tab
+        setActiveTab("cancelled");
+      }
+    } catch (error) {
+      console.error("Error cancelling order:", error);
       setToast({
         show: true,
-        message: `Order ${orderId} has been cancelled.`,
+        message: "Failed to cancel order. Please try again.",
         type: "error",
       });
-
-      setActiveTab("cancelled");
     }
   };
 
@@ -298,21 +424,46 @@ const Orders = () => {
               View Details
             </button>
 
+            {order.status === "Pending" && (
+              <>
+                <button
+                  onClick={() => handleAccept(order)}
+                  className="px-3 py-1 text-sm bg-[#E88F2A] text-white rounded hover:bg-[#E88F2A]/90"
+                >
+                  Accept Order
+                </button>
+                <button
+                  onClick={() => handleCancel(order)}
+                  className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Cancel
+                </button>
+              </>
+            )}
+
+            {order.status === "To Receive" && (
+              <>
+                <button
+                  onClick={() => handleMarkAsDelivered(order)}
+                  className="px-3 py-1 text-sm bg-[#E88F2A] text-white rounded hover:bg-[#E88F2A]/90"
+                >
+                  Mark as Completed
+                </button>
+                <button
+                  onClick={() => handleCancel(order)}
+                  className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Cancel
+                </button>
+              </>
+            )}
+
             {order.status === "Processing" && (
               <button
                 onClick={() => handleMarkAsDone(order)}
                 className="px-3 py-1 text-sm bg-green-500 text-white rounded hover:bg-green-600"
               >
                 Mark as Done
-              </button>
-            )}
-
-            {(order.status === "Pending" || order.status === "Processing") && (
-              <button
-                onClick={() => handleCancel(order)}
-                className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
-              >
-                Cancel
               </button>
             )}
           </div>
@@ -330,93 +481,82 @@ const Orders = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      <Sidebar
-        isExpanded={isSidebarExpanded}
-        setIsExpanded={setIsSidebarExpanded}
-      />
+    <BakerLayout>
+      <div className="p-8">
+        {/* Welcome Section with Filter Button */}
+        <div className="mb-4">
+          <h1 className="text-2xl font-bold text-gray-800 mb-2">
+            Manage Your Orders
+          </h1>
+          <div className="flex justify-between items-center mb-4">
+            <p className="text-gray-600">
+              Keep track of all your bakery orders and their status in one
+              place.
+            </p>
+            <button
+              className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+              onClick={() => {
+                /* Add filter logic here */
+              }}
+            >
+              <Icon icon="uil:filter" className="text-gray-600" />
+              <span className="text-gray-600">Filter</span>
+            </button>
+          </div>
+          <hr className="border-gray-200" />
+        </div>
 
-      <main
-        className={`flex-1 ${
-          isSidebarExpanded ? "ml-64" : "ml-20"
-        } transition-all duration-300`}
-      >
-        <div className="p-8">
-          {/* Welcome Section with Filter Button */}
-          <div className="mb-4">
-            <h1 className="text-2xl font-bold text-gray-800 mb-2">
-              Manage Your Orders
-            </h1>
-            <div className="flex justify-between items-center mb-4">
-              <p className="text-gray-600">
-                Keep track of all your bakery orders and their status in one
-                place.
-              </p>
-              <button
-                className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
-                onClick={() => {
-                  /* Add filter logic here */
-                }}
-              >
-                <Icon icon="uil:filter" className="text-gray-600" />
-                <span className="text-gray-600">Filter</span>
-              </button>
-            </div>
-            <hr className="border-gray-200" />
+        {/* Rest of the content */}
+        <div className="bg-white rounded-lg shadow p-6">
+          {/* Tabs */}
+          <div className="mb-4 border-b border-gray-200">
+            <nav className="flex space-x-4">
+              {[
+                "pending",
+                "processing",
+                "to receive",
+                "completed",
+                "cancelled",
+              ].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => handleTabClick(tab)}
+                  className={`px-3 py-2 text-sm font-medium capitalize ${
+                    activeTab === tab
+                      ? "border-b-2 border-[#E88F2A] text-[#E88F2A]"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </nav>
           </div>
 
-          {/* Rest of the content */}
-          <div className="bg-white rounded-lg shadow p-6">
-            {/* Tabs */}
-            <div className="mb-4 border-b border-gray-200">
-              <nav className="flex space-x-4">
-                {[
-                  "pending",
-                  "processing",
-                  "to receive",
-                  "completed",
-                  "cancelled",
-                ].map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => handleTabClick(tab)}
-                    className={`px-3 py-2 text-sm font-medium capitalize ${
-                      activeTab === tab
-                        ? "border-b-2 border-[#E88F2A] text-[#E88F2A]"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
-                  >
-                    {tab}
-                  </button>
-                ))}
-              </nav>
-            </div>
+          {/* Search */}
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Search orders..."
+              className="w-full px-4 py-2 border rounded"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
 
-            {/* Search */}
-            <div className="mb-4">
-              <input
-                type="text"
-                placeholder="Search orders..."
-                className="w-full px-4 py-2 border rounded"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-
-            {/* Orders List */}
-            <div className="space-y-2">
-              {loading ? (
-                <p>Loading...</p>
-              ) : error ? (
-                <p>Error: {error.message}</p>
-              ) : filteredOrders.length === 0 ? (
-                <p>No orders found.</p>
-              ) : (
-                filteredOrders.map((order) => (
-                  <OrderCard key={order.id} order={order} />
-                ))
-              )}
-            </div>
+          {/* Orders List */}
+          <div className="space-y-2">
+            {loading ? (
+              <p>Loading...</p>
+            ) : error ? (
+              <p>Error: {error.message}</p>
+            ) : filteredOrders.length === 0 ? (
+              <p>No orders yet</p>
+            ) : (
+              filteredOrders.map((order) => (
+                <OrderCard key={order.id} order={order} />
+              ))
+            )}
           </div>
         </div>
 
@@ -427,9 +567,40 @@ const Orders = () => {
           order={selectedOrder}
         />
 
+        {/* Add or update the MarkAsDoneModal */}
+        <MarkAsDoneModal
+          isOpen={isMarkAsDoneModalOpen}
+          onClose={() => setIsMarkAsDoneModalOpen(false)}
+          onConfirm={handleMarkAsDoneConfirm}
+          order={selectedOrderForDone}
+        />
+
+        {/* Add or update the CancelOrderModal */}
+        <CancelOrderModal
+          isOpen={isCancelModalOpen}
+          onClose={() => setIsCancelModalOpen(false)}
+          onConfirm={handleCancelConfirm}
+          order={selectedOrderForCancel}
+        />
+
+        {/* Add or update the MarkAsCompletedModal */}
+        <MarkAsCompletedModal
+          isOpen={isMarkAsCompletedModalOpen}
+          onClose={() => setIsMarkAsCompletedModalOpen(false)}
+          onConfirm={handleMarkAsCompletedConfirm}
+          order={selectedOrderForCompleted}
+        />
+
+        <AcceptOrderModal
+          isOpen={isAcceptModalOpen}
+          onClose={() => setIsAcceptModalOpen(false)}
+          onConfirm={handleAcceptConfirm}
+          order={selectedOrderForAccept}
+        />
+
         {/* ... other modals ... */}
-      </main>
-    </div>
+      </div>
+    </BakerLayout>
   );
 };
 

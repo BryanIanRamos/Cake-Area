@@ -1,23 +1,32 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-const RadioOption = ({ options, selected, onChange }) => {
+const RadioOption = ({ options, defaultValue, onChange }) => {
+  const [selected, setSelected] = useState(defaultValue || "");
+
+  useEffect(() => {
+    setSelected(defaultValue || "");
+  }, [defaultValue]);
+
+  const handleChange = (value) => {
+    setSelected(value);
+    if (onChange) {
+      onChange(value);
+    }
+  };
+
   return (
     <div className="flex gap-4">
-      {options.map((option) => (
-        <label
-          key={option}
-          className="flex items-center gap-2 cursor-pointer"
-        >
+      {options.map((option, index) => (
+        <div key={index} className="flex items-center gap-1">
           <input
             type="radio"
-            name="gender"
+            id={option}
             value={option}
             checked={selected === option}
-            onChange={(e) => onChange(e.target.value)}
-            className="w-4 h-4 text-primary"
+            onChange={() => handleChange(option)}
           />
-          <span>{option}</span>
-        </label>
+          <label htmlFor={option}>{option}</label>
+        </div>
       ))}
     </div>
   );

@@ -55,45 +55,57 @@ const MainPage = () => {
     setLoginModalOpen(false);
   };
 
-  const handleLogin = (email, password) => {
-    // Find user with matching email and password
-    const user = userData.users.find(
-      (user) => user.email === email && user.password === password
-    );
-
-    if (user) {
-      // Find the corresponding profile
-      const userProfile = profileData.profiles.find(
-        (profile) => profile.user_id === user.user_id
+  const handleLogin = async (email, password) => {
+    try {
+      // Get all users and find matching email (case-insensitive)
+      const response = await fetch("http://localhost:3000/users");
+      const users = await response.json();
+      const user = users.find(
+        (u) => u.email.toLowerCase().trim() === email.toLowerCase().trim()
       );
 
-      setIsLoggedIn(true);
-      setUserId(user.id);
-      setUserName(
-        userProfile
-          ? `${userProfile.first_name} ${userProfile.last_name}`
-          : user.email
-      );
+      if (user) {
+        // Find the corresponding profile
+        const profileResponse = await fetch(
+          `http://localhost:3000/profiles?user_id=${user.id}`
+        );
+        const profiles = await profileResponse.json();
+        const userProfile = profiles[0];
 
-      // Store login state in localStorage
-      localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("userId", user.id);
-      localStorage.setItem(
-        "userName",
-        userProfile
-          ? `${userProfile.first_name} ${userProfile.last_name}`
-          : user.email
-      );
+        // Store user data in localStorage
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("userId", user.id);
+        localStorage.setItem("userRole", user.role.toString());
+        localStorage.setItem(
+          "userName",
+          userProfile
+            ? `${userProfile.first_name} ${userProfile.last_name}`
+            : user.email
+        );
 
-      closeLoginModal();
+        setIsLoggedIn(true);
+        setUserId(user.id);
+        setUserName(
+          userProfile
+            ? `${userProfile.first_name} ${userProfile.last_name}`
+            : user.email
+        );
 
-      // Show success feedback
-      setFeedbackMessage("Successfully logged in!");
-      setFeedbackType("success");
-      setShowFeedback(true);
-    } else {
-      // Show error feedback
-      setFeedbackMessage("Invalid email or password!");
+        closeLoginModal();
+
+        // Show success feedback
+        setFeedbackMessage("Successfully logged in!");
+        setFeedbackType("success");
+        setShowFeedback(true);
+      } else {
+        // Show error feedback
+        setFeedbackMessage("Invalid email or password!");
+        setFeedbackType("error");
+        setShowFeedback(true);
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setFeedbackMessage("An error occurred during login");
       setFeedbackType("error");
       setShowFeedback(true);
     }
@@ -108,6 +120,7 @@ const MainPage = () => {
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("userName");
     localStorage.removeItem("userId");
+    localStorage.removeItem("business_id");
 
     // Show feedback
     setFeedbackMessage("Successfully logged out!");
@@ -228,7 +241,9 @@ const MainPage = () => {
                       <option value="Las Nieves">Las Nieves</option>
                       <option value="Magallanes">Magallanes</option>
                       <option value="Nasipit">Nasipit</option>
-                      <option value="Remedios T. Romualdez">Remedios T. Romualdez</option>
+                      <option value="Remedios T. Romualdez">
+                        Remedios T. Romualdez
+                      </option>
                       <option value="Santiago">Santiago</option>
                       <option value="Tubay">Tubay</option>
                     </select>

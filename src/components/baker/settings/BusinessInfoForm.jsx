@@ -1,6 +1,18 @@
 import React from "react";
 
-const BusinessInfoForm = ({ formData, handleInputChange }) => {
+const BusinessInfoForm = ({ formData, handleInputChange, onSubmit }) => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const updates = {
+      name: formData.businessName,
+      email: formData.businessEmail,
+      description: formData.businessDescription,
+    };
+
+    onSubmit(updates);
+  };
+
   return (
     <div>
       <h2 className="text-2xl mb-6">Business Information</h2>
@@ -51,7 +63,8 @@ const BusinessInfoForm = ({ formData, handleInputChange }) => {
 
       <div className="mt-8 flex justify-end">
         <button
-          type="submit"
+          onClick={handleSubmit}
+          type="button"
           className="bg-[#E88F2A] text-white px-6 py-2.5 rounded-lg hover:bg-[#E88F2A]/90 
             transition-colors duration-200 shadow-sm"
         >

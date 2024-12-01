@@ -14,7 +14,7 @@
       "password": "hashedPassword456",
       "created_at": "2024-01-20",
       "role": 2,
-      "is_Login": false
+      "is_Login": true
     },
     {
       "id": "3",
@@ -46,7 +46,7 @@
       "password": "hashedPasswordJKL",
       "created_at": "2024-03-10",
       "role": 2,
-      "is_Login": false
+      "is_Login": true
     }
   ],
   "profiles": [
@@ -57,7 +57,9 @@
       "last_name": "Admin",
       "age": "45",
       "sex": "Male",
-      "img": "dummy_profile_url"
+      "img": "dummy_profile_url",
+      "phone_number": "09123456789",
+      "date_of_birth": "1979-05-15"
     },
     {
       "id": "2",
@@ -66,7 +68,9 @@
       "last_name": "Baker",
       "age": "28",
       "sex": "Female",
-      "img": "../assets/profile/Sarah_Baker.png"
+      "img": "../assets/profile/Sarah_Baker.png",
+      "phone_number": "09234567890",
+      "date_of_birth": "1996-08-20"
     },
     {
       "id": "3",
@@ -75,7 +79,10 @@
       "last_name": "Baker",
       "age": "31",
       "sex": "Female",
-      "img": "../assets/profile/Lisa_Baker.png"
+      "img": "../assets/profile/Lisa_Baker.png",
+      "phone_number": "09345678901",
+      "date_of_birth": "1993-07-10",
+      "email": "lisa.baker@email.com"
     },
     {
       "id": "4",
@@ -84,7 +91,9 @@
       "last_name": "Tyson",
       "age": "23",
       "sex": "Male",
-      "img": "dummy_profile_url"
+      "img": "dummy_profile_url",
+      "phone_number": "09456789012",
+      "date_of_birth": "2001-09-25"
     },
     {
       "id": "5",
@@ -92,8 +101,10 @@
       "first_name": "Emma",
       "last_name": "Wilson",
       "age": "29",
-      "sex": "Female",
-      "img": "dummy_profile_url"
+      "sex": "Male",
+      "img": "dummy_profile_url",
+      "phone_number": "09567890123",
+      "date_of_birth": "1995-06-12"
     },
     {
       "id": "6",
@@ -102,7 +113,9 @@
       "last_name": "Sweet",
       "age": "35",
       "sex": "Female",
-      "img": "../../public/assets/profile/Sweet_Baker.jpg"
+      "img": "../../public/assets/profile/Sweet_Baker.jpg",
+      "phone_number": "09678901234",
+      "date_of_birth": "1989-03-28"
     }
   ],
   "addresses": [
@@ -263,7 +276,9 @@
         "../assets/AlmondCroissantv2.jpg",
         "../assets/AlmondCroissantv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 245,
+      "num_orders": 156
     },
     {
       "id": "2",
@@ -279,7 +294,9 @@
         "../assets/ArtisanalBananaBreadv2.jpg",
         "../assets/ArtisanalBananaBreadv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 189,
+      "num_orders": 134
     },
     {
       "id": "3",
@@ -295,7 +312,9 @@
         "../assets/ArtisanalFocacciav2.jpg",
         "../assets/ArtisanalFocacciav3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 167,
+      "num_orders": 98
     },
     {
       "id": "4",
@@ -311,7 +330,9 @@
         "../assets/BlackForestCakev2.jpg",
         "../assets/BlackForestCakev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 312,
+      "num_orders": 178
     },
     {
       "id": "5",
@@ -327,7 +348,9 @@
         "../assets/ButterCroissantv2.jpg",
         "../assets/ButterCroissantv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 423,
+      "num_orders": 289
     },
     {
       "id": "6",
@@ -343,7 +366,9 @@
         "../assets/CarrotSpiceCakev2.jpg",
         "../assets/CarrotSpiceCakev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 256,
+      "num_orders": 145
     },
     {
       "id": "7",
@@ -359,7 +384,9 @@
         "../assets/ChocolateBabkav2.jpg",
         "../assets/ChocolateBabkav3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 198,
+      "num_orders": 123
     },
     {
       "id": "8",
@@ -375,7 +402,9 @@
         "../assets/ChocolateChipMuffinsv2.jpg",
         "../assets/ChocolateChipMuffinsv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 567,
+      "num_orders": 432
     },
     {
       "id": "9",
@@ -391,7 +420,9 @@
         "../assets/ChocolateDreamLayerCakev2.jpg",
         "../assets/ChocolateDreamLayerCakev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 389,
+      "num_orders": 201
     },
     {
       "id": "10",
@@ -407,7 +438,9 @@
         "../assets/ChocolateMousseCakev2.jpg",
         "../assets/ChocolateMousseCakev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 278,
+      "num_orders": 167
     },
     {
       "id": "11",
@@ -423,7 +456,9 @@
         "../assets/ChocolateProfiterolesv2.jpg",
         "../assets/ChocolateProfiterolesv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 345,
+      "num_orders": 234
     },
     {
       "id": "12",
@@ -439,7 +474,9 @@
         "../assets/ChocolateTruffleTartv2.jpg",
         "../assets/ChocolateTruffleTartv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 289,
+      "num_orders": 178
     },
     {
       "id": "13",
@@ -455,7 +492,9 @@
         "../assets/ClassicApplePiev2.jpg",
         "../assets/ClassicApplePiev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 412,
+      "num_orders": 267
     },
     {
       "id": "14",
@@ -471,7 +510,9 @@
         "../assets/ClassicBriochev2.jpg",
         "../assets/ClassicBriochev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 378,
+      "num_orders": 245
     },
     {
       "id": "15",
@@ -487,7 +528,9 @@
         "../assets/ClassicCheesecakev2.jpg",
         "../assets/ClassicCheesecakev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 534,
+      "num_orders": 312
     },
     {
       "id": "16",
@@ -503,7 +546,9 @@
         "../assets/ClassicChocolateChipCookiesv2.jpeg",
         "../assets/ClassicChocolateChipCookiesv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 645,
+      "num_orders": 489
     },
     {
       "id": "17",
@@ -519,7 +564,9 @@
         "../assets/ClassicCreamPuffv2.jpg",
         "../assets/ClassicCreamPuffv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 423,
+      "num_orders": 298
     },
     {
       "id": "18",
@@ -535,7 +582,9 @@
         "../assets/ClassicFrenchCroissantv2.jpg",
         "../assets/ClassicFrenchCroissantv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 678,
+      "num_orders": 534
     },
     {
       "id": "19",
@@ -551,7 +600,9 @@
         "../assets/ClassicMille-feuillev2.jpg",
         "../assets/ClassicMille-feuillev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 345,
+      "num_orders": 189
     },
     {
       "id": "20",
@@ -567,7 +618,9 @@
         "../assets/ClassicPalmierv2.jpg",
         "../assets/ClassicPalmierv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 467,
+      "num_orders": 356
     },
     {
       "id": "21",
@@ -583,7 +636,9 @@
         "../assets/ClassicCheesecakev2.jpg",
         "../assets/ClassicCheesecakev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 445,
+      "num_orders": 278
     },
     {
       "id": "22",
@@ -599,71 +654,117 @@
         "../assets/ChocolateDreamLayerCakev2.jpg",
         "../assets/ChocolateDreamLayerCakev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 367,
+      "num_orders": 189
     },
     {
       "id": "23",
       "business_id": 3,
       "cat_id": 2,
-      "prod_name": "Classic Cream Puff",
-      "description": "Light choux pastry filled with vanilla cream",
-      "price": 249.99,
-      "rate": 4.7,
-      "qty": 15,
+      "prod_name": "Classic Chocolate Chip Cookies",
+      "description": "Traditional chocolate chip cookies with premium chocolate",
+      "price": 149.99,
+      "rate": 4.8,
+      "qty": 30,
       "images": [
-        "../assets/ClassicCreamPuffv1.jpg",
-        "../assets/ClassicCreamPuffv2.jpg",
-        "../assets/ClassicCreamPuffv3.jpg"
+        "../assets/ClassicChocolateChipCookiesv1.jpg",
+        "../assets/ClassicChocolateChipCookiesv2.jpg",
+        "../assets/ClassicChocolateChipCookiesv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 589,
+      "num_orders": 456
     },
     {
       "id": "24",
       "business_id": 3,
-      "cat_id": 2,
-      "prod_name": "Chocolate Profiteroles",
-      "description": "Light choux pastry filled with cream and topped with chocolate",
-      "price": 299.99,
-      "rate": 4.8,
-      "qty": 12,
+      "cat_id": 3,
+      "prod_name": "Classic French Baguette",
+      "description": "Traditional French baguette with crispy crust",
+      "price": 89.99,
+      "rate": 4.7,
+      "qty": 35,
       "images": [
-        "../assets/ChocolateProfiterolesv1.jpg",
-        "../assets/ChocolateProfiterolesv2.jpg",
-        "../assets/ChocolateProfiterolesv3.jpg"
+        "../assets/ClassicFrenchBaguettev1.jpg",
+        "../assets/ClassicFrenchBaguettev2.jpg",
+        "../assets/ClassicFrenchBaguettev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 623,
+      "num_orders": 512
     },
     {
       "id": "25",
       "business_id": 3,
-      "cat_id": 3,
-      "prod_name": "Classic French Croissant",
-      "description": "Traditional French croissant with perfect layers",
-      "price": 99.99,
-      "rate": 4.7,
-      "qty": 20,
+      "cat_id": 1,
+      "prod_name": "Red Velvet Cake",
+      "description": "Classic red velvet cake with cream cheese frosting",
+      "price": 599.99,
+      "rate": 4.9,
+      "qty": 8,
       "images": [
-        "../assets/ClassicFrenchCroissantv1.jpg",
-        "../assets/ClassicFrenchCroissantv2.jpg",
-        "../assets/ClassicFrenchCroissantv3.jpg"
+        "../assets/RedVelvetCakev1.jpg",
+        "../assets/RedVelvetCakev2.jpg",
+        "../assets/RedVelvetCakev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 478,
+      "num_orders": 289
     },
     {
       "id": "26",
       "business_id": 3,
-      "cat_id": 4,
-      "prod_name": "Artisanal Focaccia",
-      "description": "Italian herb-infused focaccia with premium olive oil",
-      "price": 189.99,
-      "rate": 4.8,
-      "qty": 10,
+      "cat_id": 2,
+      "prod_name": "Fruit Danish Pastry",
+      "description": "Flaky pastry with seasonal fruit filling",
+      "price": 129.99,
+      "rate": 4.7,
+      "qty": 20,
       "images": [
-        "../assets/ArtisanalFocacciav1.jpg",
-        "../assets/ArtisanalFocacciav2.jpg",
-        "../assets/ArtisanalFocacciav3.jpg"
+        "../assets/FruitDanishv1.jpg",
+        "../assets/FruitDanishv2.jpg",
+        "../assets/FruitDanishv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 534,
+      "num_orders": 423
+    },
+    {
+      "id": "27",
+      "business_id": 3,
+      "cat_id": 4,
+      "prod_name": "Sourdough Bread",
+      "description": "Artisanal sourdough bread with perfect crust",
+      "price": 199.99,
+      "rate": 4.8,
+      "qty": 15,
+      "images": [
+        "../assets/SourdoughBreadv1.jpg",
+        "../assets/SourdoughBreadv2.jpg",
+        "../assets/SourdoughBreadv3.jpg"
+      ],
+      "is_available": true,
+      "num_visits": 445,
+      "num_orders": 334
+    },
+    {
+      "id": "28",
+      "business_id": 3,
+      "cat_id": 2,
+      "prod_name": "Blueberry Muffins",
+      "description": "Fresh-baked muffins with wild blueberries",
+      "price": 99.99,
+      "rate": 4.7,
+      "qty": 24,
+      "images": [
+        "../assets/BlueberryMuffinsv1.jpg",
+        "../assets/BlueberryMuffinsv2.jpg",
+        "../assets/BlueberryMuffinsv3.jpg"
+      ],
+      "is_available": true,
+      "num_visits": 567,
+      "num_orders": 445
     }
   ],
   "orders": [
@@ -671,59 +772,26 @@
       "id": "1",
       "order_id": "ORD001",
       "customer_id": 2,
-      "business_id": 1,
+      "business_id": 2,
       "products": [
         {
-          "prod_id": "2",
+          "prod_id": "16",
           "cat_id": 2,
-          "prod_name": "Artisanal Banana Bread",
-          "description": "Moist banana bread with premium ingredients and walnuts",
-          "price": 349.99,
+          "prod_name": "Classic Chocolate Chip Cookies",
+          "description": "Traditional chocolate chip cookies with premium chocolate",
+          "price": 149.99,
           "rate": 4.7,
           "qty": 1,
-          "images": "../assets/ArtisanalBananaBreadv2.jpg"
+          "images": "../assets/ClassicChocolateChipCookiesv2.jpeg"
         }
       ],
-      "total_amount": 349.99,
-      "status": "Processing",
-      "created_at": "2024-11-29T11:52:06.632Z",
-      "checkoutDate": "2024-11-29T11:52:29.574Z",
-      "receiveDate": "2024-12-28T11:52:21.000Z",
-      "downPayment": 174.995,
-      "remainingPayment": 174.995,
-      "paymentStatus": "paid",
-      "placedAddress": {
-        "fullName": "Carlos Dela Cruz",
-        "phoneNumber": "(+63) 0918765432",
-        "cityBarangay": "Cabadbaran City, Agusan del Norte, Mindanao",
-        "postalCode": "8605",
-        "streetAddress": "Zone 2, Poblacion"
-      }
-    },
-    {
-      "id": "2",
-      "order_id": "ORD002",
-      "customer_id": 2,
-      "business_id": 1,
-      "products": [
-        {
-          "prod_id": "8",
-          "cat_id": 2,
-          "prod_name": "Chocolate Chip Muffins",
-          "description": "Fresh-baked muffins loaded with premium chocolate chips",
-          "price": 89.99,
-          "rate": 4.7,
-          "qty": 1,
-          "images": "../assets/ChocolateChipMuffinsv3.jpg"
-        }
-      ],
-      "total_amount": 89.99,
-      "status": "Cancelled",
-      "created_at": "2024-11-29T11:53:31.621Z",
-      "checkoutDate": "2024-11-29T11:53:56.454Z",
-      "receiveDate": "2024-12-03T11:53:45.668Z",
-      "downPayment": 44.995,
-      "remainingPayment": 44.995,
+      "total_amount": 149.99,
+      "status": "Completed",
+      "created_at": "2024-12-01T03:33:31.007Z",
+      "checkoutDate": "2024-12-01T03:35:57.696Z",
+      "receiveDate": "2024-12-05T03:35:56.777Z",
+      "downPayment": 74.995,
+      "remainingPayment": 74.995,
       "paymentStatus": "paid",
       "placedAddress": {
         "fullName": "Bryan Ramos",
@@ -731,7 +799,43 @@
         "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
         "postalCode": "8600",
         "streetAddress": "P-3C Rigners Boarding House"
-      }
+      },
+      "updated_at": "2024-12-01T15:02:50.587Z"
+    },
+    {
+      "id": "2",
+      "order_id": "ORD002",
+      "customer_id": 2,
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "16",
+          "cat_id": 2,
+          "prod_name": "Classic Chocolate Chip Cookies",
+          "description": "Traditional chocolate chip cookies with premium chocolate",
+          "price": 149.99,
+          "rate": 4.7,
+          "qty": 1,
+          "images": "../assets/ClassicChocolateChipCookiesv3.jpg"
+        }
+      ],
+      "total_amount": 149.99,
+      "status": "Cancelled",
+      "created_at": "2024-12-01T03:34:18.882Z",
+      "checkoutDate": "2024-12-01T03:41:24.487Z",
+      "receiveDate": "2024-12-05T03:41:23.384Z",
+      "downPayment": 74.995,
+      "remainingPayment": 74.995,
+      "paymentStatus": "paid",
+      "placedAddress": {
+        "fullName": "Bryan Ramos",
+        "phoneNumber": "(+63) 0987654321",
+        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
+        "postalCode": "8600",
+        "streetAddress": "P-3C Rigners Boarding House"
+      },
+      "cancelReason": "Customer requested cancellation",
+      "updated_at": "2024-12-01T14:46:55.781Z"
     },
     {
       "id": "3",
@@ -751,20 +855,13 @@
         }
       ],
       "total_amount": 349.99,
-      "status": "Completed",
-      "created_at": "2024-11-29T11:55:25.176Z",
-      "checkoutDate": "2024-11-29T11:59:53.877Z",
-      "receiveDate": "2024-12-03T11:59:50.539Z",
-      "downPayment": 174.995,
-      "remainingPayment": 174.995,
-      "paymentStatus": "paid",
-      "placedAddress": {
-        "fullName": "Anna Santos",
-        "phoneNumber": "(+63) 0912345678",
-        "cityBarangay": "Ampayon, Butuan City, Agusan del Norte, Mindanao",
-        "postalCode": "8600",
-        "streetAddress": "Blk 10 Lot 5, Riverside Village"
-      }
+      "status": "Pending",
+      "created_at": "2024-12-01T03:35:00.379Z",
+      "checkoutDate": "null",
+      "receiveDate": "null",
+      "downPayment": 0,
+      "remainingPayment": 349.99,
+      "paymentStatus": "null"
     },
     {
       "id": "4",
@@ -780,24 +877,18 @@
           "price": 299.99,
           "rate": 4.8,
           "qty": 1,
-          "images": "../assets/ChocolateProfiterolesv2.jpg"
+          "images": "../assets/ChocolateProfiterolesv1.jpg"
         }
       ],
       "total_amount": 299.99,
-      "status": "Processing",
-      "created_at": "2024-11-29T11:55:31.014Z",
-      "checkoutDate": "2024-11-29T11:56:16.249Z",
-      "receiveDate": "2024-12-03T11:56:15.605Z",
-      "downPayment": 149.995,
-      "remainingPayment": 149.995,
+      "status": "To Receive",
+      "created_at": "2024-12-01T03:35:17.839Z",
+      "checkoutDate": "2024-12-01T03:35:17.839Z",
+      "receiveDate": "null",
+      "downPayment": 0,
+      "remainingPayment": 0,
       "paymentStatus": "paid",
-      "placedAddress": {
-        "fullName": "Bryan Ramos",
-        "phoneNumber": "(+63) 0987654321",
-        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
-        "postalCode": "8600",
-        "streetAddress": "P-3C Rigners Boarding House"
-      }
+      "updated_at": "2024-12-01T15:00:00.368Z"
     },
     {
       "id": "5",
@@ -806,31 +897,25 @@
       "business_id": 2,
       "products": [
         {
-          "prod_id": "12",
+          "prod_id": "17",
           "cat_id": 2,
-          "prod_name": "Chocolate Truffle Tart",
-          "description": "Rich chocolate ganache tart with cocoa dusting",
-          "price": 449.99,
-          "rate": 4.9,
+          "prod_name": "Classic Cream Puff",
+          "description": "Light choux pastry filled with vanilla cream",
+          "price": 249.99,
+          "rate": 4.8,
           "qty": 1,
-          "images": "../assets/ChocolateTruffleTartv3.jpg"
+          "images": "../assets/ClassicCreamPuffv3.jpg"
         }
       ],
-      "total_amount": 449.99,
-      "status": "To Receive",
-      "created_at": "2024-11-29T11:55:50.707Z",
-      "checkoutDate": "2024-11-29T11:56:02.389Z",
-      "receiveDate": "2024-12-03T11:55:59.485Z",
-      "downPayment": 224.995,
-      "remainingPayment": 224.995,
-      "paymentStatus": "paid",
-      "placedAddress": {
-        "fullName": "Bryan Ramos",
-        "phoneNumber": "(+63) 0987654321",
-        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
-        "postalCode": "8600",
-        "streetAddress": "P-3C Rigners Boarding House"
-      }
+      "total_amount": 249.99,
+      "status": "Processing",
+      "created_at": "2024-12-01T11:54:48.126Z",
+      "checkoutDate": "null",
+      "receiveDate": "null",
+      "downPayment": 0,
+      "remainingPayment": 249.99,
+      "paymentStatus": "null",
+      "updated_at": "2024-12-01T15:17:05.351Z"
     },
     {
       "id": "6",
@@ -839,23 +924,23 @@
       "business_id": 2,
       "products": [
         {
-          "prod_id": "12",
+          "prod_id": "16",
           "cat_id": 2,
-          "prod_name": "Chocolate Truffle Tart",
-          "description": "Rich chocolate ganache tart with cocoa dusting",
-          "price": 449.99,
-          "rate": 4.9,
+          "prod_name": "Classic Chocolate Chip Cookies",
+          "description": "Traditional chocolate chip cookies with premium chocolate",
+          "price": 149.99,
+          "rate": 4.7,
           "qty": 1,
-          "images": "../assets/ChocolateTruffleTartv3.jpg"
+          "images": "../assets/ClassicChocolateChipCookiesv1.jpg"
         }
       ],
-      "total_amount": 449.99,
+      "total_amount": 149.99,
       "status": "Processing",
-      "created_at": "2024-11-29T12:11:18.944Z",
-      "checkoutDate": "2024-11-29T12:12:04.626Z",
-      "receiveDate": "2024-12-03T12:11:58.984Z",
-      "downPayment": 224.995,
-      "remainingPayment": 224.995,
+      "created_at": "2024-12-01T11:55:06.410Z",
+      "checkoutDate": "2024-12-01T11:55:14.373Z",
+      "receiveDate": "2024-12-05T11:55:13.307Z",
+      "downPayment": 74.995,
+      "remainingPayment": 74.995,
       "paymentStatus": "paid",
       "placedAddress": {
         "fullName": "Bryan Ramos",
@@ -869,287 +954,27 @@
       "id": "7",
       "order_id": "ORD007",
       "customer_id": 2,
-      "business_id": 1,
-      "products": [
-        {
-          "prod_id": "8",
-          "cat_id": 2,
-          "prod_name": "Chocolate Chip Muffins",
-          "description": "Fresh-baked muffins loaded with premium chocolate chips",
-          "price": 89.99,
-          "rate": 4.7,
-          "qty": 1,
-          "images": "../assets/ChocolateChipMuffinsv2.jpg"
-        }
-      ],
-      "total_amount": 89.99,
-      "status": "Processing",
-      "created_at": "2024-11-29T12:11:22.463Z",
-      "checkoutDate": "2024-11-29T12:11:47.880Z",
-      "receiveDate": "2024-12-03T12:11:47.081Z",
-      "downPayment": 44.995,
-      "remainingPayment": 44.995,
-      "paymentStatus": "paid",
-      "placedAddress": {
-        "fullName": "Bryan Ramos",
-        "phoneNumber": "(+63) 0987654321",
-        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
-        "postalCode": "8600",
-        "streetAddress": "P-3C Rigners Boarding House"
-      }
-    },
-    {
-      "id": "8",
-      "order_id": "ORD008",
-      "customer_id": 2,
-      "business_id": 1,
-      "products": [
-        {
-          "prod_id": "7",
-          "cat_id": 2,
-          "prod_name": "Chocolate Babka",
-          "description": "Rich chocolate-swirled babka bread",
-          "price": 349.99,
-          "rate": 4.8,
-          "qty": 1,
-          "images": "../assets/ChocolateBabkav3.jpg"
-        }
-      ],
-      "total_amount": 349.99,
-      "status": "Processing",
-      "created_at": "2024-11-29T12:11:26.119Z",
-      "checkoutDate": "2024-11-29T12:11:38.940Z",
-      "receiveDate": "2024-12-03T12:11:38.044Z",
-      "downPayment": 174.995,
-      "remainingPayment": 174.995,
-      "paymentStatus": "paid",
-      "placedAddress": {
-        "fullName": "Bryan Ramos",
-        "phoneNumber": "(+63) 0987654321",
-        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
-        "postalCode": "8600",
-        "streetAddress": "P-3C Rigners Boarding House"
-      }
-    },
-    {
-      "id": "9",
-      "order_id": "ORD009",
-      "customer_id": 2,
       "business_id": 2,
       "products": [
         {
-          "prod_id": "12",
+          "prod_id": "17",
           "cat_id": 2,
-          "prod_name": "Chocolate Truffle Tart",
-          "description": "Rich chocolate ganache tart with cocoa dusting",
-          "price": 449.99,
-          "rate": 4.9,
+          "prod_name": "Classic Cream Puff",
+          "description": "Light choux pastry filled with vanilla cream",
+          "price": 249.99,
+          "rate": 4.8,
           "qty": 1,
-          "images": "../assets/ChocolateTruffleTartv2.jpg"
+          "images": "../assets/ClassicCreamPuffv2.jpg"
         }
       ],
-      "total_amount": 449.99,
+      "total_amount": 249.99,
       "status": "Processing",
-      "created_at": "2024-11-29T12:11:30.249Z",
-      "checkoutDate": "2024-11-29T12:12:17.870Z",
-      "receiveDate": "2024-12-28T12:12:11.000Z",
-      "downPayment": 224.995,
-      "remainingPayment": 224.995,
-      "paymentStatus": "paid",
-      "placedAddress": {
-        "fullName": "Bryan Ramos",
-        "phoneNumber": "(+63) 0987654321",
-        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
-        "postalCode": "8600",
-        "streetAddress": "P-3C Rigners Boarding House"
-      }
-    },
-    {
-      "id": "10",
-      "order_id": "ORD010",
-      "customer_id": 2,
-      "business_id": 1,
-      "products": [
-        {
-          "prod_id": "2",
-          "cat_id": 2,
-          "prod_name": "Artisanal Banana Bread",
-          "description": "Moist banana bread with premium ingredients and walnuts",
-          "price": 349.99,
-          "rate": 4.7,
-          "qty": 1,
-          "images": "../assets/ArtisanalBananaBreadv3.jpg"
-        }
-      ],
-      "total_amount": 349.99,
-      "status": "Pending",
-      "created_at": "2024-11-29T14:02:15.513Z",
-      "checkoutDate": "null",
+      "created_at": "2024-12-01T15:34:16.268Z",
+      "checkoutDate": "2024-12-01T15:34:16.268Z",
       "receiveDate": "null",
       "downPayment": 0,
-      "remainingPayment": 349.99,
-      "paymentStatus": "null"
-    },
-    {
-      "id": "11",
-      "order_id": "ORD011",
-      "customer_id": 2,
-      "business_id": 1,
-      "products": [
-        {
-          "prod_id": "5",
-          "cat_id": 3,
-          "prod_name": "Classic Butter Croissant",
-          "description": "Traditional French butter croissant with flaky layers",
-          "price": 109.99,
-          "rate": 4.8,
-          "qty": 1,
-          "images": "../assets/ButterCroissantv2.jpg"
-        }
-      ],
-      "total_amount": 109.99,
-      "status": "Processing",
-      "created_at": "2024-11-29T18:52:33.765Z",
-      "checkoutDate": "2024-11-29T18:52:59.393Z",
-      "receiveDate": "2024-12-03T18:52:58.214Z",
-      "downPayment": 54.995,
-      "remainingPayment": 54.995,
-      "paymentStatus": "paid",
-      "placedAddress": {
-        "fullName": "Bryan Ramos",
-        "phoneNumber": "(+63) 0987654321",
-        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
-        "postalCode": "8600",
-        "streetAddress": "P-3C Rigners Boarding House"
-      }
-    },
-    {
-      "id": "12",
-      "order_id": "ORD012",
-      "customer_id": 2,
-      "business_id": 2,
-      "products": [
-        {
-          "prod_id": "14",
-          "cat_id": 3,
-          "prod_name": "Classic Brioche",
-          "description": "Buttery French brioche bread with golden crust",
-          "price": 199.99,
-          "rate": 4.7,
-          "qty": 1,
-          "images": "../assets/ClassicBriochev3.jpg"
-        }
-      ],
-      "total_amount": 199.99,
-      "status": "Processing",
-      "created_at": "2024-11-29T18:52:37.437Z",
-      "checkoutDate": "2024-11-29T18:52:59.415Z",
-      "receiveDate": "2024-12-03T18:52:58.214Z",
-      "downPayment": 99.995,
-      "remainingPayment": 99.995,
-      "paymentStatus": "paid",
-      "placedAddress": {
-        "fullName": "Bryan Ramos",
-        "phoneNumber": "(+63) 0987654321",
-        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
-        "postalCode": "8600",
-        "streetAddress": "P-3C Rigners Boarding House"
-      }
-    },
-    {
-      "id": "13",
-      "order_id": "ORD013",
-      "customer_id": 2,
-      "business_id": 2,
-      "products": [
-        {
-          "prod_id": "14",
-          "cat_id": 3,
-          "prod_name": "Classic Brioche",
-          "description": "Buttery French brioche bread with golden crust",
-          "price": 199.99,
-          "rate": 4.7,
-          "qty": 1,
-          "images": "../assets/ClassicBriochev1.jpg"
-        },
-        {
-          "prod_id": "14",
-          "cat_id": 3,
-          "prod_name": "Classic Brioche",
-          "description": "Buttery French brioche bread with golden crust",
-          "price": 199.99,
-          "rate": 4.7,
-          "qty": 1,
-          "images": "../assets/ClassicBriochev3.jpg"
-        }
-      ],
-      "total_amount": 199.99,
-      "status": "Processing",
-      "created_at": "2024-11-29T18:52:39.867Z",
-      "checkoutDate": "2024-11-29T18:52:59.551Z",
-      "receiveDate": "2024-12-03T18:52:58.214Z",
-      "downPayment": 99.995,
-      "remainingPayment": 99.995,
-      "paymentStatus": "paid",
-      "placedAddress": {
-        "fullName": "Bryan Ramos",
-        "phoneNumber": "(+63) 0987654321",
-        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
-        "postalCode": "8600",
-        "streetAddress": "P-3C Rigners Boarding House"
-      }
-    },
-    {
-      "id": "14",
-      "order_id": "ORD014",
-      "customer_id": 2,
-      "business_id": 1,
-      "products": [
-        {
-          "prod_id": "1",
-          "cat_id": 3,
-          "prod_name": "Premium Almond Croissant",
-          "description": "Flaky croissant filled with rich almond cream and topped with sliced almonds",
-          "price": 119.99,
-          "rate": 4.8,
-          "qty": 1,
-          "images": "../assets/AlmondCroissantv2.jpg"
-        }
-      ],
-      "total_amount": 119.99,
-      "status": "Pending",
-      "created_at": "2024-11-29T18:52:43.944Z",
-      "checkoutDate": "null",
-      "receiveDate": "null",
-      "downPayment": 0,
-      "remainingPayment": 119.99,
-      "paymentStatus": "null"
-    },
-    {
-      "id": "15",
-      "order_id": "ORD015",
-      "customer_id": 2,
-      "business_id": 2,
-      "products": [
-        {
-          "prod_id": "18",
-          "cat_id": 3,
-          "prod_name": "Classic French Croissant",
-          "description": "Traditional French croissant with perfect layers",
-          "price": 99.99,
-          "rate": 4.8,
-          "qty": 1,
-          "images": "../assets/ClassicFrenchCroissantv3.jpg"
-        }
-      ],
-      "total_amount": 99.99,
-      "status": "Pending",
-      "created_at": "2024-11-30T07:35:41.587Z",
-      "checkoutDate": "null",
-      "receiveDate": "null",
-      "downPayment": 0,
-      "remainingPayment": 99.99,
-      "paymentStatus": "null"
+      "remainingPayment": 0,
+      "paymentStatus": "paid"
     }
   ],
   "tags": [

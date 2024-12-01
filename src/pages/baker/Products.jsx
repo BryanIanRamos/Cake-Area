@@ -1,89 +1,221 @@
-import React, { useState, useRef, useEffect } from "react";
-import Sidebar from "../../components/baker/Sidebar";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Icon } from "@iconify/react";
-import { productData, updateProductData } from "../../data/productDataTbl";
-import { categoryData, addCategory } from "../../data/catDataTbl";
-import { imagesData, updateImages } from "../../data/imagesDataTbl";
+import BakerLayout from "../../components/baker/BakerLayout";
 import Toast from "../../components/baker/Toast";
 
+const useImageCarousel = (images, hoverState) => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const intervalRef = useRef(null);
+
+  useEffect(() => {
+    if (hoverState && images.length > 1) {
+      intervalRef.current = setInterval(() => {
+        setCurrentImageIndex((prev) => (prev + 1) % images.length);
+      }, 1500);
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        setCurrentImageIndex(0);
+      }
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [hoverState, images.length]);
+
+  return currentImageIndex;
+};
+
+const DeleteConfirmationModal = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  productName,
+}) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg p-6 max-w-sm w-full">
+        <div className="text-center">
+          {/* Warning Icon */}
+          <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+            <Icon icon="mdi:alert" className="h-6 w-6 text-red-600" />
+          </div>
+
+          {/* Title */}
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            Delete Product
+          </h3>
+
+          {/* Message */}
+          <p className="text-sm text-gray-500 mb-6">
+            Are you sure you want to delete "{productName}"? This action cannot
+            be undone.
+          </p>
+
+          {/* Buttons */}
+          <div className="flex justify-center gap-4">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={onConfirm}
+              className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Products = () => {
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+  // Group all useState declarations at the top
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [businessId, setBusinessId] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("name");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
-  const [selectedImages, setSelectedImages] = useState([]);
-  const [isAddingCategory, setIsAddingCategory] = useState(false);
-  const [newCategory, setNewCategory] = useState("");
-  const [toast, setToast] = useState({
-    show: false,
-    message: "",
-    type: "success",
+  const [newProduct, setNewProduct] = useState({
+    prod_name: "",
+    description: "",
+    price: "",
+    qty: "",
+    rate: 0,
+    images: [],
+    is_available: true,
   });
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
 
+  // Refs
   const categoriesRef = useRef(null);
 
-  // Add sortOptions array
-  const sortOptions = [
-    {
-      value: "name",
-      label: "Name (A-Z)",
-      icon: "material-symbols:sort-by-alpha",
-    },
-    {
-      value: "nameDesc",
-      label: "Name (Z-A)",
-      icon: "material-symbols:sort-by-alpha",
-    },
-    {
-      value: "priceAsc",
-      label: "Price (Low to High)",
-      icon: "material-symbols:price-change",
-    },
-    {
-      value: "priceDesc",
-      label: "Price (High to Low)",
-      icon: "material-symbols:price-change",
-    },
-    { value: "rating", label: "Rating", icon: "material-symbols:star" },
-    {
-      value: "ordered",
-      label: "Most Ordered",
-      icon: "material-symbols:order-approve",
-    },
-    {
-      value: "viewed",
-      label: "Most Viewed",
-      icon: "material-symbols:visibility",
-    },
-  ];
+  // Initialize localProducts as a regular state without localStorage
+  const [localProducts, setLocalProducts] = useState([]);
 
-  // Get categories with count
-  const categoriesWithCount = categoryData.categories.map((category) => {
-    const count = productData.products.filter(
-      (product) => product.cat_id === category.cat_id
-    ).length;
-    return { ...category, count };
-  });
+  // Add tempProducts state
+  const [tempProducts, setTempProducts] = useState([]);
 
-  // Add "All" category
-  const allCategories = [
-    { cat_id: 0, name: "All", count: productData.products.length },
-    ...categoriesWithCount,
-  ];
+  // Add deleteMode state
+  const [deleteMode, setDeleteMode] = useState(false);
 
-  // Filter and sort products
+  // Combine products in useMemo
+  const filteredProducts = useMemo(() => {
+    console.log("Filtering products with:", {
+      localProducts,
+      products,
+      businessId,
+    });
+
+    if (loading) return [];
+
+    const combined = [...localProducts, ...products].filter(
+      (product) => product.business_id === parseInt(businessId)
+    );
+
+    console.log("Combined products:", combined);
+    return combined;
+  }, [products, localProducts, businessId, loading]);
+
+  // Add useEffect to fetch categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/categories");
+        if (!response.ok) throw new Error("Failed to fetch categories");
+        const data = await response.json();
+        console.log("Fetched categories:", data);
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  // Compute all categories with counts
+  const allCategories = useMemo(() => {
+    return [
+      { name: "All", count: products.length },
+      ...categories.map((cat) => ({
+        name: cat.name,
+        count: products.filter((product) => product.cat_id === cat.cat_id)
+          .length,
+      })),
+    ];
+  }, [categories, products]);
+
+  // Add the missing click handler
+  const handleCategoryClick = (categoryName) => {
+    setSelectedCategory(categoryName);
+  };
+
+  // Add useEffect to fetch products
+  useEffect(() => {
+    const storedBusinessId = localStorage.getItem("business_id");
+    console.log("Stored Business ID:", storedBusinessId);
+    setBusinessId(storedBusinessId ? parseInt(storedBusinessId) : null);
+
+    if (storedBusinessId) {
+      fetchProducts(parseInt(storedBusinessId));
+    } else {
+      console.log("No business ID found in localStorage");
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchProducts = async (busId) => {
+    try {
+      setLoading(true);
+      console.log("Fetching products for business:", busId);
+      const response = await fetch(
+        `http://localhost:3000/products?business_id=${busId}`
+      );
+      console.log("Response status:", response.status);
+      if (!response.ok) throw new Error("Failed to fetch products");
+      const data = await response.json();
+      console.log("Fetched products:", data);
+      setProducts(data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      showToast("Error loading products", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Add this console log to see what's being rendered
+  console.log("Current state:", { loading, products, businessId });
+
+  // Modify getFilteredAndSortedProducts to use categories from db.json
   const getFilteredAndSortedProducts = () => {
-    let filtered = productData.products.filter((product) => {
+    // Combine temporary and permanent products
+    const allProducts = [...tempProducts, ...products];
+
+    let filtered = allProducts.filter((product) => {
       const matchesSearch = product.prod_name
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
       const matchesCategory =
         selectedCategory === "All" ||
-        categoryData.categories.find((cat) => cat.cat_id === product.cat_id)
-          ?.name === selectedCategory;
+        categories.find((cat) => cat.cat_id === product.cat_id)?.name ===
+          selectedCategory;
       return matchesSearch && matchesCategory;
     });
 
@@ -100,405 +232,199 @@ const Products = () => {
         case "rating":
           return b.rate - a.rate;
         case "ordered":
-          return b.num_orders - a.num_orders;
+          return (b.num_orders || 0) - (a.num_orders || 0);
         case "viewed":
-          return b.views - a.views;
+          return (b.num_visits || 0) - (a.num_visits || 0);
         default:
           return 0;
       }
     });
   };
 
-  const filteredProducts = getFilteredAndSortedProducts();
-
-  // Get first image for each product
-  const getProductImage = (prod_id) => {
-    const productImage = imagesData.images.find(
-      (img) => img.prod_id === prod_id
-    );
-    return productImage?.link || "";
-  };
-
-  // Add this CSS to your component or in your global CSS file
-
-  const scrollBarStyle = {
-    // For the container with scrollbar
-    overflow: "auto",
-    scrollbarWidth: "thin", // For Firefox
-    scrollbarColor: "#E88F2A #F5F5F5", // For Firefox: thumb and track colors
-
-    // Webkit browsers (Chrome, Safari, Edge)
-    "&::-webkit-scrollbar": {
-      width: "6px",
-      height: "6px", // For horizontal scrollbar
-    },
-
-    "&::-webkit-scrollbar-track": {
-      background: "#F5F5F5",
-      borderRadius: "10px",
-    },
-
-    "&::-webkit-scrollbar-thumb": {
-      background: "#E88F2A",
-      borderRadius: "10px",
-      "&:hover": {
-        background: "#d17d1e",
-      },
-    },
-  };
-
-  // Handle scroll with mouse wheel
-  const handleWheel = (e) => {
-    if (categoriesRef.current) {
-      e.preventDefault();
-      categoriesRef.current.scrollLeft += e.deltaY;
-    }
-  };
-
-  // Handle scroll with mouse movement near edges
-  const handleMouseMove = (e) => {
-    if (!categoriesRef.current) return;
-
-    const container = categoriesRef.current;
-    const containerRect = container.getBoundingClientRect();
-    const mouseX = e.clientX - containerRect.left;
-    const edgeWidth = 50; // Width of edge detection area
-
-    if (mouseX < edgeWidth) {
-      // Near left edge - scroll left
-      container.scrollLeft -= 5;
-    } else if (mouseX > containerRect.width - edgeWidth) {
-      // Near right edge - scroll right
-      container.scrollLeft += 5;
-    }
-  };
-
-  // Add smooth scrolling behavior
-  useEffect(() => {
-    if (categoriesRef.current) {
-      categoriesRef.current.style.scrollBehavior = "smooth";
-    }
-  }, []);
-
-  const handleCategoryClick = (categoryName) => {
-    setSelectedCategory(categoryName);
-
-    // Find the clicked button element
-    const buttons = categoriesRef.current?.querySelectorAll("button");
-    const clickedButton = Array.from(buttons).find((button) =>
-      button.textContent.includes(categoryName)
-    );
-
-    if (clickedButton) {
-      clickedButton.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-        inline: "center",
-      });
-    }
-  };
-
-  const handleEditClick = (product) => {
+  // Modify handleEdit function to properly handle existing images
+  const handleEdit = (product) => {
     setEditingProduct(product);
-    setIsEditModalOpen(true);
-  };
-
-  const showToast = (message, type = "success") => {
-    setToast({
-      show: true,
-      message,
-      type,
-    });
-  };
-
-  // Add new state for validation errors
-  const [errors, setErrors] = useState({
-    prod_name: "",
-    price: "",
-    cat_id: "",
-    description: "",
-    images: "",
-  });
-
-  // Update handleEditSubmit with complete validation
-  const handleEditSubmit = async (e) => {
-    e.preventDefault();
-
-    // Reset errors
-    setErrors({
-      prod_name: "",
-      price: "",
-      cat_id: "",
-      description: "",
-      images: "",
-    });
-
-    // Validate all fields
-    let newErrors = {};
-    let hasErrors = false;
-
-    if (!editingProduct?.prod_name?.trim()) {
-      newErrors.prod_name = "Product name is required";
-      hasErrors = true;
-    }
-
-    if (!editingProduct?.price || editingProduct.price <= 0) {
-      newErrors.price = "Valid price is required";
-      hasErrors = true;
-    }
-
-    if (!editingProduct?.cat_id) {
-      newErrors.cat_id = "Category is required";
-      hasErrors = true;
-    }
-
-    if (!editingProduct?.description?.trim()) {
-      newErrors.description = "Description is required";
-      hasErrors = true;
-    }
-
-    // Image validation (if you want to require at least one image)
-    const currentImages = imagesData.images.filter(
-      (img) => img.prod_id === editingProduct?.prod_id
-    );
-    if (
-      currentImages.length === 0 &&
-      (!selectedImages || selectedImages.length === 0)
-    ) {
-      newErrors.images = "At least one image is required";
-      hasErrors = true;
-    }
-
-    if (hasErrors) {
-      setErrors(newErrors);
-      showToast("Please fill in all required fields", "error");
-      return;
-    }
-
-    try {
-      // Update product data
-      updateProductData({
-        ...editingProduct,
-        price: parseFloat(editingProduct.price),
-        cat_id: parseInt(editingProduct.cat_id),
-      });
-
-      // Handle images if there are changes
-      if (editingProduct.images?.length > 0) {
-        updateImages(editingProduct.prod_id, editingProduct.images);
-      }
-
-      setIsEditModalOpen(false);
-      setEditingProduct(null);
-      setSelectedImages([]);
-      setNewCategory("");
-      setIsAddingCategory(false);
-      showToast("Product updated successfully! 🎉");
-    } catch (error) {
-      console.error("Error updating product:", error);
-      showToast("Error updating product. Please try again.", "error");
-    }
-  };
-
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length > 3) {
-      showToast("Maximum 3 images allowed", "warning");
-      return;
-    }
-
-    try {
-      const imageFiles = files.slice(0, 3);
-      const imageUrls = imageFiles.map((file) => URL.createObjectURL(file));
-      setSelectedImages(imageUrls);
-      setNewProduct({
-        ...newProduct,
-        images: imageFiles,
-      });
-    } catch (error) {
-      console.error("Error processing images:", error);
-      showToast("Error processing images. Please try again.", "error");
-    }
-  };
-
-  const handleRemoveImage = (index) => {
-    const newImages = [...selectedImages];
-    newImages.splice(index, 1);
-    setSelectedImages(newImages);
-
-    const newProductImages = [...newProduct.images];
-    newProductImages.splice(index, 1);
     setNewProduct({
-      ...newProduct,
-      images: newProductImages,
+      prod_name: product.prod_name,
+      description: product.description,
+      price: product.price.toString(),
+      qty: product.qty.toString(),
+      is_available: product.is_available,
+      cat_id: product.cat_id.toString(),
+      images: product.images,
     });
+    setSelectedImages([]);
+    setIsModalOpen(true);
   };
 
-  // Add this if you need to force re-renders
-  const [, forceUpdate] = useState();
-  const handleForceUpdate = () => {
-    forceUpdate({});
+  // Add function to handle replacing specific images
+  const handleReplaceImage = (e, index) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const newSelectedImages = [...selectedImages];
+    newSelectedImages[index] = file;
+    setSelectedImages(newSelectedImages);
+
+    const newImages = [...newProduct.images];
+    newImages[index] = URL.createObjectURL(file);
+    setNewProduct((prev) => ({
+      ...prev,
+      images: newImages,
+    }));
   };
 
-  // Add these new states
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [newProduct, setNewProduct] = useState({
-    prod_name: "",
-    price: "",
-    description: "",
-    cat_id: "",
-    images: [],
-    bus_id: 1, // Set this to the actual baker's business ID
-    rate: 0,
-    views: 0,
-    num_orders: 0,
-  });
+  // Update isFormValid to be less restrictive about images
+  const isFormValid = () => {
+    const requiredFields = {
+      prod_name: newProduct.prod_name,
+      description: newProduct.description,
+      price: newProduct.price,
+      qty: newProduct.qty,
+      cat_id: newProduct.cat_id,
+    };
 
-  // Add this function to handle adding new product
-  const handleAddSubmit = async (e) => {
+    // Check if all required fields are filled
+    const fieldsValid = Object.values(requiredFields).every(
+      (field) => field !== "" && field !== null
+    );
+
+    // Require at least one image for both new and edited products
+    const hasAtLeastOneImage = editingProduct
+      ? editingProduct.images.length > 0
+      : selectedImages.length > 0;
+
+    return fieldsValid && hasAtLeastOneImage;
+  };
+
+  // Update handleSubmit to remove the 3-image check
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Reset errors
-    setErrors({
-      prod_name: "",
-      price: "",
-      cat_id: "",
-      description: "",
-      images: "",
-    });
-
-    // Validate all fields
-    let newErrors = {};
-    let hasErrors = false;
-
-    if (!newProduct.prod_name?.trim()) {
-      newErrors.prod_name = "Product name is required";
-      hasErrors = true;
-    }
-
-    if (!newProduct.price || newProduct.price <= 0) {
-      newErrors.price = "Valid price is required";
-      hasErrors = true;
-    }
-
-    if (!newProduct.cat_id) {
-      newErrors.cat_id = "Category is required";
-      hasErrors = true;
-    }
-
-    if (!newProduct.description?.trim()) {
-      newErrors.description = "Description is required";
-      hasErrors = true;
-    }
-
-    if (!selectedImages || selectedImages.length === 0) {
-      newErrors.images = "At least one image is required";
-      hasErrors = true;
-    }
-
-    if (hasErrors) {
-      setErrors(newErrors);
-      showToast("Please fill in all required fields", "error");
-      return;
-    }
-
     try {
-      // Generate new product ID
-      const newProdId =
-        Math.max(...productData.products.map((p) => p.prod_id)) + 1;
+      const currentBusinessId = parseInt(localStorage.getItem("businessId"));
 
-      // Create new product
-      const productToAdd = {
-        ...newProduct,
-        prod_id: newProdId,
-        price: parseFloat(newProduct.price),
-        cat_id: parseInt(newProduct.cat_id),
-        images: newProduct.images.map((img) => ({
-          ...img,
-          prod_id: newProdId,
-        })),
-      };
+      if (editingProduct) {
+        // Handle Edit
+        const updatedProduct = {
+          ...editingProduct,
+          prod_name: newProduct.prod_name,
+          description: newProduct.description,
+          price: parseFloat(newProduct.price),
+          qty: parseInt(newProduct.qty),
+          is_available: newProduct.is_available,
+          cat_id: parseInt(newProduct.cat_id),
+          images: editingProduct.images,
+        };
 
-      // Add the new product to the productData
-      productData.products.push(productToAdd);
+        setTempProducts((prev) =>
+          prev.map((p) => (p.id === editingProduct.id ? updatedProduct : p))
+        );
+        setProducts((prev) =>
+          prev.map((p) => (p.id === editingProduct.id ? updatedProduct : p))
+        );
+      } else {
+        // Handle Add
+        const tempProduct = {
+          id: `temp_${Date.now()}`,
+          business_id: currentBusinessId,
+          cat_id: parseInt(newProduct.cat_id),
+          prod_name: newProduct.prod_name,
+          description: newProduct.description,
+          price: parseFloat(newProduct.price),
+          rate: 0,
+          qty: parseInt(newProduct.qty),
+          images: selectedImages.map((file) => URL.createObjectURL(file)),
+          is_available: newProduct.is_available,
+          num_visits: 0,
+          num_orders: 0,
+        };
 
-      // Handle images if there are changes
-      if (newProduct.images.length > 0) {
-        updateImages(newProdId, newProduct.images);
+        setTempProducts((prev) => [tempProduct, ...prev]);
       }
 
-      setIsAddModalOpen(false);
+      // Reset form
       setNewProduct({
         prod_name: "",
-        price: "",
         description: "",
+        price: "",
+        qty: "",
         cat_id: "",
         images: [],
-        bus_id: 1,
-        rate: 0,
-        views: 0,
-        num_orders: 0,
+        is_available: true,
       });
       setSelectedImages([]);
-      showToast("Product added successfully! 🎉");
+      setEditingProduct(null);
+      setIsModalOpen(false);
     } catch (error) {
-      console.error("Error adding product:", error);
-      showToast("Error adding product. Please try again.", "error");
+      console.error("Error handling product:", error);
+      alert("Failed to process product. Please try again.");
     }
   };
 
-  // Add new state for delete confirmation modal
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [productToDelete, setProductToDelete] = useState(null);
+  // Add loading state to the JSX
+  if (loading) {
+    return (
+      <BakerLayout>
+        <div className="p-6 flex justify-center items-center">
+          <p>Loading products...</p>
+        </div>
+      </BakerLayout>
+    );
+  }
 
-  // Add delete handler functions
-  const handleDeleteClick = (product) => {
+  // Modify handleImageSelect to properly update states
+  const handleImageSelect = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const imageUrl = URL.createObjectURL(file);
+    setSelectedImages((prev) => [...prev, file]);
+
+    if (editingProduct) {
+      setEditingProduct((prev) => ({
+        ...prev,
+        images: [...prev.images, imageUrl],
+      }));
+    } else {
+      setNewProduct((prev) => ({
+        ...prev,
+        images: [...prev.images, imageUrl],
+      }));
+    }
+  };
+
+  // Add this handler for form input changes
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setNewProduct((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  // Update handleDelete
+  const handleDelete = (product) => {
     setProductToDelete(product);
     setIsDeleteModalOpen(true);
   };
 
-  const handleDeleteConfirm = () => {
-    try {
-      // Remove product from productData
-      const productIndex = productData.products.findIndex(
-        (p) => p.prod_id === productToDelete.prod_id
+  // Add confirmation handler
+  const confirmDelete = () => {
+    if (productToDelete) {
+      setProducts((prev) => prev.filter((p) => p.id !== productToDelete.id));
+      setTempProducts((prev) =>
+        prev.filter((p) => p.id !== productToDelete.id)
       );
-      if (productIndex !== -1) {
-        productData.products.splice(productIndex, 1);
-      }
-
-      // Remove associated images
-      const imagesToDelete = imagesData.images.filter(
-        (img) => img.prod_id === productToDelete.prod_id
-      );
-      imagesToDelete.forEach((img) => {
-        const imageIndex = imagesData.images.findIndex(
-          (i) => i.img_id === img.img_id
-        );
-        if (imageIndex !== -1) {
-          imagesData.images.splice(imageIndex, 1);
-        }
-      });
-
       setIsDeleteModalOpen(false);
       setProductToDelete(null);
-      showToast("Product deleted successfully! 🗑️");
-    } catch (error) {
-      console.error("Error deleting product:", error);
-      showToast("Error deleting product. Please try again.", "error");
     }
   };
 
+  // Add the return statement to render the products
   return (
-    <div className="flex h-screen bg-[#F5F5F5]">
-      <Sidebar
-        isExpanded={isSidebarExpanded}
-        setIsExpanded={setIsSidebarExpanded}
-      />
-      <main
-        className={`transition-all duration-300 flex-1 overflow-y-auto p-6
-        ${isSidebarExpanded ? "ml-64" : "ml-20"}`}
-      >
+    <BakerLayout>
+      <div className="p-6">
         <div className="max-w-7xl mx-auto">
           {/* Header Section */}
           <div className="flex justify-between items-center mb-6">
@@ -540,613 +466,425 @@ const Products = () => {
                 className="absolute left-3 top-2.5 text-gray-400 text-xl"
               />
             </div>
-            {/* Adjusted the layout to bring the button closer to the sort dropdown */}
             <div className="flex items-center gap-2">
               <button
-                onClick={() => setIsAddModalOpen(true)}
+                onClick={() => setIsModalOpen(true)}
                 className="flex items-center gap-2 px-4 py-2 bg-[#E88F2A] text-white rounded-lg hover:bg-[#E88F2A]/90"
               >
                 <Icon icon="mdi:plus" />
                 Add Goods
               </button>
 
+              {/* Modified Delete Mode Toggle Button */}
+              <button
+                onClick={() => setDeleteMode(!deleteMode)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+                  deleteMode
+                    ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    : "bg-red-600 text-white hover:bg-red-700"
+                }`}
+              >
+                <Icon icon="mdi:delete" />
+                {deleteMode ? "Done" : "Delete"}
+              </button>
+
               {/* Sort Dropdown */}
-              <div className="relative">
-                <button
-                  className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-50"
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                >
-                  <Icon icon="material-symbols:sort" />
-                  Sort By:{" "}
-                  {sortOptions.find((option) => option.value === sortBy)?.label}
-                </button>
-                {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border z-10">
-                    {sortOptions.map((option) => (
-                      <button
-                        key={option.value}
-                        className={`w-full px-4 py-2 text-left flex items-center gap-2 hover:bg-gray-50 ${
-                          sortBy === option.value
-                            ? "text-[#E88F2A]"
-                            : "text-gray-700"
-                        }`}
-                        onClick={() => {
-                          setSortBy(option.value);
-                          setIsDropdownOpen(false);
-                        }}
-                      >
-                        <Icon icon={option.icon} className="text-lg" />
-                        {option.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="px-4 py-2 border rounded-lg bg-white"
+              >
+                <option value="name">Name (A-Z)</option>
+                <option value="nameDesc">Name (Z-A)</option>
+                <option value="priceAsc">Price (Low to High)</option>
+                <option value="priceDesc">Price (High to Low)</option>
+                <option value="rating">Rating</option>
+                <option value="ordered">Most Ordered</option>
+                <option value="viewed">Most Viewed</option>
+              </select>
             </div>
           </div>
 
           {/* Products Grid */}
-          <div className="bg-white rounded-lg shadow">
-            {filteredProducts.map((product) => (
-              <div
-                key={product.prod_id}
-                className="flex items-center gap-4 p-4 border-b hover:bg-gray-50 transition-colors"
-              >
-                <img
-                  src={getProductImage(product.prod_id)}
-                  alt={product.prod_name}
-                  className="w-16 h-16 object-cover rounded-lg"
-                />
-                <div className="flex-1">
-                  <h3 className="font-medium">{product.prod_name}</h3>
-                  <div className="flex items-center gap-2 text-sm text-gray-500">
-                    <div className="flex items-center gap-1">
-                      <Icon icon="ph:star-fill" className="text-[#F4A340]" />
-                      {product.rate}
-                    </div>
-                  </div>
-                </div>
-                <div className="text-center">
-                  <div className="font-medium">₱{product.price.toFixed(2)}</div>
-                  <div className="text-sm text-gray-500">Price</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-medium">{product.num_orders || 0}</div>
-                  <div className="text-sm text-gray-500">Ordered</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-medium">{product.views || 0}</div>
-                  <div className="text-sm text-gray-500">Viewed</div>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleEditClick(product)}
-                    className="px-4 py-1 bg-[#E88F2A] text-white rounded hover:bg-[#E88F2A]/90"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteClick(product)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <Icon icon="mdi:delete" className="text-xl" />
-                  </button>
-                </div>
-              </div>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {getFilteredAndSortedProducts().map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                deleteMode={deleteMode}
+              />
             ))}
           </div>
         </div>
-      </main>
+      </div>
 
-      {/* Edit Modal */}
-      {isEditModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-4xl max-h-[80vh] flex flex-col">
-            <div className="p-6 border-b">
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold">Edit Product</h2>
-                <button
-                  onClick={() => setIsEditModalOpen(false)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  <Icon icon="mdi:close" className="text-2xl" />
-                </button>
-              </div>
-            </div>
-
-            {/* Scrollable content */}
-            <div className="p-6 overflow-y-auto flex-1">
-              <form onSubmit={handleEditSubmit} className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Product Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={editingProduct?.prod_name || ""}
-                      onChange={(e) => {
-                        setEditingProduct({
-                          ...editingProduct,
-                          prod_name: e.target.value,
-                        });
-                        // Clear error when user starts typing
-                        if (errors.prod_name) {
-                          setErrors({ ...errors, prod_name: "" });
-                        }
-                      }}
-                      className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none 
-                        ${
-                          errors.prod_name
-                            ? "border-red-500"
-                            : "border-gray-300"
-                        }`}
-                    />
-                    {errors.prod_name && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.prod_name}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Price <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={editingProduct?.price || ""}
-                      onChange={(e) => {
-                        setEditingProduct({
-                          ...editingProduct,
-                          price: parseFloat(e.target.value),
-                        });
-                        if (errors.price) {
-                          setErrors({ ...errors, price: "" });
-                        }
-                      }}
-                      className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none
-                        ${errors.price ? "border-red-500" : "border-gray-300"}`}
-                    />
-                    {errors.price && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.price}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Category <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      value={editingProduct?.cat_id || ""}
-                      onChange={(e) => {
-                        setEditingProduct({
-                          ...editingProduct,
-                          cat_id: parseInt(e.target.value),
-                        });
-                        if (errors.cat_id) {
-                          setErrors({ ...errors, cat_id: "" });
-                        }
-                      }}
-                      className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none
-                        ${
-                          errors.cat_id ? "border-red-500" : "border-gray-300"
-                        }`}
-                    >
-                      <option value="">Select a category</option>
-                      {categoryData.categories.map((category) => (
-                        <option key={category.cat_id} value={category.cat_id}>
-                          {category.name}
-                        </option>
-                      ))}
-                    </select>
-                    {errors.cat_id && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.cat_id}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Description <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      value={editingProduct?.description || ""}
-                      onChange={(e) => {
-                        setEditingProduct({
-                          ...editingProduct,
-                          description: e.target.value,
-                        });
-                        if (errors.description) {
-                          setErrors({ ...errors, description: "" });
-                        }
-                      }}
-                      rows="3"
-                      className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none
-                        ${
-                          errors.description
-                            ? "border-red-500"
-                            : "border-gray-300"
-                        }`}
-                    />
-                    {errors.description && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.description}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Images Section */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Product Images (Max 3){" "}
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <div className="flex gap-4 mb-2">
-                    {[0, 1, 2].map((index) => (
-                      <div
-                        key={index}
-                        className="relative w-32 h-32 border rounded-lg overflow-hidden"
-                      >
-                        {selectedImages[index] ? (
-                          <>
-                            <img
-                              src={selectedImages[index]}
-                              alt={`Product ${index + 1}`}
-                              className="w-full h-full object-cover"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveImage(index)}
-                              className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                            >
-                              <Icon icon="mdi:close" className="text-sm" />
-                            </button>
-                          </>
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gray-50">
-                            <Icon
-                              icon="mdi:image-plus"
-                              className="text-3xl text-gray-400"
-                            />
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center gap-2 mt-2">
-                    <input
-                      type="file"
-                      multiple
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="hidden"
-                      id="new-product-images"
-                      max="3"
-                    />
-                    <label
-                      htmlFor="new-product-images"
-                      className="cursor-pointer px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center gap-2"
-                    >
-                      <Icon icon="mdi:image-plus" />
-                      Select Images
-                    </label>
-                    <span className="text-sm text-gray-500">
-                      {selectedImages.length}/3 images selected
-                    </span>
-                  </div>
-                  {errors.images && (
-                    <p className="mt-1 text-sm text-red-500">{errors.images}</p>
-                  )}
-                </div>
-              </form>
-            </div>
-
-            {/* Fixed footer */}
-            <div className="p-6 border-t bg-white">
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsEditModalOpen(false)}
-                  className="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleEditSubmit}
-                  className="px-4 py-2 bg-[#E88F2A] text-white rounded-lg hover:bg-[#E88F2A]/90"
-                >
-                  Save Changes
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {isAddModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-4xl max-h-[80vh] flex flex-col">
-            <div className="p-6 border-b">
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold">Add New Product</h2>
-                <button
-                  onClick={() => setIsAddModalOpen(false)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  <Icon icon="mdi:close" className="text-2xl" />
-                </button>
-              </div>
-            </div>
-
-            <div className="p-6 overflow-y-auto flex-1">
-              <form onSubmit={handleAddSubmit} className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                  {/* Product Name */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Product Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={newProduct.prod_name}
-                      onChange={(e) => {
-                        setNewProduct({
-                          ...newProduct,
-                          prod_name: e.target.value,
-                        });
-                        if (errors.prod_name)
-                          setErrors({ ...errors, prod_name: "" });
-                      }}
-                      className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none ${
-                        errors.prod_name ? "border-red-500" : "border-gray-300"
-                      }`}
-                    />
-                    {errors.prod_name && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.prod_name}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Price */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Price <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={newProduct.price}
-                      onChange={(e) => {
-                        setNewProduct({
-                          ...newProduct,
-                          price: e.target.value,
-                        });
-                        if (errors.price) setErrors({ ...errors, price: "" });
-                      }}
-                      className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none ${
-                        errors.price ? "border-red-500" : "border-gray-300"
-                      }`}
-                    />
-                    {errors.price && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.price}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Category */}
-                  <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Category <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      value={newProduct.cat_id}
-                      onChange={(e) => {
-                        setNewProduct({
-                          ...newProduct,
-                          cat_id: e.target.value,
-                        });
-                        if (errors.cat_id) setErrors({ ...errors, cat_id: "" });
-                      }}
-                      className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none ${
-                        errors.cat_id ? "border-red-500" : "border-gray-300"
-                      }`}
-                    >
-                      <option value="">Select a category</option>
-                      {categoryData.categories.map((category) => (
-                        <option key={category.cat_id} value={category.cat_id}>
-                          {category.name}
-                        </option>
-                      ))}
-                    </select>
-                    {errors.cat_id && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.cat_id}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Description */}
-                  <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Description <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      value={newProduct.description}
-                      onChange={(e) => {
-                        setNewProduct({
-                          ...newProduct,
-                          description: e.target.value,
-                        });
-                        if (errors.description)
-                          setErrors({ ...errors, description: "" });
-                      }}
-                      rows="3"
-                      className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none ${
-                        errors.description
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                    />
-                    {errors.description && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.description}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Images Section */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Product Images (Max 3){" "}
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <div className="flex gap-4 mb-2">
-                    {[0, 1, 2].map((index) => (
-                      <div
-                        key={index}
-                        className="relative w-32 h-32 border rounded-lg overflow-hidden"
-                      >
-                        {selectedImages[index] ? (
-                          <>
-                            <img
-                              src={selectedImages[index]}
-                              alt={`Product ${index + 1}`}
-                              className="w-full h-full object-cover"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveImage(index)}
-                              className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                            >
-                              <Icon icon="mdi:close" className="text-sm" />
-                            </button>
-                          </>
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gray-50">
-                            <Icon
-                              icon="mdi:image-plus"
-                              className="text-3xl text-gray-400"
-                            />
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="file"
-                      multiple
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="hidden"
-                      id="new-product-images"
-                      max="3"
-                    />
-                    <label
-                      htmlFor="new-product-images"
-                      className="cursor-pointer px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center gap-2"
-                    >
-                      <Icon icon="mdi:image-plus" />
-                      Select Images
-                    </label>
-                    <span className="text-sm text-gray-500">
-                      {selectedImages.length}/3 images selected
-                    </span>
-                  </div>
-                  {errors.images && (
-                    <p className="mt-1 text-sm text-red-500">{errors.images}</p>
-                  )}
-                </div>
-              </form>
-            </div>
-
-            {/* Fixed footer */}
-            <div className="p-6 border-t bg-white">
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsAddModalOpen(false)}
-                  className="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleAddSubmit}
-                  className="px-4 py-2 bg-[#E88F2A] text-white rounded-lg hover:bg-[#E88F2A]/90"
-                >
-                  Add Product
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {isDeleteModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-md p-6">
-            <h2 className="text-xl font-bold mb-4">Delete Product</h2>
-            <p className="text-gray-600 mb-6">
-              Are you sure you want to delete "{productToDelete?.prod_name}"?
-              This action cannot be undone.
+      {/* Add Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg p-6 max-w-xl w-full">
+            <h2 className="text-2xl text-center font-medium text-[#E88F2A] mb-2">
+              {editingProduct ? "Edit Product" : "Add New Product"}
+            </h2>
+            <p className="text-center text-gray-600 mb-4">
+              {editingProduct
+                ? "Update your product information"
+                : "Please fill in the product information to get started"}
             </p>
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setIsDeleteModalOpen(false)}
-                className="px-4 py-2 border rounded-lg hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDeleteConfirm}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-              >
-                Delete
-              </button>
-            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-3">
+              {/* Product Name and Price */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700 mb-1 text-sm">
+                    Product Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="prod_name"
+                    placeholder="Enter product name"
+                    value={newProduct.prod_name}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-1.5 rounded-lg border border-gray-300 focus:outline-none focus:border-[#E88F2A] text-sm"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 mb-1 text-sm">
+                    Price <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    name="price"
+                    placeholder="Enter price"
+                    value={newProduct.price}
+                    onChange={handleInputChange}
+                    step="0.01"
+                    className="w-full px-3 py-1.5 rounded-lg border border-gray-300 focus:outline-none focus:border-[#E88F2A] text-sm"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Category Selection */}
+              <div>
+                <label className="block text-gray-700 mb-1 text-sm">
+                  Category <span className="text-red-500">*</span>
+                </label>
+                <select
+                  name="cat_id"
+                  value={newProduct.cat_id || ""}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-1.5 rounded-lg border border-gray-300 focus:outline-none focus:border-[#E88F2A] text-sm"
+                  required
+                >
+                  <option value="">Select a category</option>
+                  {categories.map((category) => (
+                    <option key={category.cat_id} value={category.cat_id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block text-gray-700 mb-1 text-sm">
+                  Description <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  name="description"
+                  placeholder="Enter product description"
+                  value={newProduct.description}
+                  onChange={handleInputChange}
+                  rows="2"
+                  className="w-full px-3 py-1.5 rounded-lg border border-gray-300 focus:outline-none focus:border-[#E88F2A] text-sm"
+                  required
+                />
+              </div>
+
+              {/* Quantity and Images in One Row */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700 mb-1 text-sm">
+                    Quantity <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    name="qty"
+                    placeholder="Enter quantity"
+                    value={newProduct.qty}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-1.5 rounded-lg border border-gray-300 focus:outline-none focus:border-[#E88F2A] text-sm"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 mb-1 text-sm">
+                    Product Images <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageSelect}
+                    className="w-full px-3 py-1.5 rounded-lg border border-gray-300 focus:outline-none focus:border-[#E88F2A] text-sm"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    {editingProduct
+                      ? `${editingProduct.images.length} image(s) uploaded. You can add more or replace existing ones.`
+                      : "Upload at least one image. You can add more later."}
+                  </p>
+                </div>
+              </div>
+
+              {/* Image Preview */}
+              <div className="mt-2">
+                <p className="text-sm text-gray-600 mb-2">Selected Images</p>
+                <div className="grid grid-cols-3 gap-2">
+                  {(editingProduct
+                    ? editingProduct.images
+                    : newProduct.images
+                  ).map((imageUrl, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={imageUrl}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-20 object-cover rounded-lg"
+                      />
+                      <div className="absolute top-1 right-1 flex gap-1">
+                        <label className="bg-blue-500 text-white rounded-full p-1 hover:bg-blue-600 cursor-pointer">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleReplaceImage(e, index)}
+                            className="hidden"
+                          />
+                          <Icon icon="mdi:pencil" className="text-xs" />
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const newImages = editingProduct
+                              ? editingProduct.images.filter(
+                                  (_, i) => i !== index
+                                )
+                              : newProduct.images.filter((_, i) => i !== index);
+
+                            if (editingProduct) {
+                              setEditingProduct((prev) => ({
+                                ...prev,
+                                images: newImages,
+                              }));
+                            }
+                            setNewProduct((prev) => ({
+                              ...prev,
+                              images: newImages,
+                            }));
+                            setSelectedImages((prev) =>
+                              prev.filter((_, i) => i !== index)
+                            );
+                          }}
+                          className="bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                        >
+                          <Icon icon="mdi:close" className="text-xs" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Availability */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="is_available"
+                  checked={newProduct.is_available}
+                  onChange={handleInputChange}
+                  className="rounded border-gray-300 text-[#E88F2A] focus:ring-[#E88F2A]"
+                />
+                <label className="text-sm text-gray-700">
+                  Available for Sale
+                </label>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex justify-center gap-4 mt-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setEditingProduct(null);
+                    setNewProduct({
+                      prod_name: "",
+                      description: "",
+                      price: "",
+                      qty: "",
+                      images: [],
+                      is_available: true,
+                    });
+                    setSelectedImages([]);
+                  }}
+                  className="px-8 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50"
+                >
+                  Close
+                </button>
+                <button
+                  type="submit"
+                  disabled={!isFormValid()}
+                  className={`px-8 py-2 rounded-lg bg-[#E88F2A] text-white hover:bg-[#E88F2A]/90 
+                    ${!isFormValid() ? "opacity-50 cursor-not-allowed" : ""}`}
+                >
+                  {editingProduct ? "Save Changes" : "Add"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
 
-      {toast.show && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast({ ...toast, show: false })}
-        />
-      )}
-    </div>
+      {/* Add DeleteConfirmationModal */}
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setProductToDelete(null);
+        }}
+        onConfirm={confirmDelete}
+        productName={productToDelete?.prod_name}
+      />
+    </BakerLayout>
   );
 };
 
-// CSS to hide scrollbar but maintain functionality
-const styles = `
-  .hide-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    overflow-x: scroll;
-    scroll-behavior: smooth;
-  }
+const ProductCard = ({ product, onEdit, onDelete, deleteMode }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const currentImageIndex = useImageCarousel(product.images, isHovered);
+  const [isScaling, setIsScaling] = useState(false);
 
-  .hide-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-`;
+  // Effect to handle scaling animation on hover
+  useEffect(() => {
+    if (isHovered) {
+      setIsScaling(true);
+      const timer = setTimeout(() => {
+        setIsScaling(false);
+      }, 4000); // Match this duration with the CSS transition duration
 
-// Add the styles to the document
-const styleSheet = document.createElement("style");
-styleSheet.innerText = styles;
-document.head.appendChild(styleSheet);
+      return () => clearTimeout(timer);
+    } else {
+      setIsScaling(false); // Reset scaling when not hovered
+    }
+  }, [isHovered]);
+
+  // Effect to reset scaling after the third image
+  useEffect(() => {
+    if (currentImageIndex === 2) {
+      // Check if it's the third image (index 2)
+      const timer = setTimeout(() => {
+        setIsScaling(false); // Reset to normal scale after 2 seconds
+      }, 2000); // 2 seconds delay
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentImageIndex]);
+
+  return (
+    <div className="bg-white rounded-lg shadow-md p-4 flex flex-col h-full">
+      <div
+        className="relative w-full h-40 mb-4 overflow-hidden"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {/* Modified delete button to only show in delete mode */}
+        {deleteMode && (
+          <button
+            onClick={() => onDelete(product)}
+            className="absolute top-2 left-2 z-20 bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600 transition-colors"
+          >
+            <Icon icon="mdi:delete" className="text-sm" />
+          </button>
+        )}
+
+        {/* Not Available badge */}
+        {!product.is_available && (
+          <div className="absolute top-2 right-2 z-20">
+            <span className="px-2 py-1 text-xs font-medium bg-red-100 text-red-600 rounded-full">
+              Not Available
+            </span>
+          </div>
+        )}
+
+        <img
+          src={product.images?.[currentImageIndex] || "default-image-path.jpg"}
+          alt={product.prod_name}
+          className={`
+            w-full h-full object-cover rounded-lg 
+            transition-transform duration-[4000ms]
+            ${isScaling ? "scale-125" : "scale-100"}
+          `}
+        />
+
+        {product.images?.length > 1 && isHovered && (
+          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1 z-10">
+            {product.images.map((_, index) => (
+              <div
+                key={index}
+                className={`
+                  w-1.5 h-1.5 rounded-full 
+                  ${
+                    currentImageIndex === index
+                      ? "bg-white scale-110"
+                      : "bg-white/50 scale-100"
+                  }
+                `}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Product Info Section */}
+      <div className="flex-grow">
+        <h3 className="font-medium text-lg mb-2">{product.prod_name}</h3>
+        <div className="flex items-center gap-1 text-sm text-gray-500">
+          <Icon icon="ph:star-fill" className="text-[#F4A340]" />
+          <span>{product.rate}</span>
+        </div>
+      </div>
+
+      {/* Stats and Edit Button */}
+      <div className="flex justify-between items-center mt-3">
+        <div className="text-sm text-gray-600">
+          <div className="text-center">
+            <div>₱{product.price.toFixed(2)}</div>
+            <div className="text-xs">Price</div>
+          </div>
+        </div>
+
+        <div className="text-sm text-gray-600">
+          <div className="text-center">
+            <div>{product.num_orders || 0}</div>
+            <div className="text-xs">Ordered</div>
+          </div>
+        </div>
+
+        <div className="text-sm text-gray-600">
+          <div className="text-center">
+            <div>{product.num_visits || 0}</div>
+            <div className="text-xs">Viewed</div>
+          </div>
+        </div>
+
+        <button
+          onClick={() => onEdit(product)}
+          className="bg-[#FF9F0D] text-white px-4 py-1 rounded hover:bg-[#FF9F0D]/80"
+        >
+          Edit
+        </button>
+      </div>
+    </div>
+  );
+};
 
 export default Products;

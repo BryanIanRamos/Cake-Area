@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Sidebar from "../../components/baker/Sidebar";
+import BakerLayout from '../../components/baker/BakerLayout';
 import { Icon } from "@iconify/react";
 import {
   LineChart,
@@ -18,7 +18,6 @@ import {
 } from 'recharts';
 
 const Statistics = () => {
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
   const [timeRange, setTimeRange] = useState('week'); // week, month, year
 
   // Sample data - Replace with actual data
@@ -82,15 +81,8 @@ const Statistics = () => {
   ];
 
   return (
-    <div className="flex h-screen bg-[#F5F5F5]">
-      <Sidebar
-        isExpanded={isSidebarExpanded}
-        setIsExpanded={setIsSidebarExpanded}
-      />
-      <main
-        className={`transition-all duration-300 flex-1 overflow-y-auto p-6
-          ${isSidebarExpanded ? "ml-64" : "ml-20"}`}
-      >
+    <BakerLayout>
+      <div className="p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
@@ -273,8 +265,8 @@ const Statistics = () => {
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </BakerLayout>
   );
 };
 
