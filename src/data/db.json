@@ -46,7 +46,7 @@
       "password": "hashedPasswordJKL",
       "created_at": "2024-03-10",
       "role": 2,
-      "is_Login": false
+      "is_Login": true
     }
   ],
   "profiles": [

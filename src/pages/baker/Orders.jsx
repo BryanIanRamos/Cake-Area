@@ -429,7 +429,7 @@ const Orders = () => {
             ) : error ? (
               <p>Error: {error.message}</p>
             ) : filteredOrders.length === 0 ? (
-              <p>No orders found.</p>
+              <p>No orders yet</p>
             ) : (
               filteredOrders.map((order) => (
                 <OrderCard key={order.id} order={order} />
