@@ -573,21 +573,20 @@ const ProductCard = ({ product }) => {
       setIsScaling(true);
       const timer = setTimeout(() => {
         setIsScaling(false);
-      }, 4000); // Match this duration with the CSS transition duration
+      }, 4000);
 
       return () => clearTimeout(timer);
     } else {
-      setIsScaling(false); // Reset scaling when not hovered
+      setIsScaling(false);
     }
   }, [isHovered]);
 
   // Effect to reset scaling after the third image
   useEffect(() => {
     if (currentImageIndex === 2) {
-      // Check if it's the third image (index 2)
       const timer = setTimeout(() => {
-        setIsScaling(false); // Reset to normal scale after 2 seconds
-      }, 2000); // 2 seconds delay
+        setIsScaling(false);
+      }, 2000);
 
       return () => clearTimeout(timer);
     }
@@ -603,13 +602,6 @@ const ProductCard = ({ product }) => {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Add temporary badge */}
-        {product.id.toString().startsWith('temp_') && (
-          <div className="absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs z-10">
-            Temporary
-          </div>
-        )}
-        
         <img
           src={product.images?.[currentImageIndex] || "default-image-path.jpg"}
           alt={product.prod_name}
@@ -627,11 +619,7 @@ const ProductCard = ({ product }) => {
                 key={index}
                 className={`
                   w-1.5 h-1.5 rounded-full 
-                  ${
-                    currentImageIndex === index
-                      ? "bg-white scale-110"
-                      : "bg-white/50 scale-100"
-                  }
+                  ${currentImageIndex === index ? "bg-white scale-110" : "bg-white/50 scale-100"}
                 `}
               />
             ))}
@@ -641,10 +629,7 @@ const ProductCard = ({ product }) => {
 
       {/* Product Info Section */}
       <div className="flex-grow">
-        {/* Product Title */}
         <h3 className="font-medium text-lg mb-2">{product.prod_name}</h3>
-
-        {/* Rating */}
         <div className="flex items-center gap-1 text-sm text-gray-500">
           <Icon icon="ph:star-fill" className="text-[#F4A340]" />
           <span>{product.rate}</span>
