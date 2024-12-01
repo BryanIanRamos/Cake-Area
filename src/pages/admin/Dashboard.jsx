@@ -1,6 +1,64 @@
 import { useState, useEffect } from "react";
 import AdminLayout from "../../components/admin/AdminLayout";
 
+// Add this modal component for viewing activity/history details
+const DetailModal = ({ isOpen, onClose, data, type }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">
+          {type === "activity" ? "Activity Details" : "Account History Details"}
+        </h3>
+        <div className="space-y-4">
+          <div>
+            <h4 className="text-sm font-medium text-gray-500">
+              User Information
+            </h4>
+            <p className="mt-1 text-sm text-gray-900">
+              <span className="font-medium">Name:</span>{" "}
+              {data.user || data.name}
+            </p>
+            <p className="mt-1 text-sm text-gray-900">
+              <span className="font-medium">Type:</span> {data.type}
+            </p>
+          </div>
+          <div>
+            <h4 className="text-sm font-medium text-gray-500">
+              Action Details
+            </h4>
+            <p className="mt-1 text-sm text-gray-900">
+              <span className="font-medium">Action:</span> {data.action}
+            </p>
+            <p className="mt-1 text-sm text-gray-900">
+              <span className="font-medium">Time:</span> {data.timestamp}
+            </p>
+            {data.amount && (
+              <p className="mt-1 text-sm text-gray-900">
+                <span className="font-medium">Amount:</span> {data.amount}
+              </p>
+            )}
+            {data.status && (
+              <p className="mt-1 text-sm text-gray-900">
+                <span className="font-medium">Status:</span> {data.status}
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="mt-6 flex justify-end">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Dashboard = () => {
   const [onlineUsers, setOnlineUsers] = useState({
     total: 156,
@@ -8,7 +66,7 @@ const Dashboard = () => {
     customers: 114,
   });
 
-  const [recentActivities] = useState([
+  const [recentActivities, setRecentActivities] = useState([
     {
       id: 1,
       user: "John Baker",
@@ -46,7 +104,7 @@ const Dashboard = () => {
     },
   ]);
 
-  const [accountHistory] = useState([
+  const [accountHistory, setAccountHistory] = useState([
     {
       id: 1,
       name: "Sweet Delights",
@@ -71,6 +129,7 @@ const Dashboard = () => {
       type: "Baker",
       action: "Account created",
       status: "Pending verification",
+      amount: "₱5,000",
       timestamp: "2024-03-15 09:30",
     },
     {
@@ -79,26 +138,293 @@ const Dashboard = () => {
       type: "Customer",
       action: "Profile updated",
       status: "Active",
+      amount: "₱3,500",
       timestamp: "2024-03-15 09:15",
     },
   ]);
 
-  // Simulate real-time updates
+  const [withdrawalActivities] = useState([
+    {
+      id: 1,
+      bakerName: "Sweet Delights",
+      amount: "₱5,000",
+      status: "Pending",
+      requestDate: "2024-03-15 10:30",
+      accountNumber: "****-****-1234",
+      bank: "BDO",
+    },
+    {
+      id: 2,
+      bakerName: "Cake Haven",
+      amount: "₱3,500",
+      status: "Completed",
+      requestDate: "2024-03-15 09:45",
+      accountNumber: "****-****-5678",
+      bank: "BPI",
+    },
+    {
+      id: 3,
+      bakerName: "Flour Power",
+      amount: "₱2,800",
+      status: "Processing",
+      requestDate: "2024-03-15 08:15",
+      accountNumber: "****-****-9012",
+      bank: "Metrobank",
+    },
+    {
+      id: 4,
+      bakerName: "Sweet Dreams Bakery",
+      amount: "₱4,200",
+      status: "Completed",
+      requestDate: "2024-03-14 16:30",
+      accountNumber: "****-****-3456",
+      bank: "UnionBank",
+    },
+  ]);
+
+  // Add these new state variables
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("all");
+
+  // Add click handlers for activities and history items
+  const handleActivityClick = (activity) => {
+    setSelectedItem(activity);
+    setModalType("activity");
+    setModalOpen(true);
+  };
+
+  const handleHistoryClick = (historyItem) => {
+    setSelectedItem(historyItem);
+    setModalType("history");
+    setModalOpen(true);
+  };
+
+  // Add filtered data getters
+  const getFilteredActivities = () => {
+    return recentActivities.filter((activity) => {
+      const matchesSearch =
+        activity.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        activity.action.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesFilter =
+        filterType === "all" ||
+        activity.type.toLowerCase() === filterType.toLowerCase();
+      return matchesSearch && matchesFilter;
+    });
+  };
+
+  const getFilteredHistory = () => {
+    return accountHistory.filter((item) => {
+      const matchesSearch =
+        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.action.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesFilter =
+        filterType === "all" ||
+        item.type.toLowerCase() === filterType.toLowerCase();
+      return matchesSearch && matchesFilter;
+    });
+  };
+
+  // Add these useEffect hooks for real-time simulations
   useEffect(() => {
-    const interval = setInterval(() => {
-      setOnlineUsers((prev) => ({
+    // Simulate real-time online users updates
+    const userInterval = setInterval(() => {
+      setOnlineUsers(prev => ({
         total: Math.floor(Math.random() * 50) + 150,
         bakers: Math.floor(Math.random() * 20) + 35,
         customers: Math.floor(Math.random() * 30) + 100,
       }));
     }, 5000);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(userInterval);
   }, []);
+
+  useEffect(() => {
+    // Simulate real-time activity updates
+    const activityInterval = setInterval(() => {
+      const newActivity = {
+        id: Date.now(),
+        user: ["John Baker", "Sarah Customer", "Sweet Delights", "Cake Haven"][
+          Math.floor(Math.random() * 4)
+        ],
+        type: Math.random() > 0.5 ? "Baker" : "Customer",
+        action: [
+          "Updated profile",
+          "Listed new product",
+          "Placed an order",
+          "Requested withdrawal",
+          "Updated shop status",
+        ][Math.floor(Math.random() * 5)],
+        timestamp: "Just now",
+      };
+
+      setRecentActivities(prev => {
+        const updated = [newActivity, ...prev.slice(0, 4)];
+        return updated;
+      });
+
+      // Update timestamps
+      setRecentActivities(prev =>
+        prev.map(activity => ({
+          ...activity,
+          timestamp: activity.timestamp === "Just now"
+            ? "Just now"
+            : activity.timestamp === "1 minute ago"
+            ? "2 minutes ago"
+            : activity.timestamp === "2 minutes ago"
+            ? "3 minutes ago"
+            : activity.timestamp
+        }))
+      );
+    }, 8000);
+
+    return () => clearInterval(activityInterval);
+  }, []);
+
+  useEffect(() => {
+    // Simulate real-time withdrawal status updates
+    const withdrawalInterval = setInterval(() => {
+      setWithdrawalActivities(prev => 
+        prev.map(withdrawal => {
+          if (withdrawal.status === "Pending") {
+            const randomStatus = Math.random();
+            if (randomStatus > 0.7) {
+              return { ...withdrawal, status: "Processing" };
+            }
+          } else if (withdrawal.status === "Processing") {
+            const randomStatus = Math.random();
+            if (randomStatus > 0.7) {
+              return { ...withdrawal, status: "Completed" };
+            }
+          }
+          return withdrawal;
+        })
+      );
+
+      // Add new withdrawal requests occasionally
+      if (Math.random() > 0.8) {
+        const newWithdrawal = {
+          id: Date.now(),
+          bakerName: ["Sweet Delights", "Cake Haven", "Flour Power", "Sweet Dreams Bakery"][
+            Math.floor(Math.random() * 4)
+          ],
+          amount: `₱${(Math.floor(Math.random() * 50) + 20) * 100}`,
+          status: "Pending",
+          requestDate: new Date().toLocaleString(),
+          accountNumber: `****-****-${Math.floor(Math.random() * 9000) + 1000}`,
+          bank: ["BDO", "BPI", "Metrobank", "UnionBank"][Math.floor(Math.random() * 4)],
+        };
+
+        setWithdrawalActivities(prev => [newWithdrawal, ...prev.slice(0, -1)]);
+      }
+    }, 10000);
+
+    return () => clearInterval(withdrawalInterval);
+  }, []);
+
+  useEffect(() => {
+    // Simulate real-time Account History updates
+    const historyInterval = setInterval(() => {
+      // Generate random history entry
+      const newHistoryEntry = {
+        id: Date.now(),
+        name: [
+          "Sweet Delights",
+          "Cake Haven",
+          "Flour Power",
+          "Sweet Dreams Bakery",
+          "John Baker",
+          "Sarah Customer",
+          "Mike Customer",
+          "Lisa Baker"
+        ][Math.floor(Math.random() * 8)],
+        type: Math.random() > 0.5 ? "Baker" : "Customer",
+        action: [
+          "Account created",
+          "Profile updated",
+          "Password changed",
+          "Withdrawal Request",
+          "Shop status updated",
+          "Email verified",
+          "Phone verified",
+          "Documents submitted"
+        ][Math.floor(Math.random() * 8)],
+        status: [
+          "Pending",
+          "Completed",
+          "Active",
+          "Pending verification",
+          "Processing"
+        ][Math.floor(Math.random() * 5)],
+        amount: Math.random() > 0.7 ? `₱${(Math.floor(Math.random() * 50) + 10) * 100}` : null,
+        timestamp: new Date().toLocaleString(),
+      };
+
+      // Update history with new entry
+      setAccountHistory(prev => {
+        const updated = [newHistoryEntry, ...prev.slice(0, 9)]; // Keep last 10 entries
+        return updated;
+      });
+
+      // Randomly update existing entries' status
+      setAccountHistory(prev =>
+        prev.map(entry => {
+          if (Math.random() > 0.8) { // 20% chance to update status
+            return {
+              ...entry,
+              status: entry.status === "Pending" ? "Completed" :
+                      entry.status === "Pending verification" ? "Active" :
+                      entry.status === "Processing" ? "Completed" :
+                      entry.status
+            };
+          }
+          return entry;
+        })
+      );
+    }, 12000); // Update every 12 seconds
+
+    return () => clearInterval(historyInterval);
+  }, []);
+
+  // Fix the formatTimestamp function
+  const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+
+    if (diffInSeconds < 60) return 'Just now';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    return date.toLocaleDateString();
+  };
 
   return (
     <AdminLayout>
       <div className="p-6">
+        {/* Add search and filter controls */}
+        <div className="mb-6 flex flex-wrap gap-4">
+          <div className="flex-1 min-w-[200px]">
+            <input
+              type="text"
+              placeholder="Search activities and history..."
+              className="w-full px-4 py-2 border rounded-md"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <select
+            className="px-4 py-2 border rounded-md"
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+          >
+            <option value="all">All Types</option>
+            <option value="baker">Bakers</option>
+            <option value="customer">Customers</option>
+          </select>
+        </div>
+
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <div className="bg-white rounded-lg shadow p-6">
@@ -176,9 +502,9 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Activity and History Grid */}
+        {/* Modified Activity and History Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Real-time Activity Feed */}
+          {/* Real-time Activity Feed with click handlers */}
           <div className="bg-white rounded-lg shadow">
             <div className="px-6 py-4 border-b border-gray-200">
               <h2 className="text-lg font-medium text-gray-900">
@@ -188,8 +514,12 @@ const Dashboard = () => {
             <div className="p-6">
               <div className="flow-root">
                 <ul className="-mb-8">
-                  {recentActivities.map((activity, activityIdx) => (
-                    <li key={activity.id}>
+                  {getFilteredActivities().map((activity, activityIdx) => (
+                    <li
+                      key={activity.id}
+                      onClick={() => handleActivityClick(activity)}
+                      className="cursor-pointer hover:bg-gray-50"
+                    >
                       <div className="relative pb-8">
                         {activityIdx !== recentActivities.length - 1 ? (
                           <span
@@ -243,77 +573,78 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Account History table */}
+          {/* Account History table with click handlers */}
           <div className="bg-white rounded-lg shadow">
             <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-medium text-gray-900">
-                Account History
-              </h2>
+              <h2 className="text-lg font-medium text-gray-900">Account History</h2>
             </div>
-            <div className="p-6">
-              <div className="overflow-hidden">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        User
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Type
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Action
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Amount
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Time
-                      </th>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      User
+                    </th>
+                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Type
+                    </th>
+                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Action
+                    </th>
+                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Time
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {getFilteredHistory().map((item) => (
+                    <tr
+                      key={item.id}
+                      onClick={() => handleHistoryClick(item)}
+                      className="cursor-pointer hover:bg-gray-50 transition-colors duration-150"
+                    >
+                      <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {item.name}
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                        {item.type}
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                        {item.action}
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          item.status === "Active" || item.status === "Completed"
+                            ? "bg-green-100 text-green-800"
+                            : item.status === "Processing"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-yellow-100 text-yellow-800"
+                        }`}>
+                          {item.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                        {formatTimestamp(item.timestamp)}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {accountHistory.map((item) => (
-                      <tr key={item.id}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {item.name}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {item.type}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {item.action}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                              item.status === "Active" ||
-                              item.status === "Completed"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-yellow-100 text-yellow-800"
-                            }`}
-                          >
-                            {item.status}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {item.amount || "-"}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {item.timestamp}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Add the detail modal */}
+      <DetailModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        data={selectedItem}
+        type={modalType}
+      />
     </AdminLayout>
   );
 };

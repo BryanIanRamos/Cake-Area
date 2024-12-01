@@ -1,12 +1,51 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
+
+const FeedbackModal = ({ isOpen, onClose, onConfirm, action, accountName }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">
+          Confirm {action}
+        </h3>
+        <p className="text-gray-600 mb-6">
+          Are you sure you want to {action.toLowerCase()} {accountName}? 
+          {action === 'Ban' && ' This action cannot be undone.'}
+          {action === 'Warn' && ' A warning notification will be sent to the user.'}
+          {action === 'Suspend' && ' The account will be temporarily disabled.'}
+        </p>
+        <div className="flex justify-end space-x-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className={`px-4 py-2 rounded-md text-white ${
+              action === 'Ban' ? 'bg-red-600 hover:bg-red-700' :
+              action === 'Warn' ? 'bg-yellow-600 hover:bg-yellow-700' :
+              'bg-purple-600 hover:bg-purple-700'
+            }`}
+          >
+            Confirm {action}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const AccountManagement = () => {
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [accountType, setAccountType] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-
-  const accounts = [
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalAction, setModalAction] = useState('');
+  const [accounts, setAccounts] = useState([
     {
       id: 1,
       name: "Jane Baker",
@@ -42,7 +81,60 @@ const AccountManagement = () => {
       }
     },
     // Add more mock data
-  ];
+  ]);
+  const [activityLog, setActivityLog] = useState({});
+
+  useEffect(() => {
+    // Simulate random status changes
+    const statusInterval = setInterval(() => {
+      setAccounts(prev => prev.map(account => {
+        if (Math.random() > 0.9) { // 10% chance to update status
+          return {
+            ...account,
+            lastActive: new Date().toLocaleString(),
+            details: {
+              ...account.details,
+              totalOrders: account.details.totalOrders + Math.floor(Math.random() * 3),
+              warnings: account.type === 'Baker' ? 
+                Math.min(account.details.warnings + (Math.random() > 0.8 ? 1 : 0), 3) : 
+                undefined
+            }
+          };
+        }
+        return account;
+      }));
+    }, 5000);
+
+    // Simulate new activity logs
+    const activityInterval = setInterval(() => {
+      setActivityLog(prev => {
+        const randomAccount = accounts[Math.floor(Math.random() * accounts.length)];
+        if (!randomAccount) return prev;
+
+        const newActivity = {
+          timestamp: new Date().toLocaleString(),
+          action: [
+            'Logged in',
+            'Updated profile',
+            'Changed password',
+            'Placed order',
+            'Updated shop status',
+            'Added new product'
+          ][Math.floor(Math.random() * 6)]
+        };
+
+        return {
+          ...prev,
+          [randomAccount.id]: [newActivity, ...(prev[randomAccount.id] || []).slice(0, 9)]
+        };
+      });
+    }, 8000);
+
+    return () => {
+      clearInterval(statusInterval);
+      clearInterval(activityInterval);
+    };
+  }, [accounts]);
 
   const filteredAccounts = accounts.filter(account => {
     const matchesType = accountType === 'all' || account.type.toLowerCase() === accountType;
@@ -52,18 +144,49 @@ const AccountManagement = () => {
   });
 
   const handleStatusChange = (id, newStatus) => {
-    // Implement status change logic
-    console.log(`Changing status for account ${id} to ${newStatus}`);
+    setModalAction(newStatus === 'Active' ? 'Activate' : 'Suspend');
+    setSelectedAccount(accounts.find(acc => acc.id === id));
+    setModalOpen(true);
   };
 
   const handleSendWarning = (id) => {
-    // Implement warning logic
-    console.log(`Sending warning to account ${id}`);
+    setModalAction('Warn');
+    setSelectedAccount(accounts.find(acc => acc.id === id));
+    setModalOpen(true);
   };
 
   const handleBanAccount = (id) => {
-    // Implement ban logic
-    console.log(`Banning account ${id}`);
+    setModalAction('Ban');
+    setSelectedAccount(accounts.find(acc => acc.id === id));
+    setModalOpen(true);
+  };
+
+  const handleModalConfirm = () => {
+    if (!selectedAccount) return;
+
+    setAccounts(prev => prev.map(account => {
+      if (account.id === selectedAccount.id) {
+        const updates = {
+          ...account,
+          status: modalAction === 'Ban' ? 'Banned' :
+                  modalAction === 'Suspend' ? 'Suspended' :
+                  modalAction === 'Activate' ? 'Active' :
+                  account.status
+        };
+        
+        if (modalAction === 'Warn') {
+          updates.details = {
+            ...account.details,
+            warnings: (account.details.warnings || 0) + 1
+          };
+        }
+
+        return updates;
+      }
+      return account;
+    }));
+
+    setModalOpen(false);
   };
 
   return (
@@ -263,6 +386,15 @@ const AccountManagement = () => {
           </div>
         </div>
       </div>
+      {modalOpen && (
+        <FeedbackModal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          onConfirm={handleModalConfirm}
+          action={modalAction}
+          accountName={selectedAccount?.name}
+        />
+      )}
     </AdminLayout>
   );
 };
