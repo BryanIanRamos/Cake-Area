@@ -50,8 +50,32 @@ const Products = () => {
   });
   const [selectedImages, setSelectedImages] = useState([]);
 
-  // Refs
+  // Refs   
   const categoriesRef = useRef(null);
+
+  // Initialize localProducts as a regular state without localStorage
+  const [localProducts, setLocalProducts] = useState([]);
+
+  // Add tempProducts state
+  const [tempProducts, setTempProducts] = useState([]);
+
+  // Combine products in useMemo
+  const filteredProducts = useMemo(() => {
+    console.log('Filtering products with:', {
+      localProducts,
+      products,
+      businessId
+    });
+    
+    if (loading) return [];
+    
+    const combined = [...localProducts, ...products].filter(
+      product => product.business_id === parseInt(businessId)
+    );
+    
+    console.log('Combined products:', combined);
+    return combined;
+  }, [products, localProducts, businessId, loading]);
 
   // Add useEffect to fetch categories
   useEffect(() => {
@@ -125,7 +149,10 @@ const Products = () => {
 
   // Modify getFilteredAndSortedProducts to use categories from db.json
   const getFilteredAndSortedProducts = () => {
-    let filtered = products.filter((product) => {
+    // Combine temporary and permanent products
+    const allProducts = [...tempProducts, ...products];
+
+    let filtered = allProducts.filter((product) => {
       const matchesSearch = product.prod_name
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
@@ -158,68 +185,31 @@ const Products = () => {
     });
   };
 
-  // Update handleAddSubmit to use JSON server
+  // Modified handleAddSubmit
   const handleAddSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      // Format product name for image filenames
-      const formattedName = newProduct.prod_name.replace(/\s+/g, '_');
-      
-      // Save images to public/assets
-      const imagePromises = selectedImages.map(async (file, index) => {
-        const extension = file.name.split('.').pop();
-        const newFileName = `${formattedName}${index + 1}.${extension}`;
-        const imagePath = `../assets/${newFileName}`;
+      const tempImageUrls = selectedImages.map(file => URL.createObjectURL(file));
+      const currentBusinessId = parseInt(localStorage.getItem('businessId'));
 
-        // Create FormData to send image
-        const formData = new FormData();
-        formData.append('image', file);
-        formData.append('filename', newFileName);
-
-        // Send image to server
-        await fetch('http://localhost:3000/upload', {
-          method: 'POST',
-          body: formData
-        });
-
-        return imagePath;
-      });
-
-      const savedImagePaths = await Promise.all(imagePromises);
-
-      // Get the latest product ID
-      const response = await fetch('http://localhost:3000/products');
-      const products = await response.json();
-      const lastId = Math.max(...products.map(p => parseInt(p.id)));
-      const newId = (lastId + 1).toString();
-
-      // Create new product object
-      const productData = {
-        id: newId,
-        business_id: parseInt(localStorage.getItem('businessId')), // Get from your auth context
-        cat_id: 1, // You might want to add category selection to your form
+      const tempProduct = {
+        id: `temp_${Date.now()}`,
+        business_id: currentBusinessId,
+        cat_id: 1,
         prod_name: newProduct.prod_name,
         description: newProduct.description,
         price: parseFloat(newProduct.price),
-        rate: 0, // Initial rating
+        rate: 0,
         qty: parseInt(newProduct.qty),
-        images: savedImagePaths,
+        images: tempImageUrls,
         is_available: newProduct.is_available,
-        num_visits: 0, // Initial visits
-        num_orders: 0  // Initial orders
+        num_visits: 0,
+        num_orders: 0
       };
 
-      // Save product data to db.json
-      const saveResponse = await fetch('http://localhost:3000/products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(productData)
-      });
-
-      if (!saveResponse.ok) throw new Error('Failed to save product');
+      // Add to tempProducts
+      setTempProducts(prev => [tempProduct, ...prev]);
 
       // Reset form and close modal
       setNewProduct({
@@ -227,19 +217,15 @@ const Products = () => {
         description: "",
         price: "",
         qty: "",
-        rate: 0,
         images: [],
         is_available: true
       });
       setSelectedImages([]);
       setIsAddModalOpen(false);
 
-      // Refresh product list
-      fetchProducts();
-
     } catch (error) {
-      console.error('Error saving product:', error);
-      alert('Failed to save product. Please try again.');
+      console.error('Error adding product:', error);
+      alert('Failed to add product. Please try again.');
     }
   };
 
@@ -617,6 +603,13 @@ const ProductCard = ({ product }) => {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
+        {/* Add temporary badge */}
+        {product.id.toString().startsWith('temp_') && (
+          <div className="absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs z-10">
+            Temporary
+          </div>
+        )}
+        
         <img
           src={product.images?.[currentImageIndex] || "default-image-path.jpg"}
           alt={product.prod_name}

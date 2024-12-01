@@ -764,22 +764,6 @@
       "is_available": true,
       "num_visits": 567,
       "num_orders": 445
-    },
-    {
-      "id": "7e10",
-      "prod_name": "nm",
-      "description": "mn,nm",
-      "price": 99,
-      "qty": "2",
-      "rate": 0,
-      "images": [
-        "blob:http://localhost:5173/1fc00d53-eef7-4c20-95c3-ae05f599e0e6",
-        "blob:http://localhost:5173/f690cf7e-039c-4f80-8a1a-8d5b8fdfee52",
-        "blob:http://localhost:5173/8296f2ae-7766-4a16-80b3-45fc35caae5c"
-      ],
-      "is_available": true,
-      "business_id": 2,
-      "cat_id": null
     }
   ],
   "orders": [
