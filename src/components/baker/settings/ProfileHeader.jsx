@@ -2,8 +2,19 @@ import React, { useState } from "react";
 import { Icon } from "@iconify/react";
 import VerificationModal from "./VerificationModal";
 
-const ProfileHeader = ({ profileImage, storeName, verified }) => {
+const ProfileHeader = ({ profileImage, storeName }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+  const [isPending, setIsPending] = useState(false);
+
+  const handleVerificationSuccess = () => {
+    setIsPending(true);
+  };
+
+  const handleVerificationConfirmed = () => {
+    setIsVerified(true);
+    setIsPending(false);
+  };
 
   return (
     <>
@@ -34,11 +45,16 @@ const ProfileHeader = ({ profileImage, storeName, verified }) => {
               <div className="relative group">
                 <Icon
                   icon="codicon:verified-filled"
-                  className="text-gray-400 text-xl cursor-help"
+                  className={`text-xl cursor-help ${
+                    isVerified ? "text-green-500" : "text-gray-400"
+                  }`}
                 />
                 <div className="absolute left-0 w-64 p-2 mt-2 text-sm text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-                  Your business won't be visible in the public Bakers' Area
-                  until verified
+                  {isVerified
+                    ? "Your business is verified"
+                    : isPending
+                    ? "Your verification is pending approval"
+                    : "Your business won't be visible in the public Bakers' Area until verified"}
                 </div>
               </div>
             </div>
@@ -48,14 +64,34 @@ const ProfileHeader = ({ profileImage, storeName, verified }) => {
             </div>
           </div>
           <div className="relative group">
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="bg-[#E88F2A] text-white text-sm px-3 py-1 rounded hover:bg-[#da852b]"
-            >
-              Get Verified
-            </button>
+            {isVerified ? (
+              <button
+                disabled
+                className="bg-gray-300 text-white text-sm px-3 py-1 rounded cursor-not-allowed"
+              >
+                Verified
+              </button>
+            ) : isPending ? (
+              <button
+                disabled
+                className="bg-gray-400 text-white text-sm px-3 py-1 rounded cursor-not-allowed"
+              >
+                Pending Verification
+              </button>
+            ) : (
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="bg-[#E88F2A] text-white text-sm px-3 py-1 rounded hover:bg-[#da852b]"
+              >
+                Get Verified
+              </button>
+            )}
             <div className="absolute right-0 w-40 p-2 mt-2 text-sm text-white bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-              Verify your business now
+              {isVerified
+                ? "Your business is verified"
+                : isPending
+                ? "Verification in progress"
+                : "Verify your business now"}
             </div>
           </div>
         </div>
@@ -64,6 +100,7 @@ const ProfileHeader = ({ profileImage, storeName, verified }) => {
       <VerificationModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        onVerificationSuccess={handleVerificationSuccess}
       />
     </>
   );
