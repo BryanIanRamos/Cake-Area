@@ -3,6 +3,32 @@ import { Icon } from "@iconify/react";
 import BakerLayout from "../../components/baker/BakerLayout";
 import Toast from "../../components/baker/Toast";
 
+const useImageCarousel = (images, hoverState) => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const intervalRef = useRef(null);
+
+  useEffect(() => {
+    if (hoverState && images.length > 1) {
+      intervalRef.current = setInterval(() => {
+        setCurrentImageIndex((prev) => (prev + 1) % images.length);
+      }, 1500);
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        setCurrentImageIndex(0);
+      }
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [hoverState, images.length]);
+
+  return currentImageIndex;
+};
+
 const Products = () => {
   // Add new state for products
   const [products, setProducts] = useState([]);
@@ -20,12 +46,12 @@ const Products = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('http://localhost:3000/categories');
-        if (!response.ok) throw new Error('Failed to fetch categories');
+        const response = await fetch("http://localhost:3000/categories");
+        if (!response.ok) throw new Error("Failed to fetch categories");
         const data = await response.json();
         setCategories(data);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       }
     };
 
@@ -36,10 +62,11 @@ const Products = () => {
   const allCategories = useMemo(() => {
     return [
       { name: "All", count: products.length },
-      ...categories.map(cat => ({
+      ...categories.map((cat) => ({
         name: cat.name,
-        count: products.filter(product => product.cat_id === cat.cat_id).length
-      }))
+        count: products.filter((product) => product.cat_id === cat.cat_id)
+          .length,
+      })),
     ];
   }, [categories, products]);
 
@@ -93,7 +120,8 @@ const Products = () => {
         .includes(searchQuery.toLowerCase());
       const matchesCategory =
         selectedCategory === "All" ||
-        categories.find((cat) => cat.cat_id === product.cat_id)?.name === selectedCategory;
+        categories.find((cat) => cat.cat_id === product.cat_id)?.name ===
+          selectedCategory;
       return matchesSearch && matchesCategory;
     });
 
@@ -301,50 +329,113 @@ const Products = () => {
           {/* Products Grid */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {getFilteredAndSortedProducts().map((product) => (
-              <div key={product.id} className="bg-white rounded-lg shadow-md p-4">
-                <img
-                  src={product.images?.[0] || "default-image-path.jpg"}
-                  alt={product.prod_name}
-                  className="w-full h-40 object-cover rounded-lg mb-4"
-                />
-                <h3 className="font-medium text-lg mb-2">{product.prod_name}</h3>
-                <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
-                  <div className="flex items-center gap-1">
-                    <Icon icon="ph:star-fill" className="text-[#F4A340]" />
-                    {product.rate}
-                  </div>
-                </div>
-
-                {/* Stats row */}
-                <div className="flex justify-between text-sm text-gray-600 mt-3">
-                  <div className="flex flex-col items-center">
-                    <span>₱{product.price.toFixed(2)}</span>
-                    <span className="text-xs">Price</span>
-                  </div>
-                  
-                  <div className="flex flex-col items-center">
-                    <span>{product.num_orders || 0}</span>
-                    <span className="text-xs">Ordered</span>
-                  </div>
-                  
-                  <div className="flex flex-col items-center">
-                    <span>{product.num_visits || 0}</span>
-                    <span className="text-xs">Viewed</span>
-                  </div>
-
-                  <button 
-                    onClick={() => handleEdit(product)}
-                    className="bg-[#FF9F0D] text-white px-4 py-1 rounded hover:bg-[#FF9F0D]/80"
-                  >
-                    Edit
-                  </button>
-                </div>
-              </div>
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         </div>
       </div>
     </BakerLayout>
+  );
+};
+
+const ProductCard = ({ product }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const currentImageIndex = useImageCarousel(product.images, isHovered);
+  const [isScaling, setIsScaling] = useState(false);
+
+  // Effect to handle scaling animation on hover
+  useEffect(() => {
+    if (isHovered) {
+      setIsScaling(true);
+      const timer = setTimeout(() => {
+        setIsScaling(false);
+      }, 4000); // Match this duration with the CSS transition duration
+
+      return () => clearTimeout(timer);
+    } else {
+      setIsScaling(false); // Reset scaling when not hovered
+    }
+  }, [isHovered]);
+
+  // Effect to reset scaling after the third image
+  useEffect(() => {
+    if (currentImageIndex === 2) { // Check if it's the third image (index 2)
+      const timer = setTimeout(() => {
+        setIsScaling(false); // Reset to normal scale after 2 seconds
+      }, 2000); // 2 seconds delay
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentImageIndex]);
+
+  return (
+    <div key={product.id} className="bg-white rounded-lg shadow-md p-4">
+      <div
+        className="relative w-full h-40 mb-4 overflow-hidden"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <img
+          src={product.images?.[currentImageIndex] || "default-image-path.jpg"}
+          alt={product.prod_name}
+          className={`
+            w-full h-full object-cover rounded-lg 
+            transition-transform duration-[4000ms]
+            ${isScaling ? 'scale-125' : 'scale-100'}
+          `}
+        />
+
+        {product.images?.length > 1 && isHovered && (
+          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1 z-10">
+            {product.images.map((_, index) => (
+              <div
+                key={index}
+                className={`
+                  w-1.5 h-1.5 rounded-full 
+                  ${currentImageIndex === index 
+                    ? 'bg-white scale-110' 
+                    : 'bg-white/50 scale-100'
+                  }
+                `}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Rest of your product card content */}
+      <h3 className="font-medium text-lg mb-2">{product.prod_name}</h3>
+      <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
+        <div className="flex items-center gap-1">
+          <Icon icon="ph:star-fill" className="text-[#F4A340]" />
+          {product.rate}
+        </div>
+      </div>
+
+      <div className="flex justify-between text-sm text-gray-600 mt-3">
+        <div className="flex flex-col items-center">
+          <span>₱{product.price.toFixed(2)}</span>
+          <span className="text-xs">Price</span>
+        </div>
+
+        <div className="flex flex-col items-center">
+          <span>{product.num_orders || 0}</span>
+          <span className="text-xs">Ordered</span>
+        </div>
+
+        <div className="flex flex-col items-center">
+          <span>{product.num_visits || 0}</span>
+          <span className="text-xs">Viewed</span>
+        </div>
+
+        <button
+          onClick={() => handleEdit(product)}
+          className="bg-[#FF9F0D] text-white px-4 py-1 rounded hover:bg-[#FF9F0D]/80"
+        >
+          Edit
+        </button>
+      </div>
+    </div>
   );
 };
 
