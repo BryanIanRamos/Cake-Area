@@ -52,20 +52,40 @@ const LoginModal = ({ isOpen, closeModal, onLogin }) => {
 
       if (user.role === 2) {
         setLoginMessage("Welcome back, baker!");
-        // Update user login status
-        await fetch(`http://localhost:3000/users/${user.id}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ is_Login: true }),
-        });
 
-        onLogin(email, password); // This will trigger success feedback
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        closeModal();
-        navigate("/dashboard");
-        return;
+        try {
+          // Get baker's business information
+          const businessResponse = await fetch(
+            `http://localhost:3000/businesses?user_id=${user.id}`
+          );
+          const businesses = await businessResponse.json();
+          const bakerBusiness = businesses[0]; // Get first business associated with baker
+
+          // Update user login status
+          await fetch(`http://localhost:3000/users/${user.id}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ is_Login: true }),
+          });
+
+          // Store business_id in localStorage if it exists
+          if (bakerBusiness) {
+            localStorage.setItem("business_id", bakerBusiness.id);
+          }
+
+          onLogin(email, password);
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          closeModal();
+          navigate("/dashboard");
+          return;
+        } catch (error) {
+          console.error("Error fetching baker business:", error);
+          setLoginMessage("Error loading baker information");
+          setIsLoading(false);
+          return;
+        }
       }
 
       // For regular customers

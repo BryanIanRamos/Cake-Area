@@ -168,7 +168,7 @@ const Products = () => {
 
   // Add useEffect to fetch products
   useEffect(() => {
-    const storedBusinessId = localStorage.getItem("businessId");
+    const storedBusinessId = localStorage.getItem("business_id");
     console.log("Stored Business ID:", storedBusinessId);
     setBusinessId(storedBusinessId ? parseInt(storedBusinessId) : null);
 

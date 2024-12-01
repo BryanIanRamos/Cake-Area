@@ -884,6 +884,65 @@
       "downPayment": 0,
       "remainingPayment": 0,
       "paymentStatus": "paid"
+    },
+    {
+      "id": "5",
+      "order_id": "ORD005",
+      "customer_id": 2,
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "17",
+          "cat_id": 2,
+          "prod_name": "Classic Cream Puff",
+          "description": "Light choux pastry filled with vanilla cream",
+          "price": 249.99,
+          "rate": 4.8,
+          "qty": 1,
+          "images": "../assets/ClassicCreamPuffv3.jpg"
+        }
+      ],
+      "total_amount": 249.99,
+      "status": "Pending",
+      "created_at": "2024-12-01T11:54:48.126Z",
+      "checkoutDate": "null",
+      "receiveDate": "null",
+      "downPayment": 0,
+      "remainingPayment": 249.99,
+      "paymentStatus": "null"
+    },
+    {
+      "id": "6",
+      "order_id": "ORD006",
+      "customer_id": 2,
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "16",
+          "cat_id": 2,
+          "prod_name": "Classic Chocolate Chip Cookies",
+          "description": "Traditional chocolate chip cookies with premium chocolate",
+          "price": 149.99,
+          "rate": 4.7,
+          "qty": 1,
+          "images": "../assets/ClassicChocolateChipCookiesv1.jpg"
+        }
+      ],
+      "total_amount": 149.99,
+      "status": "Processing",
+      "created_at": "2024-12-01T11:55:06.410Z",
+      "checkoutDate": "2024-12-01T11:55:14.373Z",
+      "receiveDate": "2024-12-05T11:55:13.307Z",
+      "downPayment": 74.995,
+      "remainingPayment": 74.995,
+      "paymentStatus": "paid",
+      "placedAddress": {
+        "fullName": "Bryan Ramos",
+        "phoneNumber": "(+63) 0987654321",
+        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
+        "postalCode": "8600",
+        "streetAddress": "P-3C Rigners Boarding House"
+      }
     }
   ],
   "tags": [

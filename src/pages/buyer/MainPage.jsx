@@ -66,7 +66,9 @@ const MainPage = () => {
 
       if (user) {
         // Find the corresponding profile
-        const profileResponse = await fetch(`http://localhost:3000/profiles?user_id=${user.id}`);
+        const profileResponse = await fetch(
+          `http://localhost:3000/profiles?user_id=${user.id}`
+        );
         const profiles = await profileResponse.json();
         const userProfile = profiles[0];
 
@@ -118,6 +120,7 @@ const MainPage = () => {
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("userName");
     localStorage.removeItem("userId");
+    localStorage.removeItem("business_id");
 
     // Show feedback
     setFeedbackMessage("Successfully logged out!");
@@ -238,7 +241,9 @@ const MainPage = () => {
                       <option value="Las Nieves">Las Nieves</option>
                       <option value="Magallanes">Magallanes</option>
                       <option value="Nasipit">Nasipit</option>
-                      <option value="Remedios T. Romualdez">Remedios T. Romualdez</option>
+                      <option value="Remedios T. Romualdez">
+                        Remedios T. Romualdez
+                      </option>
                       <option value="Santiago">Santiago</option>
                       <option value="Tubay">Tubay</option>
                     </select>

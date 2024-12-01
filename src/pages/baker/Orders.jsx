@@ -35,7 +35,7 @@ const Orders = () => {
   const [selectedOrderForCancel, setSelectedOrderForCancel] = useState(null);
 
   useEffect(() => {
-    const businessId = localStorage.getItem("businessId");
+    const businessId = localStorage.getItem("business_id");
     let isSubscribed = true; // Flag to prevent updates if component unmounts
 
     const fetchOrders = async () => {
