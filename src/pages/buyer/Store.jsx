@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Icon } from "@iconify/react";
 import { useNavigate, useParams } from "react-router-dom";
 import StoreProductCard from "../../components/buyer/StoreProductCard";
@@ -8,6 +8,115 @@ import { productData } from "../../data/productDataTbl";
 import { profileData } from "../../data/profileDataTbl";
 import { categoryData } from "../../data/catDataTbl";
 import CakeSample from "../../assets/CakeSample.png";
+
+const FloatingChat = ({ businessName, bakerName }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [chatMessages, setChatMessages] = useState([]);
+  const chatBoxRef = useRef(null);
+
+  // Auto-scroll to bottom when new messages are added
+  useEffect(() => {
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    }
+  }, [chatMessages]);
+
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    if (!message.trim()) return;
+
+    // Add customer message
+    setChatMessages(prev => [...prev, {
+      id: Date.now(),
+      text: message,
+      sender: 'customer',
+      timestamp: new Date().toLocaleString()
+    }]);
+    setMessage("");
+
+    // Simulate baker response after 1 second
+    setTimeout(() => {
+      setChatMessages(prev => [...prev, {
+        id: Date.now() + 1,
+        text: "Thanks for your message! I'll get back to you shortly.",
+        sender: 'baker',
+        timestamp: new Date().toLocaleString()
+      }]);
+    }, 1000);
+  };
+
+  return (
+    <div className="fixed bottom-6 left-6 z-50">
+      {/* Chat Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="bg-primary text-white p-4 rounded-full shadow-lg hover:bg-primary/90 transition-colors duration-200"
+      >
+        <Icon 
+          icon={isOpen ? "mdi:close" : "material-symbols:chat"} 
+          className="text-2xl"
+        />
+      </button>
+
+      {/* Chat Box */}
+      {isOpen && (
+        <div className="absolute bottom-20 left-0 w-80 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">
+          {/* Chat Header */}
+          <div className="bg-primary text-white p-4">
+            <h3 className="font-medium">{businessName}</h3>
+            <p className="text-sm opacity-90">Baker: {bakerName}</p>
+          </div>
+
+          {/* Chat Messages */}
+          <div 
+            ref={chatBoxRef}
+            className="h-96 overflow-y-auto p-4 space-y-4"
+          >
+            {chatMessages.map(msg => (
+              <div
+                key={msg.id}
+                className={`flex ${msg.sender === 'customer' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div
+                  className={`max-w-[80%] rounded-lg p-3 ${
+                    msg.sender === 'customer'
+                      ? 'bg-primary text-white'
+                      : 'bg-gray-100'
+                  }`}
+                >
+                  <p className="text-sm">{msg.text}</p>
+                  <span className="text-xs opacity-75 mt-1 block">
+                    {msg.timestamp}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Message Input */}
+          <form onSubmit={handleSendMessage} className="border-t border-gray-200 p-4">
+            <div className="flex space-x-2">
+              <input
+                type="text"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Type a message..."
+                className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-primary"
+              />
+              <button
+                type="submit"
+                className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+              >
+                <Icon icon="material-symbols:send" className="text-xl" />
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const Store = () => {
   const { userId } = useParams();
@@ -456,6 +565,10 @@ const Store = () => {
           </div>
         </div>
       </div>
+      <FloatingChat 
+        businessName={business.name}
+        bakerName={`${profile.first_name} ${profile.last_name}`}
+      />
     </div>
   );
 };
