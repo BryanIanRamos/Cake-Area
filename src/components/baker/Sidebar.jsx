@@ -4,9 +4,10 @@ import profile from "../../assets/Dummy_Profile.png";
 import { Icon } from "@iconify/react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const Sidebar = ({ isExpanded, setIsExpanded, userName }) => {
+const Sidebar = ({ isExpanded, setIsExpanded, userName, profileImage }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const defaultProfileImage = "../assets/profile/Sarah_Baker.png";
 
   const menuItems = [
     {
@@ -86,11 +87,11 @@ const Sidebar = ({ isExpanded, setIsExpanded, userName }) => {
         } mt-3`}
       >
         <img
-          src={profile}
+          src={profileImage || defaultProfileImage}
           alt="profile"
           className="rounded-full w-[40px] h-[40px] object-cover"
         />
-        {isExpanded && <p className="truncate">{userName || "User"}</p>}
+        {isExpanded && <p className="truncate">{userName}</p>}
       </div>
 
       <hr className="w-full my-5 border-gray-600" />
