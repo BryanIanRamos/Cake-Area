@@ -320,9 +320,19 @@ const Products = () => {
               </button>
 
               {/* Sort Dropdown */}
-              <div className="relative">
-                {/* ... keep your existing sort dropdown code ... */}
-              </div>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="px-4 py-2 border rounded-lg bg-white"
+              >
+                <option value="name">Name (A-Z)</option>
+                <option value="nameDesc">Name (Z-A)</option>
+                <option value="priceAsc">Price (Low to High)</option>
+                <option value="priceDesc">Price (High to Low)</option>
+                <option value="rating">Rating</option>
+                <option value="ordered">Most Ordered</option>
+                <option value="viewed">Most Viewed</option>
+              </select>
             </div>
           </div>
 
