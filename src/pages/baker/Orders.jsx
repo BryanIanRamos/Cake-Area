@@ -35,18 +35,47 @@ const Orders = () => {
   const [selectedOrderForCancel, setSelectedOrderForCancel] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
-    fetch("http://localhost:3000/orders")
-      .then((response) => response.json())
-      .then((data) => {
-        setOrders(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching orders:", error);
-        setError(error);
-        setLoading(false);
-      });
+    const businessId = localStorage.getItem("businessId");
+    let isSubscribed = true; // Flag to prevent updates if component unmounts
+
+    const fetchOrders = async () => {
+      if (!businessId) return; // Don't fetch if no businessId
+
+      try {
+        setLoading(true);
+        const response = await fetch("http://localhost:3000/orders");
+        const data = await response.json();
+        
+        // Only update state if component is still mounted
+        if (isSubscribed) {
+          const businessOrders = data.filter(
+            (order) => order.business_id.toString() === businessId
+          );
+
+          console.log("Business ID:", businessId);
+          console.log("Filtered Orders:", businessOrders);
+
+          setOrders(businessOrders);
+          setLoading(false);
+        }
+      } catch (error) {
+        if (isSubscribed) {
+          console.error("Error fetching orders:", error);
+          setError(error);
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchOrders();
+    // Use a longer interval (e.g., 30 seconds) to prevent too frequent updates
+    const interval = setInterval(fetchOrders, 30000);
+
+    // Cleanup function
+    return () => {
+      isSubscribed = false;
+      clearInterval(interval);
+    };
   }, []);
 
   // Filter orders based on active tab

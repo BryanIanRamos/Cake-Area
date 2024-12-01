@@ -1,15 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/baker/Sidebar";
 import { orders } from "../../data/db.json";
 import { pendingOrders } from "../../data/pendingOrders.json";
 import { Icon } from "@iconify/react";
 import OrdersTakenSection from "../../components/baker/dashboard/OrdersTakenSection";
 import PendingOrdersTable from "../../components/baker/dashboard/PendingOrdersTable";
-import BakerLayout from "../../components/baker/BakerLayout";
 
 const Dashboard = () => {
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
   const [tableLimit, setTableLimit] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+
+    // Fetch business data to find matching business_id for the user
+    fetch("http://localhost:3000/businesses")
+      .then((response) => response.json())
+      .then((businesses) => {
+        const userBusiness = businesses.find(
+          (b) => b.user_id === parseInt(userId)
+        );
+        if (userBusiness) {
+          localStorage.setItem("businessId", userBusiness.id);
+          console.log(
+            "Business ID stored for logged in baker:",
+            userBusiness.id
+          );
+        } else {
+          console.log("No business found for user ID:", userId);
+          console.log("Available businesses:", businesses);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching business data:", error);
+      });
+  }, []); // Empty dependency array means this runs once when component mounts
 
   // Calculate pagination
   const totalPages = Math.ceil(pendingOrders.length / tableLimit);
@@ -32,29 +58,29 @@ const Dashboard = () => {
 
   // Create dates for different priority levels
   const today = new Date();
-  
+
   // Create different dates
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
-  
+
   const twoDaysLater = new Date(today);
   twoDaysLater.setDate(today.getDate() + 2);
-  
+
   const threeDaysLater = new Date(today);
   threeDaysLater.setDate(today.getDate() + 3);
-  
+
   const fourDaysLater = new Date(today);
   fourDaysLater.setDate(today.getDate() + 4);
-  
+
   const fiveDaysLater = new Date(today);
   fiveDaysLater.setDate(today.getDate() + 5);
-  
+
   const sixDaysLater = new Date(today);
   sixDaysLater.setDate(today.getDate() + 6);
-  
+
   const weekLater = new Date(today);
   weekLater.setDate(today.getDate() + 7);
-  
+
   const twoWeeksLater = new Date(today);
   twoWeeksLater.setDate(today.getDate() + 14);
 
@@ -104,9 +130,9 @@ const Dashboard = () => {
 
   // Use sample orders instead of db orders for testing
   const ordersTaken = sampleOrders
-    .map(order => ({
+    .map((order) => ({
       ...order,
-      priorityLevel: getPriorityLevel(order.receiveDate)
+      priorityLevel: getPriorityLevel(order.receiveDate),
     }))
     .sort((a, b) => {
       // First sort by priority level
@@ -118,12 +144,19 @@ const Dashboard = () => {
     });
 
   return (
-    <BakerLayout>
-      <div className="p-8">
+    <div className="flex h-screen bg-gray-50">
+      <Sidebar
+        isExpanded={isSidebarExpanded}
+        setIsExpanded={setIsSidebarExpanded}
+      />
+      <main
+        className={`transition-all duration-300 flex-1 overflow-y-auto p-8
+          ${isSidebarExpanded ? "ml-64" : "ml-20"}`}
+      >
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            Welcome back, {localStorage.getItem("userName")}! 👋
+            Welcome back, Bryan Ramos! 👋
           </h1>
           <p className="text-gray-600">
             Here's what's happening with your bakery today.
@@ -199,8 +232,8 @@ const Dashboard = () => {
           totalPages={totalPages}
           totalOrders={pendingOrders.length}
         />
-      </div>
-    </BakerLayout>
+      </main>
+    </div>
   );
 };
 
