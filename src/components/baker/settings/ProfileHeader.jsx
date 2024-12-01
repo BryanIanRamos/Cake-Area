@@ -30,7 +30,7 @@ const ProfileHeader = ({ profileImage, storeName, verified }) => {
         <div className="flex justify-between items-center absolute -bottom-16 left-44 right-8">
           <div className="flex flex-col pt-2">
             <div className="flex items-center gap-2">
-              <h2 className="text-xl font-bold">Bryan Ian C. Ramos</h2>
+              <h2 className="text-xl font-bold">{storeName}</h2>
               <div className="relative group">
                 <Icon
                   icon="codicon:verified-filled"
