@@ -29,6 +29,55 @@ const useImageCarousel = (images, hoverState) => {
   return currentImageIndex;
 };
 
+const DeleteConfirmationModal = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  productName,
+}) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg p-6 max-w-sm w-full">
+        <div className="text-center">
+          {/* Warning Icon */}
+          <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+            <Icon icon="mdi:alert" className="h-6 w-6 text-red-600" />
+          </div>
+
+          {/* Title */}
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            Delete Product
+          </h3>
+
+          {/* Message */}
+          <p className="text-sm text-gray-500 mb-6">
+            Are you sure you want to delete "{productName}"? This action cannot
+            be undone.
+          </p>
+
+          {/* Buttons */}
+          <div className="flex justify-center gap-4">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={onConfirm}
+              className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Products = () => {
   // Group all useState declarations at the top
   const [products, setProducts] = useState([]);
@@ -50,8 +99,10 @@ const Products = () => {
     is_available: true,
   });
   const [selectedImages, setSelectedImages] = useState([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
 
-  // Refs   
+  // Refs
   const categoriesRef = useRef(null);
 
   // Initialize localProducts as a regular state without localStorage
@@ -60,21 +111,24 @@ const Products = () => {
   // Add tempProducts state
   const [tempProducts, setTempProducts] = useState([]);
 
+  // Add deleteMode state
+  const [deleteMode, setDeleteMode] = useState(false);
+
   // Combine products in useMemo
   const filteredProducts = useMemo(() => {
-    console.log('Filtering products with:', {
+    console.log("Filtering products with:", {
       localProducts,
       products,
-      businessId
+      businessId,
     });
-    
+
     if (loading) return [];
-    
+
     const combined = [...localProducts, ...products].filter(
-      product => product.business_id === parseInt(businessId)
+      (product) => product.business_id === parseInt(businessId)
     );
-    
-    console.log('Combined products:', combined);
+
+    console.log("Combined products:", combined);
     return combined;
   }, [products, localProducts, businessId, loading]);
 
@@ -197,7 +251,7 @@ const Products = () => {
       qty: product.qty.toString(),
       is_available: product.is_available,
       cat_id: product.cat_id.toString(),
-      images: product.images
+      images: product.images,
     });
     setSelectedImages([]);
     setIsModalOpen(true);
@@ -214,9 +268,9 @@ const Products = () => {
 
     const newImages = [...newProduct.images];
     newImages[index] = URL.createObjectURL(file);
-    setNewProduct(prev => ({
+    setNewProduct((prev) => ({
       ...prev,
-      images: newImages
+      images: newImages,
     }));
   };
 
@@ -227,15 +281,17 @@ const Products = () => {
       description: newProduct.description,
       price: newProduct.price,
       qty: newProduct.qty,
-      cat_id: newProduct.cat_id
+      cat_id: newProduct.cat_id,
     };
 
     // Check if all required fields are filled
-    const fieldsValid = Object.values(requiredFields).every(field => field !== '' && field !== null);
-    
+    const fieldsValid = Object.values(requiredFields).every(
+      (field) => field !== "" && field !== null
+    );
+
     // Require at least one image for both new and edited products
-    const hasAtLeastOneImage = editingProduct 
-      ? editingProduct.images.length > 0 
+    const hasAtLeastOneImage = editingProduct
+      ? editingProduct.images.length > 0
       : selectedImages.length > 0;
 
     return fieldsValid && hasAtLeastOneImage;
@@ -246,7 +302,7 @@ const Products = () => {
     e.preventDefault();
 
     try {
-      const currentBusinessId = parseInt(localStorage.getItem('businessId'));
+      const currentBusinessId = parseInt(localStorage.getItem("businessId"));
 
       if (editingProduct) {
         // Handle Edit
@@ -258,14 +314,14 @@ const Products = () => {
           qty: parseInt(newProduct.qty),
           is_available: newProduct.is_available,
           cat_id: parseInt(newProduct.cat_id),
-          images: editingProduct.images
+          images: editingProduct.images,
         };
 
-        setTempProducts(prev => 
-          prev.map(p => p.id === editingProduct.id ? updatedProduct : p)
+        setTempProducts((prev) =>
+          prev.map((p) => (p.id === editingProduct.id ? updatedProduct : p))
         );
-        setProducts(prev => 
-          prev.map(p => p.id === editingProduct.id ? updatedProduct : p)
+        setProducts((prev) =>
+          prev.map((p) => (p.id === editingProduct.id ? updatedProduct : p))
         );
       } else {
         // Handle Add
@@ -278,13 +334,13 @@ const Products = () => {
           price: parseFloat(newProduct.price),
           rate: 0,
           qty: parseInt(newProduct.qty),
-          images: selectedImages.map(file => URL.createObjectURL(file)),
+          images: selectedImages.map((file) => URL.createObjectURL(file)),
           is_available: newProduct.is_available,
           num_visits: 0,
-          num_orders: 0
+          num_orders: 0,
         };
 
-        setTempProducts(prev => [tempProduct, ...prev]);
+        setTempProducts((prev) => [tempProduct, ...prev]);
       }
 
       // Reset form
@@ -295,15 +351,14 @@ const Products = () => {
         qty: "",
         cat_id: "",
         images: [],
-        is_available: true
+        is_available: true,
       });
       setSelectedImages([]);
       setEditingProduct(null);
       setIsModalOpen(false);
-
     } catch (error) {
-      console.error('Error handling product:', error);
-      alert('Failed to process product. Please try again.');
+      console.error("Error handling product:", error);
+      alert("Failed to process product. Please try again.");
     }
   };
 
@@ -322,19 +377,19 @@ const Products = () => {
   const handleImageSelect = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    
+
     const imageUrl = URL.createObjectURL(file);
-    setSelectedImages(prev => [...prev, file]);
-    
+    setSelectedImages((prev) => [...prev, file]);
+
     if (editingProduct) {
-      setEditingProduct(prev => ({
+      setEditingProduct((prev) => ({
         ...prev,
-        images: [...prev.images, imageUrl]
+        images: [...prev.images, imageUrl],
       }));
     } else {
-      setNewProduct(prev => ({
+      setNewProduct((prev) => ({
         ...prev,
-        images: [...prev.images, imageUrl]
+        images: [...prev.images, imageUrl],
       }));
     }
   };
@@ -346,6 +401,24 @@ const Products = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+  };
+
+  // Update handleDelete
+  const handleDelete = (product) => {
+    setProductToDelete(product);
+    setIsDeleteModalOpen(true);
+  };
+
+  // Add confirmation handler
+  const confirmDelete = () => {
+    if (productToDelete) {
+      setProducts((prev) => prev.filter((p) => p.id !== productToDelete.id));
+      setTempProducts((prev) =>
+        prev.filter((p) => p.id !== productToDelete.id)
+      );
+      setIsDeleteModalOpen(false);
+      setProductToDelete(null);
+    }
   };
 
   // Add the return statement to render the products
@@ -402,6 +475,19 @@ const Products = () => {
                 Add Goods
               </button>
 
+              {/* Modified Delete Mode Toggle Button */}
+              <button
+                onClick={() => setDeleteMode(!deleteMode)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+                  deleteMode
+                    ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    : "bg-red-600 text-white hover:bg-red-700"
+                }`}
+              >
+                <Icon icon="mdi:delete" />
+                {deleteMode ? "Done" : "Delete"}
+              </button>
+
               {/* Sort Dropdown */}
               <select
                 value={sortBy}
@@ -422,10 +508,12 @@ const Products = () => {
           {/* Products Grid */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {getFilteredAndSortedProducts().map((product) => (
-              <ProductCard 
-                key={product.id} 
-                product={product} 
-                onEdit={handleEdit} 
+              <ProductCard
+                key={product.id}
+                product={product}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                deleteMode={deleteMode}
               />
             ))}
           </div>
@@ -437,13 +525,12 @@ const Products = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg p-6 max-w-xl w-full">
             <h2 className="text-2xl text-center font-medium text-[#E88F2A] mb-2">
-              {editingProduct ? 'Edit Product' : 'Add New Product'}
+              {editingProduct ? "Edit Product" : "Add New Product"}
             </h2>
             <p className="text-center text-gray-600 mb-4">
-              {editingProduct 
-                ? 'Update your product information'
-                : 'Please fill in the product information to get started'
-              }
+              {editingProduct
+                ? "Update your product information"
+                : "Please fill in the product information to get started"}
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-3">
@@ -487,7 +574,7 @@ const Products = () => {
                 </label>
                 <select
                   name="cat_id"
-                  value={newProduct.cat_id || ''}
+                  value={newProduct.cat_id || ""}
                   onChange={handleInputChange}
                   className="w-full px-3 py-1.5 rounded-lg border border-gray-300 focus:outline-none focus:border-[#E88F2A] text-sm"
                   required
@@ -544,10 +631,9 @@ const Products = () => {
                     className="w-full px-3 py-1.5 rounded-lg border border-gray-300 focus:outline-none focus:border-[#E88F2A] text-sm"
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    {editingProduct 
+                    {editingProduct
                       ? `${editingProduct.images.length} image(s) uploaded. You can add more or replace existing ones.`
-                      : "Upload at least one image. You can add more later."
-                    }
+                      : "Upload at least one image. You can add more later."}
                   </p>
                 </div>
               </div>
@@ -556,7 +642,10 @@ const Products = () => {
               <div className="mt-2">
                 <p className="text-sm text-gray-600 mb-2">Selected Images</p>
                 <div className="grid grid-cols-3 gap-2">
-                  {(editingProduct ? editingProduct.images : newProduct.images).map((imageUrl, index) => (
+                  {(editingProduct
+                    ? editingProduct.images
+                    : newProduct.images
+                  ).map((imageUrl, index) => (
                     <div key={index} className="relative">
                       <img
                         src={imageUrl}
@@ -576,21 +665,25 @@ const Products = () => {
                         <button
                           type="button"
                           onClick={() => {
-                            const newImages = editingProduct 
-                              ? editingProduct.images.filter((_, i) => i !== index)
+                            const newImages = editingProduct
+                              ? editingProduct.images.filter(
+                                  (_, i) => i !== index
+                                )
                               : newProduct.images.filter((_, i) => i !== index);
-                            
+
                             if (editingProduct) {
-                              setEditingProduct(prev => ({
+                              setEditingProduct((prev) => ({
                                 ...prev,
-                                images: newImages
+                                images: newImages,
                               }));
                             }
-                            setNewProduct(prev => ({
+                            setNewProduct((prev) => ({
                               ...prev,
-                              images: newImages
+                              images: newImages,
                             }));
-                            setSelectedImages(prev => prev.filter((_, i) => i !== index));
+                            setSelectedImages((prev) =>
+                              prev.filter((_, i) => i !== index)
+                            );
                           }}
                           className="bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
                         >
@@ -611,7 +704,9 @@ const Products = () => {
                   onChange={handleInputChange}
                   className="rounded border-gray-300 text-[#E88F2A] focus:ring-[#E88F2A]"
                 />
-                <label className="text-sm text-gray-700">Available for Sale</label>
+                <label className="text-sm text-gray-700">
+                  Available for Sale
+                </label>
               </div>
 
               {/* Buttons */}
@@ -627,7 +722,7 @@ const Products = () => {
                       price: "",
                       qty: "",
                       images: [],
-                      is_available: true
+                      is_available: true,
                     });
                     setSelectedImages([]);
                   }}
@@ -639,50 +734,35 @@ const Products = () => {
                   type="submit"
                   disabled={!isFormValid()}
                   className={`px-8 py-2 rounded-lg bg-[#E88F2A] text-white hover:bg-[#E88F2A]/90 
-                    ${!isFormValid() ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    ${!isFormValid() ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
-                  {editingProduct ? 'Save Changes' : 'Add'}
+                  {editingProduct ? "Save Changes" : "Add"}
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
+
+      {/* Add DeleteConfirmationModal */}
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setProductToDelete(null);
+        }}
+        onConfirm={confirmDelete}
+        productName={productToDelete?.prod_name}
+      />
     </BakerLayout>
   );
 };
 
-const ProductCard = ({ product, onEdit }) => {
+const ProductCard = ({ product, onEdit, onDelete, deleteMode }) => {
   const [isHovered, setIsHovered] = useState(false);
   const currentImageIndex = useImageCarousel(product.images, isHovered);
   const [isScaling, setIsScaling] = useState(false);
 
-  // Effect to handle scaling animation on hover
-  useEffect(() => {
-    if (isHovered) {
-      setIsScaling(true);
-      const timer = setTimeout(() => {
-        setIsScaling(false);
-      }, 4000); // Match this duration with the CSS transition duration
-
-      return () => clearTimeout(timer);
-    } else {
-      setIsScaling(false); // Reset scaling when not hovered
-    }
-  }, [isHovered]);
-
-  // Effect to reset scaling after the third image
-  useEffect(() => {
-    if (currentImageIndex === 2) {
-      // Check if it's the third image (index 2)
-      const timer = setTimeout(() => {
-        setIsScaling(false); // Reset to normal scale after 2 seconds
-      }, 2000); // 2 seconds delay
-
-      return () => clearTimeout(timer);
-    }
-  }, [currentImageIndex]);
-  
   return (
     <div className="bg-white rounded-lg shadow-md p-4 flex flex-col h-full">
       <div
@@ -690,6 +770,25 @@ const ProductCard = ({ product, onEdit }) => {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
+        {/* Modified delete button to only show in delete mode */}
+        {deleteMode && (
+          <button
+            onClick={() => onDelete(product)}
+            className="absolute top-2 left-2 z-20 bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600 transition-colors"
+          >
+            <Icon icon="mdi:delete" className="text-sm" />
+          </button>
+        )}
+
+        {/* Not Available badge */}
+        {!product.is_available && (
+          <div className="absolute top-2 right-2 z-20">
+            <span className="px-2 py-1 text-xs font-medium bg-red-100 text-red-600 rounded-full">
+              Not Available
+            </span>
+          </div>
+        )}
+
         <img
           src={product.images?.[currentImageIndex] || "default-image-path.jpg"}
           alt={product.prod_name}
@@ -707,9 +806,10 @@ const ProductCard = ({ product, onEdit }) => {
                 key={index}
                 className={`
                   w-1.5 h-1.5 rounded-full 
-                  ${currentImageIndex === index
-                    ? "bg-white scale-110"
-                    : "bg-white/50 scale-100"
+                  ${
+                    currentImageIndex === index
+                      ? "bg-white scale-110"
+                      : "bg-white/50 scale-100"
                   }
                 `}
               />
