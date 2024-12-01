@@ -61,6 +61,9 @@ const Cart = () => {
   const [completedOrders, setCompletedOrders] = useState([]);
   const [cancelledOrders, setCancelledOrders] = useState([]);
   const [businesses, setBusinesses] = useState([]);
+  const [lastVisitedStore, setLastVisitedStore] = useState(
+    localStorage.getItem('lastVisitedStore') || null
+  );
 
   // Modified useEffect to fetch both orders and business data
   useEffect(() => {
@@ -137,6 +140,18 @@ const Cart = () => {
   useEffect(() => {
     setStorageData(STORAGE_KEYS.PROCESSING_ORDERS, processingOrders);
   }, [processingOrders]);
+
+  // Update useEffect to consider both location state and cart items
+  useEffect(() => {
+    // If we have a business ID from location state, use that
+    if (lastVisitedStore) {
+      setLastVisitedStore(lastVisitedStore);
+    }
+    // Otherwise, try to get it from cart items
+    else if (cartItems.length > 0) {
+      setLastVisitedStore(cartItems[0].business_id);
+    }
+  }, [lastVisitedStore, cartItems]);
 
   // Update the grouping logic
   const groupOrdersByBusiness = (orders) => {
@@ -345,11 +360,11 @@ const Cart = () => {
   };
 
   const getOrderCount = () => {
-      // "/cart": "Pending",              // Items in cart, not yet checked out
-      // "/cart/in-process": "Processing", // Orders being prepared by the baker
-      // "/cart/to-receive": "To Receive", // Orders ready for delivery/pickup
-      // "/cart/completed": "Completed",   // Successfully delivered/received orders
-      // "/cart/cancelled": "Cancelled"    // Cancelled orders
+    // "/cart": "Pending",              // Items in cart, not yet checked out
+    // "/cart/in-process": "Processing", // Orders being prepared by the baker
+    // "/cart/to-receive": "To Receive", // Orders ready for delivery/pickup
+    // "/cart/completed": "Completed",   // Successfully delivered/received orders
+    // "/cart/cancelled": "Cancelled"    // Cancelled orders
     switch (location.pathname) {
       case "/cart":
         return cartItems.length;
@@ -404,7 +419,9 @@ const Cart = () => {
   // Simplified order card rendering for In Process, To Receive, Completed, and Cancelled
   const renderSimplifiedOrderCard = (order) => {
     // Find the business details from the businesses array
-    const business = businesses.find(b => b.id === order.business_id.toString());
+    const business = businesses.find(
+      (b) => b.id === order.business_id.toString()
+    );
 
     return (
       <div key={order.id} className="bg-white rounded-lg p-4 shadow-sm">
@@ -415,7 +432,8 @@ const Cart = () => {
               {business?.name || "Business Name Not Found"}
             </h2>
             <div className="text-sm text-gray-500">
-              Service Rating: {business?.service_rating?.toFixed(1) || 'N/A'} | {business?.total_sold || 0} sold
+              Service Rating: {business?.service_rating?.toFixed(1) || "N/A"} |{" "}
+              {business?.total_sold || 0} sold
             </div>
           </div>
         </div>
@@ -481,6 +499,28 @@ const Cart = () => {
     );
   };
 
+  // Update the back button click handler
+  const handleBackClick = () => {
+    const storedBusinessId = localStorage.getItem('lastVisitedStore');
+    
+    if (storedBusinessId) {
+      // Get the business details to find the user_id
+      fetch(`http://localhost:3000/businesses/${storedBusinessId}`)
+        .then(response => response.json())
+        .then(business => {
+          // Navigate to store with the user_id
+          navigate(`/store/${business.user_id}`);
+        })
+        .catch(error => {
+          console.error('Error fetching business details:', error);
+          navigate('/'); // Fallback to home page if there's an error
+        });
+    } else {
+      // Fallback to home page if no store ID is found
+      navigate('/');
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col pb-20">
       <Toaster richColors closeButton position="top-center" />
@@ -509,7 +549,7 @@ const Cart = () => {
               <h1 className="bg-gray-300 px-3 rounded-md">{getOrderCount()}</h1>
             </div>
             <button
-              onClick={() => navigate("/")}
+              onClick={handleBackClick}
               className="bg-primary py-2 px-10 text-white rounded-lg font-semibold"
             >
               Back

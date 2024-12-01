@@ -34,9 +34,9 @@ const BakerBusinessCard = ({ selectedFilter, openLoginModal }) => {
             return {
               ...business,
               // Only display the municipality
-              formattedLocation: business.location ? 
-                business.location.municipality : 
-                "Location not available",
+              formattedLocation: business.location
+                ? business.location.municipality
+                : "Location not available",
               profileImage: businessProfile ? businessProfile.img : null,
               ownerName: businessProfile
                 ? `${businessProfile.first_name} ${businessProfile.last_name}`
@@ -108,6 +108,12 @@ const BakerBusinessCard = ({ selectedFilter, openLoginModal }) => {
     if (!isLoggedIn) {
       openLoginModal();
       return;
+    }
+
+    // Store the business ID in localStorage before navigating
+    const selectedBusiness = businesses.find((b) => b.user_id === userId);
+    if (selectedBusiness) {
+      localStorage.setItem("lastVisitedStore", selectedBusiness.id);
     }
 
     navigate(`/store/${userId}`);

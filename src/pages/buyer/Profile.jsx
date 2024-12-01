@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/buyer/Button";
 import HideContact from "../../components/buyer/HideContact";
@@ -10,7 +10,34 @@ import dataAddress from "../../data/address.json";
 const Profile = ({ isLoggedIn, userName }) => {
   const navigate = useNavigate();
   const [image, setImage] = useState(null);
+  const [userData, setUserData] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
+  const [selectedGender, setSelectedGender] = useState("");
   const gender = ["Male", "Female", "Prefer not to say"];
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      // Fetch user data
+      fetch(`http://localhost:3000/users/${userId}`)
+        .then((res) => res.json())
+        .then((data) => setUserData(data));
+
+      // Fetch profile data
+      fetch(`http://localhost:3000/profiles?user_id=${userId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.length > 0) {
+            setUserProfile(data[0]);
+            setSelectedGender(data[0].sex || "");
+            // Set initial image if available
+            if (data[0].img && data[0].img !== "dummy_profile_url") {
+              setImage(data[0].img);
+            }
+          }
+        });
+    }
+  }, []);
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -55,25 +82,31 @@ const Profile = ({ isLoggedIn, userName }) => {
 
             {/* Information */}
             <div className="grid grid-cols-2">
-              <div className=" border-yellow-500 text-gray-400 font-[poppins] flex flex-col gap-4  text-[1.1vw]">
+              <div className="border-yellow-500 text-gray-400 font-[poppins] flex flex-col gap-4 text-[1.1vw]">
                 <div className="grid grid-cols-3 gap-4 items-center">
                   <p className="text-end col-span-1">Name</p>
                   <input
                     type="text"
+                    value={
+                      userProfile
+                        ? `${userProfile.first_name} ${userProfile.last_name}`
+                        : ""
+                    }
                     placeholder="Type something..."
                     className="border bg-gray-100 p-1 col-span-2"
+                    readOnly
                   />
                 </div>
                 <div className="grid grid-cols-3 gap-4 items-center">
                   <p className="text-end">Email</p>
                   <div className="col-span-2 flex gap-4">
-                    <div className=" text-gray-800 ">
+                    <div className="text-gray-800">
                       <HideContact
-                        contact={"ianramos3367@gmail.com"}
+                        contact={userData?.email || ""}
                         type={"email"}
                       />
                     </div>
-                    <button className=" underline text-blue-500 hover:text-blue-300">
+                    <button className="underline text-blue-500 hover:text-blue-300">
                       Change
                     </button>
                   </div>
@@ -82,7 +115,10 @@ const Profile = ({ isLoggedIn, userName }) => {
                   <p className="text-end">Phone Number</p>
                   <div className="flex gap-4 col-span-2">
                     <div>
-                      <HideContact contact={"0987654321"} type={"phone"} />
+                      <HideContact
+                        contact={userProfile?.phone_number || ""}
+                        type={"phone"}
+                      />
                     </div>
                     <button className="underline text-blue-500 hover:text-blue-300">
                       Change
@@ -91,16 +127,19 @@ const Profile = ({ isLoggedIn, userName }) => {
                 </div>
                 <div className="grid grid-cols-3 gap-4 items-center">
                   <p className="text-end">Gender</p>
-
                   <div className="col-span-2 text-[0.9vw]">
-                    <RadioOption options={gender} />
+                    <RadioOption
+                      options={gender}
+                      defaultValue={selectedGender}
+                      onChange={(value) => setSelectedGender(value)}
+                    />
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-4 items-center">
-                  <p className="text-end">Date of Birth</p>
-                  <div className="flex gap-4">
-                    <p>10/20/2001</p>
-                    <button className="underline text-blue-500 hover:text-blue-300">
+                <div className="grid grid-cols-3 gap-4 items-center border">
+                  <p className="text-end border">Date of Birth</p>
+                  <div className="flex gap-4 border w-full">
+                    <p>{userProfile?.date_of_birth || ""}</p>
+                    <button className="underline text-blue-500 hover:text-blue-300 border">
                       Change
                     </button>
                   </div>
