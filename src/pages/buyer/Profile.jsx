@@ -327,11 +327,13 @@ const Profile = ({ isLoggedIn, userName }) => {
               </div>
               {/* Profile Image */}
               <div className="flex flex-col items-center justify-center">
-                <img
-                  src={image || DummyProfile}
-                  alt="Profile"
-                  className="w-[9vw] xl:w-[7.5vw] rounded-full object-cover border-2 border-gray-300"
-                />
+                <div className="w-[9vw] xl:w-[7.5vw] h-[9vw] xl:h-[7.5vw] rounded-full overflow-hidden border-2 border-gray-300">
+                  <img
+                    src={image || DummyProfile}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
                 <label
                   htmlFor="imageUpload"
                   className="mt-2 px-4 py-2 text-[1vw] xl:text-[0.7vw] hover:bg-primary cursor-pointer hover:text-white text-gray-600 border border-gray-600"

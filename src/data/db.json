@@ -91,7 +91,7 @@
       "last_name": "Tyson",
       "age": "23",
       "sex": "Male",
-      "img": "dummy_profile_url",
+      "img": "../../public/assets/profile/Mike_customer.jpg",
       "phone_number": "09456789012",
       "date_of_birth": "2001-09-25"
     },
@@ -686,9 +686,9 @@
       "rate": 4.7,
       "qty": 35,
       "images": [
-        "../assets/ClassicFrenchBaguettev1.jpg",
-        "../assets/ClassicFrenchBaguettev2.jpg",
-        "../assets/ClassicFrenchBaguettev3.jpg"
+        "../assets/FrenchBaguettev1.jpg",
+        "../assets/FrenchBaguettev2.jpg",
+        "../assets/FrenchBaguettev3.jpg"
       ],
       "is_available": true,
       "num_visits": 623,
@@ -704,9 +704,9 @@
       "rate": 4.9,
       "qty": 8,
       "images": [
-        "../assets/RedVelvetCakev1.jpg",
-        "../assets/RedVelvetCakev2.jpg",
-        "../assets/RedVelvetCakev3.jpg"
+        "../assets/RedVelvetWeddingCakev1.jpg",
+        "../assets/RedVelvetWeddingCakev2.jpg",
+        "../assets/RedVelvetWeddingCakev3.jpg"
       ],
       "is_available": true,
       "num_visits": 478,
@@ -722,9 +722,9 @@
       "rate": 4.7,
       "qty": 20,
       "images": [
-        "../assets/FruitDanishv1.jpg",
-        "../assets/FruitDanishv2.jpg",
-        "../assets/FruitDanishv3.jpg"
+        "../assets/FruitDanishPastryv1.jpg",
+        "../assets/FruitDanishPastryv2.jpg",
+        "../assets/FruitDanishPastryv3.jpg"
       ],
       "is_available": true,
       "num_visits": 534,
@@ -734,37 +734,19 @@
       "id": "27",
       "business_id": 3,
       "cat_id": 4,
-      "prod_name": "Sourdough Bread",
-      "description": "Artisanal sourdough bread with perfect crust",
+      "prod_name": "Sicilian Cannoliv",
+      "description": "Tasty SicilianCannoliv with perfect crust",
       "price": 199.99,
       "rate": 4.8,
       "qty": 15,
       "images": [
-        "../assets/SourdoughBreadv1.jpg",
-        "../assets/SourdoughBreadv2.jpg",
-        "../assets/SourdoughBreadv3.jpg"
+        "../assets/SicilianCannoliv1.jpg",
+        "../assets/SicilianCannoliv2.jpg",
+        "../assets/SicilianCannoliv3.jpg"
       ],
       "is_available": true,
       "num_visits": 445,
       "num_orders": 334
-    },
-    {
-      "id": "28",
-      "business_id": 3,
-      "cat_id": 2,
-      "prod_name": "Blueberry Muffins",
-      "description": "Fresh-baked muffins with wild blueberries",
-      "price": 99.99,
-      "rate": 4.7,
-      "qty": 24,
-      "images": [
-        "../assets/BlueberryMuffinsv1.jpg",
-        "../assets/BlueberryMuffinsv2.jpg",
-        "../assets/BlueberryMuffinsv3.jpg"
-      ],
-      "is_available": true,
-      "num_visits": 567,
-      "num_orders": 445
     }
   ],
   "orders": [
