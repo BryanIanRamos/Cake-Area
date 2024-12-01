@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import Sidebar from "../../components/baker/Sidebar";
 import { Icon } from "@iconify/react";
+import BakerLayout from "../../components/baker/BakerLayout";
 import { productData, updateProductData } from "../../data/productDataTbl";
 import { categoryData, addCategory } from "../../data/catDataTbl";
 import { imagesData, updateImages } from "../../data/imagesDataTbl";
@@ -490,15 +490,8 @@ const Products = () => {
   };
 
   return (
-    <div className="flex h-screen bg-[#F5F5F5]">
-      <Sidebar
-        isExpanded={isSidebarExpanded}
-        setIsExpanded={setIsSidebarExpanded}
-      />
-      <main
-        className={`transition-all duration-300 flex-1 overflow-y-auto p-6
-        ${isSidebarExpanded ? "ml-64" : "ml-20"}`}
-      >
+    <BakerLayout>
+      <div className="p-6">
         <div className="max-w-7xl mx-auto">
           {/* Header Section */}
           <div className="flex justify-between items-center mb-6">
@@ -636,497 +629,497 @@ const Products = () => {
             ))}
           </div>
         </div>
-      </main>
 
-      {/* Edit Modal */}
-      {isEditModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-4xl max-h-[80vh] flex flex-col">
-            <div className="p-6 border-b">
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold">Edit Product</h2>
-                <button
-                  onClick={() => setIsEditModalOpen(false)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  <Icon icon="mdi:close" className="text-2xl" />
-                </button>
+        {/* Edit Modal */}
+        {isEditModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg w-full max-w-4xl max-h-[80vh] flex flex-col">
+              <div className="p-6 border-b">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-xl font-bold">Edit Product</h2>
+                  <button
+                    onClick={() => setIsEditModalOpen(false)}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    <Icon icon="mdi:close" className="text-2xl" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Scrollable content */}
+              <div className="p-6 overflow-y-auto flex-1">
+                <form onSubmit={handleEditSubmit} className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Product Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={editingProduct?.prod_name || ""}
+                        onChange={(e) => {
+                          setEditingProduct({
+                            ...editingProduct,
+                            prod_name: e.target.value,
+                          });
+                          // Clear error when user starts typing
+                          if (errors.prod_name) {
+                            setErrors({ ...errors, prod_name: "" });
+                          }
+                        }}
+                        className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none 
+                          ${
+                            errors.prod_name
+                              ? "border-red-500"
+                              : "border-gray-300"
+                          }`}
+                      />
+                      {errors.prod_name && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors.prod_name}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Price <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={editingProduct?.price || ""}
+                        onChange={(e) => {
+                          setEditingProduct({
+                            ...editingProduct,
+                            price: parseFloat(e.target.value),
+                          });
+                          if (errors.price) {
+                            setErrors({ ...errors, price: "" });
+                          }
+                        }}
+                        className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none
+                          ${errors.price ? "border-red-500" : "border-gray-300"}`}
+                      />
+                      {errors.price && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors.price}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Category <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        value={editingProduct?.cat_id || ""}
+                        onChange={(e) => {
+                          setEditingProduct({
+                            ...editingProduct,
+                            cat_id: parseInt(e.target.value),
+                          });
+                          if (errors.cat_id) {
+                            setErrors({ ...errors, cat_id: "" });
+                          }
+                        }}
+                        className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none
+                          ${
+                            errors.cat_id ? "border-red-500" : "border-gray-300"
+                          }`}
+                      >
+                        <option value="">Select a category</option>
+                        {categoryData.categories.map((category) => (
+                          <option key={category.cat_id} value={category.cat_id}>
+                            {category.name}
+                          </option>
+                        ))}
+                      </select>
+                      {errors.cat_id && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors.cat_id}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Description <span className="text-red-500">*</span>
+                      </label>
+                      <textarea
+                        value={editingProduct?.description || ""}
+                        onChange={(e) => {
+                          setEditingProduct({
+                            ...editingProduct,
+                            description: e.target.value,
+                          });
+                          if (errors.description) {
+                            setErrors({ ...errors, description: "" });
+                          }
+                        }}
+                        rows="3"
+                        className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none
+                          ${
+                            errors.description
+                              ? "border-red-500"
+                              : "border-gray-300"
+                          }`}
+                      />
+                      {errors.description && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Images Section */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Product Images (Max 3){" "}
+                      <span className="text-red-500">*</span>
+                    </label>
+                    <div className="flex gap-4 mb-2">
+                      {[0, 1, 2].map((index) => (
+                        <div
+                          key={index}
+                          className="relative w-32 h-32 border rounded-lg overflow-hidden"
+                        >
+                          {selectedImages[index] ? (
+                            <>
+                              <img
+                                src={selectedImages[index]}
+                                alt={`Product ${index + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveImage(index)}
+                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                              >
+                                <Icon icon="mdi:close" className="text-sm" />
+                              </button>
+                            </>
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-gray-50">
+                              <Icon
+                                icon="mdi:image-plus"
+                                className="text-3xl text-gray-400"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center gap-2 mt-2">
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="hidden"
+                        id="new-product-images"
+                        max="3"
+                      />
+                      <label
+                        htmlFor="new-product-images"
+                        className="cursor-pointer px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center gap-2"
+                      >
+                        <Icon icon="mdi:image-plus" />
+                        Select Images
+                      </label>
+                      <span className="text-sm text-gray-500">
+                        {selectedImages.length}/3 images selected
+                      </span>
+                    </div>
+                    {errors.images && (
+                      <p className="mt-1 text-sm text-red-500">{errors.images}</p>
+                    )}
+                  </div>
+                </form>
+              </div>
+
+              {/* Fixed footer */}
+              <div className="p-6 border-t bg-white">
+                <div className="flex justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditModalOpen(false)}
+                    className="px-4 py-2 border rounded-lg hover:bg-gray-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleEditSubmit}
+                    className="px-4 py-2 bg-[#E88F2A] text-white rounded-lg hover:bg-[#E88F2A]/90"
+                  >
+                    Save Changes
+                  </button>
+                </div>
               </div>
             </div>
+          </div>
+        )}
 
-            {/* Scrollable content */}
-            <div className="p-6 overflow-y-auto flex-1">
-              <form onSubmit={handleEditSubmit} className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Product Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={editingProduct?.prod_name || ""}
-                      onChange={(e) => {
-                        setEditingProduct({
-                          ...editingProduct,
-                          prod_name: e.target.value,
-                        });
-                        // Clear error when user starts typing
-                        if (errors.prod_name) {
-                          setErrors({ ...errors, prod_name: "" });
-                        }
-                      }}
-                      className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none 
-                        ${
-                          errors.prod_name
-                            ? "border-red-500"
-                            : "border-gray-300"
+        {isAddModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg w-full max-w-4xl max-h-[80vh] flex flex-col">
+              <div className="p-6 border-b">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-xl font-bold">Add New Product</h2>
+                  <button
+                    onClick={() => setIsAddModalOpen(false)}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    <Icon icon="mdi:close" className="text-2xl" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-6 overflow-y-auto flex-1">
+                <form onSubmit={handleAddSubmit} className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* Product Name */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Product Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={newProduct.prod_name}
+                        onChange={(e) => {
+                          setNewProduct({
+                            ...newProduct,
+                            prod_name: e.target.value,
+                          });
+                          if (errors.prod_name)
+                            setErrors({ ...errors, prod_name: "" });
+                        }}
+                        className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none ${
+                          errors.prod_name ? "border-red-500" : "border-gray-300"
                         }`}
-                    />
-                    {errors.prod_name && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.prod_name}
-                      </p>
-                    )}
-                  </div>
+                      />
+                      {errors.prod_name && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors.prod_name}
+                        </p>
+                      )}
+                    </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Price <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={editingProduct?.price || ""}
-                      onChange={(e) => {
-                        setEditingProduct({
-                          ...editingProduct,
-                          price: parseFloat(e.target.value),
-                        });
-                        if (errors.price) {
-                          setErrors({ ...errors, price: "" });
-                        }
-                      }}
-                      className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none
-                        ${errors.price ? "border-red-500" : "border-gray-300"}`}
-                    />
-                    {errors.price && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.price}
-                      </p>
-                    )}
-                  </div>
+                    {/* Price */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Price <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={newProduct.price}
+                        onChange={(e) => {
+                          setNewProduct({
+                            ...newProduct,
+                            price: e.target.value,
+                          });
+                          if (errors.price) setErrors({ ...errors, price: "" });
+                        }}
+                        className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none ${
+                          errors.price ? "border-red-500" : "border-gray-300"
+                        }`}
+                      />
+                      {errors.price && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors.price}
+                        </p>
+                      )}
+                    </div>
 
-                  <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Category <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      value={editingProduct?.cat_id || ""}
-                      onChange={(e) => {
-                        setEditingProduct({
-                          ...editingProduct,
-                          cat_id: parseInt(e.target.value),
-                        });
-                        if (errors.cat_id) {
-                          setErrors({ ...errors, cat_id: "" });
-                        }
-                      }}
-                      className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none
-                        ${
+                    {/* Category */}
+                    <div className="col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Category <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        value={newProduct.cat_id}
+                        onChange={(e) => {
+                          setNewProduct({
+                            ...newProduct,
+                            cat_id: e.target.value,
+                          });
+                          if (errors.cat_id) setErrors({ ...errors, cat_id: "" });
+                        }}
+                        className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none ${
                           errors.cat_id ? "border-red-500" : "border-gray-300"
                         }`}
-                    >
-                      <option value="">Select a category</option>
-                      {categoryData.categories.map((category) => (
-                        <option key={category.cat_id} value={category.cat_id}>
-                          {category.name}
-                        </option>
-                      ))}
-                    </select>
-                    {errors.cat_id && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.cat_id}
-                      </p>
-                    )}
-                  </div>
+                      >
+                        <option value="">Select a category</option>
+                        {categoryData.categories.map((category) => (
+                          <option key={category.cat_id} value={category.cat_id}>
+                            {category.name}
+                          </option>
+                        ))}
+                      </select>
+                      {errors.cat_id && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors.cat_id}
+                        </p>
+                      )}
+                    </div>
 
-                  <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Description <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      value={editingProduct?.description || ""}
-                      onChange={(e) => {
-                        setEditingProduct({
-                          ...editingProduct,
-                          description: e.target.value,
-                        });
-                        if (errors.description) {
-                          setErrors({ ...errors, description: "" });
-                        }
-                      }}
-                      rows="3"
-                      className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none
-                        ${
+                    {/* Description */}
+                    <div className="col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Description <span className="text-red-500">*</span>
+                      </label>
+                      <textarea
+                        value={newProduct.description}
+                        onChange={(e) => {
+                          setNewProduct({
+                            ...newProduct,
+                            description: e.target.value,
+                          });
+                          if (errors.description)
+                            setErrors({ ...errors, description: "" });
+                        }}
+                        rows="3"
+                        className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none ${
                           errors.description
                             ? "border-red-500"
                             : "border-gray-300"
                         }`}
-                    />
-                    {errors.description && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.description}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Images Section */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Product Images (Max 3){" "}
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <div className="flex gap-4 mb-2">
-                    {[0, 1, 2].map((index) => (
-                      <div
-                        key={index}
-                        className="relative w-32 h-32 border rounded-lg overflow-hidden"
-                      >
-                        {selectedImages[index] ? (
-                          <>
-                            <img
-                              src={selectedImages[index]}
-                              alt={`Product ${index + 1}`}
-                              className="w-full h-full object-cover"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveImage(index)}
-                              className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                            >
-                              <Icon icon="mdi:close" className="text-sm" />
-                            </button>
-                          </>
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gray-50">
-                            <Icon
-                              icon="mdi:image-plus"
-                              className="text-3xl text-gray-400"
-                            />
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                      />
+                      {errors.description && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors.description}
+                        </p>
+                      )}
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-2 mt-2">
-                    <input
-                      type="file"
-                      multiple
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="hidden"
-                      id="new-product-images"
-                      max="3"
-                    />
-                    <label
-                      htmlFor="new-product-images"
-                      className="cursor-pointer px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center gap-2"
-                    >
-                      <Icon icon="mdi:image-plus" />
-                      Select Images
+                  {/* Images Section */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Product Images (Max 3){" "}
+                      <span className="text-red-500">*</span>
                     </label>
-                    <span className="text-sm text-gray-500">
-                      {selectedImages.length}/3 images selected
-                    </span>
-                  </div>
-                  {errors.images && (
-                    <p className="mt-1 text-sm text-red-500">{errors.images}</p>
-                  )}
-                </div>
-              </form>
-            </div>
-
-            {/* Fixed footer */}
-            <div className="p-6 border-t bg-white">
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsEditModalOpen(false)}
-                  className="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleEditSubmit}
-                  className="px-4 py-2 bg-[#E88F2A] text-white rounded-lg hover:bg-[#E88F2A]/90"
-                >
-                  Save Changes
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {isAddModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-4xl max-h-[80vh] flex flex-col">
-            <div className="p-6 border-b">
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold">Add New Product</h2>
-                <button
-                  onClick={() => setIsAddModalOpen(false)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  <Icon icon="mdi:close" className="text-2xl" />
-                </button>
-              </div>
-            </div>
-
-            <div className="p-6 overflow-y-auto flex-1">
-              <form onSubmit={handleAddSubmit} className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                  {/* Product Name */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Product Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={newProduct.prod_name}
-                      onChange={(e) => {
-                        setNewProduct({
-                          ...newProduct,
-                          prod_name: e.target.value,
-                        });
-                        if (errors.prod_name)
-                          setErrors({ ...errors, prod_name: "" });
-                      }}
-                      className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none ${
-                        errors.prod_name ? "border-red-500" : "border-gray-300"
-                      }`}
-                    />
-                    {errors.prod_name && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.prod_name}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Price */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Price <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={newProduct.price}
-                      onChange={(e) => {
-                        setNewProduct({
-                          ...newProduct,
-                          price: e.target.value,
-                        });
-                        if (errors.price) setErrors({ ...errors, price: "" });
-                      }}
-                      className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none ${
-                        errors.price ? "border-red-500" : "border-gray-300"
-                      }`}
-                    />
-                    {errors.price && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.price}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Category */}
-                  <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Category <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      value={newProduct.cat_id}
-                      onChange={(e) => {
-                        setNewProduct({
-                          ...newProduct,
-                          cat_id: e.target.value,
-                        });
-                        if (errors.cat_id) setErrors({ ...errors, cat_id: "" });
-                      }}
-                      className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none ${
-                        errors.cat_id ? "border-red-500" : "border-gray-300"
-                      }`}
-                    >
-                      <option value="">Select a category</option>
-                      {categoryData.categories.map((category) => (
-                        <option key={category.cat_id} value={category.cat_id}>
-                          {category.name}
-                        </option>
+                    <div className="flex gap-4 mb-2">
+                      {[0, 1, 2].map((index) => (
+                        <div
+                          key={index}
+                          className="relative w-32 h-32 border rounded-lg overflow-hidden"
+                        >
+                          {selectedImages[index] ? (
+                            <>
+                              <img
+                                src={selectedImages[index]}
+                                alt={`Product ${index + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveImage(index)}
+                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                              >
+                                <Icon icon="mdi:close" className="text-sm" />
+                              </button>
+                            </>
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-gray-50">
+                              <Icon
+                                icon="mdi:image-plus"
+                                className="text-3xl text-gray-400"
+                              />
+                            </div>
+                          )}
+                        </div>
                       ))}
-                    </select>
-                    {errors.cat_id && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.cat_id}
-                      </p>
-                    )}
-                  </div>
+                    </div>
 
-                  {/* Description */}
-                  <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Description <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      value={newProduct.description}
-                      onChange={(e) => {
-                        setNewProduct({
-                          ...newProduct,
-                          description: e.target.value,
-                        });
-                        if (errors.description)
-                          setErrors({ ...errors, description: "" });
-                      }}
-                      rows="3"
-                      className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-[#E88F2A] focus:border-[#E88F2A] outline-none ${
-                        errors.description
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                    />
-                    {errors.description && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.description}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Images Section */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Product Images (Max 3){" "}
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <div className="flex gap-4 mb-2">
-                    {[0, 1, 2].map((index) => (
-                      <div
-                        key={index}
-                        className="relative w-32 h-32 border rounded-lg overflow-hidden"
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="hidden"
+                        id="new-product-images"
+                        max="3"
+                      />
+                      <label
+                        htmlFor="new-product-images"
+                        className="cursor-pointer px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center gap-2"
                       >
-                        {selectedImages[index] ? (
-                          <>
-                            <img
-                              src={selectedImages[index]}
-                              alt={`Product ${index + 1}`}
-                              className="w-full h-full object-cover"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveImage(index)}
-                              className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                            >
-                              <Icon icon="mdi:close" className="text-sm" />
-                            </button>
-                          </>
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gray-50">
-                            <Icon
-                              icon="mdi:image-plus"
-                              className="text-3xl text-gray-400"
-                            />
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                        <Icon icon="mdi:image-plus" />
+                        Select Images
+                      </label>
+                      <span className="text-sm text-gray-500">
+                        {selectedImages.length}/3 images selected
+                      </span>
+                    </div>
+                    {errors.images && (
+                      <p className="mt-1 text-sm text-red-500">{errors.images}</p>
+                    )}
                   </div>
+                </form>
+              </div>
 
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="file"
-                      multiple
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="hidden"
-                      id="new-product-images"
-                      max="3"
-                    />
-                    <label
-                      htmlFor="new-product-images"
-                      className="cursor-pointer px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center gap-2"
-                    >
-                      <Icon icon="mdi:image-plus" />
-                      Select Images
-                    </label>
-                    <span className="text-sm text-gray-500">
-                      {selectedImages.length}/3 images selected
-                    </span>
-                  </div>
-                  {errors.images && (
-                    <p className="mt-1 text-sm text-red-500">{errors.images}</p>
-                  )}
+              {/* Fixed footer */}
+              <div className="p-6 border-t bg-white">
+                <div className="flex justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsAddModalOpen(false)}
+                    className="px-4 py-2 border rounded-lg hover:bg-gray-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleAddSubmit}
+                    className="px-4 py-2 bg-[#E88F2A] text-white rounded-lg hover:bg-[#E88F2A]/90"
+                  >
+                    Add Product
+                  </button>
                 </div>
-              </form>
+              </div>
             </div>
+          </div>
+        )}
 
-            {/* Fixed footer */}
-            <div className="p-6 border-t bg-white">
+        {isDeleteModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg w-full max-w-md p-6">
+              <h2 className="text-xl font-bold mb-4">Delete Product</h2>
+              <p className="text-gray-600 mb-6">
+                Are you sure you want to delete "{productToDelete?.prod_name}"?
+                This action cannot be undone.
+              </p>
               <div className="flex justify-end gap-2">
                 <button
-                  type="button"
-                  onClick={() => setIsAddModalOpen(false)}
+                  onClick={() => setIsDeleteModalOpen(false)}
                   className="px-4 py-2 border rounded-lg hover:bg-gray-50"
                 >
                   Cancel
                 </button>
                 <button
-                  onClick={handleAddSubmit}
-                  className="px-4 py-2 bg-[#E88F2A] text-white rounded-lg hover:bg-[#E88F2A]/90"
+                  onClick={handleDeleteConfirm}
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
                 >
-                  Add Product
+                  Delete
                 </button>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {isDeleteModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-md p-6">
-            <h2 className="text-xl font-bold mb-4">Delete Product</h2>
-            <p className="text-gray-600 mb-6">
-              Are you sure you want to delete "{productToDelete?.prod_name}"?
-              This action cannot be undone.
-            </p>
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setIsDeleteModalOpen(false)}
-                className="px-4 py-2 border rounded-lg hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDeleteConfirm}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {toast.show && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast({ ...toast, show: false })}
-        />
-      )}
-    </div>
+        {toast.show && (
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast({ ...toast, show: false })}
+          />
+        )}
+      </div>
+    </BakerLayout>
   );
 };
 

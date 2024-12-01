@@ -5,12 +5,11 @@ import { pendingOrders } from "../../data/pendingOrders.json";
 import { Icon } from "@iconify/react";
 import OrdersTakenSection from "../../components/baker/dashboard/OrdersTakenSection";
 import PendingOrdersTable from "../../components/baker/dashboard/PendingOrdersTable";
+import BakerLayout from "../../components/baker/BakerLayout";
 
 const Dashboard = () => {
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
   const [tableLimit, setTableLimit] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
-  const userName = localStorage.getItem("userName") || "User";
 
   // Calculate pagination
   const totalPages = Math.ceil(pendingOrders.length / tableLimit);
@@ -119,20 +118,12 @@ const Dashboard = () => {
     });
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <Sidebar
-        isExpanded={isSidebarExpanded}
-        setIsExpanded={setIsSidebarExpanded}
-        userName={userName}
-      />
-      <main
-        className={`transition-all duration-300 flex-1 overflow-y-auto p-8
-          ${isSidebarExpanded ? "ml-64" : "ml-20"}`}
-      >
+    <BakerLayout>
+      <div className="p-8">
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            Welcome back, {userName}! 👋
+            Welcome back, {localStorage.getItem("userName")}! 👋
           </h1>
           <p className="text-gray-600">
             Here's what's happening with your bakery today.
@@ -208,8 +199,8 @@ const Dashboard = () => {
           totalPages={totalPages}
           totalOrders={pendingOrders.length}
         />
-      </main>
-    </div>
+      </div>
+    </BakerLayout>
   );
 };
 

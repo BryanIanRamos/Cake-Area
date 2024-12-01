@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Sidebar from "../../components/baker/Sidebar";
+import BakerLayout from '../../components/baker/BakerLayout';
 import { Icon } from "@iconify/react";
 import {
   LineChart,
@@ -18,7 +18,6 @@ import {
 } from 'recharts';
 
 const Statistics = () => {
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
   const [timeRange, setTimeRange] = useState('week'); // week, month, year
 
   // Sample data - Replace with actual data
@@ -82,199 +81,190 @@ const Statistics = () => {
   ];
 
   return (
-    <div className="flex h-screen bg-[#F5F5F5]">
-      <Sidebar
-        isExpanded={isSidebarExpanded}
-        setIsExpanded={setIsSidebarExpanded}
-      />
-      <main
-        className={`transition-all duration-300 flex-1 overflow-y-auto p-6
-          ${isSidebarExpanded ? "ml-64" : "ml-20"}`}
-      >
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold">Business Statistics</h1>
-            <select
-              value={timeRange}
-              onChange={(e) => setTimeRange(e.target.value)}
-              className="px-4 py-2 border rounded-lg"
-            >
-              <option value="week">Last 7 Days</option>
-              <option value="month">Last 30 Days</option>
-              <option value="year">Last 12 Months</option>
-            </select>
-          </div>
+    <BakerLayout>
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold">Business Statistics</h1>
+          <select
+            value={timeRange}
+            onChange={(e) => setTimeRange(e.target.value)}
+            className="px-4 py-2 border rounded-lg"
+          >
+            <option value="week">Last 7 Days</option>
+            <option value="month">Last 30 Days</option>
+            <option value="year">Last 12 Months</option>
+          </select>
+        </div>
 
-          {/* Metrics Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            {metrics.map((metric, index) => (
-              <div key={index} className="bg-white p-4 rounded-lg shadow-md">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-gray-500 text-sm">{metric.title}</p>
-                    <h3 className="text-2xl font-bold mt-1">{metric.value}</h3>
-                  </div>
-                  <Icon icon={metric.icon} className="text-2xl text-gray-400" />
+        {/* Metrics Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          {metrics.map((metric, index) => (
+            <div key={index} className="bg-white p-4 rounded-lg shadow-md">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="text-gray-500 text-sm">{metric.title}</p>
+                  <h3 className="text-2xl font-bold mt-1">{metric.value}</h3>
                 </div>
-                <div className="flex items-center mt-2">
-                  <Icon
-                    icon={metric.trend === 'up' ? 'mdi:trending-up' : 'mdi:trending-down'}
-                    className={`mr-1 ${
-                      metric.trend === 'up' ? 'text-green-500' : 'text-red-500'
-                    }`}
+                <Icon icon={metric.icon} className="text-2xl text-gray-400" />
+              </div>
+              <div className="flex items-center mt-2">
+                <Icon
+                  icon={metric.trend === 'up' ? 'mdi:trending-up' : 'mdi:trending-down'}
+                  className={`mr-1 ${
+                    metric.trend === 'up' ? 'text-green-500' : 'text-red-500'
+                  }`}
+                />
+                <span
+                  className={`text-sm ${
+                    metric.trend === 'up' ? 'text-green-500' : 'text-red-500'
+                  }`}
+                >
+                  {metric.change}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Charts Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Sales Chart */}
+          <div className="bg-white p-4 rounded-lg shadow-md">
+            <h3 className="text-lg font-semibold mb-4">Sales Overview</h3>
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={salesData[timeRange]}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="day" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="sales"
+                    stroke="#E88F2A"
+                    strokeWidth={2}
                   />
-                  <span
-                    className={`text-sm ${
-                      metric.trend === 'up' ? 'text-green-500' : 'text-red-500'
-                    }`}
-                  >
-                    {metric.change}
-                  </span>
-                </div>
-              </div>
-            ))}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </div>
 
-          {/* Charts Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Sales Chart */}
-            <div className="bg-white p-4 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold mb-4">Sales Overview</h3>
-              <div className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={salesData[timeRange]}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="day" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="sales"
-                      stroke="#E88F2A"
-                      strokeWidth={2}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
+          {/* Orders Chart */}
+          <div className="bg-white p-4 rounded-lg shadow-md">
+            <h3 className="text-lg font-semibold mb-4">Orders Overview</h3>
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={salesData[timeRange]}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="day" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="orders" fill="#E88F2A" />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
+          </div>
 
-            {/* Orders Chart */}
-            <div className="bg-white p-4 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold mb-4">Orders Overview</h3>
-              <div className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={salesData[timeRange]}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="day" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="orders" fill="#E88F2A" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            {/* Category Distribution */}
-            <div className="bg-white p-4 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold mb-4">Category Distribution</h3>
-              <div className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={categoryData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ name, percent }) =>
-                        `${name} ${(percent * 100).toFixed(0)}%`
-                      }
-                      outerRadius={100}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {categoryData.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            {/* Best Selling Products */}
-            <div className="bg-white p-4 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold mb-4">Best Selling Products</h3>
-              <div className="space-y-4">
-                {[
-                  {
-                    id: "1",
-                    name: "Premium Almond Croissant",
-                    orders: 63,
-                    price: 119.99,
-                    image: "../assets/AlmondCroissantv2.jpg"
-                  },
-                  {
-                    id: "2",
-                    name: "Classic Brioche",
-                    orders: 45,
-                    price: 199.99,
-                    image: "../assets/ClassicBriochev3.jpg"
-                  },
-                  {
-                    id: "3",
-                    name: "Chocolate Dream Layer Cake",
-                    orders: 38,
-                    price: 299.99,
-                    image: "../assets/ChocolateDreamLayerCakev1.jpg"
-                  },
-                  {
-                    id: "4",
-                    name: "Classic Butter Croissant",
-                    orders: 35,
-                    price: 89.99,
-                    image: "../assets/ButterCroissantv1.jpg"
-                  },
-                  {
-                    id: "5",
-                    name: "Carrot Spice Cake",
-                    orders: 28,
-                    price: 249.99,
-                    image: "../assets/CarrotSpiceCakev1.jpg"
-                  }
-                ].map((product) => (
-                  <div
-                    key={product.id}
-                    className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg"
+          {/* Category Distribution */}
+          <div className="bg-white p-4 rounded-lg shadow-md">
+            <h3 className="text-lg font-semibold mb-4">Category Distribution</h3>
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={categoryData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) =>
+                      `${name} ${(percent * 100).toFixed(0)}%`
+                    }
+                    outerRadius={100}
+                    fill="#8884d8"
+                    dataKey="value"
                   >
-                    <div className="flex items-center gap-3">
-                      <img 
-                        src={product.image} 
-                        alt={product.name}
-                        className="w-10 h-10 object-cover rounded-lg"
+                    {categoryData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
                       />
-                      <div>
-                        <p className="font-medium">{product.name}</p>
-                        <p className="text-sm text-gray-500">
-                          {product.orders} orders
-                        </p>
-                      </div>
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Best Selling Products */}
+          <div className="bg-white p-4 rounded-lg shadow-md">
+            <h3 className="text-lg font-semibold mb-4">Best Selling Products</h3>
+            <div className="space-y-4">
+              {[
+                {
+                  id: "1",
+                  name: "Premium Almond Croissant",
+                  orders: 63,
+                  price: 119.99,
+                  image: "../assets/AlmondCroissantv2.jpg"
+                },
+                {
+                  id: "2",
+                  name: "Classic Brioche",
+                  orders: 45,
+                  price: 199.99,
+                  image: "../assets/ClassicBriochev3.jpg"
+                },
+                {
+                  id: "3",
+                  name: "Chocolate Dream Layer Cake",
+                  orders: 38,
+                  price: 299.99,
+                  image: "../assets/ChocolateDreamLayerCakev1.jpg"
+                },
+                {
+                  id: "4",
+                  name: "Classic Butter Croissant",
+                  orders: 35,
+                  price: 89.99,
+                  image: "../assets/ButterCroissantv1.jpg"
+                },
+                {
+                  id: "5",
+                  name: "Carrot Spice Cake",
+                  orders: 28,
+                  price: 249.99,
+                  image: "../assets/CarrotSpiceCakev1.jpg"
+                }
+              ].map((product) => (
+                <div
+                  key={product.id}
+                  className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg"
+                >
+                  <div className="flex items-center gap-3">
+                    <img 
+                      src={product.image} 
+                      alt={product.name}
+                      className="w-10 h-10 object-cover rounded-lg"
+                    />
+                    <div>
+                      <p className="font-medium">{product.name}</p>
+                      <p className="text-sm text-gray-500">
+                        {product.orders} orders
+                      </p>
                     </div>
-                    <p className="font-medium">₱{product.price.toFixed(2)}</p>
                   </div>
-                ))}
-              </div>
+                  <p className="font-medium">₱{product.price.toFixed(2)}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </BakerLayout>
   );
 };
 
