@@ -3,7 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import Rating from "./Rating";
 
-const BakerBusinessCard = ({ selectedFilter, openLoginModal }) => {
+const BakerBusinessCard = ({
+  selectedFilter,
+  openLoginModal,
+  selectedMunicipality,
+  filteredByLocation,
+  searchQuery,
+  searchActive
+}) => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [businesses, setBusinesses] = useState([]);
@@ -55,25 +62,47 @@ const BakerBusinessCard = ({ selectedFilter, openLoginModal }) => {
     fetchBusinessData();
   }, []);
 
-  // Add filtering logic
+  // Modify getFilteredBakers function
   const getFilteredBakers = () => {
     if (!businesses) return [];
-    if (!selectedFilter) return businesses;
+    
+    let filtered = [...businesses];
 
-    return [...businesses].sort((a, b) => {
-      switch (selectedFilter) {
-        case "rate":
-          return b.store_rating - a.store_rating;
-        case "service":
-          return b.service_rating - a.service_rating;
-        case "sold":
-          return b.total_sold - a.total_sold;
-        case "goods":
-          return b.available_items - a.available_items;
-        default:
-          return 0;
-      }
-    });
+    // Apply municipality filter if selected and not "All"
+    if (filteredByLocation && selectedMunicipality && selectedMunicipality !== "All") {
+      filtered = filtered.filter(business => 
+        business.formattedLocation === selectedMunicipality
+      );
+    }
+
+    // Apply search query filter if search is active
+    if (searchActive && searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(business => 
+        business.name.toLowerCase().includes(query) ||
+        business.ownerName.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply rating/service/sold/goods filter
+    if (selectedFilter) {
+      filtered.sort((a, b) => {
+        switch (selectedFilter) {
+          case "rate":
+            return b.store_rating - a.store_rating;
+          case "service":
+            return b.service_rating - a.service_rating;
+          case "sold":
+            return b.total_sold - a.total_sold;
+          case "goods":
+            return b.available_items - a.available_items;
+          default:
+            return 0;
+        }
+      });
+    }
+
+    return filtered;
   };
 
   // Get filtered bakers

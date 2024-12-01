@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Cake_BG from "../../assets/Cake_BG.png";
 import BakerBusinessCard from "../../components/buyer/BakerBusinessCard";
 import SelectAccount from "../../components/buyer/SelectAccount";
@@ -7,6 +7,7 @@ import Header from "../../components/buyer/Header";
 import FeedbackPopup from "../../components/buyer/FeedbackPopup";
 import { userData } from "../../data/userDataTbl";
 import { profileData } from "../../data/profileDataTbl";
+import { municipalities } from "../../data/location";
 
 const MainPage = () => {
   const [selectedFilter, setSelectedFilter] = useState("rate");
@@ -23,6 +24,13 @@ const MainPage = () => {
   const [showFeedback, setShowFeedback] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [feedbackType, setFeedbackType] = useState("success");
+
+  const [filteredByLocation, setFilteredByLocation] = useState(false);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchActive, setSearchActive] = useState(false);
+
+  const cardsRef = useRef(null);
 
   useEffect(() => {
     // Check login state from localStorage on component mount
@@ -145,6 +153,18 @@ const MainPage = () => {
     setSelectMunicipality(event.target.value);
   };
 
+  const handleSearch = () => {
+    if (selectMunicipality === "All") {
+      setFilteredByLocation(false);
+    } else {
+      setFilteredByLocation(!!selectMunicipality);
+    }
+    setSearchActive(!!searchQuery);
+
+    // Scroll to cards section
+    cardsRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   // Handler function for selecting a filter
   const handleFilterClick = (filter) => {
     if (selectedFilter === filter) {
@@ -233,24 +253,23 @@ const MainPage = () => {
                       <option value="" disabled>
                         Select Municipality
                       </option>
-                      <option value="Buenavista">Buenavista</option>
-                      <option value="Cabadbaran">Cabadbaran</option>
-                      <option value="Carmen">Carmen</option>
-                      <option value="Jabonga">Jabonga</option>
-                      <option value="Kitcharao">Kitcharao</option>
-                      <option value="Las Nieves">Las Nieves</option>
-                      <option value="Magallanes">Magallanes</option>
-                      <option value="Nasipit">Nasipit</option>
-                      <option value="Remedios T. Romualdez">
-                        Remedios T. Romualdez
-                      </option>
-                      <option value="Santiago">Santiago</option>
-                      <option value="Tubay">Tubay</option>
+                      <option value="All">All</option>
+                      {municipalities.map((municipality) => (
+                        <option
+                          key={municipality.name}
+                          value={municipality.name}
+                        >
+                          {municipality.name}
+                        </option>
+                      ))}
                     </select>
                   </div>
 
                   {/* Search Button */}
-                  <button className="px-6 py-3 bg-primary hover:bg-primary-dark transition-colors duration-200 text-white font-semibold text-sm sm:text-base flex items-center gap-2">
+                  <button
+                    onClick={handleSearch}
+                    className="px-6 py-3 bg-primary hover:bg-primary-dark transition-colors duration-200 text-white font-semibold text-sm sm:text-base flex items-center gap-2"
+                  >
                     <svg
                       className="w-4 h-4"
                       fill="none"
@@ -277,7 +296,7 @@ const MainPage = () => {
           </div>
         </div>
       </section>
-      <section className="px-[5vw] md:px-[15vw] py-[2vw]">
+      <section className="px-[5vw] md:px-[15vw] py-[2vw]" ref={cardsRef}>
         {/* Content Header */}
         <div className="text-secondary ">
           <h2 className="font-[oswald] text-[3vw]">Find Cake Near You</h2>
@@ -337,6 +356,10 @@ const MainPage = () => {
         <BakerBusinessCard
           selectedFilter={selectedFilter}
           openLoginModal={openLoginModal}
+          selectedMunicipality={selectMunicipality}
+          filteredByLocation={filteredByLocation}
+          searchQuery={searchQuery}
+          searchActive={searchActive}
         />
       </section>
     </div>

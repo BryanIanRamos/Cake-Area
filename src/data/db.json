@@ -70,7 +70,8 @@
       "sex": "Female",
       "img": "../assets/profile/Sarah_Baker.png",
       "phone_number": "09234567890",
-      "date_of_birth": "1996-08-20"
+      "date_of_birth": "1996-08-20",
+      "email": "sarah.baker@email.com"
     },
     {
       "id": "3",
@@ -837,13 +838,15 @@
         }
       ],
       "total_amount": 349.99,
-      "status": "Pending",
+      "status": "Cancelled",
       "created_at": "2024-12-01T03:35:00.379Z",
       "checkoutDate": "null",
       "receiveDate": "null",
       "downPayment": 0,
       "remainingPayment": 349.99,
-      "paymentStatus": "null"
+      "paymentStatus": "null",
+      "updated_at": "2024-12-01T23:12:47.154Z",
+      "cancelReason": "Equipment malfunction"
     },
     {
       "id": "4",
@@ -1026,6 +1029,40 @@
         "streetAddress": "P-3C Rigners Boarding House"
       },
       "updated_at": "2024-12-01T20:41:36.850Z"
+    },
+    {
+      "id": "10",
+      "order_id": "ORD010",
+      "customer_id": 5,
+      "business_id": 1,
+      "products": [
+        {
+          "prod_id": "7",
+          "cat_id": 2,
+          "prod_name": "Chocolate Babka",
+          "description": "Rich chocolate-swirled babka bread",
+          "price": 349.99,
+          "rate": 4.8,
+          "qty": 1,
+          "images": "../assets/ChocolateBabkav3.jpg"
+        }
+      ],
+      "total_amount": 349.99,
+      "status": "To Receive",
+      "created_at": "2024-12-01T23:10:28.939Z",
+      "checkoutDate": "2024-12-01T23:13:02.387Z",
+      "receiveDate": "2024-12-05T23:13:01.522Z",
+      "downPayment": 174.995,
+      "remainingPayment": 174.995,
+      "paymentStatus": "paid",
+      "placedAddress": {
+        "fullName": "Bryan Ramos",
+        "phoneNumber": "(+63) 0987654321",
+        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
+        "postalCode": "8600",
+        "streetAddress": "P-3C Rigners Boarding House"
+      },
+      "updated_at": "2024-12-01T23:13:28.231Z"
     }
   ],
   "tags": [
