@@ -6,6 +6,7 @@ import AcceptOrderModal from "../../components/baker/AcceptOrderModal";
 import MarkAsDoneModal from "../../components/baker/MarkAsDoneModal";
 import MarkAsDeliveredModal from "../../components/baker/MarkAsDeliveredModal";
 import CancelOrderModal from "../../components/baker/CancelOrderModal";
+import MarkAsCompletedModal from "../../components/baker/MarkAsCompletedModal";
 import { Icon } from "@iconify/react";
 
 const Orders = () => {
@@ -33,6 +34,10 @@ const Orders = () => {
     useState(null);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [selectedOrderForCancel, setSelectedOrderForCancel] = useState(null);
+  const [isMarkAsCompletedModalOpen, setIsMarkAsCompletedModalOpen] =
+    useState(false);
+  const [selectedOrderForCompleted, setSelectedOrderForCompleted] =
+    useState(null);
 
   useEffect(() => {
     const businessId = localStorage.getItem("business_id");
@@ -45,7 +50,7 @@ const Orders = () => {
         setLoading(true);
         const response = await fetch("http://localhost:3000/orders");
         const data = await response.json();
-        
+
         // Only update state if component is still mounted
         if (isSubscribed) {
           const businessOrders = data.filter(
@@ -111,37 +116,54 @@ const Orders = () => {
     setIsAcceptModalOpen(true);
   };
 
-  const handleAcceptConfirm = (orderId) => {
-    const orderToUpdate = orders.find((order) => order.order_id === orderId);
-    if (orderToUpdate) {
-      const updatedOrder = {
-        ...orderToUpdate,
-        status: "Processing",
-        updated_at: new Date().toISOString(),
-      };
+  const handleAcceptConfirm = async (orderId) => {
+    try {
+      const orderToUpdate = orders.find((order) => order.order_id === orderId);
 
-      // Update in localStorage
-      updateOrder(updatedOrder);
+      if (orderToUpdate) {
+        const updatedOrder = {
+          ...orderToUpdate,
+          status: "Processing",
+          updated_at: new Date().toISOString(),
+        };
 
-      // Update local state
-      setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order.order_id === orderId ? updatedOrder : order
-        )
-      );
+        const response = await fetch(
+          `http://localhost:3000/orders/${orderToUpdate.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedOrder),
+          }
+        );
 
-      // Close the modal
-      setIsAcceptModalOpen(false);
+        if (!response.ok) {
+          throw new Error("Failed to accept order");
+        }
 
-      // Show toast notification using the toast object
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order.id === orderToUpdate.id ? updatedOrder : order
+          )
+        );
+
+        setIsAcceptModalOpen(false);
+        setToast({
+          show: true,
+          message: `Order ${orderId} has been accepted successfully!`,
+          type: "success",
+        });
+
+        setActiveTab("processing");
+      }
+    } catch (error) {
+      console.error("Error accepting order:", error);
       setToast({
         show: true,
-        message: `Order ${orderId} has been accepted successfully!`,
-        type: "success",
+        message: "Failed to accept order. Please try again.",
+        type: "error",
       });
-
-      // Switch to Processing tab
-      setActiveTab("processing");
     }
   };
 
@@ -150,68 +172,116 @@ const Orders = () => {
     setIsMarkAsDoneModalOpen(true);
   };
 
-  const handleMarkAsDoneConfirm = (orderId) => {
-    const orderToUpdate = orders.find((order) => order.order_id === orderId);
-    if (orderToUpdate) {
-      const updatedOrder = {
-        ...orderToUpdate,
-        status: "To Receive",
-        updated_at: new Date().toISOString(),
-      };
+  const handleMarkAsDoneConfirm = async (orderId) => {
+    try {
+      // Find the order to update
+      const orderToUpdate = orders.find((order) => order.order_id === orderId);
 
-      // Update in localStorage
-      updateOrder(updatedOrder);
+      if (orderToUpdate) {
+        // Prepare updated order data
+        const updatedOrder = {
+          ...orderToUpdate,
+          status: "To Receive",
+          updated_at: new Date().toISOString(),
+        };
 
-      // Update local state
-      setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order.order_id === orderId ? updatedOrder : order
-        )
-      );
+        // Send PUT request to update the order
+        const response = await fetch(
+          `http://localhost:3000/orders/${orderToUpdate.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedOrder),
+          }
+        );
 
-      setIsMarkAsDoneModalOpen(false);
+        if (!response.ok) {
+          throw new Error("Failed to update order status");
+        }
+
+        // Update local state
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order.id === orderToUpdate.id ? updatedOrder : order
+          )
+        );
+
+        // Close modal and show success message
+        setIsMarkAsDoneModalOpen(false);
+        setToast({
+          show: true,
+          message: `Order ${orderId} has been marked as done!`,
+          type: "success",
+        });
+
+        // Switch to "to receive" tab
+        setActiveTab("to receive");
+      }
+    } catch (error) {
+      console.error("Error updating order:", error);
       setToast({
         show: true,
-        message: `Order ${orderId} has been marked as done!`,
-        type: "success",
+        message: "Failed to update order status. Please try again.",
+        type: "error",
       });
-
-      setActiveTab("to receive");
     }
   };
 
   const handleMarkAsDelivered = (order) => {
-    setSelectedOrderForDelivered(order);
-    setIsMarkAsDeliveredModalOpen(true);
+    setSelectedOrderForCompleted(order);
+    setIsMarkAsCompletedModalOpen(true);
   };
 
-  const handleMarkAsDeliveredConfirm = (orderId) => {
-    const orderToUpdate = orders.find((order) => order.order_id === orderId);
-    if (orderToUpdate) {
-      const updatedOrder = {
-        ...orderToUpdate,
-        status: "Completed",
-        updated_at: new Date().toISOString(),
-      };
+  const handleMarkAsCompletedConfirm = async (orderId) => {
+    try {
+      const orderToUpdate = orders.find((order) => order.order_id === orderId);
 
-      // Update in localStorage
-      updateOrder(updatedOrder);
+      if (orderToUpdate) {
+        const updatedOrder = {
+          ...orderToUpdate,
+          status: "Completed",
+          updated_at: new Date().toISOString(),
+        };
 
-      // Update local state
-      setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order.order_id === orderId ? updatedOrder : order
-        )
-      );
+        const response = await fetch(
+          `http://localhost:3000/orders/${orderToUpdate.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedOrder),
+          }
+        );
 
-      setIsMarkAsDeliveredModalOpen(false);
+        if (!response.ok) {
+          throw new Error("Failed to update order status");
+        }
+
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order.id === orderToUpdate.id ? updatedOrder : order
+          )
+        );
+
+        setIsMarkAsCompletedModalOpen(false);
+        setToast({
+          show: true,
+          message: `Order ${orderId} has been marked as completed!`,
+          type: "success",
+        });
+
+        setActiveTab("completed");
+      }
+    } catch (error) {
+      console.error("Error updating order:", error);
       setToast({
         show: true,
-        message: `Order ${orderId} has been marked as delivered!`,
-        type: "success",
+        message: "Failed to update order status. Please try again.",
+        type: "error",
       });
-
-      setActiveTab("completed");
     }
   };
 
@@ -225,34 +295,61 @@ const Orders = () => {
     setIsCancelModalOpen(true);
   };
 
-  const handleCancelConfirm = (orderId, reason) => {
-    const orderToUpdate = orders.find((order) => order.order_id === orderId);
-    if (orderToUpdate) {
-      const updatedOrder = {
-        ...orderToUpdate,
-        status: "Cancelled",
-        cancel_reason: reason,
-        updated_at: new Date().toISOString(),
-      };
+  const handleCancelConfirm = async (orderId, cancelReason) => {
+    try {
+      // Find the order to update
+      const orderToUpdate = orders.find((order) => order.order_id === orderId);
 
-      // Update in localStorage
-      updateOrder(updatedOrder);
+      if (orderToUpdate) {
+        // Prepare updated order data
+        const updatedOrder = {
+          ...orderToUpdate,
+          status: "Cancelled",
+          cancelReason: cancelReason, // Add the cancellation reason
+          updated_at: new Date().toISOString(),
+        };
 
-      // Update local state
-      setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order.order_id === orderId ? updatedOrder : order
-        )
-      );
+        // Send PUT request to update the order
+        const response = await fetch(
+          `http://localhost:3000/orders/${orderToUpdate.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedOrder),
+          }
+        );
 
-      setIsCancelModalOpen(false);
+        if (!response.ok) {
+          throw new Error("Failed to cancel order");
+        }
+
+        // Update local state
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order.id === orderToUpdate.id ? updatedOrder : order
+          )
+        );
+
+        // Close modal and show success message
+        setIsCancelModalOpen(false);
+        setToast({
+          show: true,
+          message: `Order ${orderId} has been cancelled.`,
+          type: "success",
+        });
+
+        // Switch to "cancelled" tab
+        setActiveTab("cancelled");
+      }
+    } catch (error) {
+      console.error("Error cancelling order:", error);
       setToast({
         show: true,
-        message: `Order ${orderId} has been cancelled.`,
+        message: "Failed to cancel order. Please try again.",
         type: "error",
       });
-
-      setActiveTab("cancelled");
     }
   };
 
@@ -327,21 +424,46 @@ const Orders = () => {
               View Details
             </button>
 
+            {order.status === "Pending" && (
+              <>
+                <button
+                  onClick={() => handleAccept(order)}
+                  className="px-3 py-1 text-sm bg-[#E88F2A] text-white rounded hover:bg-[#E88F2A]/90"
+                >
+                  Accept Order
+                </button>
+                <button
+                  onClick={() => handleCancel(order)}
+                  className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Cancel
+                </button>
+              </>
+            )}
+
+            {order.status === "To Receive" && (
+              <>
+                <button
+                  onClick={() => handleMarkAsDelivered(order)}
+                  className="px-3 py-1 text-sm bg-[#E88F2A] text-white rounded hover:bg-[#E88F2A]/90"
+                >
+                  Mark as Completed
+                </button>
+                <button
+                  onClick={() => handleCancel(order)}
+                  className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Cancel
+                </button>
+              </>
+            )}
+
             {order.status === "Processing" && (
               <button
                 onClick={() => handleMarkAsDone(order)}
                 className="px-3 py-1 text-sm bg-green-500 text-white rounded hover:bg-green-600"
               >
                 Mark as Done
-              </button>
-            )}
-
-            {(order.status === "Pending" || order.status === "Processing") && (
-              <button
-                onClick={() => handleCancel(order)}
-                className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
-              >
-                Cancel
               </button>
             )}
           </div>
@@ -443,6 +565,37 @@ const Orders = () => {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           order={selectedOrder}
+        />
+
+        {/* Add or update the MarkAsDoneModal */}
+        <MarkAsDoneModal
+          isOpen={isMarkAsDoneModalOpen}
+          onClose={() => setIsMarkAsDoneModalOpen(false)}
+          onConfirm={handleMarkAsDoneConfirm}
+          order={selectedOrderForDone}
+        />
+
+        {/* Add or update the CancelOrderModal */}
+        <CancelOrderModal
+          isOpen={isCancelModalOpen}
+          onClose={() => setIsCancelModalOpen(false)}
+          onConfirm={handleCancelConfirm}
+          order={selectedOrderForCancel}
+        />
+
+        {/* Add or update the MarkAsCompletedModal */}
+        <MarkAsCompletedModal
+          isOpen={isMarkAsCompletedModalOpen}
+          onClose={() => setIsMarkAsCompletedModalOpen(false)}
+          onConfirm={handleMarkAsCompletedConfirm}
+          order={selectedOrderForCompleted}
+        />
+
+        <AcceptOrderModal
+          isOpen={isAcceptModalOpen}
+          onClose={() => setIsAcceptModalOpen(false)}
+          onConfirm={handleAcceptConfirm}
+          order={selectedOrderForAccept}
         />
 
         {/* ... other modals ... */}
