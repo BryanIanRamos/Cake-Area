@@ -38,7 +38,8 @@ const Products = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("name");
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
   const [newProduct, setNewProduct] = useState({
     prod_name: "",
     description: "",
@@ -185,31 +186,100 @@ const Products = () => {
     });
   };
 
-  // Modified handleAddSubmit
-  const handleAddSubmit = async (e) => {
+  // Modify handleEdit function to properly handle existing images
+  const handleEdit = (product) => {
+    setEditingProduct(product);
+    setNewProduct({
+      prod_name: product.prod_name,
+      description: product.description,
+      price: product.price.toString(),
+      qty: product.qty.toString(),
+      is_available: product.is_available,
+      images: product.images
+    });
+    // Convert existing image URLs to File objects for preview
+    const existingImages = product.images.map((url, index) => {
+      // Create a dummy File object for existing images
+      return new File([], `existing-image-${index}`, {
+        type: 'image/jpeg',
+      });
+    });
+    setSelectedImages(existingImages);
+    setIsModalOpen(true);
+  };
+
+  // Add function to handle replacing specific images
+  const handleReplaceImage = (e, index) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const newSelectedImages = [...selectedImages];
+    newSelectedImages[index] = file;
+    setSelectedImages(newSelectedImages);
+
+    const newImages = [...newProduct.images];
+    newImages[index] = URL.createObjectURL(file);
+    setNewProduct(prev => ({
+      ...prev,
+      images: newImages
+    }));
+  };
+
+  // Modify handleSubmit to handle both new and edited product images consistently
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const tempImageUrls = selectedImages.map(file => URL.createObjectURL(file));
       const currentBusinessId = parseInt(localStorage.getItem('businessId'));
 
-      const tempProduct = {
-        id: `temp_${Date.now()}`,
-        business_id: currentBusinessId,
-        cat_id: 1,
-        prod_name: newProduct.prod_name,
-        description: newProduct.description,
-        price: parseFloat(newProduct.price),
-        rate: 0,
-        qty: parseInt(newProduct.qty),
-        images: tempImageUrls,
-        is_available: newProduct.is_available,
-        num_visits: 0,
-        num_orders: 0
-      };
+      if (editingProduct) {
+        // Handle Edit - require 3 images just like adding
+        if (selectedImages.length < 3) {
+          alert('Please select 3 images for the product');
+          return;
+        }
 
-      // Add to tempProducts
-      setTempProducts(prev => [tempProduct, ...prev]);
+        const updatedProduct = {
+          ...editingProduct,
+          prod_name: newProduct.prod_name,
+          description: newProduct.description,
+          price: parseFloat(newProduct.price),
+          qty: parseInt(newProduct.qty),
+          is_available: newProduct.is_available,
+          images: tempImageUrls  // Always use the newly selected images
+        };
+
+        setTempProducts(prev => 
+          prev.map(p => p.id === editingProduct.id ? updatedProduct : p)
+        );
+        setProducts(prev => 
+          prev.map(p => p.id === editingProduct.id ? updatedProduct : p)
+        );
+      } else {
+        // Handle Add
+        if (selectedImages.length < 3) {
+          alert('Please select 3 images for the product');
+          return;
+        }
+
+        const tempProduct = {
+          id: `temp_${Date.now()}`,
+          business_id: currentBusinessId,
+          cat_id: 1,
+          prod_name: newProduct.prod_name,
+          description: newProduct.description,
+          price: parseFloat(newProduct.price),
+          rate: 0,
+          qty: parseInt(newProduct.qty),
+          images: tempImageUrls,
+          is_available: newProduct.is_available,
+          num_visits: 0,
+          num_orders: 0
+        };
+
+        setTempProducts(prev => [tempProduct, ...prev]);
+      }
 
       // Reset form and close modal
       setNewProduct({
@@ -221,69 +291,12 @@ const Products = () => {
         is_available: true
       });
       setSelectedImages([]);
-      setIsAddModalOpen(false);
-
-    } catch (error) {
-      console.error('Error adding product:', error);
-      alert('Failed to add product. Please try again.');
-    }
-  };
-
-  // Update handleEditSubmit to use JSON server
-  const handleEditSubmit = async (e) => {
-    e.preventDefault();
-
-    // ... existing validation ...
-
-    try {
-      const response = await fetch(
-        `http://localhost:3000/products/${editingProduct.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(editingProduct),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to update product");
-      const data = await response.json();
-
-      // Update local state
-      setProducts(products.map((p) => (p.id === editingProduct.id ? data : p)));
-
-      setIsEditModalOpen(false);
       setEditingProduct(null);
-      setSelectedImages([]);
-      showToast("Product updated successfully! 🎉");
+      setIsModalOpen(false);
+
     } catch (error) {
-      console.error("Error updating product:", error);
-      showToast("Error updating product. Please try again.", "error");
-    }
-  };
-
-  // Update handleDeleteConfirm to use JSON server
-  const handleDeleteConfirm = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/products/${productToDelete.id}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to delete product");
-
-      // Update local state
-      setProducts(products.filter((p) => p.id !== productToDelete.id));
-
-      setIsDeleteModalOpen(false);
-      setProductToDelete(null);
-      showToast("Product deleted successfully! 🗑️");
-    } catch (error) {
-      console.error("Error deleting product:", error);
-      showToast("Error deleting product. Please try again.", "error");
+      console.error('Error handling product:', error);
+      alert('Failed to process product. Please try again.');
     }
   };
 
@@ -298,18 +311,17 @@ const Products = () => {
     );
   }
 
-  // Add this handler for image selection
+  // Modify handleImageSelect to handle both new and existing images
   const handleImageSelect = (e) => {
     const file = e.target.files[0];
     if (!file) return;
     
-    if (selectedImages.length >= 3) {
-      alert('You can only upload 3 images. Please remove an image first.');
-      return;
-    }
-
     setSelectedImages(prev => [...prev, file]);
     setNewProduct(prev => ({
+      ...prev,
+      images: [...prev.images, URL.createObjectURL(file)]
+    }));
+    setEditingProduct(prev => ({
       ...prev,
       images: [...prev.images, URL.createObjectURL(file)]
     }));
@@ -371,7 +383,7 @@ const Products = () => {
             </div>
             <div className="flex items-center gap-2">
               <button
-                onClick={() => setIsAddModalOpen(true)}
+                onClick={() => setIsModalOpen(true)}
                 className="flex items-center gap-2 px-4 py-2 bg-[#E88F2A] text-white rounded-lg hover:bg-[#E88F2A]/90"
               >
                 <Icon icon="mdi:plus" />
@@ -398,20 +410,31 @@ const Products = () => {
           {/* Products Grid */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {getFilteredAndSortedProducts().map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard 
+                key={product.id} 
+                product={product} 
+                onEdit={handleEdit} 
+              />
             ))}
           </div>
         </div>
       </div>
 
       {/* Add Modal */}
-      {isAddModalOpen && (
+      {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg p-6 max-w-xl w-full">
-            <h2 className="text-2xl text-center font-medium text-[#E88F2A] mb-2">Add New Product</h2>
-            <p className="text-center text-gray-600 mb-4">Please fill in the product information to get started</p>
+            <h2 className="text-2xl text-center font-medium text-[#E88F2A] mb-2">
+              {editingProduct ? 'Edit Product' : 'Add New Product'}
+            </h2>
+            <p className="text-center text-gray-600 mb-4">
+              {editingProduct 
+                ? 'Update your product information'
+                : 'Please fill in the product information to get started'
+              }
+            </p>
 
-            <form onSubmit={handleAddSubmit} className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-3">
               {/* Product Name and Price */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -486,41 +509,72 @@ const Products = () => {
                     accept="image/*"
                     onChange={handleImageSelect}
                     className="w-full px-3 py-1.5 rounded-lg border border-gray-300 focus:outline-none focus:border-[#E88F2A] text-sm"
-                    required
                   />
-                  <p className="text-xs text-gray-500 mt-1">(Upload 3 images one by one)</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {editingProduct 
+                      ? "Upload new images to update"
+                      : "(Upload 3 images one by one)"
+                    }
+                  </p>
                 </div>
               </div>
 
               {/* Image Preview */}
               <div className="mt-2">
-                <p className="text-sm text-gray-600 mb-2">
-                  Selected Images: {selectedImages.length}/3
-                </p>
+                <p className="text-sm text-gray-600 mb-2">Selected Images</p>
                 <div className="grid grid-cols-3 gap-2">
-                  {selectedImages.map((file, index) => (
-                    <div key={index} className="relative">
-                      <img
-                        src={URL.createObjectURL(file)}
-                        alt={`Preview ${index + 1}`}
-                        className="w-full h-20 object-cover rounded-lg"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const newImages = selectedImages.filter((_, i) => i !== index);
-                          setSelectedImages(newImages);
-                          setNewProduct(prev => ({
-                            ...prev,
-                            images: newImages.map(file => URL.createObjectURL(file))
-                          }));
-                        }}
-                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                      >
-                        <Icon icon="mdi:close" className="text-xs" />
-                      </button>
-                    </div>
-                  ))}
+                  {editingProduct 
+                    ? editingProduct.images.map((imageUrl, index) => (
+                        <div key={index} className="relative">
+                          <img
+                            src={imageUrl}
+                            alt={`Preview ${index + 1}`}
+                            className="w-full h-20 object-cover rounded-lg"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newImages = editingProduct.images.filter((_, i) => i !== index);
+                              setEditingProduct(prev => ({
+                                ...prev,
+                                images: newImages
+                              }));
+                              setNewProduct(prev => ({
+                                ...prev,
+                                images: newImages
+                              }));
+                              setSelectedImages(prev => prev.filter((_, i) => i !== index));
+                            }}
+                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                          >
+                            <Icon icon="mdi:close" className="text-xs" />
+                          </button>
+                        </div>
+                      ))
+                    : selectedImages.map((file, index) => (
+                        <div key={index} className="relative">
+                          <img
+                            src={URL.createObjectURL(file)}
+                            alt={`Preview ${index + 1}`}
+                            className="w-full h-20 object-cover rounded-lg"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newImages = selectedImages.filter((_, i) => i !== index);
+                              setSelectedImages(newImages);
+                              setNewProduct(prev => ({
+                                ...prev,
+                                images: newImages.map(file => URL.createObjectURL(file))
+                              }));
+                            }}
+                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                          >
+                            <Icon icon="mdi:close" className="text-xs" />
+                          </button>
+                        </div>
+                      ))
+                  }
                 </div>
               </div>
 
@@ -540,7 +594,19 @@ const Products = () => {
               <div className="flex justify-center gap-4 mt-4">
                 <button
                   type="button"
-                  onClick={() => setIsAddModalOpen(false)}
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setEditingProduct(null);
+                    setNewProduct({
+                      prod_name: "",
+                      description: "",
+                      price: "",
+                      qty: "",
+                      images: [],
+                      is_available: true
+                    });
+                    setSelectedImages([]);
+                  }}
                   className="px-8 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50"
                 >
                   Close
@@ -551,7 +617,7 @@ const Products = () => {
                   className={`px-8 py-2 rounded-lg bg-[#E88F2A] text-white hover:bg-[#E88F2A]/90 
                     ${selectedImages.length < 3 ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  Add
+                  {editingProduct ? 'Save Changes' : 'Add'}
                 </button>
               </div>
             </form>
@@ -562,7 +628,7 @@ const Products = () => {
   );
 };
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, onEdit }) => {
   const [isHovered, setIsHovered] = useState(false);
   const currentImageIndex = useImageCarousel(product.images, isHovered);
   const [isScaling, setIsScaling] = useState(false);
@@ -660,7 +726,7 @@ const ProductCard = ({ product }) => {
         </div>
 
         <button
-          onClick={() => handleEdit(product)}
+          onClick={() => onEdit(product)}
           className="bg-[#FF9F0D] text-white px-4 py-1 rounded hover:bg-[#FF9F0D]/80"
         >
           Edit
