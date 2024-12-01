@@ -214,7 +214,7 @@ const Product = () => {
           },
         ],
         total_amount: product.price * quantity,
-        status: "Processing",
+        status: "Cart",
         created_at: currentDate,
         checkoutDate: currentDate,
         receiveDate: "null",
@@ -310,7 +310,7 @@ const Product = () => {
       console.log("Starting handleConfirmAddToCart...");
 
       // Get userId from localStorage
-      const userId = localStorage.getItem('userId');
+      const userId = localStorage.getItem("userId");
       if (!userId) {
         throw new Error("User not logged in");
       }
@@ -348,7 +348,7 @@ const Product = () => {
         receiveDate: "null",
         downPayment: 0,
         remainingPayment: product.price * quantity,
-        paymentStatus: "unpaid"
+        paymentStatus: "unpaid",
       };
 
       // Add new order to json-server
@@ -371,7 +371,6 @@ const Product = () => {
         position: "bottom-right",
         duration: 2000,
       });
-
     } catch (error) {
       console.error("Error adding to cart:", error);
       toast.error(error.message || "Failed to add to cart. Please try again.", {

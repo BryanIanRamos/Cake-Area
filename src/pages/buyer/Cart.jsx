@@ -62,15 +62,16 @@ const Cart = () => {
   const [cancelledOrders, setCancelledOrders] = useState([]);
   const [businesses, setBusinesses] = useState([]);
   const [lastVisitedStore, setLastVisitedStore] = useState(
-    localStorage.getItem('lastVisitedStore') || null
+    localStorage.getItem("lastVisitedStore") || null
   );
+  const [refundedOrders, setRefundedOrders] = useState([]);
 
   // Modified useEffect to fetch both orders and business data
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const userId = localStorage.getItem('userId');
+        const userId = localStorage.getItem("userId");
         if (!userId) {
           console.error("No user ID found");
           return;
@@ -90,13 +91,10 @@ const Cart = () => {
         // Store businesses in state
         setBusinesses(businesses);
 
-        // Filter orders for the logged-in user (ensure both are numbers for comparison)
-        const userOrders = orders.filter((order) => 
-          order.customer_id === Number(userId)
+        // Filter orders for the logged-in user
+        const userOrders = orders.filter(
+          (order) => order.customer_id === Number(userId)
         );
-
-        console.log('User ID from localStorage:', userId);
-        console.log('Filtered orders:', userOrders);
 
         // Map orders with business details and correct product images
         const ordersWithDetails = userOrders.map((order) => ({
@@ -114,6 +112,61 @@ const Cart = () => {
           }),
         }));
 
+        // Add dummy cancelled order
+        const dummyCancelledOrder = {
+          id: "dummy-cancelled-1",
+          order_id: "CO-001",
+          customer_id: Number(userId),
+          business_id: businesses[0]?.id,
+          business: businesses[0],
+          products: [
+            {
+              prod_id: "4",
+              cat_id: 1,
+              prod_name: "Black Forest Cake",
+              description:
+                "Premium Black Forest cake with cherries and dark chocolate",
+              price: 599.99,
+              rate: 4.9,
+              quantity: 2,
+              images: "../assets/BlackForestCakev1.jpg",
+            },
+          ],
+          total_amount: 1199.98,
+          status: "Cancelled",
+          created_at: new Date().toISOString(),
+          downPayment: 599.99,
+          remainingPayment: 599.99,
+          cancelReason: "Out of stock ingredients",
+        };
+
+        // Add dummy refund order
+        const dummyRefundOrder = {
+          id: "dummy-refund-1",
+          order_id: "RO-001",
+          customer_id: Number(userId),
+          business_id: businesses[0]?.id,
+          business: businesses[0],
+          products: [
+            {
+              prod_id: "9",
+              cat_id: 1,
+              prod_name: "Chocolate Dream Layer Cake",
+              description: "Decadent chocolate layer cake with rich ganache",
+              price: 649.99,
+              rate: 4.9,
+              quantity: 1,
+              images: "../assets/ChocolateDreamLayerCakev1.jpg",
+            },
+          ],
+          total_amount: 649.99,
+          status: "Refunded",
+          created_at: new Date().toISOString(),
+          downPayment: 324.995,
+          remainingPayment: 324.995,
+          refundReason: "Product quality issue",
+        };
+
         // Set orders based on status
         setCartItems(
           ordersWithDetails.filter((order) => order.status === "Pending")
@@ -127,12 +180,13 @@ const Cart = () => {
         setCompletedOrders(
           ordersWithDetails.filter((order) => order.status === "Completed")
         );
-        setCancelledOrders(
-          ordersWithDetails.filter((order) => order.status === "Cancelled")
-        );
-
-        console.log('Orders with details:', ordersWithDetails);
-
+        // Add dummy cancelled order to cancelled orders
+        setCancelledOrders([
+          ...ordersWithDetails.filter((order) => order.status === "Cancelled"),
+          dummyCancelledOrder,
+        ]);
+        // Set dummy refund order
+        setRefundedOrders([dummyRefundOrder]);
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Failed to load orders");
@@ -202,7 +256,7 @@ const Cart = () => {
           business_id: order.business_id,
           products: order.products,
           total_amount: order.total_amount,
-          status: "Processing",
+          status: "Pending",
           created_at: order.created_at,
           checkoutDate: new Date().toISOString(),
           receiveDate: receiveDate.toISOString(),
@@ -366,13 +420,10 @@ const Cart = () => {
   };
 
   const getOrderCount = () => {
-    // "/cart": "Pending",              // Items in cart, not yet checked out
-    // "/cart/in-process": "Processing", // Orders being prepared by the baker
-    // "/cart/to-receive": "To Receive", // Orders ready for delivery/pickup
-    // "/cart/completed": "Completed",   // Successfully delivered/received orders
-    // "/cart/cancelled": "Cancelled"    // Cancelled orders
     switch (location.pathname) {
       case "/cart":
+        return cartItems.length;
+      case "/cart/pending":
         return cartItems.length;
       case "/cart/in-process":
         return processingOrders.length;
@@ -485,21 +536,29 @@ const Cart = () => {
           </div>
         </div>
 
-        {/* Order Status */}
-        <div className="flex justify-end mt-4">
-          <div
-            className={`px-3 py-1 rounded-full text-sm font-medium ${
-              order.status === "Processing"
-                ? "bg-yellow-100 text-yellow-800"
-                : order.status === "To Receive"
-                ? "bg-blue-100 text-blue-800"
-                : order.status === "Completed"
-                ? "bg-green-100 text-green-800"
-                : "bg-red-100 text-red-800"
-            }`}
-          >
-            {order.status}
+        {/* Order Status and Reason */}
+        <div className="flex flex-col gap-2 mt-4">
+          <div className="flex justify-end">
+            <div
+              className={`px-3 py-1 rounded-full text-sm font-medium ${
+                order.status === "Processing"
+                  ? "bg-yellow-100 text-yellow-800"
+                  : order.status === "To Receive"
+                  ? "bg-blue-100 text-blue-800"
+                  : order.status === "Completed"
+                  ? "bg-green-100 text-green-800"
+                  : "bg-red-100 text-red-800"
+              }`}
+            >
+              {order.status}
+            </div>
           </div>
+          {/* Add cancellation reason display */}
+          {order.status === "Cancelled" && order.cancelReason && (
+            <div className="text-red-600 text-sm mt-2">
+              Reason for cancellation: {order.cancelReason}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -507,23 +566,23 @@ const Cart = () => {
 
   // Update the back button click handler
   const handleBackClick = () => {
-    const storedBusinessId = localStorage.getItem('lastVisitedStore');
-    
+    const storedBusinessId = localStorage.getItem("lastVisitedStore");
+
     if (storedBusinessId) {
       // Get the business details to find the user_id
       fetch(`http://localhost:3000/businesses/${storedBusinessId}`)
-        .then(response => response.json())
-        .then(business => {
+        .then((response) => response.json())
+        .then((business) => {
           // Navigate to store with the user_id
           navigate(`/store/${business.user_id}`);
         })
-        .catch(error => {
-          console.error('Error fetching business details:', error);
-          navigate('/'); // Fallback to home page if there's an error
+        .catch((error) => {
+          console.error("Error fetching business details:", error);
+          navigate("/"); // Fallback to home page if there's an error
         });
     } else {
       // Fallback to home page if no store ID is found
-      navigate('/');
+      navigate("/");
     }
   };
 
@@ -598,6 +657,38 @@ const Cart = () => {
             }
           />
           <Route
+            path="/pending"
+            element={
+              <div className="flex flex-col gap-4 mt-4">
+                {isLoading ? (
+                  <div>Loading...</div>
+                ) : cartItems?.length > 0 ? (
+                  cartItems.map((order) => (
+                    <StoreOrderCard
+                      key={order.order_id}
+                      storeData={{
+                        order_id: order.order_id,
+                        business: order.business,
+                        products: order.products,
+                        total_amount: order.total_amount,
+                        status: order.status,
+                        created_at: order.created_at,
+                      }}
+                      selectedItems={selectedItems}
+                      onSelectItem={handleSelectItem}
+                      onSelectAll={handleSelectAll}
+                      onUpdateQuantity={handleQuantityChange}
+                    />
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <p>No pending orders</p>
+                  </div>
+                )}
+              </div>
+            }
+          />
+          <Route
             path="/in-process"
             element={
               <div className="flex flex-col gap-4 mt-4">
@@ -659,6 +750,22 @@ const Cart = () => {
                   )
                 ) : (
                   <div className="text-center py-8">No cancelled orders</div>
+                )}
+              </div>
+            }
+          />
+          <Route
+            path="/refund"
+            element={
+              <div className="flex flex-col gap-4 mt-4">
+                {isLoading ? (
+                  <div>Loading...</div>
+                ) : refundedOrders.length > 0 ? (
+                  refundedOrders.map((order) =>
+                    renderSimplifiedOrderCard(order)
+                  )
+                ) : (
+                  <div className="text-center py-8">No refunded orders</div>
                 )}
               </div>
             }

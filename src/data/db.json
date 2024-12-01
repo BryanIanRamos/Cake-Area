@@ -863,14 +863,14 @@
         }
       ],
       "total_amount": 299.99,
-      "status": "To Receive",
+      "status": "Completed",
       "created_at": "2024-12-01T03:35:17.839Z",
       "checkoutDate": "2024-12-01T03:35:17.839Z",
       "receiveDate": "null",
       "downPayment": 0,
       "remainingPayment": 0,
       "paymentStatus": "paid",
-      "updated_at": "2024-12-01T15:00:00.368Z"
+      "updated_at": "2024-12-01T20:41:44.631Z"
     },
     {
       "id": "5",
@@ -890,14 +890,15 @@
         }
       ],
       "total_amount": 249.99,
-      "status": "To Receive",
+      "status": "Cancelled",
       "created_at": "2024-12-01T11:54:48.126Z",
       "checkoutDate": "null",
       "receiveDate": "null",
       "downPayment": 0,
       "remainingPayment": 249.99,
       "paymentStatus": "null",
-      "updated_at": "2024-12-01T20:33:10.703Z"
+      "updated_at": "2024-12-01T20:41:50.770Z",
+      "cancelReason": "Equipment malfunction"
     },
     {
       "id": "6",
@@ -917,7 +918,7 @@
         }
       ],
       "total_amount": 149.99,
-      "status": "Processing",
+      "status": "To Receive",
       "created_at": "2024-12-01T11:55:06.410Z",
       "checkoutDate": "2024-12-01T11:55:14.373Z",
       "receiveDate": "2024-12-05T11:55:13.307Z",
@@ -930,7 +931,8 @@
         "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
         "postalCode": "8600",
         "streetAddress": "P-3C Rigners Boarding House"
-      }
+      },
+      "updated_at": "2024-12-01T20:41:41.047Z"
     },
     {
       "id": "7",
@@ -990,6 +992,40 @@
         "postalCode": "8600",
         "streetAddress": "P-3C Rigners Boarding House"
       }
+    },
+    {
+      "id": "9",
+      "order_id": "ORD009",
+      "customer_id": 4,
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "17",
+          "cat_id": 2,
+          "prod_name": "Classic Cream Puff",
+          "description": "Light choux pastry filled with vanilla cream",
+          "price": 249.99,
+          "rate": 4.8,
+          "qty": 1,
+          "images": "../assets/ClassicCreamPuffv2.jpg"
+        }
+      ],
+      "total_amount": 249.99,
+      "status": "Processing",
+      "created_at": "2024-12-01T20:41:19.608Z",
+      "checkoutDate": "2024-12-01T20:41:24.282Z",
+      "receiveDate": "2024-12-05T20:41:23.229Z",
+      "downPayment": 124.995,
+      "remainingPayment": 124.995,
+      "paymentStatus": "paid",
+      "placedAddress": {
+        "fullName": "Bryan Ramos",
+        "phoneNumber": "(+63) 0987654321",
+        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
+        "postalCode": "8600",
+        "streetAddress": "P-3C Rigners Boarding House"
+      },
+      "updated_at": "2024-12-01T20:41:36.850Z"
     }
   ],
   "tags": [
