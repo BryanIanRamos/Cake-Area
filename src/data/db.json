@@ -275,7 +275,9 @@
         "../assets/AlmondCroissantv2.jpg",
         "../assets/AlmondCroissantv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 245,
+      "num_orders": 156
     },
     {
       "id": "2",
@@ -291,7 +293,9 @@
         "../assets/ArtisanalBananaBreadv2.jpg",
         "../assets/ArtisanalBananaBreadv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 189,
+      "num_orders": 134
     },
     {
       "id": "3",
@@ -307,7 +311,9 @@
         "../assets/ArtisanalFocacciav2.jpg",
         "../assets/ArtisanalFocacciav3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 167,
+      "num_orders": 98
     },
     {
       "id": "4",
@@ -323,7 +329,9 @@
         "../assets/BlackForestCakev2.jpg",
         "../assets/BlackForestCakev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 312,
+      "num_orders": 178
     },
     {
       "id": "5",
@@ -339,7 +347,9 @@
         "../assets/ButterCroissantv2.jpg",
         "../assets/ButterCroissantv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 423,
+      "num_orders": 289
     },
     {
       "id": "6",
@@ -355,7 +365,9 @@
         "../assets/CarrotSpiceCakev2.jpg",
         "../assets/CarrotSpiceCakev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 256,
+      "num_orders": 145
     },
     {
       "id": "7",
@@ -371,7 +383,9 @@
         "../assets/ChocolateBabkav2.jpg",
         "../assets/ChocolateBabkav3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 198,
+      "num_orders": 123
     },
     {
       "id": "8",
@@ -387,7 +401,9 @@
         "../assets/ChocolateChipMuffinsv2.jpg",
         "../assets/ChocolateChipMuffinsv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 567,
+      "num_orders": 432
     },
     {
       "id": "9",
@@ -403,7 +419,9 @@
         "../assets/ChocolateDreamLayerCakev2.jpg",
         "../assets/ChocolateDreamLayerCakev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 389,
+      "num_orders": 201
     },
     {
       "id": "10",
@@ -419,7 +437,9 @@
         "../assets/ChocolateMousseCakev2.jpg",
         "../assets/ChocolateMousseCakev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 278,
+      "num_orders": 167
     },
     {
       "id": "11",
@@ -435,7 +455,9 @@
         "../assets/ChocolateProfiterolesv2.jpg",
         "../assets/ChocolateProfiterolesv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 345,
+      "num_orders": 234
     },
     {
       "id": "12",
@@ -451,7 +473,9 @@
         "../assets/ChocolateTruffleTartv2.jpg",
         "../assets/ChocolateTruffleTartv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 289,
+      "num_orders": 178
     },
     {
       "id": "13",
@@ -467,7 +491,9 @@
         "../assets/ClassicApplePiev2.jpg",
         "../assets/ClassicApplePiev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 412,
+      "num_orders": 267
     },
     {
       "id": "14",
@@ -483,7 +509,9 @@
         "../assets/ClassicBriochev2.jpg",
         "../assets/ClassicBriochev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 378,
+      "num_orders": 245
     },
     {
       "id": "15",
@@ -499,7 +527,9 @@
         "../assets/ClassicCheesecakev2.jpg",
         "../assets/ClassicCheesecakev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 534,
+      "num_orders": 312
     },
     {
       "id": "16",
@@ -515,7 +545,9 @@
         "../assets/ClassicChocolateChipCookiesv2.jpeg",
         "../assets/ClassicChocolateChipCookiesv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 645,
+      "num_orders": 489
     },
     {
       "id": "17",
@@ -531,7 +563,9 @@
         "../assets/ClassicCreamPuffv2.jpg",
         "../assets/ClassicCreamPuffv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 423,
+      "num_orders": 298
     },
     {
       "id": "18",
@@ -547,7 +581,9 @@
         "../assets/ClassicFrenchCroissantv2.jpg",
         "../assets/ClassicFrenchCroissantv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 678,
+      "num_orders": 534
     },
     {
       "id": "19",
@@ -563,7 +599,9 @@
         "../assets/ClassicMille-feuillev2.jpg",
         "../assets/ClassicMille-feuillev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 345,
+      "num_orders": 189
     },
     {
       "id": "20",
@@ -579,7 +617,9 @@
         "../assets/ClassicPalmierv2.jpg",
         "../assets/ClassicPalmierv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 467,
+      "num_orders": 356
     },
     {
       "id": "21",
@@ -595,7 +635,9 @@
         "../assets/ClassicCheesecakev2.jpg",
         "../assets/ClassicCheesecakev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 445,
+      "num_orders": 278
     },
     {
       "id": "22",
@@ -611,71 +653,117 @@
         "../assets/ChocolateDreamLayerCakev2.jpg",
         "../assets/ChocolateDreamLayerCakev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 367,
+      "num_orders": 189
     },
     {
       "id": "23",
       "business_id": 3,
       "cat_id": 2,
-      "prod_name": "Classic Cream Puff",
-      "description": "Light choux pastry filled with vanilla cream",
-      "price": 249.99,
-      "rate": 4.7,
-      "qty": 15,
+      "prod_name": "Classic Chocolate Chip Cookies",
+      "description": "Traditional chocolate chip cookies with premium chocolate",
+      "price": 149.99,
+      "rate": 4.8,
+      "qty": 30,
       "images": [
-        "../assets/ClassicCreamPuffv1.jpg",
-        "../assets/ClassicCreamPuffv2.jpg",
-        "../assets/ClassicCreamPuffv3.jpg"
+        "../assets/ClassicChocolateChipCookiesv1.jpg",
+        "../assets/ClassicChocolateChipCookiesv2.jpg",
+        "../assets/ClassicChocolateChipCookiesv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 589,
+      "num_orders": 456
     },
     {
       "id": "24",
       "business_id": 3,
-      "cat_id": 2,
-      "prod_name": "Chocolate Profiteroles",
-      "description": "Light choux pastry filled with cream and topped with chocolate",
-      "price": 299.99,
-      "rate": 4.8,
-      "qty": 12,
+      "cat_id": 3,
+      "prod_name": "Classic French Baguette",
+      "description": "Traditional French baguette with crispy crust",
+      "price": 89.99,
+      "rate": 4.7,
+      "qty": 35,
       "images": [
-        "../assets/ChocolateProfiterolesv1.jpg",
-        "../assets/ChocolateProfiterolesv2.jpg",
-        "../assets/ChocolateProfiterolesv3.jpg"
+        "../assets/ClassicFrenchBaguettev1.jpg",
+        "../assets/ClassicFrenchBaguettev2.jpg",
+        "../assets/ClassicFrenchBaguettev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 623,
+      "num_orders": 512
     },
     {
       "id": "25",
       "business_id": 3,
-      "cat_id": 3,
-      "prod_name": "Classic French Croissant",
-      "description": "Traditional French croissant with perfect layers",
-      "price": 99.99,
-      "rate": 4.7,
-      "qty": 20,
+      "cat_id": 1,
+      "prod_name": "Red Velvet Cake",
+      "description": "Classic red velvet cake with cream cheese frosting",
+      "price": 599.99,
+      "rate": 4.9,
+      "qty": 8,
       "images": [
-        "../assets/ClassicFrenchCroissantv1.jpg",
-        "../assets/ClassicFrenchCroissantv2.jpg",
-        "../assets/ClassicFrenchCroissantv3.jpg"
+        "../assets/RedVelvetCakev1.jpg",
+        "../assets/RedVelvetCakev2.jpg",
+        "../assets/RedVelvetCakev3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 478,
+      "num_orders": 289
     },
     {
       "id": "26",
       "business_id": 3,
-      "cat_id": 4,
-      "prod_name": "Artisanal Focaccia",
-      "description": "Italian herb-infused focaccia with premium olive oil",
-      "price": 189.99,
-      "rate": 4.8,
-      "qty": 10,
+      "cat_id": 2,
+      "prod_name": "Fruit Danish Pastry",
+      "description": "Flaky pastry with seasonal fruit filling",
+      "price": 129.99,
+      "rate": 4.7,
+      "qty": 20,
       "images": [
-        "../assets/ArtisanalFocacciav1.jpg",
-        "../assets/ArtisanalFocacciav2.jpg",
-        "../assets/ArtisanalFocacciav3.jpg"
+        "../assets/FruitDanishv1.jpg",
+        "../assets/FruitDanishv2.jpg",
+        "../assets/FruitDanishv3.jpg"
       ],
-      "is_available": true
+      "is_available": true,
+      "num_visits": 534,
+      "num_orders": 423
+    },
+    {
+      "id": "27",
+      "business_id": 3,
+      "cat_id": 4,
+      "prod_name": "Sourdough Bread",
+      "description": "Artisanal sourdough bread with perfect crust",
+      "price": 199.99,
+      "rate": 4.8,
+      "qty": 15,
+      "images": [
+        "../assets/SourdoughBreadv1.jpg",
+        "../assets/SourdoughBreadv2.jpg",
+        "../assets/SourdoughBreadv3.jpg"
+      ],
+      "is_available": true,
+      "num_visits": 445,
+      "num_orders": 334
+    },
+    {
+      "id": "28",
+      "business_id": 3,
+      "cat_id": 2,
+      "prod_name": "Blueberry Muffins",
+      "description": "Fresh-baked muffins with wild blueberries",
+      "price": 99.99,
+      "rate": 4.7,
+      "qty": 24,
+      "images": [
+        "../assets/BlueberryMuffinsv1.jpg",
+        "../assets/BlueberryMuffinsv2.jpg",
+        "../assets/BlueberryMuffinsv3.jpg"
+      ],
+      "is_available": true,
+      "num_visits": 567,
+      "num_orders": 445
     }
   ],
   "orders": [

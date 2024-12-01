@@ -299,58 +299,48 @@ const Products = () => {
           </div>
 
           {/* Products Grid */}
-          <div className="bg-white rounded-lg shadow">
-            {loading ? (
-              <div className="p-6 text-center">Loading products...</div>
-            ) : (
-              getFilteredAndSortedProducts().map((product) => (
-                <div
-                  key={product.id}
-                  className="flex items-center gap-4 p-4 border-b hover:bg-gray-50 transition-colors"
-                >
-                  <img
-                    src={product.images?.[0] || "default-image-path.jpg"}
-                    alt={product.prod_name}
-                    className="w-16 h-16 object-cover rounded-lg"
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-medium">{product.prod_name}</h3>
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <div className="flex items-center gap-1">
-                        <Icon icon="ph:star-fill" className="text-[#F4A340]" />
-                        {product.rate}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-medium">₱{product.price.toFixed(2)}</div>
-                    <div className="text-sm text-gray-500">Price</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-medium">{product.num_orders || 0}</div>
-                    <div className="text-sm text-gray-500">Ordered</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-medium">{product.views || 0}</div>
-                    <div className="text-sm text-gray-500">Viewed</div>
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleEditClick(product)}
-                      className="px-4 py-1 bg-[#E88F2A] text-white rounded hover:bg-[#E88F2A]/90"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteClick(product)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <Icon icon="mdi:delete" className="text-xl" />
-                    </button>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {getFilteredAndSortedProducts().map((product) => (
+              <div key={product.id} className="bg-white rounded-lg shadow-md p-4">
+                <img
+                  src={product.images?.[0] || "default-image-path.jpg"}
+                  alt={product.prod_name}
+                  className="w-full h-40 object-cover rounded-lg mb-4"
+                />
+                <h3 className="font-medium text-lg mb-2">{product.prod_name}</h3>
+                <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
+                  <div className="flex items-center gap-1">
+                    <Icon icon="ph:star-fill" className="text-[#F4A340]" />
+                    {product.rate}
                   </div>
                 </div>
-              ))
-            )}
+
+                {/* Stats row */}
+                <div className="flex justify-between text-sm text-gray-600 mt-3">
+                  <div className="flex flex-col items-center">
+                    <span>₱{product.price.toFixed(2)}</span>
+                    <span className="text-xs">Price</span>
+                  </div>
+                  
+                  <div className="flex flex-col items-center">
+                    <span>{product.num_orders || 0}</span>
+                    <span className="text-xs">Ordered</span>
+                  </div>
+                  
+                  <div className="flex flex-col items-center">
+                    <span>{product.num_visits || 0}</span>
+                    <span className="text-xs">Viewed</span>
+                  </div>
+
+                  <button 
+                    onClick={() => handleEdit(product)}
+                    className="bg-[#FF9F0D] text-white px-4 py-1 rounded hover:bg-[#FF9F0D]/80"
+                  >
+                    Edit
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
