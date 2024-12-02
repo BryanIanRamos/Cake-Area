@@ -5,6 +5,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import OrangeCheckbox from "../../OrangeCheckbox";
 import AddressModal from "../AddressModal";
+import TermsModal from "./TermsModal";
 
 const CreateAccount = ({ goBackToSelect }) => {
   // Form state
@@ -19,6 +20,8 @@ const CreateAccount = ({ goBackToSelect }) => {
   const [isChecked, setIsChecked] = useState(false);
   const [errors, setErrors] = useState({});
   const [showAddressModal, setShowAddressModal] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [modalType, setModalType] = useState(null);
 
   // Handle input changes
   const handleInputChange = (field) => (event) => {
@@ -69,6 +72,13 @@ const CreateAccount = ({ goBackToSelect }) => {
   const handleAddressSubmit = (addressData) => {
     console.log("Address submitted:", addressData);
     setShowAddressModal(false);
+  };
+
+  // Add this function to handle terms link clicks
+  const handleTermsClick = (type, e) => {
+    e.preventDefault();
+    setModalType(type);
+    setShowTermsModal(true);
   };
 
   return (
@@ -179,11 +189,19 @@ const CreateAccount = ({ goBackToSelect }) => {
                 </div>
                 <p className="text-gray-600 text-sm">
                   By creating this account, you agree to our{" "}
-                  <a href="#" className="text-primary hover:underline">
+                  <a
+                    href="#"
+                    className="text-primary hover:underline"
+                    onClick={(e) => handleTermsClick("terms", e)}
+                  >
                     Terms of Service
                   </a>{" "}
                   and{" "}
-                  <a href="#" className="text-primary hover:underline">
+                  <a
+                    href="#"
+                    className="text-primary hover:underline"
+                    onClick={(e) => handleTermsClick("privacy", e)}
+                  >
                     Privacy Policy
                   </a>
                   .
@@ -216,6 +234,11 @@ const CreateAccount = ({ goBackToSelect }) => {
         isOpen={showAddressModal}
         onClose={() => setShowAddressModal(false)}
         onSubmit={handleAddressSubmit}
+      />
+      <TermsModal
+        isOpen={showTermsModal}
+        onClose={() => setShowTermsModal(false)}
+        type={modalType}
       />
     </div>
   );

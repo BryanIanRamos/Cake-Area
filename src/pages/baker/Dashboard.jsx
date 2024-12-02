@@ -5,12 +5,14 @@ import { pendingOrders } from "../../data/pendingOrders.json";
 import { Icon } from "@iconify/react";
 import OrdersTakenSection from "../../components/baker/dashboard/OrdersTakenSection";
 import PendingOrdersTable from "../../components/baker/dashboard/PendingOrdersTable";
+import WithdrawModal from "../../components/baker/modals/WithdrawModal";
 
 const Dashboard = () => {
   const [tableLimit, setTableLimit] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [userFullName, setUserFullName] = useState("");
   const [loading, setLoading] = useState(true);
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -171,7 +173,10 @@ const Dashboard = () => {
             <p className="text-sm opacity-80 mt-2">Available for withdrawal</p>
 
             {/* Withdraw Button */}
-            <button className="absolute bottom-4 right-4 bg-white text-orange-500 px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-orange-100 transition-colors duration-200">
+            <button 
+              onClick={() => setShowWithdrawModal(true)}
+              className="absolute bottom-4 right-4 bg-white text-orange-500 px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-orange-100 transition-colors duration-200"
+            >
               Withdraw
             </button>
           </div>
@@ -227,6 +232,11 @@ const Dashboard = () => {
           totalOrders={pendingOrders.length}
         />
       </main>
+      <WithdrawModal
+        isOpen={showWithdrawModal}
+        onClose={() => setShowWithdrawModal(false)}
+        balance={12435.50} // Pass the actual balance here
+      />
     </BakerLayout>
   );
 };

@@ -1212,7 +1212,7 @@
         }
       ],
       "total_amount": 249.99,
-      "status": "Processing",
+      "status": "Cancelled",
       "created_at": "2024-12-01T20:41:19.608Z",
       "checkoutDate": "2024-12-01T20:41:24.282Z",
       "receiveDate": "2024-12-05T20:41:23.229Z",
@@ -1226,7 +1226,8 @@
         "postalCode": "8600",
         "streetAddress": "P-3C Rigners Boarding House"
       },
-      "updated_at": "2024-12-01T20:41:36.850Z"
+      "updated_at": "2024-12-02T01:58:03.080Z",
+      "cancelReason": "Out of stock ingredients"
     },
     {
       "id": "10",
@@ -1306,7 +1307,7 @@
         }
       ],
       "total_amount": 299.99,
-      "status": "Processing",
+      "status": "To Receive",
       "created_at": "2024-12-02T01:04:37.232Z",
       "checkoutDate": "2024-12-02T01:04:42.411Z",
       "receiveDate": "2024-12-06T01:04:41.576Z",
@@ -1320,7 +1321,7 @@
         "postalCode": "8600",
         "streetAddress": "P-3C Rigners Boarding House"
       },
-      "updated_at": "2024-12-02T01:04:48.672Z"
+      "updated_at": "2024-12-02T01:11:41.874Z"
     },
     {
       "id": "13",
@@ -1355,6 +1356,307 @@
         "streetAddress": "P-3C Rigners Boarding House"
       },
       "updated_at": "2024-12-02T01:06:26.101Z"
+    },
+    {
+      "id": "14",
+      "order_id": "ORD014",
+      "customer_id": "5",
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "19",
+          "cat_id": 2,
+          "prod_name": "Classic Mille-feuille",
+          "description": "Layered puff pastry with vanilla cream and fondant",
+          "price": 399.99,
+          "rate": 4.9,
+          "qty": 1,
+          "images": "../assets/ClassicMille-feuillev1.jpg"
+        }
+      ],
+      "total_amount": 399.99,
+      "status": "To Receive",
+      "created_at": "2024-12-02T01:08:00.883Z",
+      "checkoutDate": "null",
+      "receiveDate": "null",
+      "downPayment": 0,
+      "remainingPayment": 399.99,
+      "paymentStatus": "unpaid",
+      "updated_at": "2024-12-02T01:11:50.878Z"
+    },
+    {
+      "id": "15",
+      "order_id": "ORD015",
+      "customer_id": "5",
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "17",
+          "cat_id": 2,
+          "prod_name": "Classic Cream Puff",
+          "description": "Light choux pastry filled with vanilla cream",
+          "price": 249.99,
+          "rate": 4.8,
+          "qty": 1,
+          "images": "../assets/ClassicCreamPuffv1.jpg"
+        }
+      ],
+      "total_amount": 249.99,
+      "status": "To Receive",
+      "created_at": "2024-12-02T01:10:34.815Z",
+      "checkoutDate": "2024-12-02T01:30:25.857Z",
+      "receiveDate": "2024-12-06T01:30:25.098Z",
+      "downPayment": 124.995,
+      "remainingPayment": 124.995,
+      "paymentStatus": "paid",
+      "placedAddress": {
+        "fullName": "Bryan Ramos",
+        "phoneNumber": "(+63) 0987654321",
+        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
+        "postalCode": "8600",
+        "streetAddress": "P-3C Rigners Boarding House"
+      },
+      "updated_at": "2024-12-02T01:31:02.607Z"
+    },
+    {
+      "id": "16",
+      "order_id": "ORD016",
+      "customer_id": "5",
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "17",
+          "cat_id": 2,
+          "prod_name": "Classic Cream Puff",
+          "description": "Light choux pastry filled with vanilla cream",
+          "price": 249.99,
+          "rate": 4.8,
+          "qty": 1,
+          "images": "../assets/ClassicCreamPuffv1.jpg"
+        }
+      ],
+      "total_amount": 249.99,
+      "status": "Cart",
+      "created_at": "2024-12-02T01:22:02.716Z",
+      "checkoutDate": "2024-12-02T01:22:02.716Z",
+      "receiveDate": "null",
+      "downPayment": 0,
+      "remainingPayment": 0,
+      "paymentStatus": "paid"
+    },
+    {
+      "id": "17",
+      "order_id": "ORD017",
+      "customer_id": "5",
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "17",
+          "cat_id": 2,
+          "prod_name": "Classic Cream Puff",
+          "description": "Light choux pastry filled with vanilla cream",
+          "price": 249.99,
+          "rate": 4.8,
+          "qty": 1,
+          "images": "../assets/ClassicCreamPuffv1.jpg"
+        }
+      ],
+      "total_amount": 249.99,
+      "status": "Cart",
+      "created_at": "2024-12-02T01:23:39.355Z",
+      "checkoutDate": "2024-12-02T01:23:39.355Z",
+      "receiveDate": "null",
+      "downPayment": 0,
+      "remainingPayment": 0,
+      "paymentStatus": "paid"
+    },
+    {
+      "id": "18",
+      "order_id": "ORD018",
+      "customer_id": 5,
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "16",
+          "cat_id": 2,
+          "prod_name": "Classic Chocolate Chip Cookies",
+          "description": "Traditional chocolate chip cookies with premium chocolate",
+          "price": 149.99,
+          "rate": 4.7,
+          "qty": 1,
+          "images": "../assets/ClassicChocolateChipCookiesv1.jpg"
+        }
+      ],
+      "total_amount": 149.99,
+      "status": "Cart",
+      "created_at": "2024-12-02T01:25:23.114Z",
+      "checkoutDate": "2024-12-02T01:25:23.114Z",
+      "receiveDate": "null",
+      "downPayment": 0,
+      "remainingPayment": 0,
+      "paymentStatus": "paid"
+    },
+    {
+      "id": "19",
+      "order_id": "ORD019",
+      "customer_id": 5,
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "20",
+          "cat_id": 2,
+          "prod_name": "Classic Palmier",
+          "description": "Caramelized puff pastry cookies in heart shape",
+          "price": 179.99,
+          "rate": 4.7,
+          "qty": 1,
+          "images": "../assets/ClassicPalmierv1.jpg"
+        }
+      ],
+      "total_amount": 179.99,
+      "status": "To Receive",
+      "created_at": "2024-12-02T01:26:21.900Z",
+      "checkoutDate": "2024-12-02T01:32:07.832Z",
+      "receiveDate": "2024-12-06T01:32:06.787Z",
+      "downPayment": 89.995,
+      "remainingPayment": 89.995,
+      "paymentStatus": "paid",
+      "placedAddress": {
+        "fullName": "Bryan Ramos",
+        "phoneNumber": "(+63) 0987654321",
+        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
+        "postalCode": "8600",
+        "streetAddress": "P-3C Rigners Boarding House"
+      },
+      "updated_at": "2024-12-02T01:32:15.496Z"
+    },
+    {
+      "id": "20",
+      "order_id": "ORD020",
+      "customer_id": 5,
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "17",
+          "cat_id": 2,
+          "prod_name": "Classic Cream Puff",
+          "description": "Light choux pastry filled with vanilla cream",
+          "price": 249.99,
+          "rate": 4.8,
+          "qty": 1,
+          "images": "../assets/ClassicCreamPuffv1.jpg"
+        }
+      ],
+      "total_amount": 249.99,
+      "status": "Cart",
+      "created_at": "2024-12-02T01:29:24.536Z",
+      "checkoutDate": "2024-12-02T01:29:24.536Z",
+      "receiveDate": "null",
+      "downPayment": 0,
+      "remainingPayment": 0,
+      "paymentStatus": "unpaid"
+    },
+    {
+      "id": "21",
+      "order_id": "ORD021",
+      "customer_id": "3",
+      "business_id": 3,
+      "products": [
+        {
+          "prod_id": "27",
+          "cat_id": 4,
+          "prod_name": "Sicilian Cannoliv",
+          "description": "Tasty SicilianCannoliv with perfect crust",
+          "price": 199.99,
+          "rate": 4.8,
+          "qty": 1,
+          "images": "../assets/SicilianCannoliv3.jpg",
+          "quantity": 4
+        }
+      ],
+      "total_amount": 199.99,
+      "status": "Pending",
+      "created_at": "2024-12-02T01:53:15.539Z",
+      "checkoutDate": "2024-12-02T01:55:11.448Z",
+      "receiveDate": "2024-12-13T01:54:27.000Z",
+      "downPayment": 99.995,
+      "remainingPayment": 99.995,
+      "paymentStatus": "paid",
+      "placedAddress": {
+        "fullName": "Anna Santos",
+        "phoneNumber": "(+63) 0912345678",
+        "cityBarangay": "Ampayon, Butuan City, Agusan del Norte, Mindanao",
+        "postalCode": "8600",
+        "streetAddress": "Blk 10 Lot 5, Riverside Village"
+      }
+    },
+    {
+      "id": "22",
+      "order_id": "ORD022",
+      "customer_id": "3",
+      "business_id": 2,
+      "products": [
+        {
+          "prod_id": "16",
+          "cat_id": 2,
+          "prod_name": "Classic Chocolate Chip Cookies",
+          "description": "Traditional chocolate chip cookies with premium chocolate",
+          "price": 149.99,
+          "rate": 4.7,
+          "qty": 1,
+          "images": "../assets/ClassicChocolateChipCookiesv1.jpg"
+        }
+      ],
+      "total_amount": 149.99,
+      "status": "Completed",
+      "created_at": "2024-12-02T01:55:51.089Z",
+      "checkoutDate": "2024-12-02T01:56:15.378Z",
+      "receiveDate": "2024-12-06T01:56:14.572Z",
+      "downPayment": 74.995,
+      "remainingPayment": 74.995,
+      "paymentStatus": "paid",
+      "placedAddress": {
+        "fullName": "Bryan Ramos",
+        "phoneNumber": "(+63) 0987654321",
+        "cityBarangay": "Lemon, Butuan City, Agusan del Norte, Mindanao",
+        "postalCode": "8600",
+        "streetAddress": "P-3C Rigners Boarding House"
+      },
+      "updated_at": "2024-12-02T01:56:57.968Z"
+    },
+    {
+      "id": "23",
+      "order_id": "ORD023",
+      "customer_id": "4",
+      "business_id": 1,
+      "products": [
+        {
+          "prod_id": "1",
+          "cat_id": 3,
+          "prod_name": "Premium Almond Croissant",
+          "description": "Flaky croissant filled with rich almond cream and topped with sliced almonds",
+          "price": 119.99,
+          "rate": 4.8,
+          "qty": 2,
+          "images": "../assets/AlmondCroissantv3.jpg",
+          "quantity": 2
+        }
+      ],
+      "total_amount": 239.98,
+      "status": "Pending",
+      "created_at": "2024-12-02T02:43:57.880Z",
+      "checkoutDate": "2024-12-02T02:44:25.542Z",
+      "receiveDate": "2024-12-06T02:44:08.334Z",
+      "downPayment": 119.99,
+      "remainingPayment": 119.99,
+      "paymentStatus": "paid",
+      "placedAddress": {
+        "fullName": "Carlos Dela Cruz",
+        "phoneNumber": "(+63) 0918765432",
+        "cityBarangay": "Cabadbaran City, Agusan del Norte, Mindanao",
+        "postalCode": "8605",
+        "streetAddress": "Zone 2, Poblacion"
+      }
     }
   ],
   "tags": [

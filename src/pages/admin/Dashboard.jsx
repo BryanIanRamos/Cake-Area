@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import AdminLayout from "../../components/admin/AdminLayout";
+import { Icon } from "@iconify/react";
 
 // Add this modal component for viewing activity/history details
 const DetailModal = ({ isOpen, onClose, data, type }) => {
@@ -188,6 +189,34 @@ const Dashboard = () => {
   const [modalType, setModalType] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
+
+  // Add these new state variables at the top with other states
+  const [companyFinances, setCompanyFinances] = useState({
+    totalBalance: 125750.50,
+    totalEarnings: 8847.78, // Platform fees from transactions
+    transactionFeeRate: 0.05, // 5% transaction fee
+    todayEarnings: 750.25, // Today's platform earnings
+    totalTransactions: 1250 // Total number of transactions
+  });
+
+  // Add these to your existing state
+  const [userStats, setUserStats] = useState({
+    totalRegistered: 2500,
+    newToday: 15,
+    activeLastWeek: 850
+  });
+
+  const [bakerStats, setBakerStats] = useState({
+    totalVerified: 150,
+    pendingVerification: 8,
+    topPerformer: "Sweet Delights"
+  });
+
+  const [customerStats, setCustomerStats] = useState({
+    totalActive: 2350,
+    ordersToday: 45,
+    averageOrderValue: 1250.00
+  });
 
   // Add click handlers for activities and history items
   const handleActivityClick = (activity) => {
@@ -400,6 +429,26 @@ const Dashboard = () => {
     return date.toLocaleDateString();
   };
 
+  // Add this effect to simulate finance updates
+  useEffect(() => {
+    const financeInterval = setInterval(() => {
+      setCompanyFinances(prev => {
+        // Simulate random changes in finances
+        const newEarnings = prev.totalEarnings + (Math.random() * 100);
+        const newPendingWithdrawals = Math.max(0, prev.pendingWithdrawals + (Math.random() > 0.5 ? 1000 : -1000));
+        
+        return {
+          ...prev,
+          totalBalance: prev.totalBalance + (Math.random() * 200) - (Math.random() * 100),
+          pendingWithdrawals: newPendingWithdrawals,
+          totalEarnings: newEarnings,
+        };
+      });
+    }, 15000); // Update every 15 seconds
+
+    return () => clearInterval(financeInterval);
+  }, []);
+
   return (
     <AdminLayout>
       <div className="p-6">
@@ -426,23 +475,47 @@ const Dashboard = () => {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+          {/* Company Balance Card */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center">
+              <div className="rounded-full p-3 bg-green-100">
+                <Icon 
+                  icon="ph:money-bold" 
+                  className="h-6 w-6 text-green-600"
+                />
+              </div>
+              <div className="ml-4">
+                <h3 className="text-gray-500 text-sm">Company Balance</h3>
+                <p className="text-2xl font-semibold">
+                  ₱ {companyFinances.totalBalance.toLocaleString('en-PH', { minimumFractionDigits: 2 })}
+                </p>
+              </div>
+            </div>
+            <div className="mt-4 space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-500">Platform Earnings:</span>
+                <span className="font-medium text-green-500">
+                  ₱ {companyFinances.totalEarnings.toLocaleString('en-PH', { minimumFractionDigits: 2 })}
+                </span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-500">Transaction Fee:</span>
+                <span className="font-medium text-gray-600">
+                  {(companyFinances.transactionFeeRate * 100)}%
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Updated Total Users Online Card */}
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
               <div className="rounded-full p-3 bg-purple-100">
-                <svg
+                <Icon 
+                  icon="ph:users-bold" 
                   className="h-6 w-6 text-purple-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                  />
-                </svg>
+                />
               </div>
               <div className="ml-4">
                 <h3 className="text-gray-500 text-sm">Total Users Online</h3>
@@ -451,6 +524,7 @@ const Dashboard = () => {
             </div>
           </div>
 
+          {/* Existing Online Bakers Card */}
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
               <div className="rounded-full p-3 bg-yellow-100">
@@ -475,6 +549,7 @@ const Dashboard = () => {
             </div>
           </div>
 
+          {/* Existing Online Customers Card */}
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
               <div className="rounded-full p-3 bg-green-100">

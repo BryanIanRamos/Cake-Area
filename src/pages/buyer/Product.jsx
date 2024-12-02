@@ -6,7 +6,6 @@ import CakeSample from "../../assets/CakeSample.png";
 import Rating from "../../components/buyer/Rating";
 import { Icon } from "@iconify/react";
 import ProductCard from "../../components/buyer/ProductCard";
-import { commentData } from "../../data/commentData";
 import CommentCard from "../../components/buyer/CommentCard";
 import Pagination from "../../components/buyer/Pagination";
 import { productData } from "../../data/productDataTbl";
@@ -29,16 +28,100 @@ const Product = () => {
   const [recommendedProducts, setRecommendedProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [likedComments, setLikedComments] = useState(new Set());
-  const [comments, setComments] = useState(commentData);
   const [filterOption, setFilterOption] = useState("newest");
   const commentsPerPage = 5;
   const [addToCartModalOpen, setAddToCartModalOpen] = useState(false);
   const [productOrderConfirmOpen, setProductOrderConfirmOpen] = useState(false);
   const [businessOwner, setBusinessOwner] = useState(null);
+  const [profiles, setProfiles] = useState([]);
+  const [commentData, setCommentData] = useState([]);
+  const [comments, setComments] = useState([]);
+
+  // Add this effect to fetch profiles and create comment data
+  useEffect(() => {
+    const fetchProfilesAndCreateComments = async () => {
+      try {
+        const profilesResponse = await fetch('http://localhost:3000/profiles');
+        const profilesData = await profilesResponse.json();
+        setProfiles(profilesData);
+
+        // Create comments after profiles are loaded
+        const commentsData = [
+          {
+            id: 1,
+            user: {
+              name: `${profilesData[3].first_name} ${profilesData[3].last_name}`, // Mike Tyson
+              profilePic: profilesData[3].img
+            },
+            rating: 4.7,
+            date: "2024-12-01",
+            comment: "Delicious cake, will order again!",
+            likes: 76,
+            images: ["../assets/ChocolateDreamLayerCakev1.jpg"]
+          },
+          {
+            id: 2,
+            user: {
+              name: `${profilesData[4].first_name} ${profilesData[4].last_name}`, // Emma Wilson
+              profilePic: profilesData[4].img
+            },
+            rating: 3.0,
+            date: "2024-12-07",
+            comment: "Average taste, good presentation.",
+            likes: 45,
+            images: ["../assets/BlackForestCakev1.jpg"]
+          },
+          {
+            id: 3,
+            user: {
+              name: `${profilesData[1].first_name} ${profilesData[1].last_name}`, // Sarah Baker
+              profilePic: profilesData[1].img
+            },
+            rating: 5.0,
+            date: "2024-12-05",
+            comment: "The best cake I've ever tasted! Highly recommend this bakery.",
+            likes: 89,
+            images: ["../assets/CarrotSpiceCakev1.jpg"]
+          },
+          {
+            id: 4,
+            user: {
+              name: `${profilesData[2].first_name} ${profilesData[2].last_name}`, // Lisa Baker
+              profilePic: profilesData[2].img
+            },
+            rating: 4.8,
+            date: "2024-12-03",
+            comment: "Perfect for our family celebration. Will definitely order again!",
+            likes: 62,
+            images: ["../assets/ArtisanalBananaBreadv1.jpg"]
+          },
+          {
+            id: 5,
+            user: {
+              name: `${profilesData[6].first_name} ${profilesData[6].last_name}`, // Anna Baker
+              profilePic: profilesData[6].img
+            },
+            rating: 4.9,
+            date: "2024-12-02",
+            comment: "Exceptional quality and taste. The presentation was beautiful!",
+            likes: 95,
+            images: ["../assets/PremiumAlmondCroissantv1.jpg"]
+          }
+        ];
+
+        setCommentData(commentsData);
+        setComments(commentsData);
+      } catch (error) {
+        console.error('Error fetching profiles and creating comments:', error);
+      }
+    };
+
+    fetchProfilesAndCreateComments();
+  }, []);
 
   // Filter comments based on selected option
   useEffect(() => {
-    let filteredComments = [...commentData];
+    let filteredComments = [...comments];
 
     switch (filterOption) {
       case "newest":

@@ -5,6 +5,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import OrangeCheckbox from "./OrangeCheckbox";
 import AddressModal from "./AddressModal";
+import TermsModal from "./modals/TermsModal";
 
 const CreateAccount = ({ goBackToSelect }) => {
   // Form state
@@ -21,6 +22,8 @@ const CreateAccount = ({ goBackToSelect }) => {
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [modalType, setModalType] = useState(null);
 
   // Add focus states for validation feedback
   const [isFirstNameFocused, setIsFirstNameFocused] = useState(false);
@@ -93,6 +96,13 @@ const CreateAccount = ({ goBackToSelect }) => {
       formData.birthDate !== null &&
       isChecked
     );
+  };
+
+  // Add this function to handle terms link clicks
+  const handleTermsClick = (type, e) => {
+    e.preventDefault();
+    setModalType(type);
+    setShowTermsModal(true);
   };
 
   return (
@@ -307,11 +317,19 @@ const CreateAccount = ({ goBackToSelect }) => {
                 </div>
                 <p className="text-xs text-gray-600 leading-relaxed">
                   By creating an account, you agree to our{" "}
-                  <a href="#" className="text-primary hover:underline">
+                  <a
+                    href="#"
+                    className="text-primary hover:underline"
+                    onClick={(e) => handleTermsClick("terms", e)}
+                  >
                     Terms of Service
                   </a>{" "}
                   and{" "}
-                  <a href="#" className="text-primary hover:underline">
+                  <a
+                    href="#"
+                    className="text-primary hover:underline"
+                    onClick={(e) => handleTermsClick("privacy", e)}
+                  >
                     Privacy Policy
                   </a>
                   . You are responsible for your account and any activity under
@@ -353,6 +371,13 @@ const CreateAccount = ({ goBackToSelect }) => {
         isOpen={showAddressModal}
         onClose={() => setShowAddressModal(false)}
         onSubmit={handleAddressSubmit}
+      />
+
+      {/* Add Terms Modal */}
+      <TermsModal
+        isOpen={showTermsModal}
+        onClose={() => setShowTermsModal(false)}
+        type={modalType}
       />
     </div>
   );
