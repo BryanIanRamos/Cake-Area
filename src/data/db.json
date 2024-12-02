@@ -47,6 +47,38 @@
       "created_at": "2024-03-10",
       "role": 2,
       "is_Login": true
+    },
+    {
+      "id": "7",
+      "email": "anna.baker@email.com",
+      "password": "hashedPasswordMNO",
+      "created_at": "2024-03-15",
+      "role": 2,
+      "is_Login": true
+    },
+    {
+      "id": "8",
+      "email": "peter.baker@email.com",
+      "password": "hashedPasswordPQR",
+      "created_at": "2024-03-16",
+      "role": 2,
+      "is_Login": true
+    },
+    {
+      "id": "9",
+      "email": "rachel.baker@email.com",
+      "password": "hashedPasswordSTU",
+      "created_at": "2024-03-17",
+      "role": 2,
+      "is_Login": true
+    },
+    {
+      "id": "10",
+      "email": "james.baker@email.com",
+      "password": "hashedPasswordVWX",
+      "created_at": "2024-03-18",
+      "role": 2,
+      "is_Login": true
     }
   ],
   "profiles": [
@@ -117,6 +149,54 @@
       "img": "../../public/assets/profile/Sweet_Baker.jpg",
       "phone_number": "09678901234",
       "date_of_birth": "1989-03-28"
+    },
+    {
+      "id": "7",
+      "user_id": 7,
+      "first_name": "Anna",
+      "last_name": "Baker",
+      "age": "33",
+      "sex": "Female",
+      "img": "../../public/assets/profile/Anna_Baker.jpg",
+      "phone_number": "09789012345",
+      "date_of_birth": "1991-04-15",
+      "email": "anna.baker@email.com"
+    },
+    {
+      "id": "8",
+      "user_id": 8,
+      "first_name": "Peter",
+      "last_name": "Baker",
+      "age": "38",
+      "sex": "Male",
+      "img": "../../public/assets/profile/Peter_Baker.jpg",
+      "phone_number": "09890123456",
+      "date_of_birth": "1986-06-20",
+      "email": "peter.baker@email.com"
+    },
+    {
+      "id": "9",
+      "user_id": 9,
+      "first_name": "Rachel",
+      "last_name": "Baker",
+      "age": "29",
+      "sex": "Female",
+      "img": "../../public/assets/profile/Rachel_Baker.jpg",
+      "phone_number": "09901234567",
+      "date_of_birth": "1995-08-12",
+      "email": "rachel.baker@email.com"
+    },
+    {
+      "id": "10",
+      "user_id": 10,
+      "first_name": "James",
+      "last_name": "Baker",
+      "age": "42",
+      "sex": "Male",
+      "img": "../../public/assets/profile/James_Baker.jpg",
+      "phone_number": "09012345678",
+      "date_of_birth": "1982-03-25",
+      "email": "james.baker@email.com"
     }
   ],
   "addresses": [
@@ -179,6 +259,46 @@
       "postal_code": 8600,
       "description": "Km. 3 National Highway",
       "type": 1
+    },
+    {
+      "id": "7",
+      "user_id": 7,
+      "first_name": "Anna",
+      "last_name": "Baker",
+      "location": "Ampayon",
+      "postal_code": 8600,
+      "description": "Near Ampayon National High School",
+      "type": 1
+    },
+    {
+      "id": "8",
+      "user_id": 8,
+      "first_name": "Peter",
+      "last_name": "Baker",
+      "location": "Buenavista",
+      "postal_code": 8601,
+      "description": "Near Buenavista Public Market",
+      "type": 1
+    },
+    {
+      "id": "9",
+      "user_id": 9,
+      "first_name": "Rachel",
+      "last_name": "Baker",
+      "location": "Carmen",
+      "postal_code": 8603,
+      "description": "Beside Carmen Municipal Hall",
+      "type": 1
+    },
+    {
+      "id": "10",
+      "user_id": 10,
+      "first_name": "James",
+      "last_name": "Baker",
+      "location": "Magallanes",
+      "postal_code": 8604,
+      "description": "Near Magallanes Plaza",
+      "type": 1
     }
   ],
   "businesses": [
@@ -238,6 +358,82 @@
       "service_rating": 4.8,
       "total_sold": 723,
       "available_items": 38
+    },
+    {
+      "id": "4",
+      "user_id": 7,
+      "name": "Anna's Homestyle Bakery",
+      "description": "Welcome to Anna's Homestyle Bakery! We specialize in homemade breads, pastries, and custom cakes made with love. Our recipes have been passed down through generations, bringing you the authentic taste of traditional baking.",
+      "location": {
+        "municipality": "Butuan City",
+        "street_address": "123 National Highway, Ampayon",
+        "postal_code": "8600",
+        "location_type": "home"
+      },
+      "phone_number": "09789012345",
+      "no_visits": 750,
+      "is_active": true,
+      "store_rating": 4.7,
+      "service_rating": 4.8,
+      "total_sold": 645,
+      "available_items": 35
+    },
+    {
+      "id": "5",
+      "user_id": 8,
+      "name": "Peter's Classic Bakeshop",
+      "description": "Experience traditional Filipino bread and pastries at Peter's Classic Bakeshop. We take pride in our pandesal, ensaymada, and other local favorites that bring back childhood memories.",
+      "location": {
+        "municipality": "Buenavista",
+        "street_address": "Poblacion 1, Near Public Market",
+        "postal_code": "8601",
+        "location_type": "work"
+      },
+      "phone_number": "09890123456",
+      "no_visits": 820,
+      "is_active": true,
+      "store_rating": 4.6,
+      "service_rating": 4.7,
+      "total_sold": 725,
+      "available_items": 40
+    },
+    {
+      "id": "6",
+      "user_id": 9,
+      "name": "Rachel's Cake House",
+      "description": "At Rachel's Cake House, we specialize in custom celebration cakes and modern pastries. Each creation is crafted with attention to detail and premium ingredients.",
+      "location": {
+        "municipality": "Carmen",
+        "street_address": "Poblacion, Near Municipal Hall",
+        "postal_code": "8603",
+        "location_type": "work"
+      },
+      "phone_number": "09901234567",
+      "no_visits": 680,
+      "is_active": true,
+      "store_rating": 4.9,
+      "service_rating": 4.8,
+      "total_sold": 590,
+      "available_items": 28
+    },
+    {
+      "id": "7",
+      "user_id": 10,
+      "name": "James' Artisan Breads",
+      "description": "James' Artisan Breads brings European-style artisanal baking to Magallanes. We offer sourdough, baguettes, and specialty breads made with organic flour and traditional methods.",
+      "location": {
+        "municipality": "Magallanes",
+        "street_address": "Town Center, Near Plaza",
+        "postal_code": "8604",
+        "location_type": "work"
+      },
+      "phone_number": "09012345678",
+      "no_visits": 590,
+      "is_active": true,
+      "store_rating": 4.7,
+      "service_rating": 4.6,
+      "total_sold": 480,
+      "available_items": 25
     }
   ],
   "categories": [
@@ -1115,6 +1311,66 @@
       "id": "10",
       "name": "Wholesale Available",
       "business_id": 2
+    },
+    {
+      "id": "11",
+      "name": "Home Baked",
+      "business_id": 4
+    },
+    {
+      "id": "12",
+      "name": "Custom Orders",
+      "business_id": 4
+    },
+    {
+      "id": "13",
+      "name": "Traditional Recipes",
+      "business_id": 4
+    },
+    {
+      "id": "14",
+      "name": "Traditional Filipino",
+      "business_id": 5
+    },
+    {
+      "id": "15",
+      "name": "Fresh Daily Bread",
+      "business_id": 5
+    },
+    {
+      "id": "16",
+      "name": "Local Favorites",
+      "business_id": 5
+    },
+    {
+      "id": "17",
+      "name": "Custom Cakes",
+      "business_id": 6
+    },
+    {
+      "id": "18",
+      "name": "Modern Pastries",
+      "business_id": 6
+    },
+    {
+      "id": "19",
+      "name": "Special Events",
+      "business_id": 6
+    },
+    {
+      "id": "20",
+      "name": "Artisanal Bread",
+      "business_id": 7
+    },
+    {
+      "id": "21",
+      "name": "European Style",
+      "business_id": 7
+    },
+    {
+      "id": "22",
+      "name": "Organic",
+      "business_id": 7
     }
   ]
 }
