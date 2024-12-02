@@ -72,6 +72,8 @@ const Cart = () => {
       setIsLoading(true);
       try {
         const userId = localStorage.getItem("userId");
+        console.log("Current userId:", userId); // Debug log
+
         if (!userId) {
           console.error("No user ID found");
           return;
@@ -88,15 +90,14 @@ const Cart = () => {
         const businesses = await businessResponse.json();
         const products = await productsResponse.json();
 
-        // Store businesses in state
-        setBusinesses(businesses);
-
         // Filter orders for the logged-in user
         const userOrders = orders.filter(
-          (order) => order.customer_id === Number(userId)
+          (order) => order.customer_id.toString() === userId.toString()
         );
-
-        // Map orders with business details and correct product images
+        
+        console.log("All user orders:", userOrders); // Debug log
+        
+        // Map orders with business details
         const ordersWithDetails = userOrders.map((order) => ({
           ...order,
           business: businesses.find(
@@ -112,60 +113,10 @@ const Cart = () => {
           }),
         }));
 
-        // Add dummy cancelled order
-        const dummyCancelledOrder = {
-          id: "dummy-cancelled-1",
-          order_id: "CO-001",
-          customer_id: Number(userId),
-          business_id: businesses[0]?.id,
-          business: businesses[0],
-          products: [
-            {
-              prod_id: "4",
-              cat_id: 1,
-              prod_name: "Black Forest Cake",
-              description:
-                "Premium Black Forest cake with cherries and dark chocolate",
-              price: 599.99,
-              rate: 4.9,
-              quantity: 2,
-              images: "../assets/BlackForestCakev1.jpg",
-            },
-          ],
-          total_amount: 1199.98,
-          status: "Cancelled",
-          created_at: new Date().toISOString(),
-          downPayment: 599.99,
-          remainingPayment: 599.99,
-          cancelReason: "Out of stock ingredients",
-        };
-
-        // Add dummy refund order
-        const dummyRefundOrder = {
-          id: "dummy-refund-1",
-          order_id: "RO-001",
-          customer_id: Number(userId),
-          business_id: businesses[0]?.id,
-          business: businesses[0],
-          products: [
-            {
-              prod_id: "9",
-              cat_id: 1,
-              prod_name: "Chocolate Dream Layer Cake",
-              description: "Decadent chocolate layer cake with rich ganache",
-              price: 649.99,
-              rate: 4.9,
-              quantity: 1,
-              images: "../assets/ChocolateDreamLayerCakev1.jpg",
-            },
-          ],
-          total_amount: 649.99,
-          status: "Refunded",
-          created_at: new Date().toISOString(),
-          downPayment: 324.995,
-          remainingPayment: 324.995,
-          refundReason: "Product quality issue",
-        };
+        const toReceiveOrders = ordersWithDetails.filter(
+          (order) => order.status === "To Receive"
+        );
+        console.log("To Receive orders:", toReceiveOrders); // Debug log
 
         // Set orders based on status
         setCartItems(
@@ -174,19 +125,16 @@ const Cart = () => {
         setProcessingOrders(
           ordersWithDetails.filter((order) => order.status === "Processing")
         );
-        setToReceiveOrders(
-          ordersWithDetails.filter((order) => order.status === "To Receive")
-        );
+        setToReceiveOrders(toReceiveOrders);
         setCompletedOrders(
           ordersWithDetails.filter((order) => order.status === "Completed")
         );
-        // Add dummy cancelled order to cancelled orders
-        setCancelledOrders([
-          ...ordersWithDetails.filter((order) => order.status === "Cancelled"),
-          dummyCancelledOrder,
-        ]);
-        // Set dummy refund order
-        setRefundedOrders([dummyRefundOrder]);
+        setCancelledOrders(
+          ordersWithDetails.filter((order) => order.status === "Cancelled")
+        );
+        setRefundedOrders(
+          ordersWithDetails.filter((order) => order.status === "Refunded")
+        );
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Failed to load orders");

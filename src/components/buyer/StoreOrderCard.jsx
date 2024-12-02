@@ -5,17 +5,28 @@ import { FiMinus, FiPlus } from "react-icons/fi";
 
 const StoreOrderCard = ({
   storeData,
-  selectedItems,
+  selectedItems = [],
   onSelectItem,
   onSelectAll,
   onUpdateQuantity,
+  isProcessing = false
 }) => {
-  const products = storeData?.products || [];
-  const business = storeData?.business;
+  const {
+    order_id,
+    business,
+    products,
+    total_amount,
+    status,
+    created_at,
+    downPayment,
+    remainingPayment,
+    receiveDate,
+    placedAddress
+  } = storeData;
 
-  const allSelected =
-    products.length > 0 &&
-    products.every((product) => selectedItems.includes(`${storeData.order_id}_${product.prod_id}`));
+  const isAllSelected = products?.every((product) =>
+    selectedItems?.includes(`${order_id}_${product.prod_id}`)
+  );
 
   const handleQuantityChange = (orderId, newQty) => {
     if (newQty >= 1) {
@@ -54,8 +65,8 @@ const StoreOrderCard = ({
         <div className="flex items-center gap-2">
           <input
             type="checkbox"
-            checked={allSelected}
-            onChange={() => onSelectAll(business?.bus_id, storeData.order_id)}
+            checked={isAllSelected}
+            onChange={() => onSelectAll(business?.id, order_id)}
             className="w-5 h-5"
           />
           <h2 className="text-lg font-semibold">

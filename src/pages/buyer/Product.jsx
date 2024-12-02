@@ -209,13 +209,13 @@ const Product = () => {
           },
         ],
         total_amount: product.price * quantity,
-        status: "Pending",
+        status: "Cart",
         created_at: currentDate,
         checkoutDate: currentDate,
         receiveDate: "null",
         downPayment: 0,
         remainingPayment: 0,
-        paymentStatus: "paid"
+        paymentStatus: "paid",
       };
 
       // Log the final order before sending
