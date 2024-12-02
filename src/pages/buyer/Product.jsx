@@ -180,10 +180,8 @@ const Product = () => {
     selectedImageIndex
   ) => {
     try {
-      console.log(
-        "Starting order creation with image index:",
-        selectedImageIndex
-      );
+      // Get userId from localStorage
+      const userId = localStorage.getItem("userId");
 
       // Get existing orders to determine next ID
       const response = await fetch("http://localhost:3000/orders");
@@ -193,13 +191,10 @@ const Product = () => {
 
       const currentDate = new Date().toISOString();
 
-      // Log the selected image before creating order
-      console.log("Selected image URL:", product.images[selectedImageIndex]);
-
       const newOrder = {
         id: nextId,
         order_id: nextOrderId,
-        customer_id: 2,
+        customer_id: userId,
         business_id: product.business_id,
         products: [
           {
@@ -214,13 +209,13 @@ const Product = () => {
           },
         ],
         total_amount: product.price * quantity,
-        status: "Cart",
+        status: "Pending",
         created_at: currentDate,
         checkoutDate: currentDate,
         receiveDate: "null",
         downPayment: 0,
         remainingPayment: 0,
-        paymentStatus: "paid",
+        paymentStatus: "paid"
       };
 
       // Log the final order before sending
@@ -327,7 +322,7 @@ const Product = () => {
       const newOrder = {
         id: nextId,
         order_id: nextOrderId,
-        customer_id: parseInt(userId),
+        customer_id: userId,
         business_id: product.business_id,
         products: [
           {

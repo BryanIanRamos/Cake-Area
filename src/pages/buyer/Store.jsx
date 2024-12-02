@@ -158,21 +158,20 @@ const Store = () => {
         const businessData = businessesData.find(
           (b) => b.user_id === parseInt(userId)
         );
-        const profileData = profilesData.find(
-          (p) => p.user_id === parseInt(userId)
-        );
 
-        // Get products for this business - Fix: Convert string ID to number
+        // Get products for this business
         const businessProducts = productsData.filter(
           (p) => parseInt(p.business_id) === parseInt(businessData?.id)
         );
 
-        console.log("Business Data:", businessData);
-        console.log("Products:", productsData);
-        console.log("Filtered Products:", businessProducts);
+        // Update business data with accurate product count
+        const updatedBusinessData = {
+          ...businessData,
+          available_items: businessProducts.length // Update the count to match actual products
+        };
 
-        setBusiness(businessData);
-        setProfile(profileData);
+        setBusiness(updatedBusinessData);
+        setProfile(profilesData.find((p) => p.user_id === parseInt(userId)));
         setStoreProducts(businessProducts);
 
         // Create categories array with counts

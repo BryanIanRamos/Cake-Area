@@ -21,16 +21,18 @@ const BakerBusinessCard = ({
   useEffect(() => {
     const fetchBusinessData = async () => {
       try {
-        // Fetch businesses and profiles in parallel
-        const [businessesRes, profilesRes] = await Promise.all([
+        // Fetch businesses, profiles, and products in parallel
+        const [businessesRes, profilesRes, productsRes] = await Promise.all([
           fetch("http://localhost:3000/businesses"),
           fetch("http://localhost:3000/profiles"),
+          fetch("http://localhost:3000/products"),
         ]);
 
         const businessesData = await businessesRes.json();
         const profilesData = await profilesRes.json();
+        const productsData = await productsRes.json();
 
-        // Combine the data
+        // Combine the data with accurate product counts
         const combinedData = businessesData
           .filter((business) => business.is_active)
           .map((business) => {
@@ -38,9 +40,13 @@ const BakerBusinessCard = ({
               (profile) => profile.user_id === business.user_id
             );
 
+            // Count products for this business
+            const productCount = productsData.filter(
+              product => parseInt(product.business_id) === parseInt(business.id)
+            ).length;
+
             return {
               ...business,
-              // Only display the municipality
               formattedLocation: business.location
                 ? business.location.municipality
                 : "Location not available",
@@ -48,6 +54,7 @@ const BakerBusinessCard = ({
               ownerName: businessProfile
                 ? `${businessProfile.first_name} ${businessProfile.last_name}`
                 : "Unknown Owner",
+              available_items: productCount // Update with actual count
             };
           });
 
