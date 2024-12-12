@@ -14,6 +14,7 @@ import OrderConfirmation from "../../components/buyer/modals/OrderConfirmation";
 import { FiAlertCircle } from "react-icons/fi";
 import AddToCartModal from "../../components/buyer/modals/AddToCartModal";
 import ProductOrderConfirmation from "../../components/buyer/modals/ProductOrderConfirmation";
+import ReportProductModal from "../../components/buyer/modals/ReportProductModal";
 
 const Product = () => {
   const { productId } = useParams();
@@ -36,12 +37,13 @@ const Product = () => {
   const [profiles, setProfiles] = useState([]);
   const [commentData, setCommentData] = useState([]);
   const [comments, setComments] = useState([]);
+  const [reportModalOpen, setReportModalOpen] = useState(false);
 
   // Add this effect to fetch profiles and create comment data
   useEffect(() => {
     const fetchProfilesAndCreateComments = async () => {
       try {
-        const profilesResponse = await fetch('http://localhost:3000/profiles');
+        const profilesResponse = await fetch("http://localhost:3000/profiles");
         const profilesData = await profilesResponse.json();
         setProfiles(profilesData);
 
@@ -51,68 +53,71 @@ const Product = () => {
             id: 1,
             user: {
               name: `${profilesData[3].first_name} ${profilesData[3].last_name}`, // Mike Tyson
-              profilePic: profilesData[3].img
+              profilePic: profilesData[3].img,
             },
             rating: 4.7,
             date: "2024-12-01",
             comment: "Delicious cake, will order again!",
             likes: 76,
-            images: ["../assets/ChocolateDreamLayerCakev1.jpg"]
+            images: ["../assets/ChocolateDreamLayerCakev1.jpg"],
           },
           {
             id: 2,
             user: {
               name: `${profilesData[4].first_name} ${profilesData[4].last_name}`, // Emma Wilson
-              profilePic: profilesData[4].img
+              profilePic: "../../../public/assets/profile/Rachel_Baker.jpg",
             },
             rating: 3.0,
             date: "2024-12-07",
             comment: "Average taste, good presentation.",
             likes: 45,
-            images: ["../assets/BlackForestCakev1.jpg"]
+            images: ["../assets/BlackForestCakev1.jpg"],
           },
           {
             id: 3,
             user: {
               name: `${profilesData[1].first_name} ${profilesData[1].last_name}`, // Sarah Baker
-              profilePic: profilesData[1].img
+              profilePic: profilesData[1].img,
             },
             rating: 5.0,
             date: "2024-12-05",
-            comment: "The best cake I've ever tasted! Highly recommend this bakery.",
+            comment:
+              "The best cake I've ever tasted! Highly recommend this bakery.",
             likes: 89,
-            images: ["../assets/CarrotSpiceCakev1.jpg"]
+            images: ["../assets/CarrotSpiceCakev1.jpg"],
           },
           {
             id: 4,
             user: {
               name: `${profilesData[2].first_name} ${profilesData[2].last_name}`, // Lisa Baker
-              profilePic: profilesData[2].img
+              profilePic: profilesData[2].img,
             },
             rating: 4.8,
             date: "2024-12-03",
-            comment: "Perfect for our family celebration. Will definitely order again!",
+            comment:
+              "Perfect for our family celebration. Will definitely order again!",
             likes: 62,
-            images: ["../assets/ArtisanalBananaBreadv1.jpg"]
+            images: ["../assets/ArtisanalBananaBreadv1.jpg"],
           },
           {
             id: 5,
             user: {
               name: `${profilesData[6].first_name} ${profilesData[6].last_name}`, // Anna Baker
-              profilePic: profilesData[6].img
+              profilePic: profilesData[6].img,
             },
             rating: 4.9,
             date: "2024-12-02",
-            comment: "Exceptional quality and taste. The presentation was beautiful!",
+            comment:
+              "Exceptional quality and taste. The presentation was beautiful!",
             likes: 95,
-            images: ["../assets/PremiumAlmondCroissantv1.jpg"]
-          }
+            images: ["../../public/assets/OperaCakev3.jpg"],
+          },
         ];
 
         setCommentData(commentsData);
         setComments(commentsData);
       } catch (error) {
-        console.error('Error fetching profiles and creating comments:', error);
+        console.error("Error fetching profiles and creating comments:", error);
       }
     };
 
@@ -460,6 +465,35 @@ const Product = () => {
     }
   };
 
+  const handleSubmitReport = async (reason, description) => {
+    try {
+      // Simulate successful report submission
+      setReportModalOpen(false);
+      toast.success("Report submitted successfully", {
+        icon: <FiAlertCircle className="text-lg" />,
+        className: "font-[Oswald]",
+        position: "bottom-right",
+        duration: 2000,
+      });
+
+      // Log the report data to console (for development purposes)
+      console.log("Report submitted:", {
+        reason,
+        description,
+        product_id: product.id,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error("Error submitting report:", error);
+      toast.error("Failed to submit report. Please try again.", {
+        icon: <FiAlertCircle className="text-lg" />,
+        className: "font-[Oswald]",
+        position: "bottom-right",
+        duration: 2000,
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-start h-full w-full px-4 py-6 md:px-10 md:py-8">
       <Toaster richColors position="bottom-right" />
@@ -474,7 +508,16 @@ const Product = () => {
       />
 
       <div className="w-full h-fit max-w-6xl mx-auto flex flex-col gap-2 mt-[5%]">
-        <div className="bg-white grid grid-cols-1 md:grid-cols-3 w-full gap-4 p-4 rounded-lg shadow-md">
+        <div className="bg-white grid grid-cols-1 md:grid-cols-3 w-full gap-4 p-4 rounded-lg shadow-md relative">
+          {/* Add Report link at the top right edge */}
+          <button
+            onClick={() => setReportModalOpen(true)}
+            className="absolute top-6 right-6 text-gray-500 hover:text-red-500 text-sm flex items-center gap-1 z-10"
+          >
+            <Icon icon="mdi:flag-outline" className="text-base" />
+            Report
+          </button>
+
           {/* Image Section */}
           <div className="w-full h-[400px]">
             <div className="w-full h-full">
@@ -848,6 +891,12 @@ const Product = () => {
           onConfirm={handleConfirmAddToCart}
         />
       )}
+
+      <ReportProductModal
+        isOpen={reportModalOpen}
+        closeModal={() => setReportModalOpen(false)}
+        onSubmit={handleSubmitReport}
+      />
     </div>
   );
 };

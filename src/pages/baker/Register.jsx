@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import RadioOption from "../../components/buyer/RadioOption";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [step, setStep] = useState(1);
@@ -44,6 +45,8 @@ const Register = () => {
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isBusinessEmailFocused, setIsBusinessEmailFocused] = useState(false);
+  const navigate = useNavigate();
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const RequiredIndicator = () => <span className="text-red-500 ml-1">*</span>;
 
@@ -580,9 +583,26 @@ const Register = () => {
     </>
   );
 
+  const SuccessModal = () => (
+    <div className={`fixed inset-0 flex items-center justify-center z-50 ${showSuccessModal ? 'opacity-100' : 'opacity-0 pointer-events-none'} transition-opacity duration-300`}>
+      <div className="bg-white rounded-lg shadow-xl p-6 border-2 border-primary mx-4">
+        <div className="flex items-center gap-3">
+          <div className="text-green-500 text-2xl">✓</div>
+          <p className="text-gray-800 font-semibold text-lg">Account created successfully!</p>
+        </div>
+      </div>
+    </div>
+  );
+
   const handleSubmit = () => {
     console.log("Form submitted:", formData);
-    // Add your submission logic here
+    setShowSuccessModal(true);
+    
+    // After 2 seconds, hide modal and navigate to main page
+    setTimeout(() => {
+      setShowSuccessModal(false);
+      navigate('/');
+    }, 2000);
   };
 
   // Render left side content based on current step
@@ -690,6 +710,8 @@ const Register = () => {
 
   return (
     <div className="w-full min-h-screen flex justify-center items-center p-4">
+      <SuccessModal />
+      
       <div className="w-full max-w-[1200px] min-h-[600px] border-2 bg-white grid grid-cols-1 lg:grid-cols-2 shadow-md">
         <div className="bg-primary hidden lg:block relative overflow-hidden">
           {renderLeftContent()}
